@@ -1,0 +1,15 @@
+{
+  "name": "playground",
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@lacqjs/nuxt-maptalks-gl": "workspace:*",
+    "@playwright/test": "^1.61.0",
+    "maptalks-gl": "^0.124.0",
+    "nuxt": "^4.4.8"
+  }
+}

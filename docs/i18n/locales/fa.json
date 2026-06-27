@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "guide": "راهنما",
+    "api": "API",
+    "integration": "یکپارچه‌سازی"
+  },
+  "sidebar": {
+    "welcome": "شروع کار",
+    "environment": "آماده‌سازی محیط",
+    "installation": "نصب ماژول",
+    "first-map": "اولین نقشه",
+    "core": "هسته",
+    "use-maptalks": "useMaptalks",
+    "use-maptalks-layer": "useMaptalksLayer",
+    "multi": "چند نقشه",
+    "named-instance": "نمونه‌های نام‌دار",
+    "use-maptalks-instance": "useMaptalksInstance",
+    "use-maptalks-registry": "useMaptalksRegistry",
+    "crosscutting": "موارد عرضی",
+    "use-maptalks-events": "useMaptalksEvents",
+    "use-maptalks-camera": "useMaptalksCamera",
+    "use-maptalks-coordinate": "useMaptalksCoordinate",
+    "use-maptalks-draw-tool": "useMaptalksDrawTool",
+    "use-maptalks-source": "useMaptalksSource",
+    "presets": "پیش‌تنظیم‌ها و احراز هویت",
+    "tile-layer": "useMaptalksTileLayer",
+    "vector-tile-layer": "useMaptalksVectorTileLayer",
+    "group-gl-layer": "useMaptalksGroupGLLayer",
+    "gltf-layer": "useMaptalksGLTFLayer",
+    "signed-source": "منبع امضاشده (public / signed)",
+    "appendix": "ضمیمه",
+    "api-reference": "مرجع API",
+    "faq": "سوالات متداول",
+    "config-templates": "قالب‌های تنظیمات"
+  },
+  "common": {
+    "prev": "قبلی",
+    "next": "بعدی",
+    "edit": "ویرایش صفحه",
+    "toc": "فهرست"
+  },
+  "lang": {
+    "switch": "English",
+    "searchCurrent": "فقط زبان فعلی"
+  }
+}

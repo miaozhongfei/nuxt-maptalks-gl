@@ -1,0 +1,46 @@
+{
+  "nav": {
+    "guide": "Guide",
+    "api": "API Reference",
+    "integration": "Integration"
+  },
+  "sidebar": {
+    "welcome": "Getting Started",
+    "environment": "Environment Setup",
+    "installation": "Installation",
+    "first-map": "Your First Map",
+    "core": "Core",
+    "use-maptalks": "useMaptalks",
+    "use-maptalks-layer": "useMaptalksLayer",
+    "multi": "Multiple Maps",
+    "named-instance": "Named Instances",
+    "use-maptalks-instance": "useMaptalksInstance",
+    "use-maptalks-registry": "useMaptalksRegistry",
+    "crosscutting": "Cross-cutting",
+    "use-maptalks-events": "useMaptalksEvents",
+    "use-maptalks-camera": "useMaptalksCamera",
+    "use-maptalks-coordinate": "useMaptalksCoordinate",
+    "use-maptalks-draw-tool": "useMaptalksDrawTool",
+    "use-maptalks-source": "useMaptalksSource",
+    "presets": "Presets & Auth",
+    "tile-layer": "useMaptalksTileLayer",
+    "vector-tile-layer": "useMaptalksVectorTileLayer",
+    "group-gl-layer": "useMaptalksGroupGLLayer",
+    "gltf-layer": "useMaptalksGLTFLayer",
+    "signed-source": "Signed Source (public / signed)",
+    "appendix": "Appendix",
+    "api-reference": "API Reference",
+    "faq": "FAQ",
+    "config-templates": "Config Templates"
+  },
+  "common": {
+    "prev": "Previous",
+    "next": "Next",
+    "edit": "Edit this page",
+    "toc": "On this page"
+  },
+  "lang": {
+    "switch": "中文",
+    "searchCurrent": "Current language only"
+  }
+}

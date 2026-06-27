@@ -1,0 +1,106 @@
+{
+  "name": "@lacqjs/nuxt-maptalks-gl",
+  "version": "0.0.1",
+  "description": "Nuxt 4 的 maptalks-gl 模块：SSR 守卫、动态加载、map/layer 生命周期、多地图命名实例与注册表、横切 composable 与类型化图层预设。",
+  "keywords": [
+    "@lacqjs/nuxt-maptalks-gl",
+    "map",
+    "maptalks",
+    "maptalks-gl",
+    "nuxt",
+    "nuxt-maptalks-gl",
+    "webgl"
+  ],
+  "homepage": "https://miaozhongfei.github.io/nuxt-maptalks-gl/",
+  "license": "MIT",
+  "author": {
+    "name": "miaozhongfei",
+    "email": "miaozhongfei@example.com"
+  },
+  "contributors": [],
+  "repository": "miaozhongfei/nuxt-maptalks-gl",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/module.mjs",
+  "types": "./dist/module.d.mts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/module.d.mts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/module.d.mts",
+      "import": "./dist/module.mjs"
+    },
+    "./runtime/*": "./dist/runtime/*"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "cleanup": "(pnpx nuxt cleanup || npx nuxt cleanup) && pnpx rimraf .nuxt .output dist node_modules .data",
+    "clean:install": "pnpm run cleanup && pnpm run docs:cleanup && pnpm run playground:cleanup && pnpm install",
+    "prepack": "nuxt-module-build build",
+    "dev": "pnpm run dev:prepare && nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "docs:dev": "nuxi dev docs",
+    "docs:build": "nuxi build docs",
+    "docs:generate": "nuxi generate docs",
+    "docs:cleanup": "pnpx rimraf docs/.nuxt docs/.output docs/dist docs/node_modules docs/.data",
+    "playground:cleanup": "pnpx rimraf playground/.nuxt playground/.output playground/dist playground/node_modules",
+    "release": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
+    "release:patch": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --patch --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
+    "release:minor": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --minor --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
+    "release:major": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --major --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
+    "lint": "oxlint . && oxlint docs --no-error-on-unmatched-pattern",
+    "lint:fix": "oxlint --fix . && oxlint --fix docs --no-error-on-unmatched-pattern",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "e2e": "cd playground && pnpm e2e",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.4.8",
+    "compare-versions": "^6.1.1",
+    "consola": "^3.4.2",
+    "defu": "^6.1.7"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.8",
+    "@nuxt/test-utils": "^4.0.3",
+    "@types/node": "^26.0.0",
+    "@vue/test-utils": "^2.4.11",
+    "changelogen": "^0.6.2",
+    "jsdom": "^29.1.1",
+    "maptalks-gl": "^0.124.0",
+    "nuxt": "^4.4.8",
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.9",
+    "vue-tsc": "^3.3.4",
+    "ws": "^8.21.0"
+  },
+  "peerDependencies": {
+    "maptalks-gl": ">=0.124 <1"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0",
+    "pnpm": ">=10.22.0",
+    "yarn": ">=1.22.22"
+  },
+  "packageManager": "pnpm@10.22.0",
+  "documentation": "https://miaozhongfei.github.io/nuxt-maptalks-gl/"
+}

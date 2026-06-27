@@ -1,0 +1,175 @@
+import { onScopeDispose, ref, shallowRef, toValue, watch } from 'vue';
+import type { MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
+
+import { loadMaptalks } from '../core/loader';
+import type { MaptalksDrawTool, MaptalksMap } from '../types';
+import { createLogger } from '../utils/logger';
+
+/** 日志实例（单例） */
+const logger = createLogger('nuxt-maptalks-gl');
+
+/** useMaptalksDrawTool 的可选项 */
+export interface UseMaptalksDrawToolOptions {
+  /** 初始绘制模式（如 'Point' / 'LineString' / 'Polygon'），默认 'Point' */
+  mode?: string;
+  /** 透传给 maptalks DrawTool 构造器的额外选项（如 symbol） */
+  options?: Record<string, unknown>;
+}
+
+/** useMaptalksDrawTool 的返回 */
+export interface UseMaptalksDrawToolReturn {
+  /** DrawTool 实例（创建前为 null） */
+  tool: ShallowRef<MaptalksDrawTool | null>;
+  /** 是否处于绘制启用状态（双向，写入即生效） */
+  enabled: Ref<boolean>;
+  /** 当前绘制模式（双向，写入即切换） */
+  mode: Ref<string>;
+  /** 最近一次绘制结果（drawend 事件的 geometry） */
+  result: ShallowRef<unknown>;
+  /** 启用绘制 */
+  enable: () => void;
+  /** 关闭绘制 */
+  disable: () => void;
+  /** 切换绘制模式 */
+  setMode: (mode: string) => void;
+}
+
+/** bindDrawTool 维护的响应式状态集合 */
+interface DrawToolState {
+  tool: ShallowRef<MaptalksDrawTool | null>;
+  enabled: Ref<boolean>;
+  mode: Ref<string>;
+  result: ShallowRef<unknown>;
+}
+
+/**
+ * 创建 DrawTool、绑定到地图并接入 drawend 结果回调。
+ *
+ * @description 抽出创建核心：动态加载命名空间、检测 DrawTool 可用性、addTo(map) 并监听 drawend。
+ * 当前 maptalks-gl 未导出 DrawTool 时告警并返回 null。
+ * @param {MaptalksMap} m - 已就绪的地图实例
+ * @param {string} mode - 初始绘制模式
+ * @param {Record<string, unknown> | undefined} options - 透传给 DrawTool 的额外选项
+ * @param {(geometry: unknown) => void} onResult - drawend 结果回调
+ * @returns {Promise<MaptalksDrawTool | null>} DrawTool 实例，或不可用时 null
+ *
+ * @example
+ * const tool = await createDrawTool(map, 'Polygon', undefined, (geo) => (result.value = geo));
+ */
+async function createDrawTool(
+  m: MaptalksMap,
+  mode: string,
+  options: Record<string, unknown> | undefined,
+  onResult: (geometry: unknown) => void,
+): Promise<MaptalksDrawTool | null> {
+  const mt = await loadMaptalks();
+  const Ctor = mt.DrawTool;
+  if (typeof Ctor !== 'function') {
+    logger.warn('当前 maptalks-gl 未导出 DrawTool，绘制功能不可用');
+    return null;
+  }
+  const tool = new Ctor({ mode, ...options });
+  tool.addTo(m);
+  tool.on('drawend', (event) => {
+    onResult((event as { geometry?: unknown }).geometry ?? event);
+  });
+  return tool;
+}
+
+/**
+ * 地图就绪后创建 DrawTool 并建立状态联动，返回 teardown。
+ *
+ * @description 监听地图就绪以创建工具；`mode`/`enabled` 变化时同步到工具；销毁时停止 watcher 并 remove 工具。
+ * @param {() => MaptalksMap | null} getMap - 取当前地图实例
+ * @param {DrawToolState} state - tool/enabled/mode/result 状态
+ * @param {Record<string, unknown> | undefined} options - DrawTool 构造选项
+ * @returns {() => void} 解除联动并销毁工具
+ *
+ * @example
+ * const teardown = bindDrawTool(() => map.value, state, undefined);
+ */
+function bindDrawTool(
+  getMap: () => MaptalksMap | null,
+  state: DrawToolState,
+  options: Record<string, unknown> | undefined,
+): () => void {
+  const setup = async (m: MaptalksMap) => {
+    if (state.tool.value) return;
+    const dt = await createDrawTool(m, state.mode.value, options, (geo) => {
+      state.result.value = geo;
+    });
+    if (!dt) return;
+    if (state.enabled.value) dt.enable();
+    else dt.disable();
+    state.tool.value = dt;
+  };
+  const stops = [
+    watch(
+      getMap,
+      (m) => {
+        if (m) void setup(m);
+      },
+      { immediate: true },
+    ),
+    watch(state.mode, (next) => state.tool.value?.setMode(next)),
+    watch(state.enabled, (on) => {
+      if (!state.tool.value) return;
+      if (on) state.tool.value.enable();
+      else state.tool.value.disable();
+    }),
+  ];
+  return () => {
+    for (const stop of stops) stop();
+    const t = state.tool.value;
+    if (t) {
+      t.disable();
+      t.remove();
+      state.tool.value = null;
+    }
+  };
+}
+
+/**
+ * DrawTool 生命周期管理：创建 / 启停 / 模式切换，绘制结果以响应式 ref 暴露，自动 dispose。
+ *
+ * @description 地图就绪后创建 DrawTool 并 addTo(map)；`enabled`/`mode` 为双向 ref，写入即生效；
+ * 监听 `drawend` 把结果写入 `result`；作用域销毁时 disable + remove。初始不自动启用绘制。
+ * 若当前 maptalks-gl 未导出 DrawTool，则告警并保持 tool 为 null。
+ * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
+ * @param {UseMaptalksDrawToolOptions} [options] - 初始模式与 DrawTool 选项
+ * @returns {UseMaptalksDrawToolReturn} `{ tool, enabled, mode, result, enable, disable, setMode }`
+ *
+ * @example
+ * const { map } = useMaptalks(el);
+ * const { enabled, mode, result, enable, setMode } = useMaptalksDrawTool(map, { mode: 'Polygon' });
+ * function startDraw() { setMode('Polygon'); enable(); }
+ */
+export function useMaptalksDrawTool(
+  map: MaybeRefOrGetter<MaptalksMap | null>,
+  options: UseMaptalksDrawToolOptions = {},
+): UseMaptalksDrawToolReturn {
+  const tool = shallowRef<MaptalksDrawTool | null>(null);
+  const enabled = ref(false);
+  const mode = ref(options.mode ?? 'Point');
+  const result = shallowRef<unknown>(null);
+
+  onScopeDispose(
+    bindDrawTool(() => toValue(map), { tool, enabled, mode, result }, options.options),
+  );
+
+  return {
+    tool,
+    enabled,
+    mode,
+    result,
+    enable: () => {
+      enabled.value = true;
+    },
+    disable: () => {
+      enabled.value = false;
+    },
+    setMode: (next: string) => {
+      mode.value = next;
+    },
+  };
+}
