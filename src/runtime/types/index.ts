@@ -24,6 +24,54 @@ export interface MaptalksCoordinate {
 }
 
 /**
+ * maptalks `Map` 构造选项的手写强类型建模（高频字段）。
+ *
+ * @description 手写常用构造字段并保留索引签名兜底，不依赖 maptalks-gl 类型。
+ * 每项均可选；未建模字段经 `[key: string]: unknown` 透传。
+ *
+ * @example
+ * const opts: MaptalksMapOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3, dragPitch: true };
+ */
+export interface MaptalksMapOptions {
+  /** 地图中心，支持坐标对象或 [lng, lat] 数组 */
+  center?: MaptalksCoordinate | [number, number];
+  /** 缩放级别 */
+  zoom?: number;
+  /** 俯仰角（度），通常 0–80 */
+  pitch?: number;
+  /** 方位角（度） */
+  bearing?: number;
+  /** 最小缩放级别（限制缩放） */
+  minZoom?: number;
+  /** 最大缩放级别（限制缩放） */
+  maxZoom?: number;
+  /** 最大可视范围 Extent（限制范围），形状由 maptalks 决定，兜底建模 */
+  maxExtent?: unknown;
+  /** 是否允许拖拽平移，默认 true */
+  draggable?: boolean;
+  /** 是否允许拖拽平移（panning 维度） */
+  dragPan?: boolean;
+  /** 是否允许拖拽旋转方位 */
+  dragRotate?: boolean;
+  /** 是否允许拖拽改变俯仰 */
+  dragPitch?: boolean;
+  /** 是否允许缩放，默认 true */
+  zoomable?: boolean;
+  /** 细微缩放（Fractional Zoom） */
+  seamlessZoom?: boolean;
+  /** 缩放是否以容器中心为锚点 */
+  zoomInCenter?: boolean;
+  /** 空间参考系（含自定义 resolutions / LOD） */
+  spatialReference?: Record<string, unknown>;
+  /** 底图图层 */
+  baseLayer?: MaptalksLayer;
+  /** 初始图层数组 */
+  layers?: MaptalksLayer[];
+  /** 逃生舱口：透传任意未建模的 maptalks Map 选项（保留） */
+  [key: string]: unknown;
+}
+
+/**
  * 相机视图描述（用于 animateTo / flyTo 等）。
  *
  * @description 描述目标视图的中心、缩放、俯仰、方位，字段均可选。
@@ -95,6 +143,26 @@ export interface MaptalksMap {
   on(eventTypes: string, handler: MaptalksEventHandler): MaptalksMap;
   /** 解绑事件 */
   off(eventTypes: string, handler: MaptalksEventHandler): MaptalksMap;
+  /** 平移到目标坐标 */
+  panTo(coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>): MaptalksMap;
+  /** 按像素偏移平移 */
+  panBy(offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>): MaptalksMap;
+  /** 读取当前可视范围 Extent */
+  getExtent(): unknown;
+  /** 读取分辨率，可指定 zoom */
+  getResolution(zoom?: number): number;
+  /** 读取比例尺，可指定 zoom */
+  getScale(zoom?: number): number;
+  /** 设置最大可视范围，传 null 解除限制 */
+  setMaxExtent(extent: unknown | null): MaptalksMap;
+  /** 设置最小缩放级别 */
+  setMinZoom(zoom: number): MaptalksMap;
+  /** 设置最大缩放级别 */
+  setMaxZoom(zoom: number): MaptalksMap;
+  /** 导出为 dataURL */
+  toDataURL(options?: Record<string, unknown>): string;
+  /** 配置地图运行时选项（draggable/zoomable/dragPitch/dragRotate 等） */
+  config(conf: Record<string, unknown>): MaptalksMap;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -317,18 +385,16 @@ export interface ResolvedModuleOptions {
 /**
  * `useMaptalks` 的可选项。
  *
- * @description 除本模块识别的 `name` / `onError` 外，其余字段原样透传给 maptalks `Map` 构造器。
+ * @description 继承 maptalks Map 构造选项强类型；额外的 `name` / `onError` 由本模块消费，不透传构造器。
  *
  * @example
- * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10 });
+ * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10, minZoom: 3 });
  */
-export interface UseMaptalksOptions {
+export interface UseMaptalksOptions extends MaptalksMapOptions {
   /** 命名实例：传入后登记进 MapRegistry，可经 useMaptalksInstance 按名获取 */
   name?: string;
   /** 初始化失败回调（与 error ref 同时触发） */
   onError?: (error: MaptalksError) => void;
-  /** 透传给 maptalks `Map` 构造器的任意选项（center/zoom/baseLayer 等） */
-  [key: string]: unknown;
 }
 
 /**
@@ -422,6 +488,20 @@ export interface UseMaptalksCameraReturn {
   animateTo: (view: MaptalksViewLike, options?: Record<string, unknown>) => void;
   /** 适配范围 */
   fitExtent: (extent: unknown, zoomOffset?: number, options?: Record<string, unknown>) => void;
+  /** 平移到目标坐标 */
+  panTo?: (coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>) => void;
+  /** 按像素偏移平移，offset 为 [x, y] 或 maptalks Point */
+  panBy?: (offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>) => void;
+  /** 读取当前可视范围 Extent（map 为 null 返回 null） */
+  getExtent?: () => unknown | null;
+  /** 读取分辨率（map 为 null 返回 null） */
+  getResolution?: (zoom?: number) => number | null;
+  /** 读取比例尺（map 为 null 返回 null） */
+  getScale?: (zoom?: number) => number | null;
+  /** 设置最大可视范围，传 null 解除限制 */
+  setMaxExtent?: (extent: unknown | null) => void;
+  /** 设置缩放区间，内部调 setMinZoom / setMaxZoom */
+  setZoomRange?: (min?: number, max?: number) => void;
 }
 
 /**
@@ -469,3 +549,83 @@ export interface UseMaptalksPresetOptions {
  * const map: MaptalksInstanceRef = useMaptalksInstance('main');
  */
 export type MaptalksInstanceRef = ComputedRef<MaptalksMap | null>;
+
+/**
+ * `useMaptalksExport` 的导出选项。
+ *
+ * @description 透传给 maptalks `toDataURL` 的图片选项，未建模键经索引签名透传。
+ *
+ * @example
+ * const png = toDataURL({ mimeType: 'image/png' });
+ */
+export interface UseMaptalksExportOptions {
+  /** 图片 MIME，如 'image/png' / 'image/jpeg' */
+  mimeType?: string;
+  /** 质量（0–1，jpeg/webp 有效） */
+  quality?: number;
+  /** 透传给 maptalks toDataURL 的其它选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * `useMaptalksExport` 的返回。
+ *
+ * @description 暴露三种导出形态：dataURL / Blob / 触发下载。
+ *
+ * @example
+ * const { toDataURL, toBlob, download } = useMaptalksExport(map);
+ */
+export interface UseMaptalksExportReturn {
+  /** 导出为 dataURL（map 为 null 返回 null） */
+  toDataURL: (options?: UseMaptalksExportOptions) => string | null;
+  /** 导出为 Blob（map 为 null resolve null；失败 reject 并经 logger 记录） */
+  toBlob: (options?: UseMaptalksExportOptions) => Promise<Blob | null>;
+  /** 触发浏览器下载（map 为 null no-op） */
+  download: (filename: string, options?: UseMaptalksExportOptions) => void;
+}
+
+/**
+ * 参与多图同步的视图维度。
+ *
+ * @description center/zoom/pitch/bearing 四选若干，默认全开。
+ *
+ * @example
+ * const fields: MaptalksSyncField[] = ['center', 'zoom'];
+ */
+export type MaptalksSyncField = 'center' | 'zoom' | 'pitch' | 'bearing';
+
+/**
+ * `useMaptalksSync` 的可选项。
+ *
+ * @description 控制同步模型、主图、参与维度与监听事件。
+ *
+ * @example
+ * useMaptalksSync(['left', 'right'], { mode: 'master-slave', master: 'left' });
+ */
+export interface UseMaptalksSyncOptions {
+  /** 同步模型，默认 'mutual' */
+  mode?: 'mutual' | 'master-slave';
+  /** 主从模式的主图（实例或注册表名），mode='master-slave' 时必填 */
+  master?: MaptalksMap | string;
+  /** 参与同步的维度，默认四维全开 */
+  fields?: MaptalksSyncField[];
+  /** 监听的视图变更事件，默认 'moveend zoomend pitch rotate' */
+  events?: string;
+}
+
+/**
+ * `useMaptalksSync` 的返回。
+ *
+ * @description 暴露启停控制与同步状态。
+ *
+ * @example
+ * const { enable, disable, isEnabled } = useMaptalksSync(['left', 'right']);
+ */
+export interface UseMaptalksSyncReturn {
+  /** 启用同步 */
+  enable: () => void;
+  /** 停用同步 */
+  disable: () => void;
+  /** 是否处于同步中 */
+  isEnabled: Ref<boolean>;
+}
