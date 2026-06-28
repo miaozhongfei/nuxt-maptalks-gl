@@ -123,6 +123,36 @@ function bindGeometryUpdates(
 }
 
 /**
+ * 监听额外响应式属性（shallow，非 immediate），变化时调 apply 写回几何。
+ *
+ * @description 形状/文本几何的 radius/width/height/angles/content 等经此响应式更新；几何存在且值非 undefined 才 apply。
+ * @param {() => MaptalksGeometry | null} getGeo - 取当前几何
+ * @param {UseMaptalksGeometryOptions['extraProps']} extraProps - 额外属性列表
+ * @returns {() => void} 停止全部 watcher
+ *
+ * @example
+ * const stop = bindExtraProps(() => state.geometry.value, [{ value: () => r.value, apply: (g, v) => g.setRadius?.(v as number) }]);
+ */
+function bindExtraProps(
+  getGeo: () => MaptalksGeometry | null,
+  extraProps: UseMaptalksGeometryOptions['extraProps'],
+): () => void {
+  if (!extraProps || extraProps.length === 0) return () => {};
+  const stops = extraProps.map((p) =>
+    watch(
+      () => toValue(p.value),
+      (v) => {
+        const geo = getGeo();
+        if (geo && v !== undefined) p.apply(geo, v);
+      },
+    ),
+  );
+  return () => {
+    for (const stop of stops) stop();
+  };
+}
+
+/**
  * 通用几何原语：把任意 maptalks 几何响应式纳管到 VectorLayer，自动创建/更新/事件/dispose。
  *
  * @description 图层就绪后 `loadMaptalks` → `factory(mt)` 创建几何并 `layer.addGeometry`；
@@ -160,10 +190,12 @@ export function useMaptalksGeometry(
     { immediate: true },
   );
   const stopUpdates = bindGeometryUpdates(() => state.geometry.value, options);
+  const stopExtra = bindExtraProps(() => state.geometry.value, options.extraProps);
 
   const remove = (): void => {
     stopGate();
     stopUpdates();
+    stopExtra();
     const geo = state.geometry.value;
     if (!geo) return;
     for (const [name, handler] of state.boundEvents) geo.off(name, handler);

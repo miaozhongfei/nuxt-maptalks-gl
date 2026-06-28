@@ -113,3 +113,22 @@ describe('useMaptalksGeometry · 样式与属性更新', () => {
     scope.stop();
   });
 });
+
+describe('useMaptalksGeometry · extraProps', () => {
+  it('额外属性替换后调 apply', async () => {
+    const g = fakeGeometry();
+    const l = fakeLayer();
+    const radius = shallowRef<number>(100);
+    const apply = vi.fn();
+    const scope = effectScope();
+    scope.run(() =>
+      useMaptalksGeometry(shallowRef<MaptalksVectorLayer | null>(l.layer), () => g.geo, {
+        extraProps: [{ value: radius, apply }],
+      }),
+    );
+    await vi.waitFor(() => expect(l.addGeometry).toHaveBeenCalled());
+    radius.value = 200;
+    await vi.waitFor(() => expect(apply).toHaveBeenCalledWith(g.geo, 200));
+    scope.stop();
+  });
+});
