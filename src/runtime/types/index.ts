@@ -635,6 +635,6 @@ export interface UseMaptalksSyncReturn {
   enable: () => void;
   /** 停用同步 */
   disable: () => void;
-  /** 是否处于同步中 */
+  /** 是否已启用同步 */
   isEnabled: Ref<boolean>;
 }

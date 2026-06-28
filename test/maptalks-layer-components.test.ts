@@ -1,5 +1,6 @@
-import { mount } from '@vue/test-utils';
 // @vitest-environment jsdom
+
+import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
