@@ -160,19 +160,65 @@ export function useMaptalksCamera(
   const teardown = bindCameraSync(() => toValue(map), { center, zoom, pitch, bearing }, events);
   onScopeDispose(teardown);
 
+  const get = () => toValue(map);
+
   return {
     center,
     zoom,
     pitch,
     bearing,
     flyTo: (view: MaptalksViewLike, opts?: Record<string, unknown>) => {
-      toValue(map)?.flyTo(view, opts);
+      get()?.flyTo(view, opts);
     },
     animateTo: (view: MaptalksViewLike, opts?: Record<string, unknown>) => {
-      toValue(map)?.animateTo(view, opts);
+      get()?.animateTo(view, opts);
     },
     fitExtent: (extent: unknown, zoomOffset?: number, opts?: Record<string, unknown>) => {
-      toValue(map)?.fitExtent(extent, zoomOffset, opts);
+      get()?.fitExtent(extent, zoomOffset, opts);
+    },
+    ...cameraExtensions(get),
+  };
+}
+
+/**
+ * 创建相机扩展方法（平移 / 只读状态 / 约束 setter）。
+ *
+ * @description 七个方法按功能分为：平移（panTo/panBy）、只读查询（getExtent/getResolution/getScale）、
+ * 约束设置（setMaxExtent/setZoomRange）。所有方法以 null-safe 方式委托给地图实例。
+ * @param {() => MaptalksMap | null} getMap - 取地图实例的函数
+ * @returns 七个扩展方法的集合
+ *
+ * @example
+ * const conf = configuration();
+ */
+function cameraExtensions(getMap: () => MaptalksMap | null) {
+  return {
+    panTo: (coord: MaptalksCoordinate | [number, number], opts?: Record<string, unknown>) => {
+      getMap()?.panTo(coord, opts);
+    },
+    panBy: (offset: [number, number] | Record<string, unknown>, opts?: Record<string, unknown>) => {
+      getMap()?.panBy(offset, opts);
+    },
+    getExtent: () => {
+      const m = getMap();
+      return m ? m.getExtent() : null;
+    },
+    getResolution: (z?: number) => {
+      const m = getMap();
+      return m ? m.getResolution(z) : null;
+    },
+    getScale: (z?: number) => {
+      const m = getMap();
+      return m ? m.getScale(z) : null;
+    },
+    setMaxExtent: (extent: unknown | null) => {
+      getMap()?.setMaxExtent(extent);
+    },
+    setZoomRange: (min?: number, max?: number) => {
+      const m = getMap();
+      if (!m) return;
+      if (min !== undefined) m.setMinZoom(min);
+      if (max !== undefined) m.setMaxZoom(max);
     },
   };
 }

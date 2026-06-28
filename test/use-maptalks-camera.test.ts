@@ -23,12 +23,20 @@ function fakeMap(state: CameraState) {
     flyTo: vi.fn(),
     animateTo: vi.fn(),
     fitExtent: vi.fn(),
+    panTo: vi.fn(),
+    panBy: vi.fn(),
+    setMaxExtent: vi.fn(),
+    setMinZoom: vi.fn(),
+    setMaxZoom: vi.fn(),
   };
   const map = {
     getCenter: () => state.center,
     getZoom: () => state.zoom,
     getPitch: () => state.pitch,
     getBearing: () => state.bearing,
+    getExtent: () => 'EXTENT',
+    getResolution: (zoom?: number) => (zoom ?? 0) + 100,
+    getScale: (zoom?: number) => (zoom ?? 0) + 200,
     ...spies,
   } as unknown as MaptalksMap;
   return { map, ...spies };
@@ -80,5 +88,44 @@ describe('useMaptalksCamera', () => {
     expect(m.on).toHaveBeenCalled();
     scope.stop();
     expect(m.off).toHaveBeenCalled();
+  });
+
+});
+
+describe('useMaptalksCamera 扩展（平移 / 只读状态 / 约束 setter）', () => {
+  it('panTo / panBy / setMaxExtent / setZoomRange 委托给地图', () => {
+    const m = fakeMap(initial);
+    const scope = effectScope();
+    const handle = scope.run(() => useMaptalksCamera(shallowRef<MaptalksMap | null>(m.map)));
+    if (!handle) throw new Error('effectScope did not run');
+    handle.panTo([3, 4]);
+    expect(m.panTo).toHaveBeenCalledWith([3, 4], undefined);
+    handle.panBy([10, 20]);
+    expect(m.panBy).toHaveBeenCalledWith([10, 20], undefined);
+    handle.setMaxExtent('E');
+    expect(m.setMaxExtent).toHaveBeenCalledWith('E');
+    handle.setZoomRange(2, 18);
+    expect(m.setMinZoom).toHaveBeenCalledWith(2);
+    expect(m.setMaxZoom).toHaveBeenCalledWith(18);
+    scope.stop();
+  });
+
+  it('只读状态读取地图；map 为 null 返回 null', () => {
+    const m = fakeMap(initial);
+    const scope = effectScope();
+    const handle = scope.run(() => useMaptalksCamera(shallowRef<MaptalksMap | null>(m.map)));
+    if (!handle) throw new Error('effectScope did not run');
+    expect(handle.getExtent()).toBe('EXTENT');
+    expect(handle.getResolution(5)).toBe(105);
+    expect(handle.getScale(5)).toBe(205);
+    scope.stop();
+
+    const nullScope = effectScope();
+    const nullHandle = nullScope.run(() => useMaptalksCamera(shallowRef<MaptalksMap | null>(null)));
+    if (!nullHandle) throw new Error('effectScope did not run');
+    expect(nullHandle.getExtent()).toBeNull();
+    expect(nullHandle.getResolution()).toBeNull();
+    expect(nullHandle.getScale()).toBeNull();
+    nullScope.stop();
   });
 });

@@ -489,19 +489,19 @@ export interface UseMaptalksCameraReturn {
   /** 适配范围 */
   fitExtent: (extent: unknown, zoomOffset?: number, options?: Record<string, unknown>) => void;
   /** 平移到目标坐标 */
-  panTo?: (coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>) => void;
+  panTo: (coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>) => void;
   /** 按像素偏移平移，offset 为 [x, y] 或 maptalks Point */
-  panBy?: (offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>) => void;
+  panBy: (offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>) => void;
   /** 读取当前可视范围 Extent（map 为 null 返回 null） */
-  getExtent?: () => unknown | null;
+  getExtent: () => unknown | null;
   /** 读取分辨率（map 为 null 返回 null） */
-  getResolution?: (zoom?: number) => number | null;
+  getResolution: (zoom?: number) => number | null;
   /** 读取比例尺（map 为 null 返回 null） */
-  getScale?: (zoom?: number) => number | null;
+  getScale: (zoom?: number) => number | null;
   /** 设置最大可视范围，传 null 解除限制 */
-  setMaxExtent?: (extent: unknown | null) => void;
+  setMaxExtent: (extent: unknown | null) => void;
   /** 设置缩放区间，内部调 setMinZoom / setMaxZoom */
-  setZoomRange?: (min?: number, max?: number) => void;
+  setZoomRange: (min?: number, max?: number) => void;
 }
 
 /**
