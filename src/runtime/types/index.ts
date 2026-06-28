@@ -849,8 +849,8 @@ export interface UseMaptalksVectorLayerOptions {
 export interface UseMaptalksMarkerOptions {
   /** 响应式 Marker 坐标 */
   coordinates: MaybeRefOrGetter<MarkerCoordinates>;
-  /** 响应式 symbol */
-  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 响应式 symbol（点类型，MarkerSymbol 强类型字段提示 + 兜底透传） */
+  symbol?: MaybeRefOrGetter<MarkerSymbol | undefined>;
   /** 响应式 properties */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器 */
@@ -875,6 +875,8 @@ export interface UseMaptalksLineStringOptions extends Omit<
 > {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<LineStringCoordinates>;
+  /** 响应式 symbol（线类型，LineSymbol：覆盖父级点 symbol 提示） */
+  symbol?: MaybeRefOrGetter<LineSymbol | undefined>;
 }
 
 /**
@@ -888,6 +890,8 @@ export interface UseMaptalksLineStringOptions extends Omit<
 export interface UseMaptalksPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<PolygonCoordinates>;
+  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol：覆盖父级点 symbol 提示） */
+  symbol?: MaybeRefOrGetter<(PolygonSymbol & LineSymbol) | undefined>;
 }
 
 /** MultiPoint 坐标：点序列 */
@@ -927,6 +931,8 @@ export interface UseMaptalksMultiLineStringOptions extends Omit<
 > {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
+  /** 响应式 symbol（线类型，LineSymbol：覆盖父级点 symbol 提示） */
+  symbol?: MaybeRefOrGetter<LineSymbol | undefined>;
 }
 
 /**
@@ -943,6 +949,8 @@ export interface UseMaptalksMultiPolygonOptions extends Omit<
 > {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
+  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol：覆盖父级点 symbol 提示） */
+  symbol?: MaybeRefOrGetter<(PolygonSymbol & LineSymbol) | undefined>;
 }
 
 /**
@@ -1003,8 +1011,8 @@ export interface UseMaptalksCircleOptions {
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式半径（米） */
   radius: MaybeRefOrGetter<number>;
-  /** 响应式 symbol */
-  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol：面填充 + 描边线样式） */
+  symbol?: MaybeRefOrGetter<(PolygonSymbol & LineSymbol) | undefined>;
   /** 响应式 properties */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器 */
@@ -1071,6 +1079,8 @@ export interface UseMaptalksSectorOptions extends UseMaptalksCircleOptions {
 export interface UseMaptalksLabelOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
+  /** 响应式 symbol（文字类型，TextSymbol：覆盖父级面 symbol 提示） */
+  symbol?: MaybeRefOrGetter<TextSymbol | undefined>;
 }
 
 /**
@@ -1088,4 +1098,120 @@ export interface UseMaptalksTextBoxOptions extends Omit<UseMaptalksCircleOptions
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
+  /** 响应式 symbol（文字类型，TextSymbol：覆盖父级面 symbol 提示） */
+  symbol?: MaybeRefOrGetter<TextSymbol | undefined>;
+}
+
+/**
+ * 线几何 symbol 强类型建模（高频线样式字段）。
+ *
+ * @description 为 LineString / MultiLineString 等线几何的 symbol 提供精确字段提示。
+ * 所有字段均可选；索引签名 `[key: string]: any` 作为兜底，透传任意未建模的 maptalks 线样式键，
+ * 从而保持与旧版 `Record<string, unknown>` symbol 的向后兼容（任意自定义键可读可写）。
+ *
+ * @example
+ * const sym: LineSymbol = { lineColor: '#1bbc9b', lineWidth: 3, lineDasharray: [10, 5] };
+ */
+export interface LineSymbol {
+  /** 线颜色（CSS 颜色字符串） */
+  lineColor?: string;
+  /** 线宽（像素） */
+  lineWidth?: number;
+  /** 线透明度（0–1） */
+  lineOpacity?: number;
+  /** 虚线模式：实线/空白交替的像素长度数组 */
+  lineDasharray?: number[];
+  /** 线端样式，如 'butt' / 'round' / 'square' */
+  lineCap?: string;
+  /** 线接合样式，如 'miter' / 'round' / 'bevel' */
+  lineJoin?: string;
+  /** 线整体水平偏移（像素） */
+  lineDx?: number;
+  /** 线整体垂直偏移（像素） */
+  lineDy?: number;
+  /** 兜底：透传任意未建模的线样式键（向后兼容，故为 any） */
+  [key: string]: any;
+}
+
+/**
+ * 面几何 symbol 强类型建模（高频面填充字段）。
+ *
+ * @description 为 Polygon / MultiPolygon / Circle 等面几何的 symbol 提供精确填充字段提示。
+ * 描边线样式由 `LineSymbol` 经交叉类型 `PolygonSymbol & LineSymbol` 补全。
+ * 索引签名 `[key: string]: any` 兜底透传任意未建模键，保持向后兼容。
+ *
+ * @example
+ * const sym: PolygonSymbol = { polygonFill: '#3498db', polygonFillOpacity: 0.6 };
+ */
+export interface PolygonSymbol {
+  /** 面填充颜色（CSS 颜色字符串） */
+  polygonFill?: string;
+  /** 面填充透明度（0–1） */
+  polygonFillOpacity?: number;
+  /** 面整体透明度（0–1） */
+  polygonOpacity?: number;
+  /** 兜底：透传任意未建模的面样式键（向后兼容，故为 any） */
+  [key: string]: any;
+}
+
+/**
+ * 点几何 symbol 强类型建模（高频点标注字段）。
+ *
+ * @description 为 Marker / MultiPoint 等点几何的 symbol 提供精确字段提示。
+ * 所有字段均可选；索引签名 `[key: string]: any` 兜底透传任意未建模的 maptalks 点样式键，
+ * 保持与旧版 `Record<string, unknown>` symbol 的向后兼容。
+ *
+ * @example
+ * const sym: MarkerSymbol = { markerType: 'ellipse', markerWidth: 20, markerFill: '#e74c3c' };
+ */
+export interface MarkerSymbol {
+  /** 点标注类型，如 'ellipse' / 'square' / 'pin' / 'path' */
+  markerType?: string;
+  /** 点标注宽度（像素） */
+  markerWidth?: number;
+  /** 点标注高度（像素） */
+  markerHeight?: number;
+  /** 点标注填充颜色 */
+  markerFill?: string;
+  /** 点标注填充透明度（0–1） */
+  markerFillOpacity?: number;
+  /** 点标注描边颜色 */
+  markerLineColor?: string;
+  /** 点标注描边宽度（像素） */
+  markerLineWidth?: number;
+  /** 点标注整体透明度（0–1） */
+  markerOpacity?: number;
+  /** 点标注水平偏移（像素） */
+  markerDx?: number;
+  /** 点标注垂直偏移（像素） */
+  markerDy?: number;
+  /** 兜底：透传任意未建模的点样式键（向后兼容，故为 any） */
+  [key: string]: any;
+}
+
+/**
+ * 文字几何 symbol 强类型建模（高频文字样式字段）。
+ *
+ * @description 为 Label / TextBox 等文字几何的 symbol 提供精确字段提示。
+ * 所有字段均可选；索引签名 `[key: string]: any` 兜底透传任意未建模的 maptalks 文字样式键，
+ * 保持与旧版 `Record<string, unknown>` symbol 的向后兼容。
+ *
+ * @example
+ * const sym: TextSymbol = { textName: 'Hello', textSize: 14, textFill: '#222222' };
+ */
+export interface TextSymbol {
+  /** 文字内容（也可由几何 content 提供） */
+  textName?: string;
+  /** 文字字号（像素） */
+  textSize?: number;
+  /** 文字颜色 */
+  textFill?: string;
+  /** 文字透明度（0–1） */
+  textOpacity?: number;
+  /** 文字描边（halo）颜色 */
+  textHaloFill?: string;
+  /** 文字描边（halo）半径（像素） */
+  textHaloRadius?: number;
+  /** 兜底：透传任意未建模的文字样式键（向后兼容，故为 any） */
+  [key: string]: any;
 }
