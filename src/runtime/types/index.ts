@@ -273,17 +273,47 @@ export interface MaptalksGLNamespace {
   /** DrawTool 构造器 */
   DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** Circle 构造器 */
-  Circle?: new (center: unknown, radius: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  Circle?: new (
+    center: unknown,
+    radius: number,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** Rectangle 构造器 */
-  Rectangle?: new (coord: unknown, width: number, height: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  Rectangle?: new (
+    coord: unknown,
+    width: number,
+    height: number,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** Ellipse 构造器 */
-  Ellipse?: new (center: unknown, width: number, height: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  Ellipse?: new (
+    center: unknown,
+    width: number,
+    height: number,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** Sector 构造器 */
-  Sector?: new (center: unknown, radius: number, startAngle: number, endAngle: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  Sector?: new (
+    center: unknown,
+    radius: number,
+    startAngle: number,
+    endAngle: number,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** Label 构造器 */
-  Label?: new (content: string, coord: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  Label?: new (
+    content: string,
+    coord: unknown,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** TextBox 构造器 */
-  TextBox?: new (content: string, coord: unknown, width: number, height: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  TextBox?: new (
+    content: string,
+    coord: unknown,
+    width: number,
+    height: number,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }

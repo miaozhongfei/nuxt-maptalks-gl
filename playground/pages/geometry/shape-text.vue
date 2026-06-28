@@ -8,8 +8,17 @@
     <MaptalksMap :center="[121.4737, 31.2304]" :zoom="12" data-testid="map" class="map">
       <MaptalksTileLayer source="osm" />
       <MaptalksVectorLayer>
-        <MaptalksCircle :coordinates="[121.47, 31.23]" :radius="radius" :symbol="{ polygonFill: '#de3333', polygonOpacity: 0.3 }" />
-        <MaptalksRectangle :coordinates="[121.48, 31.24]" :width="500" :height="300" :symbol="{ polygonFill: '#1bbc9b', polygonOpacity: 0.3 }" />
+        <MaptalksCircle
+          :coordinates="[121.47, 31.23]"
+          :radius="radius"
+          :symbol="{ polygonFill: '#de3333', polygonOpacity: 0.3 }"
+        />
+        <MaptalksRectangle
+          :coordinates="[121.48, 31.24]"
+          :width="500"
+          :height="300"
+          :symbol="{ polygonFill: '#1bbc9b', polygonOpacity: 0.3 }"
+        />
         <MaptalksLabel :content="'标注'" :coordinates="[121.49, 31.23]" />
       </MaptalksVectorLayer>
     </MaptalksMap>
