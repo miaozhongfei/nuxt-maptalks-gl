@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+// oxlint-disable import/max-dependencies
 
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
