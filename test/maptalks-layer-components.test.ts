@@ -1,12 +1,12 @@
+import { mount } from '@vue/test-utils';
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
-import { mount } from '@vue/test-utils';
 
+import MaptalksGLTFLayer from '../src/runtime/components/MaptalksGLTFLayer.vue';
+import MaptalksGroupGLLayer from '../src/runtime/components/MaptalksGroupGLLayer.vue';
 import MaptalksTileLayer from '../src/runtime/components/MaptalksTileLayer.vue';
 import MaptalksVectorTileLayer from '../src/runtime/components/MaptalksVectorTileLayer.vue';
-import MaptalksGroupGLLayer from '../src/runtime/components/MaptalksGroupGLLayer.vue';
-import MaptalksGLTFLayer from '../src/runtime/components/MaptalksGLTFLayer.vue';
 import { MAP_KEY } from '../src/runtime/core/map-context';
 import type { MaptalksMap } from '../src/runtime/types';
 
@@ -18,22 +18,18 @@ const { gtlm, vtlm, grpm, gltf } = vi.hoisted(() => ({
   gltf: vi.fn(),
 }));
 
-vi.mock(
-  '../src/runtime/composables/presets/useMaptalksTileLayer',
-  () => ({ useMaptalksTileLayer: gtlm }),
-);
-vi.mock(
-  '../src/runtime/composables/presets/useMaptalksVectorTileLayer',
-  () => ({ useMaptalksVectorTileLayer: vtlm }),
-);
-vi.mock(
-  '../src/runtime/composables/presets/useMaptalksGroupGLLayer',
-  () => ({ useMaptalksGroupGLLayer: grpm }),
-);
-vi.mock(
-  '../src/runtime/composables/presets/useMaptalksGLTFLayer',
-  () => ({ useMaptalksGLTFLayer: gltf }),
-);
+vi.mock('../src/runtime/composables/presets/useMaptalksTileLayer', () => ({
+  useMaptalksTileLayer: gtlm,
+}));
+vi.mock('../src/runtime/composables/presets/useMaptalksVectorTileLayer', () => ({
+  useMaptalksVectorTileLayer: vtlm,
+}));
+vi.mock('../src/runtime/composables/presets/useMaptalksGroupGLLayer', () => ({
+  useMaptalksGroupGLLayer: grpm,
+}));
+vi.mock('../src/runtime/composables/presets/useMaptalksGLTFLayer', () => ({
+  useMaptalksGLTFLayer: gltf,
+}));
 
 /** 提供假 map 给组件 inject 链 */
 function provideMap(map: MaptalksMap): Record<string | symbol, unknown> {
@@ -91,7 +87,11 @@ describe('MaptalksGroupGLLayer', () => {
     });
     expect(grpm).toHaveBeenCalledTimes(1);
     const [, opts] = grpm.mock.calls[0]!;
-    expect(opts).toMatchObject({ id: 'grp', options: { sceneConfig: { x: 1 } }, autoDispose: true });
+    expect(opts).toMatchObject({
+      id: 'grp',
+      options: { sceneConfig: { x: 1 } },
+      autoDispose: true,
+    });
     wrapper.unmount();
   });
 });

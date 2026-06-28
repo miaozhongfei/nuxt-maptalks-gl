@@ -8,9 +8,9 @@
 import { provide, ref, watch } from 'vue';
 
 import { useMaptalks } from '../composables/useMaptalks';
+import type { MaptalksError } from '../core/errors';
 import { MAP_KEY } from '../core/map-context';
 import { applyMapConfigProps } from '../core/map-props';
-import type { MaptalksError } from '../core/errors';
 import type { MaptalksCoordinate, MaptalksMap, UseMaptalksOptions } from '../types';
 
 const props = withDefaults(

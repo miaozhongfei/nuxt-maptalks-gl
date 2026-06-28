@@ -17,13 +17,20 @@
 const leftEl = ref<HTMLElement | null>(null);
 const rightEl = ref<HTMLElement | null>(null);
 const { map: left } = useMaptalks(leftEl, { name: 'sync-left', center: [121.47, 31.23], zoom: 11 });
-const { map: right } = useMaptalks(rightEl, { name: 'sync-right', center: [121.47, 31.23], zoom: 11 });
+const { map: right } = useMaptalks(rightEl, {
+  name: 'sync-right',
+  center: [121.47, 31.23],
+  zoom: 11,
+});
 useMaptalksTileLayer(left, { source: 'osm' });
 useMaptalksTileLayer(right, { source: 'osm' });
 
 const mode = ref<'mutual' | 'master-slave'>('mutual');
 // 以名字方式纳入同步
-const sync = useMaptalksSync(['sync-left', 'sync-right'], { mode: mode.value, master: 'sync-left' });
+const sync = useMaptalksSync(['sync-left', 'sync-right'], {
+  mode: mode.value,
+  master: 'sync-left',
+});
 
 /** 在双向与主从之间切换显示（重启同步以重新绑定） */
 function toggleMode(): void {

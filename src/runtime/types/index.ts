@@ -144,9 +144,15 @@ export interface MaptalksMap {
   /** 解绑事件 */
   off(eventTypes: string, handler: MaptalksEventHandler): MaptalksMap;
   /** 平移到目标坐标 */
-  panTo(coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>): MaptalksMap;
+  panTo(
+    coord: MaptalksCoordinate | [number, number],
+    options?: Record<string, unknown>,
+  ): MaptalksMap;
   /** 按像素偏移平移 */
-  panBy(offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>): MaptalksMap;
+  panBy(
+    offset: [number, number] | Record<string, unknown>,
+    options?: Record<string, unknown>,
+  ): MaptalksMap;
   /** 读取当前可视范围 Extent */
   getExtent(): unknown;
   /** 读取分辨率，可指定 zoom */
@@ -491,7 +497,10 @@ export interface UseMaptalksCameraReturn {
   /** 平移到目标坐标 */
   panTo: (coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>) => void;
   /** 按像素偏移平移，offset 为 [x, y] 或 maptalks Point */
-  panBy: (offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>) => void;
+  panBy: (
+    offset: [number, number] | Record<string, unknown>,
+    options?: Record<string, unknown>,
+  ) => void;
   /** 读取当前可视范围 Extent（map 为 null 返回 null） */
   getExtent: () => unknown | null;
   /** 读取分辨率（map 为 null 返回 null） */

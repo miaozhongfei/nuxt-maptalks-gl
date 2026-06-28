@@ -22,7 +22,9 @@ describe('地图构造选项类型化', () => {
   });
 
   it('导出与同步选项类型可用', () => {
-    expectTypeOf<UseMaptalksSyncOptions['mode']>().toEqualTypeOf<'mutual' | 'master-slave' | undefined>();
+    expectTypeOf<UseMaptalksSyncOptions['mode']>().toEqualTypeOf<
+      'mutual' | 'master-slave' | undefined
+    >();
     expectTypeOf<UseMaptalksExportReturn['toDataURL']>().toBeFunction();
   });
 });

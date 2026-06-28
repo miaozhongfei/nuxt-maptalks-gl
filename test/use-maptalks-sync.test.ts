@@ -51,7 +51,10 @@ describe('useMaptalksSync mutual', () => {
     const b = fakeMap(view());
     const scope = effectScope();
     scope.run(() =>
-      useMaptalksSync([shallowRef<MaptalksMap | null>(a.map), shallowRef<MaptalksMap | null>(b.map)]),
+      useMaptalksSync([
+        shallowRef<MaptalksMap | null>(a.map),
+        shallowRef<MaptalksMap | null>(b.map),
+      ]),
     );
     a.handlers[0]!();
     expect(b.setZoom).toHaveBeenCalledWith(12);
@@ -63,7 +66,10 @@ describe('useMaptalksSync mutual', () => {
     const b = fakeMap(view());
     const scope = effectScope();
     scope.run(() =>
-      useMaptalksSync([shallowRef<MaptalksMap | null>(a.map), shallowRef<MaptalksMap | null>(b.map)]),
+      useMaptalksSync([
+        shallowRef<MaptalksMap | null>(a.map),
+        shallowRef<MaptalksMap | null>(b.map),
+      ]),
     );
     a.handlers[0]!();
     b.handlers[0]!();

@@ -89,7 +89,6 @@ describe('useMaptalksCamera', () => {
     scope.stop();
     expect(m.off).toHaveBeenCalled();
   });
-
 });
 
 describe('useMaptalksCamera 扩展（平移 / 只读状态 / 约束 setter）', () => {

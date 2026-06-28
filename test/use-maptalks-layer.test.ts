@@ -23,7 +23,10 @@ function flush(): Promise<void> {
 async function mountReady() {
   const addLayer = vi.fn();
   const removeLayer = vi.fn();
-  const mapRef = shallowRef<MaptalksMap | null>({ addLayer, removeLayer } as unknown as MaptalksMap);
+  const mapRef = shallowRef<MaptalksMap | null>({
+    addLayer,
+    removeLayer,
+  } as unknown as MaptalksMap);
   const config = vi.fn();
   const remove = vi.fn();
   const layer = { config, remove, getId: () => 'fake' } as unknown as MaptalksLayer;

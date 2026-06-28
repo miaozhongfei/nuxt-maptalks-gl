@@ -35,14 +35,20 @@ describe('useMaptalksExport', () => {
   it('toBlob 经 fetch 把 dataURL 转 Blob', async () => {
     const m = fakeMap();
     const blob = new Blob(['x']);
-    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ blob: () => Promise.resolve(blob) } as unknown as Response)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({ blob: () => Promise.resolve(blob) } as unknown as Response)),
+    );
     const { toBlob } = useMaptalksExport(shallowRef<MaptalksMap | null>(m.map));
     await expect(toBlob()).resolves.toBe(blob);
   });
 
   it('toBlob 失败时 reject', async () => {
     const m = fakeMap();
-    vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('boom'))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(new Error('boom'))),
+    );
     const { toBlob } = useMaptalksExport(shallowRef<MaptalksMap | null>(m.map));
     await expect(toBlob()).rejects.toThrow('boom');
   });

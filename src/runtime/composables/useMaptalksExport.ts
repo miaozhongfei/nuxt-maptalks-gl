@@ -1,11 +1,7 @@
 import { toValue } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
-import type {
-  MaptalksMap,
-  UseMaptalksExportOptions,
-  UseMaptalksExportReturn,
-} from '../types';
+import type { MaptalksMap, UseMaptalksExportOptions, UseMaptalksExportReturn } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例（单例） */

@@ -4,8 +4,8 @@
     <div style="margin-bottom: 12px; color: #444">
       <button data-testid="pan" @click="panTo([121.4997, 31.2397])">panTo 陆家嘴</button>
       <button data-testid="panby" @click="panBy([120, 0])">panBy 右移</button>
-      &nbsp;|&nbsp; resolution: <span data-testid="res">{{ res ?? '—' }}</span>
-      &nbsp;|&nbsp; scale: <span data-testid="scale">{{ scale ?? '—' }}</span>
+      &nbsp;|&nbsp; resolution: <span data-testid="res">{{ res ?? '—' }}</span> &nbsp;|&nbsp; scale:
+      <span data-testid="scale">{{ scale ?? '—' }}</span>
     </div>
     <div ref="el" data-testid="map" class="map" />
   </div>
