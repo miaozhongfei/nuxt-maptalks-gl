@@ -52,9 +52,36 @@ describe('useMaptalksGeoJSON', () => {
     toGeometry.mockResolvedValue(geos);
     const l = fakeLayer();
     const scope = effectScope();
-    scope.run(() => useMaptalksGeoJSON(shallowRef<MaptalksVectorLayer | null>(l.layer), { data: { type: 'X' } }));
+    scope.run(() =>
+      useMaptalksGeoJSON(shallowRef<MaptalksVectorLayer | null>(l.layer), { data: { type: 'X' } }),
+    );
     await vi.waitFor(() => expect(l.addGeometry).toHaveBeenCalled());
     scope.stop();
     expect(geos[0]!.remove).toHaveBeenCalled();
+  });
+});
+
+describe('useMaptalksGeoJSON · 并发取最新', () => {
+  it('飞行期间 data 再变化只提交最新（无 lost-update）', async () => {
+    const first = [fakeGeo('a')];
+    const second = [fakeGeo('b')];
+    let resolveFirst!: (v: MaptalksGeometry[]) => void;
+    toGeometry
+      .mockReturnValueOnce(
+        new Promise<MaptalksGeometry[]>((r) => {
+          resolveFirst = r;
+        }),
+      )
+      .mockResolvedValueOnce(second);
+    const l = fakeLayer();
+    const data = shallowRef<{ type: string }>({ type: 'A' });
+    const scope = effectScope();
+    scope.run(() => useMaptalksGeoJSON(shallowRef<MaptalksVectorLayer | null>(l.layer), { data }));
+    data.value = { type: 'B' };
+    await vi.waitFor(() => expect(l.addGeometry).toHaveBeenCalledWith(second));
+    resolveFirst(first);
+    await vi.waitFor(() => expect(first[0]!.remove).toHaveBeenCalled());
+    expect(l.addGeometry).not.toHaveBeenCalledWith(first);
+    scope.stop();
   });
 });

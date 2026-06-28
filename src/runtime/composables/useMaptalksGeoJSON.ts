@@ -18,13 +18,14 @@ const logger = createLogger('nuxt-maptalks-gl');
 /** useMaptalksGeoJSON 维护的可变状态 */
 interface GeoJSONState {
   geometries: ShallowRef<MaptalksGeometry[]>;
-  creating: boolean;
+  seq: number;
 }
 
 /**
- * 把 GeoJSON 转为几何并加入图层（可选统一 symbol）。
+ * 把 GeoJSON 转为几何并加入图层（可选统一 symbol），用 generation token 取最新。
  *
- * @description 带并发门闩；`geoJSONToGeometry` → 可选 setSymbol → `layer.addGeometry` → 写入 state。失败记 geometry-failed。
+ * @description 每次加载递增 `state.seq`；await 完成后若 seq 已被更新的加载抢占，则丢弃本次结果（移除已创建几何），
+ * 避免飞行期间 data 变化导致的陈旧数据（lost-update）。失败记 geometry-failed。
  * @param {() => MaptalksVectorLayer | null} getLayer - 取当前图层
  * @param {() => GeoJSONData | undefined} getData - 取当前 GeoJSON 数据
  * @param {() => Record<string, unknown> | undefined} getSymbol - 取当前 symbol
@@ -42,18 +43,20 @@ async function loadGeoJSONInto(
 ): Promise<void> {
   const layer = getLayer();
   const data = getData();
-  if (!layer || !data || state.creating) return;
-  state.creating = true;
+  if (!layer || !data) return;
+  const mySeq = (state.seq += 1);
+  const symbol = getSymbol();
   try {
     const geometries = await geoJSONToGeometry(data);
-    const symbol = getSymbol();
+    if (mySeq !== state.seq) {
+      for (const g of geometries) g.remove();
+      return;
+    }
     if (symbol) for (const g of geometries) g.setSymbol(symbol);
     layer.addGeometry(geometries);
     state.geometries.value = geometries;
   } catch (cause) {
     logger.error('GeoJSON 加载失败', toMaptalksError(cause, 'geometry-failed', 'GeoJSON 加载失败'));
-  } finally {
-    state.creating = false;
   }
 }
 
@@ -89,7 +92,7 @@ export function useMaptalksGeoJSON(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   options: UseMaptalksGeoJSONOptions,
 ): UseMaptalksGeoJSONReturn {
-  const state: GeoJSONState = { geometries: shallowRef<MaptalksGeometry[]>([]), creating: false };
+  const state: GeoJSONState = { geometries: shallowRef<MaptalksGeometry[]>([]), seq: 0 };
   const getLayer = () => toValue(layer);
   const getData = () => toValue(options.data);
   const getSymbol = () => toValue(options.symbol);
