@@ -60,8 +60,8 @@ describe('useMaptalksLayer', () => {
     expect(c.remove).toHaveBeenCalledTimes(1);
     expect(c.handle.layer.value).toBeNull();
     expect(layerRegistry.size).toBe(c.before);
-    expect(c.removeLayer.mock.invocationCallOrder[0]).toBeLessThan(
-      c.remove.mock.invocationCallOrder[0],
+    expect(c.removeLayer.mock.invocationCallOrder[0]!).toBeLessThan(
+      c.remove.mock.invocationCallOrder[0]!,
     );
   });
 

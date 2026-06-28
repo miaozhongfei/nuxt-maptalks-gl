@@ -48,7 +48,7 @@ describe('MaptalksTileLayer', () => {
       global: { provide: provideMap(map) },
     });
     expect(gtlm).toHaveBeenCalledTimes(1);
-    const [, opts] = gtlm.mock.calls[0];
+    const [, opts] = gtlm.mock.calls[0]!;
     expect(opts).toMatchObject({ source: 'pub', id: 't', options: { o: 1 }, autoDispose: false });
     wrapper.unmount();
   });
@@ -62,7 +62,7 @@ describe('MaptalksVectorTileLayer', () => {
       global: { provide: provideMap(map) },
     });
     expect(vtlm).toHaveBeenCalledTimes(1);
-    const [, opts] = vtlm.mock.calls[0];
+    const [, opts] = vtlm.mock.calls[0]!;
     expect(opts).toMatchObject({ source: 'vt', id: 'v', autoDispose: true });
     wrapper.unmount();
   });
@@ -76,7 +76,7 @@ describe('MaptalksGLTFLayer', () => {
       global: { provide: provideMap(map) },
     });
     expect(gltf).toHaveBeenCalledTimes(1);
-    const [, opts] = gltf.mock.calls[0];
+    const [, opts] = gltf.mock.calls[0]!;
     expect(opts).toMatchObject({ id: 'g', autoDispose: false });
     wrapper.unmount();
   });
@@ -90,7 +90,7 @@ describe('MaptalksGroupGLLayer', () => {
       global: { provide: provideMap(map) },
     });
     expect(grpm).toHaveBeenCalledTimes(1);
-    const [, opts] = grpm.mock.calls[0];
+    const [, opts] = grpm.mock.calls[0]!;
     expect(opts).toMatchObject({ id: 'grp', options: { sceneConfig: { x: 1 } }, autoDispose: true });
     wrapper.unmount();
   });
