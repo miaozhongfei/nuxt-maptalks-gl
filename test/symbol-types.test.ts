@@ -1,11 +1,6 @@
 import { describe, expectTypeOf, it } from 'vitest';
 
-import type {
-  LineSymbol,
-  MarkerSymbol,
-  PolygonSymbol,
-  TextSymbol,
-} from '../src/runtime/types';
+import type { LineSymbol, MarkerSymbol, PolygonSymbol, TextSymbol } from '../src/runtime/types';
 
 describe('symbol 强类型', () => {
   it('MarkerSymbol 暴露常用点字段', () => {
