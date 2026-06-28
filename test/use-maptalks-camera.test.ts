@@ -110,6 +110,19 @@ describe('useMaptalksCamera 扩展（平移 / 只读状态 / 约束 setter）', 
     scope.stop();
   });
 
+  it('void 方法在 map 为 null 时静默 no-op', () => {
+    const scope = effectScope();
+    const handle = scope.run(() => useMaptalksCamera(shallowRef<MaptalksMap | null>(null)));
+    if (!handle) throw new Error('effectScope did not run');
+    expect(() => {
+      handle.panTo([1, 2]);
+      handle.panBy([3, 4]);
+      handle.setMaxExtent('E');
+      handle.setZoomRange(2, 18);
+    }).not.toThrow();
+    scope.stop();
+  });
+
   it('只读状态读取地图；map 为 null 返回 null', () => {
     const m = fakeMap(initial);
     const scope = effectScope();

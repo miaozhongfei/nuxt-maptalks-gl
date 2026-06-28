@@ -185,11 +185,13 @@ export function useMaptalksCamera(
  *
  * @description 七个方法按功能分为：平移（panTo/panBy）、只读查询（getExtent/getResolution/getScale）、
  * 约束设置（setMaxExtent/setZoomRange）。所有方法以 null-safe 方式委托给地图实例。
- * @param {() => MaptalksMap | null} getMap - 取地图实例的函数
- * @returns 七个扩展方法的集合
+ * @param {() => MaptalksMap | null} getMap - 取地图实例的函数（map 为 null 时各方法 no-op / 返回 null）
+ * @returns {object} 七个相机扩展方法的集合（panTo / panBy / getExtent / getResolution / getScale / setMaxExtent / setZoomRange）
  *
  * @example
- * const conf = configuration();
+ * const ext = cameraExtensions(() => map.value);
+ * ext.panTo([121.47, 31.23]);
+ * const resolution = ext.getResolution();
  */
 function cameraExtensions(getMap: () => MaptalksMap | null) {
   return {
