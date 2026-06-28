@@ -8,8 +8,16 @@
       <MaptalksTileLayer source="osm" />
       <MaptalksVectorLayer>
         <MaptalksMultiPoint
-          :coordinates="[[121.46, 31.22], [121.49, 31.24]]"
-          :symbol="{ markerType: 'ellipse', markerWidth: 16, markerHeight: 16, markerFill: '#de3333' }"
+          :coordinates="[
+            [121.46, 31.22],
+            [121.49, 31.24],
+          ]"
+          :symbol="{
+            markerType: 'ellipse',
+            markerWidth: 16,
+            markerHeight: 16,
+            markerFill: '#de3333',
+          }"
         />
         <MaptalksGeoJSON :data="geojson" :symbol="{ lineColor: '#1bbc9b', lineWidth: 2 }" />
       </MaptalksVectorLayer>
@@ -21,13 +29,33 @@
 const featureA = {
   type: 'FeatureCollection',
   features: [
-    { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[121.45, 31.21], [121.50, 31.25]] } },
+    {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [121.45, 31.21],
+          [121.5, 31.25],
+        ],
+      },
+    },
   ],
 };
 const featureB = {
   type: 'FeatureCollection',
   features: [
-    { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[121.45, 31.25], [121.50, 31.21]] } },
+    {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [121.45, 31.25],
+          [121.5, 31.21],
+        ],
+      },
+    },
   ],
 };
 const geojson = ref<Record<string, unknown>>(featureA);

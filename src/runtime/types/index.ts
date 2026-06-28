@@ -260,11 +260,16 @@ export interface MaptalksGLNamespace {
   /** MultiPoint 构造器 */
   MultiPoint?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** MultiLineString 构造器 */
-  MultiLineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  MultiLineString?: new (
+    coordinates: unknown,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** MultiPolygon 构造器 */
   MultiPolygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** GeoJSON 工具命名空间 */
-  GeoJSON?: { toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[] };
+  GeoJSON?: {
+    toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[];
+  };
   /** DrawTool 构造器 */
   DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** 逃生舱口：访问任意未建模的导出 */
@@ -838,7 +843,10 @@ export type MultiPolygonCoordinates = Array<Array<Array<MaptalksCoordinate | [nu
  * @example
  * useMaptalksMultiPoint(layer, { coordinates: () => points.value });
  */
-export interface UseMaptalksMultiPointOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+export interface UseMaptalksMultiPointOptions extends Omit<
+  UseMaptalksMarkerOptions,
+  'coordinates'
+> {
   /** 响应式 MultiPoint 坐标 */
   coordinates: MaybeRefOrGetter<MultiPointCoordinates>;
 }
@@ -851,7 +859,10 @@ export interface UseMaptalksMultiPointOptions extends Omit<UseMaptalksMarkerOpti
  * @example
  * useMaptalksMultiLineString(layer, { coordinates: () => lines.value });
  */
-export interface UseMaptalksMultiLineStringOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+export interface UseMaptalksMultiLineStringOptions extends Omit<
+  UseMaptalksMarkerOptions,
+  'coordinates'
+> {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
 }
@@ -864,7 +875,10 @@ export interface UseMaptalksMultiLineStringOptions extends Omit<UseMaptalksMarke
  * @example
  * useMaptalksMultiPolygon(layer, { coordinates: () => polygons.value });
  */
-export interface UseMaptalksMultiPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+export interface UseMaptalksMultiPolygonOptions extends Omit<
+  UseMaptalksMarkerOptions,
+  'coordinates'
+> {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
 }
