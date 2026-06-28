@@ -792,7 +792,10 @@ export interface UseMaptalksMarkerOptions {
  * @example
  * useMaptalksLineString(layer, { coordinates: () => path.value });
  */
-export interface UseMaptalksLineStringOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+export interface UseMaptalksLineStringOptions extends Omit<
+  UseMaptalksMarkerOptions,
+  'coordinates'
+> {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<LineStringCoordinates>;
 }

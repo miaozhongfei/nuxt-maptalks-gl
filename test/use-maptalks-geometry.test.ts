@@ -40,7 +40,9 @@ describe('useMaptalksGeometry', () => {
     const g = fakeGeometry();
     const l = fakeLayer();
     const scope = effectScope();
-    scope.run(() => useMaptalksGeometry(shallowRef<MaptalksVectorLayer | null>(l.layer), () => g.geo));
+    scope.run(() =>
+      useMaptalksGeometry(shallowRef<MaptalksVectorLayer | null>(l.layer), () => g.geo),
+    );
     await vi.waitFor(() => expect(l.addGeometry).toHaveBeenCalledWith(g.geo));
     scope.stop();
   });
@@ -76,7 +78,9 @@ describe('useMaptalksGeometry', () => {
     const click = vi.fn();
     const scope = effectScope();
     scope.run(() =>
-      useMaptalksGeometry(shallowRef<MaptalksVectorLayer | null>(l.layer), () => g.geo, { events: { click } }),
+      useMaptalksGeometry(shallowRef<MaptalksVectorLayer | null>(l.layer), () => g.geo, {
+        events: { click },
+      }),
     );
     await vi.waitFor(() => expect(l.addGeometry).toHaveBeenCalled());
     scope.stop();

@@ -10,16 +10,32 @@
       <MaptalksVectorLayer>
         <MaptalksMarker
           :coordinates="markerPos"
-          :symbol="{ markerType: 'ellipse', markerWidth: 20, markerHeight: 20, markerFill: '#de3333' }"
+          :symbol="{
+            markerType: 'ellipse',
+            markerWidth: 20,
+            markerHeight: 20,
+            markerFill: '#de3333',
+          }"
           data-testid="marker"
           @click="onHit('marker')"
         />
         <MaptalksLineString
-          :coordinates="[[121.46, 31.22], [121.49, 31.24]]"
+          :coordinates="[
+            [121.46, 31.22],
+            [121.49, 31.24],
+          ]"
           :symbol="{ lineColor: '#1bbc9b', lineWidth: 3 }"
         />
         <MaptalksPolygon
-          :coordinates="[[[121.47, 31.23], [121.50, 31.23], [121.50, 31.25], [121.47, 31.25], [121.47, 31.23]]]"
+          :coordinates="[
+            [
+              [121.47, 31.23],
+              [121.5, 31.23],
+              [121.5, 31.25],
+              [121.47, 31.25],
+              [121.47, 31.23],
+            ],
+          ]"
           :symbol="{ polygonFill: '#1bbc9b', polygonOpacity: 0.3, lineColor: '#1bbc9b' }"
         />
       </MaptalksVectorLayer>
