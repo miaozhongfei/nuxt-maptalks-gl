@@ -16,7 +16,6 @@
             markerHeight: 20,
             markerFill: '#de3333',
           }"
-          data-testid="marker"
           @click="onHit('marker')"
         />
         <MaptalksLineString

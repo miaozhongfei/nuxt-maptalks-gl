@@ -35,7 +35,7 @@ function wait(ms: number): Promise<void> {
   });
 }
 
-describe('useMaptalksGeometry', () => {
+describe('useMaptalksGeometry · 创建与更新', () => {
   it('layer 就绪后用 factory 创建并 addGeometry', async () => {
     const g = fakeGeometry();
     const l = fakeLayer();
@@ -64,6 +64,9 @@ describe('useMaptalksGeometry', () => {
     await vi.waitFor(() => expect(g.setCoordinates).toHaveBeenCalledWith([1, 1]));
     scope.stop();
   });
+});
+
+describe('useMaptalksGeometry · 生命周期', () => {
   it('layer 为 null 时不创建', async () => {
     const g = fakeGeometry();
     const scope = effectScope();
