@@ -272,6 +272,18 @@ export interface MaptalksGLNamespace {
   };
   /** DrawTool 构造器 */
   DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
+  /** Circle 构造器 */
+  Circle?: new (center: unknown, radius: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** Rectangle 构造器 */
+  Rectangle?: new (coord: unknown, width: number, height: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** Ellipse 构造器 */
+  Ellipse?: new (center: unknown, width: number, height: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** Sector 构造器 */
+  Sector?: new (center: unknown, radius: number, startAngle: number, endAngle: number, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** Label 构造器 */
+  Label?: new (content: string, coord: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** TextBox 构造器 */
+  TextBox?: new (content: string, coord: unknown, width: number, height: number, options?: Record<string, unknown>) => MaptalksGeometry;
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }
@@ -692,6 +704,18 @@ export interface MaptalksGeometry {
   off(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
   /** 序列化为 GeoJSON */
   toGeoJSON(): unknown;
+  /** 设置半径（Circle/Sector） */
+  setRadius?(radius: number): MaptalksGeometry;
+  /** 设置宽度（Rectangle/Ellipse/TextBox） */
+  setWidth?(width: number): MaptalksGeometry;
+  /** 设置高度（Rectangle/Ellipse/TextBox） */
+  setHeight?(height: number): MaptalksGeometry;
+  /** 设置起始角（Sector） */
+  setStartAngle?(angle: number): MaptalksGeometry;
+  /** 设置结束角（Sector） */
+  setEndAngle?(angle: number): MaptalksGeometry;
+  /** 设置文本内容（Label/TextBox） */
+  setContent?(content: string): MaptalksGeometry;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -742,6 +766,14 @@ export interface UseMaptalksGeometryOptions {
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;
+  /**
+   * 额外响应式属性（形状/文本几何的 radius/width/height/angles/content 等）。
+   * 逐项 shallow watch，变化时调 `apply` 写回几何。
+   */
+  extraProps?: Array<{
+    value: MaybeRefOrGetter<unknown>;
+    apply: (geo: MaptalksGeometry, value: unknown) => void;
+  }>;
 }
 
 /**
@@ -923,4 +955,107 @@ export interface UseMaptalksGeoJSONReturn {
   geometries: ShallowRef<MaptalksGeometry[]>;
   /** 命令式移除全部几何 */
   remove: () => void;
+}
+
+/** 形状/文本几何的坐标：单点（中心/角点/锚点） */
+export type ShapeCoordinates = MaptalksCoordinate | [number, number];
+
+/**
+ * Circle 预设可选项。
+ *
+ * @description 中心坐标 + 半径（米），均响应式；symbol/properties/events/id/autoDispose 同其它预设。
+ *
+ * @example
+ * useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value });
+ */
+export interface UseMaptalksCircleOptions {
+  /** 响应式中心坐标 */
+  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  /** 响应式半径（米） */
+  radius: MaybeRefOrGetter<number>;
+  /** 响应式 symbol */
+  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 响应式 properties */
+  properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 事件名 → 处理器 */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 几何 id */
+  id?: string;
+  /** 自动销毁，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Rectangle 预设可选项。
+ *
+ * @description 左上角坐标 + 宽高，均响应式。
+ *
+ * @example
+ * useMaptalksRectangle(layer, { coordinates: () => topLeft.value, width: () => w.value, height: () => h.value });
+ */
+export interface UseMaptalksRectangleOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+  /** 响应式宽度（米） */
+  width: MaybeRefOrGetter<number>;
+  /** 响应式高度（米） */
+  height: MaybeRefOrGetter<number>;
+}
+
+/**
+ * Ellipse 预设可选项。
+ *
+ * @description 中心坐标 + 宽高，均响应式。
+ *
+ * @example
+ * useMaptalksEllipse(layer, { coordinates: () => center.value, width: () => w.value, height: () => h.value });
+ */
+export interface UseMaptalksEllipseOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+  /** 响应式宽度（米） */
+  width: MaybeRefOrGetter<number>;
+  /** 响应式高度（米） */
+  height: MaybeRefOrGetter<number>;
+}
+
+/**
+ * Sector 预设可选项。
+ *
+ * @description 中心坐标 + 半径 + 起止角度，均响应式。
+ *
+ * @example
+ * useMaptalksSector(layer, { coordinates: () => center.value, radius: () => r.value, startAngle: () => 0, endAngle: () => 90 });
+ */
+export interface UseMaptalksSectorOptions extends UseMaptalksCircleOptions {
+  /** 响应式起始角（度） */
+  startAngle: MaybeRefOrGetter<number>;
+  /** 响应式结束角（度） */
+  endAngle: MaybeRefOrGetter<number>;
+}
+
+/**
+ * Label 预设可选项。
+ *
+ * @description 文本内容 + 锚点坐标，均响应式。
+ *
+ * @example
+ * useMaptalksLabel(layer, { content: () => text.value, coordinates: () => anchor.value });
+ */
+export interface UseMaptalksLabelOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+  /** 响应式文本内容 */
+  content: MaybeRefOrGetter<string>;
+}
+
+/**
+ * TextBox 预设可选项。
+ *
+ * @description 文本内容 + 锚点坐标 + 宽高，均响应式。
+ *
+ * @example
+ * useMaptalksTextBox(layer, { content: () => text.value, coordinates: () => anchor.value, width: () => w.value, height: () => h.value });
+ */
+export interface UseMaptalksTextBoxOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+  /** 响应式文本内容 */
+  content: MaybeRefOrGetter<string>;
+  /** 响应式宽度（米） */
+  width: MaybeRefOrGetter<number>;
+  /** 响应式高度（米） */
+  height: MaybeRefOrGetter<number>;
 }
