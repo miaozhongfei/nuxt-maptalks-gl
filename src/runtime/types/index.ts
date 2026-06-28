@@ -249,6 +249,14 @@ export interface MaptalksGLNamespace {
   ) => MaptalksLayer;
   /** GLTFLayer 构造器 */
   GLTFLayer?: new (id: string, options?: Record<string, unknown>) => MaptalksLayer;
+  /** VectorLayer 构造器（承载几何） */
+  VectorLayer?: new (id: string, options?: Record<string, unknown>) => MaptalksVectorLayer;
+  /** Marker 构造器 */
+  Marker?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** LineString 构造器 */
+  LineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** Polygon 构造器 */
+  Polygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** DrawTool 构造器 */
   DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** 逃生舱口：访问任意未建模的导出 */
@@ -637,4 +645,167 @@ export interface UseMaptalksSyncReturn {
   disable: () => void;
   /** 是否已启用同步 */
   isEnabled: Ref<boolean>;
+}
+
+/**
+ * maptalks 几何图形实例的结构化建模（仅声明本模块使用到的成员）。
+ *
+ * @description 通过结构化类型描述几何，核心读写/事件方法给出签名，索引签名提供逃生舱口。
+ *
+ * @example
+ * const geo: MaptalksGeometry | null = useMaptalksMarker(layer, { coordinates: [0, 0] }).geometry.value;
+ * geo?.setSymbol({ markerType: 'ellipse' });
+ */
+export interface MaptalksGeometry {
+  /** 加入矢量图层 */
+  addTo(layer: MaptalksVectorLayer): MaptalksGeometry;
+  /** 从图层移除并销毁 */
+  remove(): void;
+  /** 设置坐标 */
+  setCoordinates(coords: unknown): MaptalksGeometry;
+  /** 读取坐标 */
+  getCoordinates(): unknown;
+  /** 设置样式 symbol */
+  setSymbol(symbol: unknown): MaptalksGeometry;
+  /** 读取样式 symbol */
+  getSymbol(): unknown;
+  /** 设置业务属性 */
+  setProperties(props: Record<string, unknown>): MaptalksGeometry;
+  /** 读取业务属性 */
+  getProperties(): Record<string, unknown>;
+  /** 绑定事件 */
+  on(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
+  /** 解绑事件 */
+  off(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
+  /** 逃生舱口：访问任意未建模的原生成员 */
+  [key: string]: unknown;
+}
+
+/**
+ * maptalks 矢量图层（承载几何）的结构化建模。
+ *
+ * @description 在通用图层之上补充几何增删/枚举/清空方法。
+ *
+ * @example
+ * const layer = useMaptalksVectorLayer(map).layer.value as MaptalksVectorLayer | null;
+ * layer?.clear();
+ */
+export interface MaptalksVectorLayer extends MaptalksLayer {
+  /** 添加一个或多个几何 */
+  addGeometry(geo: MaptalksGeometry | MaptalksGeometry[]): MaptalksVectorLayer;
+  /** 移除一个几何 */
+  removeGeometry(geo: MaptalksGeometry): MaptalksVectorLayer;
+  /** 读取全部几何 */
+  getGeometries(): MaptalksGeometry[];
+  /** 清空全部几何 */
+  clear(): MaptalksVectorLayer;
+}
+
+/** Marker 坐标：单点 */
+export type MarkerCoordinates = MaptalksCoordinate | [number, number];
+/** LineString 坐标：点序列 */
+export type LineStringCoordinates = Array<MaptalksCoordinate | [number, number]>;
+/** Polygon 坐标：外环 + 内环（环为点序列） */
+export type PolygonCoordinates = Array<Array<MaptalksCoordinate | [number, number]>>;
+
+/**
+ * `useMaptalksGeometry` 的可选项。
+ *
+ * @description 响应式坐标 / symbol / properties（shallow watch）+ 事件 + 自动销毁。
+ *
+ * @example
+ * useMaptalksGeometry(layer, factory, { coordinates: () => coords.value, events: { click } });
+ */
+export interface UseMaptalksGeometryOptions {
+  /** 响应式坐标（shallow watch，替换才更新） */
+  coordinates?: MaybeRefOrGetter<unknown>;
+  /** 响应式 symbol（透传） */
+  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 响应式业务属性 */
+  properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * `useMaptalksGeometry` 及各几何预设的返回。
+ *
+ * @description 暴露响应式几何实例与命令式移除。
+ *
+ * @example
+ * const { geometry, remove } = useMaptalksMarker(layer, { coordinates: [0, 0] });
+ */
+export interface UseMaptalksGeometryReturn {
+  /** 几何实例（创建前为 null） */
+  geometry: ShallowRef<MaptalksGeometry | null>;
+  /** 命令式移除并销毁几何 */
+  remove: () => void;
+}
+
+/**
+ * `useMaptalksVectorLayer` 的可选项。
+ *
+ * @description 图层 id / 透传选项 / 自动销毁。
+ *
+ * @example
+ * useMaptalksVectorLayer(map, { id: 'geo' });
+ */
+export interface UseMaptalksVectorLayerOptions {
+  /** 图层 id，缺省自动生成 */
+  id?: string;
+  /** 透传给 VectorLayer 构造器的选项 */
+  options?: Record<string, unknown>;
+  /** 作用域销毁时是否自动移除图层，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Marker 预设可选项。
+ *
+ * @description 响应式坐标（必填）+ symbol/properties/events/id/autoDispose。
+ *
+ * @example
+ * useMaptalksMarker(layer, { coordinates: () => pos.value, symbol: { markerType: 'ellipse' } });
+ */
+export interface UseMaptalksMarkerOptions {
+  /** 响应式 Marker 坐标 */
+  coordinates: MaybeRefOrGetter<MarkerCoordinates>;
+  /** 响应式 symbol */
+  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 响应式 properties */
+  properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 事件名 → 处理器 */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 几何 id */
+  id?: string;
+  /** 自动销毁，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * LineString 预设可选项。
+ *
+ * @description 同 Marker，坐标为点序列。
+ *
+ * @example
+ * useMaptalksLineString(layer, { coordinates: () => path.value });
+ */
+export interface UseMaptalksLineStringOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+  /** 响应式 LineString 坐标 */
+  coordinates: MaybeRefOrGetter<LineStringCoordinates>;
+}
+
+/**
+ * Polygon 预设可选项。
+ *
+ * @description 同 Marker，坐标为环数组（外环+内环）。
+ *
+ * @example
+ * useMaptalksPolygon(layer, { coordinates: () => rings.value });
+ */
+export interface UseMaptalksPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+  /** 响应式 Polygon 坐标 */
+  coordinates: MaybeRefOrGetter<PolygonCoordinates>;
 }

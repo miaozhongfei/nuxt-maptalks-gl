@@ -2,7 +2,7 @@
  * MaptalksError 的错误码联合类型。
  *
  * @description 覆盖模块内统一上报的错误场景：WebGL 不支持、初始化失败、数据源解析失败、
- * worker 失败、图层创建失败。
+ * worker 失败、图层创建失败、几何创建失败。
  *
  * @example
  * if (error.value?.code === 'webgl-unsupported') showFallback();
@@ -12,7 +12,8 @@ export type MaptalksErrorCode =
   | 'init-failed'
   | 'source-resolve-failed'
   | 'worker-failed'
-  | 'layer-failed';
+  | 'layer-failed'
+  | 'geometry-failed';
 
 /**
  * 模块统一错误类型。
