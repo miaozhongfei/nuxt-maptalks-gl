@@ -788,8 +788,8 @@ export type PolygonCoordinates = Array<Array<MaptalksCoordinate | [number, numbe
 export interface UseMaptalksGeometryOptions {
   /** 响应式坐标（shallow watch，替换才更新） */
   coordinates?: MaybeRefOrGetter<unknown>;
-  /** 响应式 symbol（透传） */
-  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 响应式 symbol（透传，含静态对象或 zoom-stops 数组） */
+  symbol?: MaybeRefOrGetter<Record<string, unknown> | Array<[number, Record<string, unknown>]> | undefined>;
   /** 响应式业务属性 */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -850,7 +850,7 @@ export interface UseMaptalksMarkerOptions {
   /** 响应式 Marker 坐标 */
   coordinates: MaybeRefOrGetter<MarkerCoordinates>;
   /** 响应式 symbol（点类型，MarkerSymbol 强类型字段提示 + 兜底透传） */
-  symbol?: MaybeRefOrGetter<MarkerSymbol | undefined>;
+  symbol?: MaybeRefOrGetter<MarkerSymbol | Stops<MarkerSymbol> | undefined>;
   /** 响应式 properties */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器 */
@@ -875,8 +875,8 @@ export interface UseMaptalksLineStringOptions extends Omit<
 > {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<LineStringCoordinates>;
-  /** 响应式 symbol（线类型，LineSymbol：覆盖父级点 symbol 提示） */
-  symbol?: MaybeRefOrGetter<LineSymbol | undefined>;
+  /** 响应式 symbol（线类型，LineSymbol；联合 Stops 以支持动态样式） */
+  symbol?: MaybeRefOrGetter<LineSymbol | Stops<LineSymbol> | undefined>;
 }
 
 /**
@@ -890,8 +890,10 @@ export interface UseMaptalksLineStringOptions extends Omit<
 export interface UseMaptalksPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<PolygonCoordinates>;
-  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol：覆盖父级点 symbol 提示） */
-  symbol?: MaybeRefOrGetter<(PolygonSymbol & LineSymbol) | undefined>;
+  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol；联合 Stops 以支持动态样式） */
+  symbol?: MaybeRefOrGetter<
+    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
+  >;
 }
 
 /** MultiPoint 坐标：点序列 */
@@ -931,8 +933,7 @@ export interface UseMaptalksMultiLineStringOptions extends Omit<
 > {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
-  /** 响应式 symbol（线类型，LineSymbol：覆盖父级点 symbol 提示） */
-  symbol?: MaybeRefOrGetter<LineSymbol | undefined>;
+  symbol?: MaybeRefOrGetter<LineSymbol | Stops<LineSymbol> | undefined>;
 }
 
 /**
@@ -949,8 +950,9 @@ export interface UseMaptalksMultiPolygonOptions extends Omit<
 > {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
-  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol：覆盖父级点 symbol 提示） */
-  symbol?: MaybeRefOrGetter<(PolygonSymbol & LineSymbol) | undefined>;
+  symbol?: MaybeRefOrGetter<
+    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
+  >;
 }
 
 /**
@@ -1011,8 +1013,9 @@ export interface UseMaptalksCircleOptions {
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式半径（米） */
   radius: MaybeRefOrGetter<number>;
-  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol：面填充 + 描边线样式） */
-  symbol?: MaybeRefOrGetter<(PolygonSymbol & LineSymbol) | undefined>;
+  symbol?: MaybeRefOrGetter<
+    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
+  >;
   /** 响应式 properties */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器 */
@@ -1079,8 +1082,7 @@ export interface UseMaptalksSectorOptions extends UseMaptalksCircleOptions {
 export interface UseMaptalksLabelOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
-  /** 响应式 symbol（文字类型，TextSymbol：覆盖父级面 symbol 提示） */
-  symbol?: MaybeRefOrGetter<TextSymbol | undefined>;
+  symbol?: MaybeRefOrGetter<TextSymbol | Stops<TextSymbol> | undefined>;
 }
 
 /**
@@ -1098,8 +1100,7 @@ export interface UseMaptalksTextBoxOptions extends Omit<UseMaptalksCircleOptions
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
-  /** 响应式 symbol（文字类型，TextSymbol：覆盖父级面 symbol 提示） */
-  symbol?: MaybeRefOrGetter<TextSymbol | undefined>;
+  symbol?: MaybeRefOrGetter<TextSymbol | Stops<TextSymbol> | undefined>;
 }
 
 /**
@@ -1215,3 +1216,14 @@ export interface TextSymbol {
   /** 兜底：透传任意未建模的文字样式键（向后兼容，故为 any） */
   [key: string]: any;
 }
+
+/**
+ * Zoom-Level Stops 动态样式。
+ *
+ * @description `[[zoom, symbol], [zoom, symbol], ...]` 形式的动态样式声明；
+ * maptalks 根据当前 zoom 自动选取对应区间的 symbol。泛型，接收任意 symbol 类型。
+ *
+ * @example
+ * const stops: Stops<MarkerSymbol> = [[10, { markerType: 'pin' }], [14, { markerType: 'ellipse' }]];
+ */
+export type Stops<T> = Array<[number, T]>;

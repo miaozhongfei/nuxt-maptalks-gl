@@ -1,6 +1,12 @@
 import { describe, expectTypeOf, it } from 'vitest';
 
-import type { LineSymbol, MarkerSymbol, PolygonSymbol, TextSymbol } from '../src/runtime/types';
+import type {
+  LineSymbol,
+  MarkerSymbol,
+  PolygonSymbol,
+  Stops,
+  TextSymbol,
+} from '../src/runtime/types';
 
 describe('symbol 强类型', () => {
   it('MarkerSymbol 暴露常用点字段', () => {
@@ -22,5 +28,12 @@ describe('symbol 强类型', () => {
     const customRead: string = m.customField;
     m.customField = 'x';
     void customRead;
+  });
+  it('Stops 接受 zoom-symbol 对数组', () => {
+    const s: Stops<MarkerSymbol> = [
+      [10, { markerType: 'pin' }],
+      [14, { markerType: 'ellipse', markerWidth: 20 }],
+    ];
+    expectTypeOf(s).toMatchTypeOf<Array<[number, MarkerSymbol]>>();
   });
 });
