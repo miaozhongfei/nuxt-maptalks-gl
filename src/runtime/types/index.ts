@@ -257,6 +257,14 @@ export interface MaptalksGLNamespace {
   LineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** Polygon 构造器 */
   Polygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** MultiPoint 构造器 */
+  MultiPoint?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** MultiLineString 构造器 */
+  MultiLineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** MultiPolygon 构造器 */
+  MultiPolygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** GeoJSON 工具命名空间 */
+  GeoJSON?: { toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[] };
   /** DrawTool 构造器 */
   DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** 逃生舱口：访问任意未建模的导出 */
@@ -677,6 +685,8 @@ export interface MaptalksGeometry {
   on(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
   /** 解绑事件 */
   off(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
+  /** 序列化为 GeoJSON */
+  toGeoJSON(): unknown;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -811,4 +821,92 @@ export interface UseMaptalksLineStringOptions extends Omit<
 export interface UseMaptalksPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<PolygonCoordinates>;
+}
+
+/** MultiPoint 坐标：点序列 */
+export type MultiPointCoordinates = Array<MaptalksCoordinate | [number, number]>;
+/** MultiLineString 坐标：线序列 */
+export type MultiLineStringCoordinates = Array<Array<MaptalksCoordinate | [number, number]>>;
+/** MultiPolygon 坐标：多边形序列（每个多边形为环数组） */
+export type MultiPolygonCoordinates = Array<Array<Array<MaptalksCoordinate | [number, number]>>>;
+
+/**
+ * MultiPoint 预设可选项。
+ *
+ * @description 同 Marker 预设，坐标为点序列。
+ *
+ * @example
+ * useMaptalksMultiPoint(layer, { coordinates: () => points.value });
+ */
+export interface UseMaptalksMultiPointOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+  /** 响应式 MultiPoint 坐标 */
+  coordinates: MaybeRefOrGetter<MultiPointCoordinates>;
+}
+
+/**
+ * MultiLineString 预设可选项。
+ *
+ * @description 同 Marker 预设，坐标为线序列。
+ *
+ * @example
+ * useMaptalksMultiLineString(layer, { coordinates: () => lines.value });
+ */
+export interface UseMaptalksMultiLineStringOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+  /** 响应式 MultiLineString 坐标 */
+  coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
+}
+
+/**
+ * MultiPolygon 预设可选项。
+ *
+ * @description 同 Marker 预设，坐标为多边形序列。
+ *
+ * @example
+ * useMaptalksMultiPolygon(layer, { coordinates: () => polygons.value });
+ */
+export interface UseMaptalksMultiPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+  /** 响应式 MultiPolygon 坐标 */
+  coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
+}
+
+/**
+ * GeoJSON 数据（宽松建模）。
+ *
+ * @description FeatureCollection / Feature / Geometry 对象；不引入完整 GeoJSON 类型，保持「不依赖外部类型」。
+ *
+ * @example
+ * const data: GeoJSONData = { type: 'FeatureCollection', features: [] };
+ */
+export type GeoJSONData = Record<string, unknown>;
+
+/**
+ * `useMaptalksGeoJSON` 的可选项。
+ *
+ * @description 响应式 GeoJSON 数据（替换触发清空重建）+ 统一 symbol + 自动销毁。
+ *
+ * @example
+ * useMaptalksGeoJSON(layer, { data: () => geojson.value, symbol: { markerType: 'ellipse' } });
+ */
+export interface UseMaptalksGeoJSONOptions {
+  /** 响应式 GeoJSON 数据 */
+  data: MaybeRefOrGetter<GeoJSONData>;
+  /** 统一应用到所有几何的 symbol（可选） */
+  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * `useMaptalksGeoJSON` 的返回。
+ *
+ * @description 暴露已创建的几何数组（GeoJSON 可能产生多个）与命令式移除。
+ *
+ * @example
+ * const { geometries, remove } = useMaptalksGeoJSON(layer, { data: () => geojson.value });
+ */
+export interface UseMaptalksGeoJSONReturn {
+  /** 已创建的几何数组 */
+  geometries: ShallowRef<MaptalksGeometry[]>;
+  /** 命令式移除全部几何 */
+  remove: () => void;
 }
