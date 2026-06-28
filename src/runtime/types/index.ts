@@ -904,7 +904,7 @@ export type GeoJSONData = Record<string, unknown>;
 export interface UseMaptalksGeoJSONOptions {
   /** 响应式 GeoJSON 数据 */
   data: MaybeRefOrGetter<GeoJSONData>;
-  /** 统一应用到所有几何的 symbol（可选） */
+  /** 统一应用到所有几何的 symbol（可选）；仅在 data 重建时应用，独立改 symbol 不重新应用 */
   symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;

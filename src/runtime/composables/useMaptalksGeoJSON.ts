@@ -101,6 +101,7 @@ export function useMaptalksGeoJSON(
     clearGeometries(state);
     void loadGeoJSONInto(getLayer, getData, getSymbol, state);
   };
+  // immediate 承担初始加载与 layer 门控：layer 就绪且 data 存在即首次加载；data 替换时清空重建
   const stopGate = watch([getLayer, getData], reload, { immediate: true });
 
   const remove = (): void => {
