@@ -12,7 +12,8 @@
   },
   "rules": {
     "no-console": "warn",
-    "unicorn/prefer-node-protocol": "off"
+    "unicorn/prefer-node-protocol": "off",
+    "import/max-dependencies": ["warn", { "max": 12 }]
   },
   "ignorePatterns": [
     "node_modules",
