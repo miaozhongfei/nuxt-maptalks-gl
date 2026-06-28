@@ -1,5 +1,6 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime';
 // @vitest-environment nuxt
+
+import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { describe, expect, it, vi } from 'vitest';
 import { defineComponent, h, shallowRef } from 'vue';
 
