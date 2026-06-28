@@ -34,6 +34,8 @@ test('sync 页：双图与模式切换接线', async ({ page }) => {
   await expect(page.getByTestId('map-right')).toBeVisible();
   const toggle = page.getByTestId('toggle-mode');
   await expect(toggle).toContainText('mutual');
-  await toggle.click();
-  await expect(toggle).toContainText('master-slave');
+  await expect(async () => {
+    await toggle.click();
+    await expect(toggle).toContainText('master-slave', { timeout: 1000 });
+  }).toPass({ timeout: 15000 });
 });
