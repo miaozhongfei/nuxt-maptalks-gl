@@ -84,3 +84,25 @@ describe('useMaptalksGeometry', () => {
     expect(g.remove).toHaveBeenCalled();
   });
 });
+
+describe('useMaptalksGeometry · 样式与属性更新', () => {
+  it('symbol / properties 替换后写回几何', async () => {
+    const g = fakeGeometry();
+    const l = fakeLayer();
+    const symbol = shallowRef<Record<string, unknown>>({ markerType: 'ellipse' });
+    const properties = shallowRef<Record<string, unknown>>({ a: 1 });
+    const scope = effectScope();
+    scope.run(() =>
+      useMaptalksGeometry(shallowRef<MaptalksVectorLayer | null>(l.layer), () => g.geo, {
+        symbol,
+        properties,
+      }),
+    );
+    await vi.waitFor(() => expect(l.addGeometry).toHaveBeenCalled());
+    symbol.value = { markerType: 'square' };
+    await vi.waitFor(() => expect(g.setSymbol).toHaveBeenCalledWith({ markerType: 'square' }));
+    properties.value = { a: 2 };
+    await vi.waitFor(() => expect(g.setProperties).toHaveBeenCalledWith({ a: 2 }));
+    scope.stop();
+  });
+});
