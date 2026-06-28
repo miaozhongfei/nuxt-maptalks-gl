@@ -11,7 +11,8 @@
       &nbsp;|&nbsp; pitch: {{ pitch?.toFixed(1) ?? '—' }} &nbsp;|&nbsp; bearing:
       {{ bearing?.toFixed(1) ?? '—' }}
       &nbsp;|&nbsp;
-      <button @click="goLujiazui">飞到陆家嘴</button>
+      <button @click="goLujiazui">animateTo 平滑过渡到陆家嘴</button>
+      <button @click="jumpLujiazui">flyTo 瞬间跳到陆家嘴</button>
     </div>
     <div ref="el" data-testid="map" class="map" />
   </div>
@@ -23,10 +24,14 @@ const { map } = useMaptalks(el, { center: [121.4737, 31.2304], zoom: 11 });
 useMaptalksTileLayer(map, { source: 'osm' });
 
 // 相机双向同步 + 命令式过渡
-const { center, zoom, pitch, bearing, flyTo } = useMaptalksCamera(map);
+const { center, zoom, pitch, bearing, animateTo, flyTo } = useMaptalksCamera(map);
 
-/** 飞行到陆家嘴 */
+  /** 平滑过渡到陆家嘴（有动画） */
 function goLujiazui(): void {
+  animateTo({ center: [121.4997, 31.2397], zoom: 14 }, { duration: 2000 });
+}
+  /** 瞬间跳到陆家嘴（无动画） */
+function jumpLujiazui(): void {
   flyTo({ center: [121.4997, 31.2397], zoom: 14 });
 }
 </script>
