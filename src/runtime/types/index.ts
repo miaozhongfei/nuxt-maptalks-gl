@@ -169,6 +169,10 @@ export interface MaptalksMap {
   toDataURL(options?: Record<string, unknown>): string;
   /** 配置地图运行时选项（draggable/zoomable/dragPitch/dragRotate 等） */
   config(conf: Record<string, unknown>): MaptalksMap;
+  /** 导出地图为 JSON */
+  toJSON(): unknown;
+  /** 从 JSON 恢复地图 */
+  fromJSON(json: unknown): MaptalksMap;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
