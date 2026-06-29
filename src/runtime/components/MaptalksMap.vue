@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue'
+import { onMounted, onBeforeUnmount, provide, ref, shallowRef, watch, nextTick } from 'vue'
 import { loadMaptalks } from '../core/loader'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
@@ -56,7 +56,7 @@ watch(
   () => {
     const m = map.value
     if (!m) return
-    setTimeout(() => {
+    nextTick(() => {
       const mn = props.minZoom; if (mn !== undefined) m.setMinZoom(mn)
       const mx = props.maxZoom; if (mx !== undefined) m.setMaxZoom(mx)
       const conf: Record<string, boolean> = {}
