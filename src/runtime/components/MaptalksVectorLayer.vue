@@ -6,12 +6,12 @@ import type { ShallowRef } from 'vue';
 
 import { useMaptalksVectorLayer } from '../composables/presets/useMaptalksVectorLayer';
 import { GEOMETRY_LAYER_KEY, MAP_KEY } from '../core/map-context';
-import type { MaptalksMap } from '../types';
+import type { MaptalksMap, MaptalksNativeVectorLayerOptions } from '../types';
 
 const props = withDefaults(
   defineProps<{
     id?: string;
-    options?: Record<string, unknown>;
+    options?: Partial<MaptalksNativeVectorLayerOptions> & Record<string, unknown>;
     autoDispose?: boolean;
   }>(),
   { options: () => ({}), autoDispose: true },

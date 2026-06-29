@@ -83,14 +83,14 @@ describe('MaptalksGroupGLLayer', () => {
   it('injects the map and calls useMaptalksGroupGLLayer with props', () => {
     const map = {} as MaptalksMap;
     const wrapper = mount(MaptalksGroupGLLayer, {
-      props: { id: 'grp', options: { sceneConfig: { x: 1 } }, autoDispose: true },
+      props: { id: 'grp', options: { x: 1 } as unknown as Record<string, unknown>, autoDispose: true },
       global: { provide: provideMap(map) },
     });
     expect(grpm).toHaveBeenCalledTimes(1);
     const [, opts] = grpm.mock.calls[0]!;
     expect(opts).toMatchObject({
       id: 'grp',
-      options: { sceneConfig: { x: 1 } },
+      options: { x: 1 },
       autoDispose: true,
     });
     wrapper.unmount();

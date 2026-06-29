@@ -1,7 +1,89 @@
 /* eslint-disable max-lines */
 import type { ComputedRef, MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
+import type {
+  AreaTool,
+  DistanceTool,
+  DrawTool,
+  GLTFLayer,
+  GroupGLLayer,
+  Map as _MaptalksMapClass,
+  TileLayer,
+  VectorLayer,
+  VectorTileLayer,
+  WMSTileLayer,
+} from 'maptalks-gl'
 
 import type { MaptalksError, MaptalksErrorCode } from '../core/errors';
+/**
+ * 从用户安装的 maptalks-gl 版本推导的 Map 构造选项类型（全部 76 字段）。
+ *
+ * @description 用 `ConstructorParameters<typeof Map>[1]` 提取构造函数第二个参数的类型，
+ * 与安装的 maptalks-gl 版本保持同步，IDE 可提示所有选项字段。
+ */
+export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMapClass>[1]
+
+/**
+ * 从 maptalks-gl 推导的 TileLayer 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof TileLayer>[1]`，IDE 可提示 urlTemplate / opacity / zIndex 等所有字段。
+ */
+export type MaptalksNativeTileLayerOptions = ConstructorParameters<typeof TileLayer>[1]
+
+/**
+ * 从 maptalks-gl 推导的 VectorTileLayer 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof VectorTileLayer>[1]`。
+ */
+export type MaptalksNativeVectorTileLayerOptions = ConstructorParameters<typeof VectorTileLayer>[1]
+
+/**
+ * 从 maptalks-gl 推导的 GLTFLayer 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof GLTFLayer>[1]`。
+ */
+export type MaptalksNativeGLTFLayerOptions = ConstructorParameters<typeof GLTFLayer>[1]
+
+/**
+ * 从 maptalks-gl 推导的 WMSTileLayer 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof WMSTileLayer>[1]`。
+ */
+export type MaptalksNativeWMSTileLayerOptions = ConstructorParameters<typeof WMSTileLayer>[1]
+
+/**
+ * 从 maptalks-gl 推导的 GroupGLLayer 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof GroupGLLayer>[2]`（第三个参数）。
+ */
+export type MaptalksNativeGroupGLLayerOptions = ConstructorParameters<typeof GroupGLLayer>[2]
+
+/**
+ * 从 maptalks-gl 推导的 VectorLayer 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof VectorLayer>[2]`（第三个参数，geometries 之后）。
+ */
+export type MaptalksNativeVectorLayerOptions = ConstructorParameters<typeof VectorLayer>[2]
+
+/**
+ * 从 maptalks-gl 推导的 DrawTool 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof DrawTool>[0]`（第一个参数）。
+ */
+export type MaptalksNativeDrawToolOptions = ConstructorParameters<typeof DrawTool>[0]
+
+/**
+ * 从 maptalks-gl 推导的 DistanceTool 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof DistanceTool>[0]`。
+ */
+export type MaptalksNativeDistanceToolOptions = ConstructorParameters<typeof DistanceTool>[0]
+
+/**
+ * 从 maptalks-gl 推导的 AreaTool 构造选项类型。
+ *
+ * @description `ConstructorParameters<typeof AreaTool>[0]`。
+ */
+export type MaptalksNativeAreaToolOptions = ConstructorParameters<typeof AreaTool>[0]
 
 export type { MaptalksError, MaptalksErrorCode };
 
@@ -1371,14 +1453,15 @@ export interface MaptalksMapTool {
 /**
  * `useMaptalksDistanceTool` / `useMaptalksAreaTool` 的可选项。
  *
- * @description 透传工具构造选项 + 事件绑定 + 自动销毁控制。
+ * @description 透传工具构造选项 + 事件绑定 + 自动销毁控制。泛型参数 `TNative` 接受从 maptalks-gl
+ * 推导的构造选项类型，IDE 可提示所有字段。
  *
  * @example
  * useMaptalksDistanceTool(map, { options: { language: 'zh' }, events: { measure: onMeasure } });
  */
-export interface UseMaptalksToolOptions {
+export interface UseMaptalksToolOptions<TNative = Record<string, unknown>> {
   /** 透传给工具构造器的选项 */
-  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  options?: MaybeRefOrGetter<(Partial<TNative> & Record<string, unknown>) | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 `true` */

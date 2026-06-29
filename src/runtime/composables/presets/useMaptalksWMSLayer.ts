@@ -6,6 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
+  MaptalksNativeWMSTileLayerOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksPresetOptions,
@@ -65,7 +66,7 @@ function buildWMSOptions(
  */
 export function useMaptalksWMSLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions = {},
+  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeWMSTileLayerOptions> } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   wmsSeq += 1;

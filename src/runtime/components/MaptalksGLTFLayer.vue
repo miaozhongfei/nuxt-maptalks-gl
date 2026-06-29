@@ -6,13 +6,13 @@ import type { ShallowRef } from 'vue';
 
 import { useMaptalksGLTFLayer } from '../composables/presets/useMaptalksGLTFLayer';
 import { MAP_KEY } from '../core/map-context';
-import type { MaptalksMap, MaptalksSource } from '../types';
+import type { MaptalksMap, MaptalksNativeGLTFLayerOptions, MaptalksSource } from '../types';
 
 const props = withDefaults(
   defineProps<{
     source?: string | MaptalksSource;
     id?: string;
-    options?: Record<string, unknown>;
+    options?: Partial<MaptalksNativeGLTFLayerOptions> & Record<string, unknown>;
     autoDispose?: boolean;
   }>(),
   { options: () => ({}), autoDispose: true },

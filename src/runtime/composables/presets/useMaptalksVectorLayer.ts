@@ -3,6 +3,7 @@ import type { MaybeRefOrGetter } from 'vue';
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
+  MaptalksNativeVectorLayerOptions,
   UseMaptalksLayerReturn,
   UseMaptalksVectorLayerOptions,
 } from '../../types';
@@ -26,7 +27,7 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorLayerOptions = {},
+  opts: UseMaptalksVectorLayerOptions & { options?: Partial<MaptalksNativeVectorLayerOptions> } = {},
 ): UseMaptalksLayerReturn {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;

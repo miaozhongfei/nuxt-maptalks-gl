@@ -6,13 +6,13 @@ import type { ShallowRef } from 'vue';
 
 import { useMaptalksGroupGLLayer } from '../composables/presets/useMaptalksGroupGLLayer';
 import { MAP_KEY } from '../core/map-context';
-import type { MaptalksLayer, MaptalksMap } from '../types';
+import type { MaptalksLayer, MaptalksMap, MaptalksNativeGroupGLLayerOptions } from '../types';
 
 const props = withDefaults(
   defineProps<{
     id?: string;
     layers?: MaptalksLayer[];
-    options?: Record<string, unknown>;
+    options?: Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>;
     autoDispose?: boolean;
   }>(),
   { layers: () => [], options: () => ({}), autoDispose: true },

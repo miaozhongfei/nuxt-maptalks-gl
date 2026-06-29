@@ -1,6 +1,6 @@
 import type { MaybeRefOrGetter } from 'vue';
 
-import type { MaptalksMap, UseMaptalksToolOptions, UseMaptalksToolReturn } from '../types';
+import type { MaptalksMap, MaptalksNativeAreaToolOptions, UseMaptalksToolOptions, UseMaptalksToolReturn } from '../types';
 import { createToolResult } from '../core/tool-factory';
 
 /**
@@ -21,7 +21,7 @@ import { createToolResult } from '../core/tool-factory';
  */
 export function useMaptalksAreaTool(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  toolOptions: UseMaptalksToolOptions = {},
+  toolOptions: UseMaptalksToolOptions<MaptalksNativeAreaToolOptions> = {},
 ): UseMaptalksToolReturn {
   return createToolResult('AreaTool', map, toolOptions);
 }

@@ -6,13 +6,13 @@ import type { ShallowRef } from 'vue';
 
 import { useMaptalksVectorTileLayer } from '../composables/presets/useMaptalksVectorTileLayer';
 import { MAP_KEY } from '../core/map-context';
-import type { MaptalksMap, MaptalksSource } from '../types';
+import type { MaptalksMap, MaptalksNativeVectorTileLayerOptions, MaptalksSource } from '../types';
 
 const props = withDefaults(
   defineProps<{
     source?: string | MaptalksSource;
     id?: string;
-    options?: Record<string, unknown>;
+    options?: Partial<MaptalksNativeVectorTileLayerOptions> & Record<string, unknown>;
     autoDispose?: boolean;
   }>(),
   { options: () => ({}), autoDispose: true },

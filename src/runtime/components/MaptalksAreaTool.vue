@@ -6,10 +6,10 @@ import type { ShallowRef } from 'vue';
 
 import { useMaptalksAreaTool } from '../composables/useMaptalksAreaTool';
 import { MAP_KEY } from '../core/map-context';
-import type { MaptalksMap } from '../types';
+import type { MaptalksMap, MaptalksNativeAreaToolOptions } from '../types';
 
 const props = defineProps<{
-  options?: Record<string, unknown>;
+  options?: Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>;
   events?: Record<string, (event: unknown) => void>;
 }>();
 

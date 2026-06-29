@@ -10,5 +10,6 @@
 
 <script setup lang="ts">
 const mapCmp = ref();
+
 useMaptalksTileLayer(() => mapCmp.value?.map ?? null, { source: 'osm' });
 </script>

@@ -57,10 +57,10 @@ function makeRemove(
  * @example
  * createToolResult('DistanceTool', map, { options: { language: 'zh' } });
  */
-export function createToolResult(
+export function createToolResult<TNative = Record<string, unknown>>(
   toolName: 'DistanceTool' | 'AreaTool',
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  toolOptions: UseMaptalksToolOptions,
+  toolOptions: UseMaptalksToolOptions<TNative>,
 ): UseMaptalksToolReturn {
   const tool = shallowRef<MaptalksMapTool | null>(null);
   let creating = false;
