@@ -192,6 +192,16 @@ export interface MaptalksLayer {
   config?(conf: unknown): unknown;
   /** 设置图层选项（部分图层支持） */
   setOptions?(options: unknown): unknown;
+  /** 显示图层 */
+  show?(): MaptalksLayer;
+  /** 隐藏图层 */
+  hide?(): MaptalksLayer;
+  /** 设置图层不透明度（0–1，部分图层支持） */
+  setOpacity?(opacity: number): MaptalksLayer;
+  /** 将图层置于同级最上层 */
+  bringToFront?(): MaptalksLayer;
+  /** 将图层置于同级最下层 */
+  bringToBack?(): MaptalksLayer;
   /** 读取图层 id */
   getId?(): string;
   /** 逃生舱口：访问任意未建模的原生成员 */
@@ -534,6 +544,45 @@ export interface UseMaptalksLayerReturn {
   update: (options: Record<string, unknown>) => void;
   /** 命令式移除并销毁图层 */
   remove: () => void;
+}
+
+/**
+ * `useMaptalksLayerControl` 的可选项。
+ *
+ * @description 响应式 `visible` 驱动 show/hide，响应式 `opacity` 驱动 setOpacity；
+ * 两者均可选，未传则不自动联动（仍可用命令式方法）。
+ *
+ * @example
+ * useMaptalksLayerControl(layer, { visible: () => show.value, opacity: () => alpha.value });
+ */
+export interface UseMaptalksLayerControlOptions {
+  /** 响应式可见性：true → show，false → hide */
+  visible?: MaybeRefOrGetter<boolean>;
+  /** 响应式不透明度（0–1），变化时调用图层 setOpacity */
+  opacity?: MaybeRefOrGetter<number>;
+}
+
+/**
+ * `useMaptalksLayerControl` 的返回。
+ *
+ * @description 暴露图层显隐 / 透明度 / 层级的命令式方法。
+ *
+ * @example
+ * const { show, hide, toggle, setOpacity, bringToFront, bringToBack } = useMaptalksLayerControl(layer);
+ */
+export interface UseMaptalksLayerControlReturn {
+  /** 显示图层 */
+  show: () => void;
+  /** 隐藏图层 */
+  hide: () => void;
+  /** 在显示 / 隐藏之间切换 */
+  toggle: () => void;
+  /** 设置图层不透明度（0–1） */
+  setOpacity: (opacity: number) => void;
+  /** 将图层置于同级最上层 */
+  bringToFront: () => void;
+  /** 将图层置于同级最下层 */
+  bringToBack: () => void;
 }
 
 /**
