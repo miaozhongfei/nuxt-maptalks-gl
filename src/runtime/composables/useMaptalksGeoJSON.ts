@@ -10,7 +10,7 @@ import type {
   UseMaptalksGeoJSONReturn,
 } from '../types';
 import { createLogger } from '../utils/logger';
-import { geoJSONToGeometry } from './geojson-utils';
+import { geoJSONToGeometry } from '../core/geojson-utils';
 
 /** 日志实例（单例） */
 const logger = createLogger('nuxt-maptalks-gl');

@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue';
 
 import type { MaptalksMap, UseMaptalksToolOptions, UseMaptalksToolReturn } from '../types';
-import { createToolResult } from './_tool-factory';
+import { createToolResult } from '../core/tool-factory';
 
 /**
  * 地图工具：测距（DistanceTool）。
