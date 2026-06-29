@@ -35,6 +35,46 @@
         <NuxtLink to="/components/basic" class="nav-link">MaptalksMap 声明式</NuxtLink>
       </nav>
 
+      <h4 style="margin-bottom: 8px; color: #666">地图能力</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/map/limits" class="nav-link">限制缩放 / 拖拽旋转</NuxtLink>
+        <NuxtLink to="/map/pan-status" class="nav-link">平移 / 读状态</NuxtLink>
+        <NuxtLink to="/map/export" class="nav-link">导出图片</NuxtLink>
+        <NuxtLink to="/map/sync" class="nav-link">双图同步</NuxtLink>
+      </nav>
+
+      <h4 style="margin-bottom: 8px; color: #666">矢量图形</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/geometry/basic" class="nav-link">Marker / 线 / 面</NuxtLink>
+        <NuxtLink to="/geometry/multi-geojson" class="nav-link">Multi 几何 + GeoJSON</NuxtLink>
+        <NuxtLink to="/geometry/shape-text" class="nav-link">形状 / 文本几何</NuxtLink>
+      </nav>
+
+      <h4 style="margin-bottom: 8px; color: #666">控件</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/controls/basic" class="nav-link">缩放 / 比例尺 / 指北针</NuxtLink>
+      </nav>
+
+      <h4 style="margin-bottom: 8px; color: #666">测量工具</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/tools/basic" class="nav-link">测距 / 测面</NuxtLink>
+      </nav>
+
+      <h4 style="margin-bottom: 8px; color: #666">信息框</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/ui/infowindow" class="nav-link">InfoWindow（Vue slot）</NuxtLink>
+      </nav>
+
+      <h4 style="margin-bottom: 8px; color: #666">动画</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/animation/basic" class="nav-link">几何动画</NuxtLink>
+      </nav>
+
+      <h4 style="margin-bottom: 8px; color: #666">图层增强</h4>
+      <nav style="display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px">
+        <NuxtLink to="/layer/enhance" class="nav-link">WMS 图层</NuxtLink>
+      </nav>
+
       <hr />
       <NuxtLink to="/about" class="nav-link" style="color: #888; font-size: 14px"
         >关于模块</NuxtLink

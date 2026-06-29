@@ -44,8 +44,15 @@ async function createMap(el: HTMLElement, options: UseMaptalksOptions): Promise<
   if (!isWebGLAvailable()) {
     throw new MaptalksError('webgl-unsupported', '当前环境不支持 WebGL');
   }
+  // maptalks-gl new Map() 会给容器加 style="height:100%;width:100%"，可能覆盖 CSS 类高度，
+  // 导致容器塌缩为 0。保存创建前的实际高度，创建后若塌缩则恢复。
+  const prevHeight = el.offsetHeight;
   const mt = await loadMaptalks();
-  return new mt.Map(el, buildMapOptions(options));
+  const map = new mt.Map(el, buildMapOptions(options));
+  if (el.offsetHeight === 0 && prevHeight > 0) {
+    el.style.height = prevHeight + 'px';
+  }
+  return map;
 }
 
 /**
