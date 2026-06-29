@@ -3,11 +3,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, provide, ref, shallowRef, watch, nextTick } from 'vue'
-import { loadMaptalks } from '../core/loader'
+import { provide, ref, shallowRef, watch, nextTick } from 'vue'
+import { useMaptalks } from '../composables/useMaptalks'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksCoordinate, MaptalksMap } from '../types'
+import type { MaptalksCoordinate, MaptalksMap, UseMaptalksOptions } from '../types'
 
 const props = withDefaults(defineProps<{
   center?: MaptalksCoordinate | [number, number]; zoom?: number
@@ -20,12 +20,9 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{ ready: [map: MaptalksMap]; error: [err: MaptalksError] }>()
 
 const el = ref<HTMLElement | null>(null)
-const map = shallowRef<MaptalksMap | null>(null)
-const isReady = ref(false)
-const error = ref<MaptalksError | null>(null)
 
-function buildOpts(): Record<string, unknown> {
-  const o: Record<string, unknown> = { ...props.options }
+function buildOpts(): UseMaptalksOptions {
+  const o: UseMaptalksOptions = { name: props.name, ...props.options }
   if (props.center !== undefined) o.center = props.center
   if (props.zoom !== undefined) o.zoom = props.zoom
   if (props.pitch !== undefined) o.pitch = props.pitch
@@ -35,22 +32,15 @@ function buildOpts(): Record<string, unknown> {
   return o
 }
 
-onMounted(async () => {
-  const dom = el.value; if (!dom) return
-  try {
-    const mt = await loadMaptalks()
-    const m = new mt.Map(dom, buildOpts())
-    map.value = m; isReady.value = true; emit('ready', m)
-  } catch (e) { error.value = e as MaptalksError; emit('error', e as MaptalksError) }
-})
-
-function destroy() { map.value?.remove(); map.value = null; isReady.value = false }
-onBeforeUnmount(destroy)
+const { map, isReady, error } = useMaptalks(el, buildOpts())
 
 provide(MAP_KEY, map)
 defineExpose({ map, isReady, error })
 
-// 运行时 prop 同步——setTimeout 避免 Vue 响应式队列内操作 maptalks DOM
+watch(isReady, (v) => { if (v && map.value) emit('ready', map.value) })
+watch(error, (e) => { if (e) emit('error', e) })
+
+// 运行时 prop 同步——nextTick 确保在 Vue DOM 稳定后操作 maptalks
 watch(
   () => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable] as const,
   () => {
