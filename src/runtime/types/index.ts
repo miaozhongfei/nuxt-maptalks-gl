@@ -329,6 +329,8 @@ export interface MaptalksGLNamespace {
   DistanceTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
   /** AreaTool 测量工具构造器 */
   AreaTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
+  /** InfoWindow 弹出框构造器 */
+  ui?: { InfoWindow?: new (options?: Record<string, unknown>) => MaptalksInfoWindow };
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }
@@ -1335,4 +1337,38 @@ export interface UseMaptalksToolReturn {
   tool: ShallowRef<MaptalksMapTool | null>;
   /** 命令式移除并销毁工具 */
   remove: () => void;
+}
+
+/**
+ * maptalks InfoWindow 弹出框实例的结构化建模。
+ *
+ * @description 通过结构化类型描述 InfoWindow，核心内容/坐标/显隐方法给出精确签名，
+ * 索引签名提供逃生舱口，可调用任意原生方法。
+ *
+ * @example
+ * const iw: MaptalksInfoWindow | null = useMaptalksInfoWindow(map).infoWindow.value;
+ * iw?.setContent('<div>Hello</div>');
+ * iw?.show([113.27, 23.13]);
+ */
+export interface MaptalksInfoWindow {
+  /** 挂载到地图或其它对象 */
+  addTo(target: MaptalksMap | unknown): MaptalksInfoWindow;
+  /** 从地图移除并销毁 */
+  remove(): void;
+  /** 显示弹出框，可传入坐标 */
+  show(coord?: unknown): MaptalksInfoWindow;
+  /** 隐藏弹出框 */
+  hide(): MaptalksInfoWindow;
+  /** 是否可见 */
+  isVisible(): boolean;
+  /** 设置弹出框内容（HTML 字符串或 DOM 元素） */
+  setContent(content: string | HTMLElement): MaptalksInfoWindow;
+  /** 设置弹出框坐标 */
+  setCoordinates(coord: unknown): MaptalksInfoWindow;
+  /** 绑定事件 */
+  on?(eventTypes: string, handler: MaptalksEventHandler): MaptalksInfoWindow;
+  /** 解绑事件 */
+  off?(eventTypes: string, handler: MaptalksEventHandler): MaptalksInfoWindow;
+  /** 逃生舱口：访问任意未建模的原生成员 */
+  [key: string]: unknown;
 }
