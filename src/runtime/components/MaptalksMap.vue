@@ -1,12 +1,13 @@
 <template>
-  <slot />
-  <div ref="el" style="height: 100%; width: 100%" />
+  <div ref="el" style="height: 100%; width: 100%">
+    <slot />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { provide, ref, watch } from 'vue';
+import { onMounted, onBeforeUnmount, onScopeDispose, provide, ref, shallowRef, watch } from 'vue';
 
-import { useMaptalks } from '../composables/useMaptalks';
+import { loadMaptalks, isWebGLAvailable } from '../core/loader';
 import type { MaptalksError } from '../core/errors';
 import { MAP_KEY } from '../core/map-context';
 import { applyMapConfigProps } from '../core/map-props';
@@ -40,6 +41,9 @@ const emit = defineEmits<{
 }>();
 
 const el = ref<HTMLElement | null>(null);
+const map = shallowRef<MaptalksMap | null>(null);
+const isReady = ref(false);
+const error = ref<MaptalksError | null>(null);
 
 // 组装 UseMaptalksOptions：顶级 props 优先覆盖 options 兜底
 function buildMapOptions(): UseMaptalksOptions {
@@ -58,7 +62,38 @@ function buildMapOptions(): UseMaptalksOptions {
   return base;
 }
 
-const { map, isReady, error } = useMaptalks(el, buildMapOptions());
+// 直接创建地图（绕过 useMaptalks，排除 composable 生命周期冲突）
+onMounted(async () => {
+  const domEl = el.value;
+  if (!domEl) return;
+  if (!isWebGLAvailable()) {
+    error.value = { code: 'webgl-unsupported' as any, message: 'WebGL 不可用', name: 'MaptalksError' } as MaptalksError;
+    return;
+  }
+  try {
+    const mt = await loadMaptalks();
+    const options = buildMapOptions();
+    // 剥离 name/onError
+    const mapOpts: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(options)) {
+      if (k !== 'name' && k !== 'onError') mapOpts[k] = v;
+    }
+    const m = new mt.Map(domEl, mapOpts);
+    map.value = m;
+    isReady.value = true;
+    emit('ready', m);
+  } catch (e) {
+    error.value = e as MaptalksError;
+    emit('error', e as MaptalksError);
+  }
+});
+
+function destroy() {
+  if (map.value) { map.value.remove(); map.value = null; }
+  isReady.value = false;
+}
+onBeforeUnmount(destroy);
+onScopeDispose(destroy);
 
 provide(MAP_KEY, map);
 
@@ -85,12 +120,7 @@ provide(MAP_KEY, map);
     },
   );
 
-watch(isReady, (v) => {
-  if (v && map.value) emit('ready', map.value);
-});
-watch(error, (e) => {
-  if (e) emit('error', e);
-});
+watch(error, (e) => { if (e) emit('error', e); });
 
 defineExpose({ map, isReady, error });
 </script>
