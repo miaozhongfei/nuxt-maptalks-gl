@@ -804,7 +804,9 @@ export interface UseMaptalksGeometryOptions {
   /** 响应式坐标（shallow watch，替换才更新） */
   coordinates?: MaybeRefOrGetter<unknown>;
   /** 响应式 symbol（透传，含静态对象或 zoom-stops 数组） */
-  symbol?: MaybeRefOrGetter<Record<string, unknown> | Array<[number, Record<string, unknown>]> | undefined>;
+  symbol?: MaybeRefOrGetter<
+    Record<string, unknown> | Array<[number, Record<string, unknown>]> | undefined
+  >;
   /** 响应式业务属性 */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器（自动 on/off） */

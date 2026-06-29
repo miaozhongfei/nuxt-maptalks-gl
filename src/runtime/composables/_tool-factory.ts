@@ -86,17 +86,18 @@ export function createToolResult(
       bindEvents(t, events);
       tool.value = t;
     } catch (cause) {
-      logger.error(`${toolName} 创建失败`, toMaptalksError(cause, 'control-failed', `${toolName} 创建失败`));
+      logger.error(
+        `${toolName} 创建失败`,
+        toMaptalksError(cause, 'control-failed', `${toolName} 创建失败`),
+      );
     } finally {
       creating = false;
     }
   }
 
-  const stop = watch(
-    [() => toValue(map), () => toValue(toolOptions.options)],
-    reload,
-    { immediate: true },
-  );
+  const stop = watch([() => toValue(map), () => toValue(toolOptions.options)], reload, {
+    immediate: true,
+  });
 
   const remove = makeRemove(stop, tool, events);
   if (toolOptions.autoDispose !== false) onScopeDispose(remove);

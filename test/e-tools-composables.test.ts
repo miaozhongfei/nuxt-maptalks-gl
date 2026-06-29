@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksDistanceTool } from '../src/runtime/composables/useMaptalksDistanceTool';
 import { useMaptalksAreaTool } from '../src/runtime/composables/useMaptalksAreaTool';
+import { useMaptalksDistanceTool } from '../src/runtime/composables/useMaptalksDistanceTool';
 import type { MaptalksMap } from '../src/runtime/types';
 
 function createFakeTool() {
@@ -18,8 +18,12 @@ function createFakeTool() {
 
 const { mt } = vi.hoisted(() => ({
   mt: {
-    DistanceTool: vi.fn(function FakeDistanceTool() { return createFakeTool(); }),
-    AreaTool: vi.fn(function FakeAreaTool() { return createFakeTool(); }),
+    DistanceTool: vi.fn(function FakeDistanceTool() {
+      return createFakeTool();
+    }),
+    AreaTool: vi.fn(function FakeAreaTool() {
+      return createFakeTool();
+    }),
   },
 }));
 
@@ -29,7 +33,9 @@ vi.mock('../src/runtime/core/loader', () => ({
 }));
 
 function flush(): Promise<void> {
-  return new Promise((resolve) => { setTimeout(resolve, 0); });
+  return new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
 }
 
 describe('useMaptalksDistanceTool', () => {
