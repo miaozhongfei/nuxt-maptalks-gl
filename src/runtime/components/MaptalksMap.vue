@@ -63,28 +63,28 @@ const { map, isReady, error } = useMaptalks(el, buildMapOptions());
 
 provide(MAP_KEY, map);
 
-// 运行时同步快捷 prop（含地图就绪后的首次应用）
-watch(
-  () => [
-    props.minZoom,
-    props.maxZoom,
-    props.draggable,
-    props.dragPitch,
-    props.dragRotate,
-    props.zoomable,
-    isReady.value,
-  ],
-  () => {
-    applyMapConfigProps(map.value, {
-      minZoom: props.minZoom,
-      maxZoom: props.maxZoom,
-      draggable: props.draggable,
-      dragPitch: props.dragPitch,
-      dragRotate: props.dragRotate,
-      zoomable: props.zoomable,
-    });
-  },
-);
+  // 运行时同步快捷 prop（仅响应 prop 本身的变化，不与 isReady 联动——初值已由 buildMapOptions 透传构造器）
+  watch(
+    () => [
+      props.minZoom,
+      props.maxZoom,
+      props.draggable,
+      props.dragPitch,
+      props.dragRotate,
+      props.zoomable,
+    ],
+    () => {
+      if (!map.value) return;
+      applyMapConfigProps(map.value, {
+        minZoom: props.minZoom,
+        maxZoom: props.maxZoom,
+        draggable: props.draggable,
+        dragPitch: props.dragPitch,
+        dragRotate: props.dragRotate,
+        zoomable: props.zoomable,
+      });
+    },
+  );
 
 watch(isReady, (v) => {
   if (v && map.value) emit('ready', map.value);
