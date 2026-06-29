@@ -13,7 +13,8 @@ export type MaptalksErrorCode =
   | 'source-resolve-failed'
   | 'worker-failed'
   | 'layer-failed'
-  | 'geometry-failed';
+  | 'geometry-failed'
+  | 'control-failed';
 
 /**
  * 模块统一错误类型。

@@ -314,6 +314,17 @@ export interface MaptalksGLNamespace {
     height: number,
     options?: Record<string, unknown>,
   ) => MaptalksGeometry;
+  /** 控件命名空间 */
+  control?: {
+    /** 缩放控件构造器 */
+    Zoom?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** 比例尺控件构造器 */
+    Scale?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** 归属控件构造器 */
+    Attribution?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** 罗盘控件构造器 */
+    Compass?: new (options?: Record<string, unknown>) => MaptalksControl;
+  };
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }
@@ -1227,3 +1238,36 @@ export interface TextSymbol {
  * const stops: Stops<MarkerSymbol> = [[10, { markerType: 'pin' }], [14, { markerType: 'ellipse' }]];
  */
 export type Stops<T> = Array<[number, T]>;
+
+/**
+ * maptalks 控件实例的结构化建模（仅声明本模块使用到的成员）。
+ *
+ * @description 通过结构化类型描述控件，核心生命周期方法给出精确签名，索引签名提供逃生舱口。
+ *
+ * @example
+ * const zoom = new mt.control.Zoom();
+ * zoom.addTo(map);
+ */
+export interface MaptalksControl {
+  /** 挂载到地图 */
+  addTo(map: MaptalksMap): MaptalksControl;
+  /** 从地图移除并销毁 */
+  remove(): void;
+  /** 逃生舱口：访问任意未建模的原生成员 */
+  [key: string]: unknown;
+}
+
+/**
+ * `useMaptalksControl` 的返回。
+ *
+ * @description 暴露响应式控件实例与命令式移除方法。
+ *
+ * @example
+ * const { control, remove } = useMaptalksControl(map, (mt) => new mt.control.Zoom());
+ */
+export interface UseMaptalksControlReturn {
+  /** 控件实例（创建前为 null） */
+  control: ShallowRef<MaptalksControl | null>;
+  /** 命令式移除并销毁控件 */
+  remove: () => void;
+}
