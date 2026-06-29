@@ -1,10 +1,10 @@
 <template>
   <div style="height: 100%; width: 100%">
-    <div ref="el" style="height: 100%; width: 100%" />
+    <div ref="el" style="height: 100%; width: 100%"></div>
     <div style="display: none"><slot /></div>
   </div>
 </template>
-</template>
+
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, onScopeDispose, provide, ref, shallowRef, watch } from 'vue';
