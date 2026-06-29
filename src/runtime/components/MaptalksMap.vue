@@ -3,13 +3,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, onScopeDispose, provide, ref, shallowRef, watch } from 'vue'
+import { onMounted, onBeforeUnmount, provide, ref, shallowRef } from 'vue'
 import { loadMaptalks } from '../core/loader'
-import { mapRegistry } from '../core/registry'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
-import { applyMapConfigProps } from '../core/map-props'
-import type { MaptalksCoordinate, MaptalksMap, UseMaptalksOptions } from '../types'
+import type { MaptalksCoordinate, MaptalksMap } from '../types'
 
 const props = withDefaults(defineProps<{
   center?: MaptalksCoordinate | [number, number]; zoom?: number
@@ -34,14 +32,8 @@ function buildOpts(): Record<string, unknown> {
   if (props.bearing !== undefined) o.bearing = props.bearing
   if (props.minZoom !== undefined) o.minZoom = props.minZoom
   if (props.maxZoom !== undefined) o.maxZoom = props.maxZoom
-  if (props.draggable !== undefined) o.draggable = props.draggable
-  if (props.dragPitch !== undefined) o.dragPitch = props.dragPitch
-  if (props.dragRotate !== undefined) o.dragRotate = props.dragRotate
-  if (props.zoomable !== undefined) o.zoomable = props.zoomable
   return o
 }
-
-if (import.meta.client && props.name) mapRegistry.register(props.name, map)
 
 onMounted(async () => {
   const dom = el.value; if (!dom) return
@@ -53,14 +45,8 @@ onMounted(async () => {
 })
 
 function destroy() { map.value?.remove(); map.value = null; isReady.value = false }
-onBeforeUnmount(destroy); onScopeDispose(destroy)
+onBeforeUnmount(destroy)
 
 provide(MAP_KEY, map)
 defineExpose({ map, isReady, error })
-
-// 运行时同步 prop
-watch(() => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable], () => {
-  if (!map.value) return
-  applyMapConfigProps(map.value, { minZoom: props.minZoom, maxZoom: props.maxZoom, draggable: props.draggable, dragPitch: props.dragPitch, dragRotate: props.dragRotate, zoomable: props.zoomable })
-})
 </script>
