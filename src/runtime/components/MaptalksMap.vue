@@ -1,7 +1,6 @@
 <template>
-  <div ref="el" style="height: 100%; width: 100%">
-    <slot />
-  </div>
+  <slot />
+  <div ref="el" style="height: 100%; width: 100%" />
 </template>
 
 <script setup lang="ts">
