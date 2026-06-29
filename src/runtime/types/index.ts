@@ -241,6 +241,8 @@ export interface MaptalksGLNamespace {
   TileLayer: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
   /** 矢量瓦片图层构造器 */
   VectorTileLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
+  /** WMS 图层构造器（OGC WMS 服务，与 TileLayer 同构：id + options） */
+  WMSLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
   /** GroupGLLayer 构造器（承载 GL 图层与光照/后处理） */
   GroupGLLayer?: new (
     id: string,
@@ -763,6 +765,12 @@ export interface MaptalksGeometry {
   setEndAngle?(angle: number): MaptalksGeometry;
   /** 设置文本内容（Label/TextBox） */
   setContent?(content: string): MaptalksGeometry;
+  /** 带动画过渡 show 显示（Line / Polygon 几何逐段绘制动画） */
+  animateShow?(opts?: Record<string, unknown>): void;
+  /** 样式动画过渡（interpolate） */
+  animate?(styles: Record<string, unknown>, opts?: Record<string, unknown>): void;
+  /** 沿路径移动动画 */
+  moveAlong?(path: unknown, opts?: Record<string, unknown>): void;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -1371,4 +1379,83 @@ export interface MaptalksInfoWindow {
   off?(eventTypes: string, handler: MaptalksEventHandler): MaptalksInfoWindow;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
+}
+
+/**
+ * 动画 composable 通用返回。
+ *
+ * @description 每个动画 composable 返回统一的播放 / 停止 / 状态控制。
+ *
+ * @example
+ * const { play, stop, isPlaying } = useMaptalksGeomAnimate(geo, { styles });
+ */
+export interface UseMaptalksAnimationReturn {
+  /** 播放动画 */
+  play: () => void;
+  /** 停止动画 */
+  stop: () => void;
+  /** 是否正在播放 */
+  isPlaying: Ref<boolean>;
+}
+
+/**
+ * `useMaptalksGeomAnimate` 的可选项。
+ *
+ * @description 响应式 styles（插值目标样式）+ 动画参数 + 自动播放控制。
+ *
+ * @example
+ * useMaptalksGeomAnimate(geo, { styles: () => ({ symbol: { markerWidth: 30 } }), autoPlay: true });
+ */
+export interface UseMaptalksGeomAnimateOptions {
+  /** 响应式插值目标样式 */
+  styles: MaybeRefOrGetter<Record<string, unknown>>;
+  /** 动画参数（duration/easing 等），透传给 `geometry.animate()` */
+  opts?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 就绪即播放，默认 `true` */
+  autoPlay?: boolean;
+}
+
+/**
+ * `useMaptalksMoveAlong` 的可选项。
+ *
+ * @description 响应式路径 + 动画参数 + 自动播放控制。
+ *
+ * @example
+ * useMaptalksMoveAlong(geo, { path: () => lineCoords.value, autoPlay: true });
+ */
+export interface UseMaptalksMoveAlongOptions {
+  /** 响应式路径（坐标数组） */
+  path: MaybeRefOrGetter<unknown>;
+  /** 动画参数（duration/easing/speed 等），透传给 `geometry.moveAlong()` */
+  opts?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 就绪即播放，默认 `true` */
+  autoPlay?: boolean;
+}
+
+/**
+ * `useMaptalksLineAnimateShow` / `useMaptalksPolygonAnimateShow` 的可选项。
+ *
+ * @description 动画参数 + 自动播放控制。
+ *
+ * @example
+ * useMaptalksLineAnimateShow(geo, { opts: { duration: 2000 }, autoPlay: true });
+ */
+export interface UseMaptalksAnimateShowOptions {
+  /** 动画参数，透传给 `geometry.animateShow()` */
+  opts?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 就绪即播放，默认 `true` */
+  autoPlay?: boolean;
+}
+
+/**
+ * `useMaptalksViewFollow` 的可选项。
+ *
+ * @description 启用门控 + 自动播放控制 + 跟随参数。
+ *
+ * @example
+ * useMaptalksViewFollow(map, geo, { autoPlay: true });
+ */
+export interface UseMaptalksViewFollowOptions {
+  /** 就绪即播放，默认 `true` */
+  autoPlay?: boolean;
 }
