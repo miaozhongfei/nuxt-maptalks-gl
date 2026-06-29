@@ -1,5 +1,5 @@
 <template>
-  <div ref="slotHost" style="display:none"><slot /></div>
+  <div ref="slotHost" style="display: none" />
 </template>
 
 <script setup lang="ts">
@@ -60,26 +60,32 @@ function mountSlotContent() {
 }
 
 // InfoWindow 实例就绪后挂载 slot 内容
-watch(() => infoWindow.value, (v) => {
-  if (v) {
-    mountSlotContent();
-    if (props.visible) v.show(props.coordinates ?? props.geometry);
-  }
-});
+watch(
+  () => infoWindow.value,
+  (v) => {
+    if (v) {
+      mountSlotContent();
+      if (props.visible) v.show(props.coordinates ?? props.geometry);
+    }
+  },
+);
 
 // 父组件每次更新时重新 mount slot 内容，确保 Vue 响应式组件也能反映变化
 onMounted(() => mountSlotContent());
-onUpdated(() => mountSlotContent());
 
 // visible prop → show/hide（immediate 确保初始值也生效）
-watch(() => props.visible, (v) => {
-  if (!infoWindow.value) return;
-  if (v) {
-    infoWindow.value.show(props.coordinates ?? props.geometry);
-  } else {
-    infoWindow.value.hide();
-  }
-}, { immediate: true });
+watch(
+  () => props.visible,
+  (v) => {
+    if (!infoWindow.value) return;
+    if (v) {
+      infoWindow.value.show(props.coordinates ?? props.geometry);
+    } else {
+      infoWindow.value.hide();
+    }
+  },
+  { immediate: true },
+);
 
 // coordinates/geometry prop 变化 → 若可见则重新 show
 watch(
