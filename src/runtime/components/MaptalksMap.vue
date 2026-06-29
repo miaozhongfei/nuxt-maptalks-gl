@@ -55,17 +55,22 @@ onBeforeUnmount(destroy)
 provide(MAP_KEY, map)
 defineExpose({ map, isReady, error })
 
-// flush: 'post' 确保在 Vue DOM patch 完成后才操作 maptalks，避免竞态破坏交互
+// setTimeout 把 maptalks 操作完全踢出 Vue 响应式队列，避免 DOM patch 竞态
 watch(
   () => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable],
   () => {
-    if (!map.value) return
-    applyMapConfigProps(map.value, {
-      minZoom: props.minZoom, maxZoom: props.maxZoom,
-      draggable: props.draggable, dragPitch: props.dragPitch,
-      dragRotate: props.dragRotate, zoomable: props.zoomable,
+    setTimeout(() => {
+      const m = map.value
+      if (!m) return
+      const mn = props.minZoom; if (mn !== undefined) m.setMinZoom(mn)
+      const mx = props.maxZoom; if (mx !== undefined) m.setMaxZoom(mx)
+      const conf: Record<string, boolean> = {}
+      const d = props.draggable; if (d !== undefined) conf.draggable = d
+      const dp = props.dragPitch; if (dp !== undefined) conf.dragPitch = dp
+      const dr = props.dragRotate; if (dr !== undefined) conf.dragRotate = dr
+      const z = props.zoomable; if (z !== undefined) conf.zoomable = z
+      if (Object.keys(conf).length > 0) m.config(conf)
     })
   },
-  { flush: 'post' },
 )
 </script>
