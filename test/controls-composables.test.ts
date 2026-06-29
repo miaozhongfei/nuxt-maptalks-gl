@@ -1,17 +1,38 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
-import { useMaptalksZoom } from '../src/runtime/composables/useMaptalksZoom';
-import { useMaptalksScale } from '../src/runtime/composables/useMaptalksScale';
+
 import { useMaptalksAttribution } from '../src/runtime/composables/useMaptalksAttribution';
 import { useMaptalksCompass } from '../src/runtime/composables/useMaptalksCompass';
+import { useMaptalksScale } from '../src/runtime/composables/useMaptalksScale';
+import { useMaptalksZoom } from '../src/runtime/composables/useMaptalksZoom';
 import type { MaptalksMap } from '../src/runtime/types';
 
 const { controls } = vi.hoisted(() => ({
   controls: {
-    Zoom: vi.fn(function (this: any, opts?: unknown) { this.opts = opts; this.addTo = vi.fn(); this.remove = vi.fn(); return this; }),
-    Scale: vi.fn(function (this: any, opts?: unknown) { this.opts = opts; this.addTo = vi.fn(); this.remove = vi.fn(); return this; }),
-    Attribution: vi.fn(function (this: any, opts?: unknown) { this.opts = opts; this.addTo = vi.fn(); this.remove = vi.fn(); return this; }),
-    Compass: vi.fn(function (this: any, opts?: unknown) { this.opts = opts; this.addTo = vi.fn(); this.remove = vi.fn(); return this; }),
+    Zoom: vi.fn(function (this: any, opts?: unknown) {
+      this.opts = opts;
+      this.addTo = vi.fn();
+      this.remove = vi.fn();
+      return this;
+    }),
+    Scale: vi.fn(function (this: any, opts?: unknown) {
+      this.opts = opts;
+      this.addTo = vi.fn();
+      this.remove = vi.fn();
+      return this;
+    }),
+    Attribution: vi.fn(function (this: any, opts?: unknown) {
+      this.opts = opts;
+      this.addTo = vi.fn();
+      this.remove = vi.fn();
+      return this;
+    }),
+    Compass: vi.fn(function (this: any, opts?: unknown) {
+      this.opts = opts;
+      this.addTo = vi.fn();
+      this.remove = vi.fn();
+      return this;
+    }),
   },
 }));
 vi.mock('../src/runtime/core/loader', () => ({
@@ -19,7 +40,9 @@ vi.mock('../src/runtime/core/loader', () => ({
   isWebGLAvailable: () => true,
 }));
 
-function fakeMap() { return { addControl: vi.fn() } as unknown as MaptalksMap; }
+function fakeMap() {
+  return { addControl: vi.fn() } as unknown as MaptalksMap;
+}
 
 describe('control composables', () => {
   it('Zoom 创建并 addTo', async () => {
