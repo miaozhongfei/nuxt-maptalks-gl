@@ -10,7 +10,5 @@
 
 <script setup lang="ts">
 const mapCmp = ref()
-const exposedMap = shallowRef<unknown>(null)
-watchEffect(() => { exposedMap.value = mapCmp.value?.map?.value ?? null })
-useMaptalksTileLayer(exposedMap, { source: 'osm' })
+useMaptalksTileLayer(() => mapCmp.value?.map ?? null, { source: 'osm' })
 </script>
