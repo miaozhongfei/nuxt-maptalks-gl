@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, provide, ref, shallowRef } from 'vue'
+import { onMounted, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue'
 import { loadMaptalks } from '../core/loader'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
@@ -49,4 +49,23 @@ onBeforeUnmount(destroy)
 
 provide(MAP_KEY, map)
 defineExpose({ map, isReady, error })
+
+// 运行时 prop 同步——setTimeout 避免 Vue 响应式队列内操作 maptalks DOM
+watch(
+  () => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable] as const,
+  () => {
+    const m = map.value
+    if (!m) return
+    setTimeout(() => {
+      const mn = props.minZoom; if (mn !== undefined) m.setMinZoom(mn)
+      const mx = props.maxZoom; if (mx !== undefined) m.setMaxZoom(mx)
+      const conf: Record<string, boolean> = {}
+      const d = props.draggable; if (d !== undefined) conf.draggable = d
+      const dp = props.dragPitch; if (dp !== undefined) conf.dragPitch = dp
+      const dr = props.dragRotate; if (dr !== undefined) conf.dragRotate = dr
+      const z = props.zoomable; if (z !== undefined) conf.zoomable = z
+      if (Object.keys(conf).length > 0) m.config(conf)
+    })
+  },
+)
 </script>
