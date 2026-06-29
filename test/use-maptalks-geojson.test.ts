@@ -6,7 +6,7 @@ import type { MaptalksGeometry, MaptalksVectorLayer } from '../src/runtime/types
 
 const { toGeometry } = vi.hoisted(() => ({ toGeometry: vi.fn() }));
 
-vi.mock('../src/runtime/composables/geojson-utils', () => ({
+vi.mock('../src/runtime/core/geojson-utils', () => ({
   geoJSONToGeometry: (data: unknown) => Promise.resolve(toGeometry(data)),
   geometryToGeoJSON: vi.fn(),
 }));

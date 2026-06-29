@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { geoJSONToGeometry, geometryToGeoJSON } from '../src/runtime/composables/geojson-utils';
+import { geoJSONToGeometry, geometryToGeoJSON } from '../src/runtime/core/geojson-utils';
 import type { MaptalksGeometry } from '../src/runtime/types';
 
 const { mt } = vi.hoisted(() => ({
