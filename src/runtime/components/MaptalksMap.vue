@@ -3,11 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue'
+import { onMounted, onBeforeUnmount, provide, ref, shallowRef } from 'vue'
 import { loadMaptalks } from '../core/loader'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
-import { applyMapConfigProps } from '../core/map-props'
 import type { MaptalksCoordinate, MaptalksMap } from '../types'
 
 const props = withDefaults(defineProps<{
@@ -33,10 +32,6 @@ function buildOpts(): Record<string, unknown> {
   if (props.bearing !== undefined) o.bearing = props.bearing
   if (props.minZoom !== undefined) o.minZoom = props.minZoom
   if (props.maxZoom !== undefined) o.maxZoom = props.maxZoom
-  if (props.draggable !== undefined) o.draggable = props.draggable
-  if (props.dragPitch !== undefined) o.dragPitch = props.dragPitch
-  if (props.dragRotate !== undefined) o.dragRotate = props.dragRotate
-  if (props.zoomable !== undefined) o.zoomable = props.zoomable
   return o
 }
 
@@ -54,23 +49,4 @@ onBeforeUnmount(destroy)
 
 provide(MAP_KEY, map)
 defineExpose({ map, isReady, error })
-
-// setTimeout 把 maptalks 操作完全踢出 Vue 响应式队列，避免 DOM patch 竞态
-watch(
-  () => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable],
-  () => {
-    setTimeout(() => {
-      const m = map.value
-      if (!m) return
-      const mn = props.minZoom; if (mn !== undefined) m.setMinZoom(mn)
-      const mx = props.maxZoom; if (mx !== undefined) m.setMaxZoom(mx)
-      const conf: Record<string, boolean> = {}
-      const d = props.draggable; if (d !== undefined) conf.draggable = d
-      const dp = props.dragPitch; if (dp !== undefined) conf.dragPitch = dp
-      const dr = props.dragRotate; if (dr !== undefined) conf.dragRotate = dr
-      const z = props.zoomable; if (z !== undefined) conf.zoomable = z
-      if (Object.keys(conf).length > 0) m.config(conf)
-    })
-  },
-)
 </script>
