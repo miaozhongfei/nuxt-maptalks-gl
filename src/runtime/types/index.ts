@@ -325,6 +325,10 @@ export interface MaptalksGLNamespace {
     /** 罗盘控件构造器 */
     Compass?: new (options?: Record<string, unknown>) => MaptalksControl;
   };
+  /** DistanceTool 测量工具构造器 */
+  DistanceTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
+  /** AreaTool 测量工具构造器 */
+  AreaTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }
@@ -1269,5 +1273,64 @@ export interface UseMaptalksControlReturn {
   /** 控件实例（创建前为 null） */
   control: ShallowRef<MaptalksControl | null>;
   /** 命令式移除并销毁控件 */
+  remove: () => void;
+}
+
+/**
+ * maptalks 地图测量工具实例的结构化建模（仅声明本模块使用到的成员）。
+ *
+ * @description 通过结构化类型描述测量工具（DistanceTool / AreaTool 等），
+ * 核心生命周期与事件方法给出精确签名，索引签名提供逃生舱口。
+ *
+ * @example
+ * const tool: MaptalksMapTool | null = useMaptalksDistanceTool(map).tool.value;
+ * tool?.enable();
+ */
+export interface MaptalksMapTool {
+  /** 绑定到地图 */
+  addTo(map: MaptalksMap): MaptalksMapTool;
+  /** 从地图移除并销毁 */
+  remove(): void;
+  /** 启用工具 */
+  enable(): MaptalksMapTool;
+  /** 关闭工具 */
+  disable(): MaptalksMapTool;
+  /** 绑定事件 */
+  on(event: string, handler: MaptalksEventHandler): MaptalksMapTool;
+  /** 解绑事件 */
+  off(event: string, handler: MaptalksEventHandler): MaptalksMapTool;
+  /** 逃生舱口：访问任意未建模的原生成员 */
+  [key: string]: unknown;
+}
+
+/**
+ * `useMaptalksDistanceTool` / `useMaptalksAreaTool` 的可选项。
+ *
+ * @description 透传工具构造选项 + 事件绑定 + 自动销毁控制。
+ *
+ * @example
+ * useMaptalksDistanceTool(map, { options: { language: 'zh' }, events: { measure: onMeasure } });
+ */
+export interface UseMaptalksToolOptions {
+  /** 透传给工具构造器的选项 */
+  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 `true` */
+  autoDispose?: boolean;
+}
+
+/**
+ * `useMaptalksDistanceTool` / `useMaptalksAreaTool` 的返回。
+ *
+ * @description 暴露响应式工具实例与命令式移除。
+ *
+ * @example
+ * const { tool, remove } = useMaptalksDistanceTool(map);
+ */
+export interface UseMaptalksToolReturn {
+  /** 工具实例（创建前为 null） */
+  tool: ShallowRef<MaptalksMapTool | null>;
+  /** 命令式移除并销毁工具 */
   remove: () => void;
 }
