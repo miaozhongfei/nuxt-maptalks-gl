@@ -1,25 +1,25 @@
 <template><!-- maptalks group gl layer · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
-import type { ShallowRef } from 'vue';
+import { inject } from 'vue'
 
-import { useMaptalksGroupGLLayer } from '../composables/presets/useMaptalksGroupGLLayer';
-import { MAP_KEY } from '../core/map-context';
-import type { MaptalksLayer, MaptalksMap, MaptalksNativeGroupGLLayerOptions } from '../types';
+import { useMaptalksGroupGLLayer } from '../composables/presets/useMaptalksGroupGLLayer'
+import { MAP_KEY } from '../core/map-context'
+import type { MaptalksLayer, MaptalksNativeGroupGLLayerOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
-    id?: string;
-    layers?: MaptalksLayer[];
-    options?: Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>;
-    autoDispose?: boolean;
+    id?: string
+    layers?: MaptalksLayer[]
+    options?: Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>
+    autoDispose?: boolean
   }>(),
   { layers: () => [], options: () => ({}), autoDispose: true },
-);
+)
 
-const map = inject<ShallowRef<MaptalksMap | null>>(MAP_KEY);
-useMaptalksGroupGLLayer(map!, {
+const map = inject(MAP_KEY)
+if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksGroupGLLayer 必须在 MaptalksMap 内使用')
+useMaptalksGroupGLLayer(map, {
   id: props.id,
   layers: props.layers,
   options: props.options,

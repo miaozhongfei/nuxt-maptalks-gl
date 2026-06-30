@@ -18,6 +18,7 @@ export default defineBuildConfig({
     '@vue/shared',
     '@vue/reactivity',
     '@vue/runtime-core',
+    '@vue/compiler-core',
 
     // 其他依赖（可选）
     'defu',

@@ -3,41 +3,41 @@
 </template>
 
 <script setup lang="ts">
-import { createApp, h, inject, onBeforeUnmount, onMounted, onUpdated, watch } from 'vue';
-import type { App, ShallowRef } from 'vue';
+import { createApp, h, inject, onBeforeUnmount, onMounted, onUpdated, watch } from 'vue'
+import type { App } from 'vue'
 
-import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow';
-import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow';
-import { MAP_KEY } from '../core/map-context';
-import type { MaptalksMap } from '../types';
+import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
+import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
+import { MAP_KEY } from '../core/map-context'
 
 const props = withDefaults(
   defineProps<{
     /** InfoWindow 弹出框坐标 */
-    coordinates?: unknown;
+    coordinates?: unknown
     /** InfoWindow 弹出框坐标（别名，与 coordinates 二选一） */
-    geometry?: unknown;
+    geometry?: unknown
     /** 是否可见，默认 true */
-    visible?: boolean;
+    visible?: boolean
     /** 透传给 InfoWindow 构造器的选项 */
-    options?: Record<string, unknown>;
+    options?: Record<string, unknown>
   }>(),
   {
     visible: true,
     options: () => ({}),
   },
-);
+)
 
-const slots = defineSlots();
+const slots = defineSlots()
 
-const map = inject<ShallowRef<MaptalksMap | null>>(MAP_KEY);
+const map = inject(MAP_KEY)
+if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 MaptalksMap 内使用')
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
   options: () => props.options,
   coordinates: () => props.coordinates ?? props.geometry,
-};
+}
 
-const { infoWindow, show, hide } = useMaptalksInfoWindow(map!, iwOpts);
+const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
 
 let slotApp: App | null = null;
 

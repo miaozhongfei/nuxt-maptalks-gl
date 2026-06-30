@@ -3,6 +3,7 @@ import {
   addImportsDir,
   addServerImportsDir,
   addTypeTemplate,
+  addVitePlugin,
   createResolver,
   defineNuxtModule,
   useLogger,
@@ -15,6 +16,7 @@ import { MaptalksError } from './runtime/core/errors';
 import { defaultOptions } from './runtime/options';
 import type { ModuleOptions, ResolvedModuleOptions } from './runtime/types';
 import { createLogger } from './runtime/utils/logger';
+import { createValidateNestingPlugin } from './vite-plugins/validate-component-nesting';
 
 export type { ModuleOptions };
 export type {
@@ -101,7 +103,6 @@ export default defineNuxtModule<ModuleOptions>().with({
       return;
     }
     const resolver = createResolver(import.meta.url);
-
     // 合并默认值后注入 runtimeConfig（供 runtime 端读取 sources / defaults / spatialReference）
     const resolved = defu(_options, defaultOptions) as ResolvedModuleOptions;
     _nuxt.options.runtimeConfig.public.maptalksGl = resolved;
@@ -116,8 +117,9 @@ export default defineNuxtModule<ModuleOptions>().with({
     // （如 fast-deep-equal）的 ESM 互操作；若同时 transpile，Nuxt 会将其从 optimizeDeps 排除导致 dev 报错。
     _nuxt.options.build.transpile.push(resolver.resolve('./runtime'));
 
-    // 调优 Vite 预构建
+    // 调优 Vite 预构建 & 校验组件嵌套
     tuneOptimizeDeps(_nuxt);
+    addVitePlugin(createValidateNestingPlugin());
 
     // 自动导入 composables 与预设（addImportsDir 仅扫描顶层目录，故显式传入 presets 子目录）
     addImportsDir([

@@ -1,33 +1,33 @@
 <template><!-- maptalks linestring · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
-import type { ShallowRef } from 'vue';
+import { inject } from 'vue'
 
-import { useMaptalksLineString } from '../composables/presets/useMaptalksLineString';
-import { GEOMETRY_LAYER_KEY } from '../core/map-context';
-import type { LineStringCoordinates, MaptalksVectorLayer } from '../types';
+import { useMaptalksLineString } from '../composables/presets/useMaptalksLineString'
+import { GEOMETRY_LAYER_KEY } from '../core/map-context'
+import type { LineStringCoordinates } from '../types'
 
 const props = withDefaults(
   defineProps<{
-    coordinates: LineStringCoordinates;
-    symbol?: Record<string, unknown>;
-    properties?: Record<string, unknown>;
-    id?: string;
-    autoDispose?: boolean;
+    coordinates: LineStringCoordinates
+    symbol?: Record<string, unknown>
+    properties?: Record<string, unknown>
+    id?: string
+    autoDispose?: boolean
   }>(),
   { autoDispose: true },
-);
+)
 
 const emit = defineEmits<{
-  click: [e: unknown];
-  dblclick: [e: unknown];
-  mouseenter: [e: unknown];
-  mouseout: [e: unknown];
-}>();
+  click: [e: unknown]
+  dblclick: [e: unknown]
+  mouseenter: [e: unknown]
+  mouseout: [e: unknown]
+}>()
 
-const layer = inject<ShallowRef<MaptalksVectorLayer | null>>(GEOMETRY_LAYER_KEY);
-useMaptalksLineString(layer!, {
+const layer = inject(GEOMETRY_LAYER_KEY)
+if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksLineString 必须在 MaptalksVectorLayer 内使用')
+useMaptalksLineString(layer, {
   coordinates: () => props.coordinates,
   symbol: () => props.symbol,
   properties: () => props.properties,

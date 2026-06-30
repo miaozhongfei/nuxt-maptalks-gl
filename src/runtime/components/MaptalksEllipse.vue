@@ -1,35 +1,35 @@
 <template><!-- maptalks ellipse · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
-import { inject } from 'vue';
-import type { ShallowRef } from 'vue';
+import { inject } from 'vue'
 
-import { useMaptalksEllipse } from '../composables/presets/useMaptalksEllipse';
-import { GEOMETRY_LAYER_KEY } from '../core/map-context';
-import type { MaptalksCoordinate, MaptalksVectorLayer } from '../types';
+import { useMaptalksEllipse } from '../composables/presets/useMaptalksEllipse'
+import { GEOMETRY_LAYER_KEY } from '../core/map-context'
+import type { MaptalksCoordinate } from '../types'
 
 const props = withDefaults(
   defineProps<{
-    coordinates: MaptalksCoordinate | [number, number];
-    width: number;
-    height: number;
-    symbol?: Record<string, unknown>;
-    properties?: Record<string, unknown>;
-    id?: string;
-    autoDispose?: boolean;
+    coordinates: MaptalksCoordinate | [number, number]
+    width: number
+    height: number
+    symbol?: Record<string, unknown>
+    properties?: Record<string, unknown>
+    id?: string
+    autoDispose?: boolean
   }>(),
   { autoDispose: true },
-);
+)
 
 const emit = defineEmits<{
-  click: [e: unknown];
-  dblclick: [e: unknown];
-  mouseenter: [e: unknown];
-  mouseout: [e: unknown];
-}>();
+  click: [e: unknown]
+  dblclick: [e: unknown]
+  mouseenter: [e: unknown]
+  mouseout: [e: unknown]
+}>()
 
-const layer = inject<ShallowRef<MaptalksVectorLayer | null>>(GEOMETRY_LAYER_KEY);
-useMaptalksEllipse(layer!, {
+const layer = inject(GEOMETRY_LAYER_KEY)
+if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksEllipse 必须在 MaptalksVectorLayer 内使用')
+useMaptalksEllipse(layer, {
   coordinates: () => props.coordinates,
   width: () => props.width,
   height: () => props.height,
