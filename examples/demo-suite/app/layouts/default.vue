@@ -1,14 +1,35 @@
 <template>
-  <div class="min-h-screen flex">
-    <!-- 侧边栏：方案 C 五组导航 -->
-    <aside class="w-64 shrink-0 border-r border-default overflow-y-auto p-3">
-      <NuxtLink to="/" class="block font-mono font-bold mb-3 px-2">nuxt-maptalks-gl</NuxtLink>
+  <!-- @nuxt/ui Dashboard 布局：侧边栏固定、内容区独立滚动，移动端自动折叠为抽屉 -->
+  <UDashboardGroup>
+    <UDashboardSidebar
+      collapsible
+      resizable
+      :default-size="18"
+      :min-size="14"
+      :max-size="28"
+    >
+      <template #header="{ collapsed }">
+        <!-- 折叠时只显示简称 -->
+        <NuxtLink to="/" class="font-mono font-bold text-sm truncate">
+          {{ collapsed ? 'MT' : 'nuxt-maptalks-gl' }}
+        </NuxtLink>
+      </template>
+
+      <!-- 侧边栏主体：竖向导航菜单（这块会独立滚动，不随内容区滚动） -->
       <UNavigationMenu orientation="vertical" :items="items" />
-    </aside>
-    <main class="flex-1 overflow-y-auto p-6">
-      <slot />
-    </main>
-  </div>
+    </UDashboardSidebar>
+
+    <UDashboardPanel id="main">
+      <template #header>
+        <!-- 顶栏：移动端在此显示侧边栏开关 -->
+        <UDashboardNavbar title="@lacqjs/nuxt-maptalks-gl 示例合集" />
+      </template>
+      <template #body>
+        <!-- 内容区：独立滚动 -->
+        <slot />
+      </template>
+    </UDashboardPanel>
+  </UDashboardGroup>
 </template>
 
 <script setup lang="ts">
