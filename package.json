@@ -55,6 +55,8 @@
     "docs:generate": "nuxi generate docs",
     "docs:cleanup": "pnpx rimraf docs/.nuxt docs/.output docs/dist docs/node_modules docs/.data",
     "playground:cleanup": "pnpx rimraf playground/.nuxt playground/.output playground/dist playground/node_modules",
+    "demo:demo-suite:dev": "nuxi dev examples/demo-suite",
+    "demo:demo-amap:dev": "nuxi dev examples/demo-amap",
     "release": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
     "release:patch": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --patch --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
     "release:minor": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --minor --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
