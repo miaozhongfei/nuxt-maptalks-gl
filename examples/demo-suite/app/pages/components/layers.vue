@@ -15,11 +15,11 @@
           <UBadge color="neutral" variant="outline">官网 1.1 / 2.1</UBadge>
         </div>
       </template>
-      <!-- MaptalksMap 是地图容器，必须给显式高度；source="osm" 引用 nuxt.config 里的命名数据源 -->
       <MaptalksMap
         :center="center"
         :zoom="11"
-        class="relative rounded border border-default overflow-hidden" style="height: 320px"
+        class="relative rounded border border-default overflow-hidden"
+        style="height: 320px"
         @ready="ready = true"
         @error="onError"
       >
@@ -30,7 +30,7 @@
       </template>
     </UCard>
 
-    <!-- MaptalksVectorTileLayer：矢量瓦片图层（MVT/PBF） -->
+    <!-- MaptalksVectorTileLayer：真实矢量瓦片（MapLibre 免费公开切片，渲染世界各国边界） -->
     <UCard class="mb-6">
       <template #header>
         <div class="flex items-center gap-2 flex-wrap">
@@ -39,52 +39,13 @@
           <UBadge color="neutral" variant="outline">官网 2.6</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="11" class="relative rounded border border-default overflow-hidden" style="height: 320px">
-        <MaptalksTileLayer source="osm" />
-        <!-- 占位矢量瓦片地址：真实项目应换成有效的 MVT 服务 + style，此处仅演示组件挂载 -->
-        <MaptalksVectorTileLayer
-          :options="{ urlTemplate: 'https://example.com/tiles/{z}/{x}/{y}.pbf' }"
-        />
+      <!-- 矢量瓦片是世界范围国界数据，用较小 zoom 才能看到 -->
+      <MaptalksMap :center="[110, 30]" :zoom="2" class="relative rounded border border-default overflow-hidden" style="height: 320px">
+        <!-- MapLibre 官方公开 demo 矢量切片（无需 key），按几何类型给样式渲染国界/线 -->
+        <MaptalksVectorTileLayer :options="vectorTileOptions" />
       </MaptalksMap>
       <template #footer>
-        <span class="text-sm text-muted">注：占位地址不会真正渲染要素，仅演示组件用法。</span>
-      </template>
-    </UCard>
-
-    <!-- MaptalksGroupGLLayer：GL 图层容器（可容纳多个 GL 图层） -->
-    <UCard class="mb-6">
-      <template #header>
-        <div class="flex items-center gap-2 flex-wrap">
-          <h2 class="font-semibold">MaptalksGroupGLLayer</h2>
-          <UBadge color="primary" variant="subtle">组件</UBadge>
-          <UBadge color="neutral" variant="outline">官网 2.3</UBadge>
-        </div>
-      </template>
-      <MaptalksMap :center="center" :zoom="11" class="relative rounded border border-default overflow-hidden" style="height: 320px">
-        <MaptalksTileLayer source="osm" />
-        <!-- GroupGLLayer 是 GL 图层的分组容器，模块会注入默认光照/后处理 sceneConfig -->
-        <MaptalksGroupGLLayer />
-      </MaptalksMap>
-      <template #footer>
-        <span class="text-sm text-muted">GroupGLLayer 作为 GL 图层容器，此处为空容器演示。</span>
-      </template>
-    </UCard>
-
-    <!-- MaptalksGLTFLayer：3D 模型图层容器 -->
-    <UCard class="mb-6">
-      <template #header>
-        <div class="flex items-center gap-2 flex-wrap">
-          <h2 class="font-semibold">MaptalksGLTFLayer</h2>
-          <UBadge color="primary" variant="subtle">组件</UBadge>
-        </div>
-      </template>
-      <MaptalksMap :center="center" :zoom="14" class="relative rounded border border-default overflow-hidden" style="height: 320px">
-        <MaptalksTileLayer source="osm" />
-        <!-- GLTFLayer 用于承载 3D 模型，实际模型经其原生 API 添加 GLTFMarker，此处为空容器 -->
-        <MaptalksGLTFLayer />
-      </MaptalksMap>
-      <template #footer>
-        <span class="text-sm text-muted">GLTFLayer 承载 3D 模型，此处为空容器演示。</span>
+        <span class="text-sm text-muted">数据源：MapLibre 公开 demo 矢量切片，蓝色填充为各国国界面。</span>
       </template>
     </UCard>
 
@@ -101,26 +62,147 @@
         <MaptalksTileLayer source="osm" />
         <!-- VectorLayer 是几何图形的容器，几何组件必须放在它内部；这里放一个 Marker 证明容器生效 -->
         <MaptalksVectorLayer>
-          <MaptalksMarker :coordinates="center" />
+          <MaptalksMarker
+            :coordinates="center"
+            :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 }"
+          />
         </MaptalksVectorLayer>
       </MaptalksMap>
       <template #footer>
-        <span class="text-sm text-muted">VectorLayer 内含一个 Marker，证明容器已生效。</span>
+        <span class="text-sm text-muted">VectorLayer 内含一个蓝色 Marker，证明容器已生效。</span>
+      </template>
+    </UCard>
+
+    <!-- MaptalksGLTFLayer：3D 模型图层，承载真实 GLTF 模型 -->
+    <UCard class="mb-6">
+      <template #header>
+        <div class="flex items-center gap-2 flex-wrap">
+          <h2 class="font-semibold">MaptalksGLTFLayer（真实 3D 模型）</h2>
+          <UBadge color="primary" variant="subtle">组件</UBadge>
+        </div>
+      </template>
+      <MaptalksMap :center="center" :zoom="17" :pitch="60" class="relative rounded border border-default overflow-hidden" style="height: 360px" @ready="onGltfReady">
+        <MaptalksTileLayer source="osm" />
+        <!-- 组件创建空的 GLTFLayer，指定 id 便于就绪后取到它并加入真实 3D 模型 -->
+        <MaptalksGLTFLayer id="gltf-solo" />
+      </MaptalksMap>
+      <template #footer>
+        <span class="text-sm text-muted">{{ gltfNote || '正在加载 3D 模型…（倾斜视角观察）' }}</span>
+      </template>
+    </UCard>
+
+    <!-- MaptalksGroupGLLayer：GL 图层容器，承载一个含 3D 模型的 GLTFLayer -->
+    <UCard class="mb-6">
+      <template #header>
+        <div class="flex items-center gap-2 flex-wrap">
+          <h2 class="font-semibold">MaptalksGroupGLLayer（承载 GL 图层）</h2>
+          <UBadge color="primary" variant="subtle">组件</UBadge>
+          <UBadge color="neutral" variant="outline">官网 2.3</UBadge>
+        </div>
+      </template>
+      <MaptalksMap :center="center" :zoom="17" :pitch="60" class="relative rounded border border-default overflow-hidden" style="height: 360px" @ready="onGroupReady">
+        <MaptalksTileLayer source="osm" />
+        <!-- GroupGLLayer 是 GL 图层的分组容器（含默认光照/后处理）；就绪后往里加一个含 3D 模型的 GLTFLayer -->
+        <MaptalksGroupGLLayer id="group-demo" />
+      </MaptalksMap>
+      <template #footer>
+        <span class="text-sm text-muted">{{ groupNote || '正在向 GroupGLLayer 加入含 3D 模型的 GL 图层…' }}</span>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { MaptalksError } from '@lacqjs/nuxt-maptalks-gl';
+import type { MaptalksError, MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl';
 
 // 上海人民广场，作为所有示例地图的中心
 const center: [number, number] = [121.4737, 31.2304];
 const ready = ref(false);
 const errMsg = ref('');
+const gltfNote = ref('');
+const groupNote = ref('');
+
+// 可靠 CDN 的公开 3D 模型（jsdelivr，支持 CORS）
+const MODEL_URL =
+  'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/Duck/glTF-Binary/Duck.glb';
+
+// MapLibre 公开 demo 矢量切片 + 按几何类型着色的 maptalks 样式
+const vectorTileOptions = {
+  urlTemplate: 'https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf',
+  style: {
+    style: [
+      {
+        // 所有面要素（各国国界）填充蓝色
+        filter: ['==', '$type', 'Polygon'],
+        renderPlugin: { type: 'fill', dataConfig: { type: 'fill' } },
+        symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 },
+      },
+      {
+        // 所有线要素描边
+        filter: ['==', '$type', 'LineString'],
+        renderPlugin: { type: 'line', dataConfig: { type: 'line' } },
+        symbol: { lineColor: '#1e3a8a', lineWidth: 1 },
+      },
+    ],
+  },
+};
 
 // 地图初始化失败时展示错误信息（SSR/WebGL 不可用等）
 function onError(err: MaptalksError) {
   errMsg.value = `（错误：${err.message}）`;
+}
+
+// —— 下面用最小接口断言访问 maptalks 原生 API，避免 any ——
+interface GltfMarkerCtor {
+  new (coord: [number, number], opts: { symbol: Record<string, unknown> }): unknown;
+}
+interface GltfLayerInstance {
+  addGeometry(geo: unknown): void;
+}
+interface GltfLayerCtor {
+  new (id: string): GltfLayerInstance;
+}
+interface GroupLayerInstance {
+  addLayer(layer: unknown): void;
+}
+interface MaptalksNs {
+  GLTFMarker: GltfMarkerCtor;
+  GLTFLayer: GltfLayerCtor;
+}
+
+// GLTFLayer 卡片：取到组件创建的 GLTFLayer(id=gltf-solo)，加入真实 3D 模型
+async function onGltfReady(map: MtMap) {
+  try {
+    const mt = (await import('maptalks-gl')) as unknown as MaptalksNs;
+    const layer = (map as unknown as { getLayer(id: string): GltfLayerInstance | null }).getLayer('gltf-solo');
+    if (!layer) {
+      gltfNote.value = '未找到 GLTF 图层';
+      return;
+    }
+    const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scale: [80, 80, 80] } });
+    layer.addGeometry(marker);
+    gltfNote.value = '已加载真实 3D 模型（Duck.glb）';
+  } catch (e) {
+    gltfNote.value = `模型加载失败：${(e as Error)?.message ?? e}`;
+  }
+}
+
+// GroupGLLayer 卡片：取到组件创建的 GroupGLLayer(id=group-demo)，往里加一个含 3D 模型的 GLTFLayer
+async function onGroupReady(map: MtMap) {
+  try {
+    const mt = (await import('maptalks-gl')) as unknown as MaptalksNs;
+    const group = (map as unknown as { getLayer(id: string): GroupLayerInstance | null }).getLayer('group-demo');
+    if (!group) {
+      groupNote.value = '未找到 GroupGL 图层';
+      return;
+    }
+    const gltf = new mt.GLTFLayer('gltf-in-group');
+    const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scale: [80, 80, 80] } });
+    gltf.addGeometry(marker);
+    group.addLayer(gltf);
+    groupNote.value = '已在 GroupGLLayer 中加入含 3D 模型的 GLTFLayer';
+  } catch (e) {
+    groupNote.value = `加载失败：${(e as Error)?.message ?? e}`;
+  }
 }
 </script>
