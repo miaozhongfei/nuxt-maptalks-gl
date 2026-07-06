@@ -45,7 +45,7 @@
   },
   "scripts": {
     "cleanup": "(pnpx nuxt cleanup || npx nuxt cleanup) && pnpx rimraf .nuxt .output dist node_modules .data",
-    "clean:install": "pnpm run cleanup && pnpm run docs:cleanup && pnpm run playground:cleanup && pnpm install",
+    "clean:install": "pnpm run cleanup && pnpm run docs:cleanup && pnpm run playground:cleanup && pnpm run demo:cleanup && pnpm install",
     "prepack": "nuxt-module-build build",
     "dev": "pnpm run dev:prepare && nuxi dev playground",
     "dev:build": "nuxi build playground",
@@ -57,6 +57,7 @@
     "playground:cleanup": "pnpx rimraf playground/.nuxt playground/.output playground/dist playground/node_modules",
     "demo:demo-suite:dev": "nuxi dev examples/demo-suite",
     "demo:demo-amap:dev": "nuxi dev examples/demo-amap",
+    "demo:cleanup": "pnpx rimraf examples/demo-suite/.nuxt examples/demo-amap/.nuxt examples/demo-suite/.output examples/demo-amap/.output examples/demo-suite/dist examples/demo-amap/dist examples/demo-suite/node_modules examples/demo-amap/node_modules",
     "release": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
     "release:patch": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --patch --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",
     "release:minor": "pnpm lint && pnpm typecheck && pnpm prepack && changelogen --release --minor --no-github && git push origin dev --follow-tags && pnpm publish && changelogen gh release",

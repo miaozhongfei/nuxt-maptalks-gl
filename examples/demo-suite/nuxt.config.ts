@@ -1,7 +1,7 @@
 const isDev = import.meta.env.DEV;
 
 export default defineNuxtConfig({
-  modules: ['../src/module', '@nuxt/ui'],
+  modules: ['../../src/module', '@nuxt/ui'],
   css: ['~/assets/css/main.css'],
   devtools: { enabled: isDev },
   devServer: { port: 5100 },
