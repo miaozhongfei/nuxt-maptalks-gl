@@ -13,7 +13,7 @@
           <UBadge color="neutral" variant="outline">官网 10.14~10.17</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="11" :pitch="30" class="h-96 rounded border border-default">
+      <MaptalksMap :center="center" :zoom="11" :pitch="30" class="rounded border border-default overflow-hidden" style="height: 384px">
         <MaptalksTileLayer source="osm" />
         <!-- 缩放控件（+/-）：position 可切换 -->
         <MaptalksZoomControl :options="{ position: zoomPosition }" />

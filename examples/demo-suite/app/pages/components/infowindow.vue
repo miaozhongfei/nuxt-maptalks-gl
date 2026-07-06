@@ -14,7 +14,7 @@
           <UBadge color="neutral" variant="outline">官网 10.4 / 10.6 / 10.10</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="12" class="h-96 rounded border border-default" @ready="onReady">
+      <MaptalksMap :center="center" :zoom="12" class="rounded border border-default overflow-hidden" style="height: 384px" @ready="onReady">
         <MaptalksTileLayer source="osm" />
         <!-- 信息框：点击地图后更新坐标并显示；插槽内是自定义 Vue 内容 -->
         <MaptalksInfoWindow :coordinates="iwCoord" :visible="iwVisible">

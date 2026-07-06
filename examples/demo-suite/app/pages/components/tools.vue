@@ -15,7 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 8.3</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="h-80 rounded border border-default">
+      <MaptalksMap :center="center" :zoom="13" class="rounded border border-default overflow-hidden" style="height: 320px">
         <MaptalksTileLayer source="osm" />
         <!-- 在地图上依次点击测距，双击结束；@measure 返回测量结果 -->
         <MaptalksDistanceTool @measure="onDistance" />
@@ -34,7 +34,7 @@
           <UBadge color="neutral" variant="outline">官网 8.4</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="h-80 rounded border border-default">
+      <MaptalksMap :center="center" :zoom="13" class="rounded border border-default overflow-hidden" style="height: 320px">
         <MaptalksTileLayer source="osm" />
         <!-- 在地图上依次点击画多边形测面积，双击结束 -->
         <MaptalksAreaTool @measure="onArea" />

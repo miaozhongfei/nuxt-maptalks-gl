@@ -15,7 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 3.1~3.3 / 3.10</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="h-96 rounded border border-default">
+      <MaptalksMap :center="center" :zoom="13" class="rounded border border-default overflow-hidden" style="height: 384px">
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
           <!-- 点标记：@click 演示事件回传 -->
@@ -56,7 +56,7 @@
           <UBadge color="neutral" variant="outline">官网 3.8</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.49, 31.235]" :zoom="12" class="h-96 rounded border border-default">
+      <MaptalksMap :center="[121.49, 31.235]" :zoom="12" class="rounded border border-default overflow-hidden" style="height: 384px">
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
           <!-- 圆：中心 + 半径（米） -->
@@ -100,7 +100,7 @@
           <UBadge color="neutral" variant="outline">官网 3.5~3.7 / 3.11</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.47, 31.24]" :zoom="12" class="h-96 rounded border border-default">
+      <MaptalksMap :center="[121.47, 31.24]" :zoom="12" class="rounded border border-default overflow-hidden" style="height: 384px">
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
           <!-- 多点 -->
