@@ -5,7 +5,7 @@
       <button data-testid="move" @click="moveMarker">移动 Marker</button>
       <span data-testid="hit" style="margin-left: 12px; color: #1bbc9b">{{ hitText }}</span>
     </div>
-    <MaptalksMap :center="[121.4737, 31.2304]" :zoom="12" data-testid="map" class="map">
+    <MaptalksMap :center="[121.4737, 31.2304]" :zoom="12" data-testid="map" class="map" style="height: 440px">
       <MaptalksTileLayer source="osm" />
       <MaptalksVectorLayer>
         <MaptalksMarker
