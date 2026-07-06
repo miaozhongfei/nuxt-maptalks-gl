@@ -19,7 +19,7 @@
       <MaptalksMap
         :center="center"
         :zoom="11"
-        class="rounded border border-default overflow-hidden" style="height: 320px"
+        class="relative rounded border border-default overflow-hidden" style="height: 320px"
         @ready="ready = true"
         @error="onError"
       >
@@ -39,7 +39,7 @@
           <UBadge color="neutral" variant="outline">官网 2.6</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="11" class="rounded border border-default overflow-hidden" style="height: 320px">
+      <MaptalksMap :center="center" :zoom="11" class="relative rounded border border-default overflow-hidden" style="height: 320px">
         <MaptalksTileLayer source="osm" />
         <!-- 占位矢量瓦片地址：真实项目应换成有效的 MVT 服务 + style，此处仅演示组件挂载 -->
         <MaptalksVectorTileLayer
@@ -60,7 +60,7 @@
           <UBadge color="neutral" variant="outline">官网 2.3</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="11" class="rounded border border-default overflow-hidden" style="height: 320px">
+      <MaptalksMap :center="center" :zoom="11" class="relative rounded border border-default overflow-hidden" style="height: 320px">
         <MaptalksTileLayer source="osm" />
         <!-- GroupGLLayer 是 GL 图层的分组容器，模块会注入默认光照/后处理 sceneConfig -->
         <MaptalksGroupGLLayer />
@@ -78,7 +78,7 @@
           <UBadge color="primary" variant="subtle">组件</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="14" class="rounded border border-default overflow-hidden" style="height: 320px">
+      <MaptalksMap :center="center" :zoom="14" class="relative rounded border border-default overflow-hidden" style="height: 320px">
         <MaptalksTileLayer source="osm" />
         <!-- GLTFLayer 用于承载 3D 模型，实际模型经其原生 API 添加 GLTFMarker，此处为空容器 -->
         <MaptalksGLTFLayer />
@@ -97,7 +97,7 @@
           <UBadge color="neutral" variant="outline">官网 6.8</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="12" class="rounded border border-default overflow-hidden" style="height: 320px">
+      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 320px">
         <MaptalksTileLayer source="osm" />
         <!-- VectorLayer 是几何图形的容器，几何组件必须放在它内部；这里放一个 Marker 证明容器生效 -->
         <MaptalksVectorLayer>
