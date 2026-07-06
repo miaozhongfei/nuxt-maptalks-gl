@@ -126,25 +126,23 @@ const groupNote = ref('');
 const MODEL_URL =
   'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/Duck/glTF-Binary/Duck.glb';
 
-// MapLibre 公开 demo 矢量切片 + 按几何类型着色的 maptalks 样式
+// MapLibre 公开 demo 矢量切片 + 按几何类型着色的 maptalks 样式（style 为直接数组）
 const vectorTileOptions = {
   urlTemplate: 'https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf',
-  style: {
-    style: [
-      {
-        // 所有面要素（各国国界）填充蓝色
-        filter: ['==', '$type', 'Polygon'],
-        renderPlugin: { type: 'fill', dataConfig: { type: 'fill' } },
-        symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 },
-      },
-      {
-        // 所有线要素描边
-        filter: ['==', '$type', 'LineString'],
-        renderPlugin: { type: 'line', dataConfig: { type: 'line' } },
-        symbol: { lineColor: '#1e3a8a', lineWidth: 1 },
-      },
-    ],
-  },
+  style: [
+    {
+      // 所有面要素（各国国界）填充蓝色
+      filter: ['==', '$type', 'Polygon'],
+      renderPlugin: { type: 'fill', dataConfig: { type: 'fill' } },
+      symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 },
+    },
+    {
+      // 所有线要素描边
+      filter: ['==', '$type', 'LineString'],
+      renderPlugin: { type: 'line', dataConfig: { type: 'line' } },
+      symbol: { lineColor: '#1e3a8a', lineWidth: 1 },
+    },
+  ],
 };
 
 // 地图初始化失败时展示错误信息（SSR/WebGL 不可用等）
@@ -179,7 +177,7 @@ async function onGltfReady(map: MtMap) {
       gltfNote.value = '未找到 GLTF 图层';
       return;
     }
-    const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scale: [80, 80, 80] } });
+    const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scaleX: 200, scaleY: 200, scaleZ: 200 } });
     layer.addGeometry(marker);
     gltfNote.value = '已加载真实 3D 模型（Duck.glb）';
   } catch (e) {
@@ -197,7 +195,7 @@ async function onGroupReady(map: MtMap) {
       return;
     }
     const gltf = new mt.GLTFLayer('gltf-in-group');
-    const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scale: [80, 80, 80] } });
+    const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scaleX: 200, scaleY: 200, scaleZ: 200 } });
     gltf.addGeometry(marker);
     group.addLayer(gltf);
     groupNote.value = '已在 GroupGLLayer 中加入含 3D 模型的 GLTFLayer';
