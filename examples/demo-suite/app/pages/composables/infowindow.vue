@@ -68,11 +68,8 @@ useMaptalksTileLayer(map1, { source: 'osm' });
 const clickCount1 = ref(0);
 const iw1Content = ref('点击地图试试');
 
-const { show: show1, hide: hide1 } = useMaptalksInfoWindow(map1, {
+const { show: show1 } = useMaptalksInfoWindow(map1, {
   content: () => iw1Content.value,
-  events: {
-    open: () => { clickCount1.value += 1; },
-  },
 });
 
 useMaptalksEvents(map1, {
@@ -86,6 +83,7 @@ useMaptalksEvents(map1, {
         <p style="margin:2px 0;font-size:13px">纬度：${ev.coordinate.y.toFixed(6)}</p>
         <p style="color:#6b7280;font-size:12px;margin:2px 0">时刻：${t}</p>
       </div>`;
+    clickCount1.value += 1;
     show1([ev.coordinate.x, ev.coordinate.y]);
   },
 });
@@ -143,46 +141,53 @@ const { layer: vec3 } = useMaptalksVectorLayer(map3);
 const iw3Label = ref('');
 // 3 个 Marker 共用一个 useMaptalksInfoWindow，通过 content 响应式切换模拟"多个独立信息框"
 const iw3Content = ref('');
+
+// 传递事件回调：让 close 事件触发时更新状态
 const { show: show3, hide: hide3 } = useMaptalksInfoWindow(map3, {
-  // title 设 '' 隐藏默认标题，custom: true 禁用 maptalks 整个默认模板（白底、默认关闭按钮）
   options: () => ({ title: '', custom: true, autoPan: true }),
   content: () => iw3Content.value,
+  events: {
+    close: () => { iw3Label.value = ''; },
+  },
 });
 
-/** 构建完整自定义 UI 的 HTML：自绘标题栏 + 关闭按钮 + 内容 */
+/** 构建完整自定义 UI 的 HTML（无 onclick——改用 InfoWindow 内置关闭按钮 + close 事件） */
 function buildCustom(title: string, color: string, coord: [number, number]) {
   return `<div style="min-width:170px;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.15)">
-    <div style="background:${color};color:#fff;padding:5px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
-      <span>${title}</span>
-      <span style="cursor:pointer;font-size:16px;line-height:1" onclick="document.mtIwClose?.()">×</span>
+    <div style="background:${color};color:#fff;padding:5px 10px;font-size:13px;font-weight:600">
+      ${title}
     </div>
     <div style="background:#fff;padding:6px 10px;font-size:12px;color:#374151">
       [${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]
+      <br><span style="font-size:11px;color:#9ca3af">点地图空白处或内置 × 关闭</span>
     </div>
   </div>`;
 }
 
-/** 打开带自定义 UI 的信息框，注入关闭回调 */
 function openCustom(label: string, color: string, coord: [number, number]) {
   iw3Label.value = label;
   iw3Content.value = buildCustom(label, color, coord);
-  (window as unknown as Record<string, (() => void) | undefined>).mtIwClose = () => hide3();
   show3(coord);
 }
+
+// 点击地图空白处关闭信息框（替代无法生效的内联 onclick 关闭按钮）
+useMaptalksEvents(map3, {
+  click: () => { hide3(); },
+});
 
 useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
-  events: { click: () => openCustom('东门店 A', '#2563eb', [121.47, 31.23]) },
+  events: { click: (e: unknown) => { (e as { domEvent?: { stopPropagation?: () => void } })?.domEvent?.stopPropagation?.(); openCustom('东门店 A', '#2563eb', [121.47, 31.23]); } },
 });
 useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
-  events: { click: () => openCustom('西门店 B', '#dc2626', [121.5, 31.24]) },
+  events: { click: (e: unknown) => { (e as { domEvent?: { stopPropagation?: () => void } })?.domEvent?.stopPropagation?.(); openCustom('西门店 B', '#dc2626', [121.5, 31.24]); } },
 });
 useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
-  events: { click: () => openCustom('南门店 C', '#16a34a', [121.52, 31.22]) },
+  events: { click: (e: unknown) => { (e as { domEvent?: { stopPropagation?: () => void } })?.domEvent?.stopPropagation?.(); openCustom('南门店 C', '#16a34a', [121.52, 31.22]); } },
 });
 </script>
