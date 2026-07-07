@@ -19,10 +19,18 @@
         <div ref="elB" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
       </div>
       <template #footer>
-        <div class="flex gap-2 items-center">
-          <UButton size="sm" @click="sync.enable()">启用同步</UButton>
-          <UButton size="sm" color="neutral" @click="sync.disable()">停用同步</UButton>
-          <span class="text-sm text-muted">拖动/缩放任一张地图，另一张会跟随（mutual 双向）。当前：{{ sync.isEnabled.value ? '已启用' : '已停用' }}</span>
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-2 items-center flex-wrap">
+            <UButton size="sm" @click="sync.enable()">启用同步</UButton>
+            <UButton size="sm" color="neutral" @click="sync.disable()">停用同步</UButton>
+            <UButton size="sm" :color="slaveLocked ? 'error' : 'neutral'" variant="soft" @click="toggleSlaveLock">
+              {{ slaveLocked ? '解锁从图交互' : '禁用从图交互' }}
+            </UButton>
+          </div>
+          <span class="text-sm text-muted">
+            双向 mutual，实时同步（moving/zooming 每帧跟，<code>setView</code> 原子写入）。{{ sync.isEnabled.value ? '已启用' : '已停用' }}。
+            {{ slaveLocked ? '从图交互已禁用（模拟官网主从效果）。' : '从图交互已解锁，可自由操作。' }}
+          </span>
         </div>
       </template>
     </UCard>
@@ -69,6 +77,19 @@ useMaptalksTileLayer(mapA, { source: 'osm' });
 useMaptalksTileLayer(mapB, { source: 'osm' });
 // useMaptalksSync 会在地图异步就绪后自动（重）绑定，直接用即可
 const sync = useMaptalksSync([mapA, mapB], { mode: 'mutual' });
+
+// 模拟官网「主从」效果：禁用从图（右图）的用户交互，只让它被动跟随
+const slaveLocked = ref(false);
+/** 切换从图交互开关（config 修改 draggable/scrollWheelZoom/dblClickZoom） */
+function toggleSlaveLock() {
+  slaveLocked.value = !slaveLocked.value;
+  const m = mapB.value as unknown as { config(opts: Record<string, boolean>): void } | null;
+  m?.config({
+    draggable: !slaveLocked.value,
+    scrollWheelZoom: !slaveLocked.value,
+    dblClickZoom: !slaveLocked.value,
+  });
+}
 
 // —— 卡片 2：序列化 + 导出 + 图层控制 ——
 const elC = ref<HTMLElement | null>(null);
