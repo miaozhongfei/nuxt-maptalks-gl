@@ -10,8 +10,9 @@ import type {
   UseMaptalksSyncReturn,
 } from '../types';
 
-/** 默认监听的视图变更事件 */
-const DEFAULT_SYNC_EVENTS = 'moveend zoomend pitch rotate';
+/** 默认监听的视图变更事件：同时包含过程事件（moving/zooming，每帧触发实时同步）
+    与结束事件（moveend/zoomend，操作结束兜底确保最终一致性） */
+const DEFAULT_SYNC_EVENTS = 'moving moveend zooming zoomend pitch rotate';
 /** 默认参与同步的维度 */
 const DEFAULT_FIELDS: MaptalksSyncField[] = ['center', 'zoom', 'pitch', 'bearing'];
 
