@@ -130,3 +130,25 @@ describe('useMaptalksSync 解析与生命周期', () => {
     expect(a.map.off).toHaveBeenCalled();
   });
 });
+
+describe('useMaptalksSync 异步地图', () => {
+  it('地图异步就绪后自动（重）绑定（配合 useMaptalks 异步创建）', async () => {
+    const a = fakeMap({ ...view(), zoom: 8 });
+    const b = fakeMap(view());
+    // 初始为 null，模拟 useMaptalks 尚未创建完成
+    const refA = shallowRef<MaptalksMap | null>(null);
+    const refB = shallowRef<MaptalksMap | null>(null);
+    const scope = effectScope();
+    scope.run(() => useMaptalksSync([refA, refB]));
+    // 地图未就绪时不应绑定任何事件
+    expect(a.map.on).not.toHaveBeenCalled();
+    // 地图异步就绪
+    refA.value = a.map;
+    refB.value = b.map;
+    await nextTick();
+    // 此时应已自动绑定：触发 a 的事件应同步到 b
+    a.handlers[0]!();
+    expect(b.setZoom).toHaveBeenCalledWith(8);
+    scope.stop();
+  });
+});

@@ -67,20 +67,8 @@ const { map: mapA } = useMaptalks(elA, { center, zoom: 11 });
 const { map: mapB } = useMaptalks(elB, { center: [121.51, 31.245], zoom: 11 });
 useMaptalksTileLayer(mapA, { source: 'osm' });
 useMaptalksTileLayer(mapB, { source: 'osm' });
+// useMaptalksSync 会在地图异步就绪后自动（重）绑定，直接用即可
 const sync = useMaptalksSync([mapA, mapB], { mode: 'mutual' });
-// 注意：useMaptalksSync 在 setup 阶段就会 enable()，但此时 useMaptalks 的两张地图
-// 还未异步创建完成（为 null），事件绑定不到真正的地图实例。等两张地图都就绪后，
-// disable + enable 重新绑定一次，同步才真正生效。
-watch(
-  [mapA, mapB],
-  ([a, b]) => {
-    if (a && b) {
-      sync.disable();
-      sync.enable();
-    }
-  },
-  { immediate: true },
-);
 
 // —— 卡片 2：序列化 + 导出 + 图层控制 ——
 const elC = ref<HTMLElement | null>(null);

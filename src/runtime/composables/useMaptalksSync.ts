@@ -1,4 +1,4 @@
-import { nextTick, onScopeDispose, ref, toValue } from 'vue';
+import { nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../core/errors';
@@ -143,10 +143,76 @@ function collectBindTargets(
 }
 
 /**
+ * 在当前作用域内绑定多图同步：创建 enable/disable/rebind 与地图就绪监听，返回同步句柄。
+ *
+ * @description 抽离自 useMaptalksSync 以控制函数体量。enable/disable 切换 isEnabled 并（解）绑定；
+ * 通过 watch 监听地图实例就绪/变化，enabled 时自动（重）绑定；作用域销毁时停止监听并解绑。
+ * @param {MapGetter[]} getters - 参与同步地图的 getter 数组
+ * @param {'mutual' | 'master-slave'} mode - 同步模型
+ * @param {MapGetter | null} masterGetter - 主图 getter（master-slave 时有效）
+ * @param {MaptalksSyncField[]} fields - 参与同步的维度
+ * @param {string} events - 监听的视图变更事件
+ * @returns {UseMaptalksSyncReturn} `{ enable, disable, isEnabled }`
+ *
+ * @example
+ * const handle = bindSync(getters, 'mutual', null, ['zoom'], 'zoomend');
+ */
+function bindSync(
+  getters: MapGetter[],
+  mode: 'mutual' | 'master-slave',
+  masterGetter: MapGetter | null,
+  fields: MaptalksSyncField[],
+  events: string,
+): UseMaptalksSyncReturn {
+  const isEnabled = ref(false);
+  const state: SyncState = { syncing: false };
+  const bound: Array<{ map: MaptalksMap; handler: () => void }> = [];
+  const syncFrom = createSyncRunner(getters, mode, masterGetter, fields, state);
+  /** 解绑当前所有已绑定的事件 */
+  function unbind(): void {
+    for (const { map, handler } of bound) map.off(events, handler);
+    bound.length = 0;
+  }
+  /** 按当前可用地图（重）绑定事件；未启用时仅解绑 */
+  function rebind(): void {
+    unbind();
+    if (!isEnabled.value) return;
+    for (const m of collectBindTargets(getters, mode, masterGetter)) {
+      const handler = () => syncFrom(m);
+      m.on(events, handler);
+      bound.push({ map: m, handler });
+    }
+  }
+  const enable = (): void => {
+    isEnabled.value = true;
+    rebind();
+  };
+  const disable = (): void => {
+    isEnabled.value = false;
+    unbind();
+  };
+  // 监听参与地图实例的就绪/变化：地图异步创建完成后自动（重）绑定
+  const stopWatch = watch(
+    () => getters.map((g) => g()),
+    () => {
+      if (isEnabled.value) rebind();
+    },
+    { immediate: true },
+  );
+  enable();
+  onScopeDispose(() => {
+    stopWatch();
+    disable();
+  });
+  return { enable, disable, isEnabled };
+}
+
+/**
  * 多图视图同步（双向 mutual 或主从 master-slave）。
  *
  * @description 监听各地图的视图变更事件，把变更同步到其余地图，用门闩防回环。
  * mutual：任一地图变更驱动其余；master-slave：仅主图变更驱动从图。默认即启用，作用域销毁自动解绑。
+ * 通过内部 watch 监听地图实例就绪：配合 useMaptalks 的异步创建，地图就绪后会自动（重）绑定。
  * @param {Array<MaybeRefOrGetter<MaptalksMap | null> | string>} maps - 地图实例引用或注册表名数组
  * @param {UseMaptalksSyncOptions} [options] - 同步模型 / 主图 / 维度 / 事件
  * @returns {UseMaptalksSyncReturn} `{ enable, disable, isEnabled }`
@@ -164,29 +230,5 @@ export function useMaptalksSync(
   const events = options.events ?? DEFAULT_SYNC_EVENTS;
   const getters = maps.map((entry) => toGetter(entry));
   const masterGetter = resolveMasterGetter(mode, options.master);
-  const isEnabled = ref(false);
-  const state: SyncState = { syncing: false };
-  const bound: Array<{ map: MaptalksMap; handler: () => void }> = [];
-  const syncFrom = createSyncRunner(getters, mode, masterGetter, fields, state);
-
-  function enable(): void {
-    if (isEnabled.value) return;
-    for (const m of collectBindTargets(getters, mode, masterGetter)) {
-      const handler = () => syncFrom(m);
-      m.on(events, handler);
-      bound.push({ map: m, handler });
-    }
-    isEnabled.value = true;
-  }
-
-  function disable(): void {
-    for (const { map, handler } of bound) map.off(events, handler);
-    bound.length = 0;
-    isEnabled.value = false;
-  }
-
-  enable();
-  onScopeDispose(disable);
-
-  return { enable, disable, isEnabled };
+  return bindSync(getters, mode, masterGetter, fields, events);
 }
