@@ -168,26 +168,31 @@ function openCustom(label: string, color: string, coord: [number, number]) {
   iw3Label.value = label;
   iw3Content.value = buildCustom(label, color, coord);
   show3(coord);
-  // show() 之后 DOM 已创建，用原生 addEventListener 给关闭按钮绑事件（onclick 在 setContent HTML 中不生效）
-  nextTick(() => {
+  // maptalks 的 show() 异步构建 DOM（不在 Vue 调度内），用 setTimeout 等 DOM 就绪后绑关闭按钮事件
+  setTimeout(() => {
     const btn = document.querySelector('.mt-iw-close-btn') as HTMLElement | null;
     if (btn) btn.addEventListener('click', () => hide3(), { once: true });
-  });
+  }, 50);
 }
+
+// 点击地图非 Marker 区域关闭信息框（阻止它跟随点击移动）
+useMaptalksEvents(map3, {
+  click: () => { hide3(); },
+});
 
 useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
-  events: { click: () => openCustom('东门店 A', '#2563eb', [121.47, 31.23]) },
+  events: { click: (e: unknown) => { (e as { domEvent?: Event })?.domEvent?.stopPropagation(); openCustom('东门店 A', '#2563eb', [121.47, 31.23]); } },
 });
 useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
-  events: { click: () => openCustom('西门店 B', '#dc2626', [121.5, 31.24]) },
+  events: { click: (e: unknown) => { (e as { domEvent?: Event })?.domEvent?.stopPropagation(); openCustom('西门店 B', '#dc2626', [121.5, 31.24]); } },
 });
 useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
-  events: { click: () => openCustom('南门店 C', '#16a34a', [121.52, 31.22]) },
+  events: { click: (e: unknown) => { (e as { domEvent?: Event })?.domEvent?.stopPropagation(); openCustom('南门店 C', '#16a34a', [121.52, 31.22]); } },
 });
 </script>
