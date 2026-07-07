@@ -39,14 +39,19 @@
     <UCard class="mb-6">
       <template #header>
         <div class="flex items-center gap-2 flex-wrap">
-          <h2 class="font-semibold">marker.setInfoWindow() · 每个 Marker 独立信息框 · 自定义 UI</h2>
+          <h2 class="font-semibold">真正的自定义 UI 信息框（自定义标题栏+关闭按钮）</h2>
           <UBadge color="primary" variant="subtle">composable</UBadge>
-          <UBadge color="neutral" variant="outline">官网 10.5</UBadge>
+          <UBadge color="neutral" variant="outline">官网 10.6</UBadge>
         </div>
       </template>
+      <p class="text-sm text-muted mb-2">
+        <code>useMaptalksInfoWindow</code> 的 <code>options</code> 中 <code>{ title: '' }</code>
+        隐藏 maptalks 默认标题栏；content 用完整 HTML 自绘标题栏+关闭按钮，
+        实现<strong>真正的自定义 UI</strong>（非只填内容，而是完全掌控信息框的视觉结构）。
+      </p>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <span class="text-sm text-muted">操作：点击 3 个 Marker 分别弹出各自独立的信息框（蓝色=店 A、红色=店 B、绿色=店 C），含自定义 HTML 内容和样式。</span>
+        <span class="text-sm text-muted">操作：点击 3 个 Marker 分别弹出不同自定义 UI 信息框（带自绘标题栏+关闭按钮），完全自己掌控视觉。当前开启：{{ iw3Label || '—' }}</span>
       </template>
     </UCard>
   </div>
@@ -130,53 +135,55 @@ useMaptalksMarker(vec2, {
   events: { click: () => { mk2Label.value = '—'; hide2(); } },
 });
 
-// ====== 卡片 3：marker.setInfoWindow() 原生模式 ======
+// ====== 卡片 3：真正的自定义 UI（title 设 '' + content 自己画标题栏 + 关闭按钮） ======
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
 const { layer: vec3 } = useMaptalksVectorLayer(map3);
 
-// maptalks 原生的 Marker 接口（geometry 即原生 Marker 实例，有 setInfoWindow/openInfoWindow/closeInfoWindow）
-interface NativeMarker {
-  setInfoWindow(opts: { title: string; content: string; width?: number; height?: number; autoPan?: boolean }): void;
-  openInfoWindow(): void;
-  closeInfoWindow(): void;
+const iw3Label = ref('');
+// 3 个 Marker 共用一个 useMaptalksInfoWindow，通过 content 响应式切换模拟"多个独立信息框"
+const iw3Content = ref('');
+const { show: show3, hide: hide3 } = useMaptalksInfoWindow(map3, {
+  // title 设 '' —— 隐藏 maptalks 默认标题栏，由我们自己在 content 里画
+  options: () => ({ title: '', autoPan: true }),
+  content: () => iw3Content.value,
+});
+
+/** 构建完整自定义 UI 的 HTML：自绘标题栏 + 关闭按钮 + 内容 */
+function buildCustom(title: string, color: string, coord: [number, number]) {
+  return `<div style="min-width:170px;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.15)">
+    <div style="background:${color};color:#fff;padding:5px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
+      <span>${title}</span>
+      <span style="cursor:pointer;font-size:16px;line-height:1" onclick="document.mtIwClose?.()">×</span>
+    </div>
+    <div style="background:#fff;padding:6px 10px;font-size:12px;color:#374151">
+      [${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]
+    </div>
+  </div>`;
 }
 
-/** 给一个 Marker 配置独立的信息框（每个 Marker 自己的，带自定义 HTML 内容和样式） */
-function setupMarkerIW(geo: ReturnType<typeof useMaptalksMarker>['geometry'], title: string, label: string, color: string) {
-  watch(geo, (g) => {
-    if (!g) return;
-    const m = g as unknown as NativeMarker;
-    m.setInfoWindow({
-      title,
-      content:
-        `<div style="padding:6px 10px;min-width:150px;font-size:13px">
-          <strong style="color:${color}">${label}</strong>
-          <p style="font-size:12px;color:#374151;margin:4px 0 0">这是 marker.setInfoWindow() 创建的本 Marker 独立信息框。</p>
-          <p style="font-size:11px;color:#9ca3af;margin:2px 0 0">maptalks 原生 API，每个 Marker 可独立配置。</p>
-        </div>`,
-    });
-    // 点击直接打开本 Marker 的信息框（不再用坐标操控全局 InfoWindow）
-    g.on('click', () => m.openInfoWindow());
-  });
+/** 打开带自定义 UI 的信息框，注入关闭回调 */
+function openCustom(label: string, color: string, coord: [number, number]) {
+  iw3Label.value = label;
+  iw3Content.value = buildCustom(label, color, coord);
+  (window as unknown as Record<string, (() => void) | undefined>).mtIwClose = () => hide3();
+  show3(coord);
 }
 
-const { geometry: gA } = useMaptalksMarker(vec3, {
+useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
+  events: { click: () => openCustom('东门店 A', '#2563eb', [121.47, 31.23]) },
 });
-setupMarkerIW(gA, '店 A', '东门店 A', '#2563eb');
-
-const { geometry: gB } = useMaptalksMarker(vec3, {
+useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+  events: { click: () => openCustom('西门店 B', '#dc2626', [121.5, 31.24]) },
 });
-setupMarkerIW(gB, '店 B', '西门店 B', '#dc2626');
-
-const { geometry: gC } = useMaptalksMarker(vec3, {
+useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
+  events: { click: () => openCustom('南门店 C', '#16a34a', [121.52, 31.22]) },
 });
-setupMarkerIW(gC, '店 C', '南门店 C', '#16a34a');
 </script>
