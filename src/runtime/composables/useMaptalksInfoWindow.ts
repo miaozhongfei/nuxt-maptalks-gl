@@ -116,7 +116,7 @@ export function useMaptalksInfoWindow(
       bindEvents(iw, events);
       infoWindow.value = iw;
       const c = toValue(opts.content); if (c !== undefined) iw.setContent(c);
-      const coord = toValue(opts.coordinates); if (coord !== undefined) iw.show(coord);
+      // show 由 MaptalksInfoWindow 组件在 mountSlotContent 之后统一调用，避免双重 show 导致 buildOn 重复构建
     } catch (cause) {
       logger.error('InfoWindow 创建失败', toMaptalksError(cause, 'control-failed', 'InfoWindow 创建失败'));
     } finally {
