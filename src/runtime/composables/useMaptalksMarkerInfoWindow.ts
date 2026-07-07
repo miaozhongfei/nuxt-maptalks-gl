@@ -103,6 +103,23 @@ function unbindEvents(marker: NativeMarker, events: Record<string, MaptalksEvent
  * });
  * // 点击该 Marker 时自动弹出（由 useMaptalksMarker 的 events.click 控制）
  */
+
+/** 从选项构建原生 setInfoWindow 入参（抽出以减少主函数体量） */
+function buildMarkerIWOptions(opts: UseMaptalksMarkerInfoWindowOptions): MarkerInfoWindowOptions {
+  const result: MarkerInfoWindowOptions = {};
+  const t = toValue(opts.title); if (t !== undefined) result.title = t;
+  const c = toValue(opts.content); if (c !== undefined) result.content = c;
+  if (opts.width !== undefined) result.width = opts.width;
+  if (opts.height !== undefined) result.height = opts.height;
+  if (opts.custom !== undefined) result.custom = opts.custom;
+  if (opts.autoPan !== undefined) result.autoPan = opts.autoPan;
+  if (opts.single !== undefined) result.single = opts.single;
+  if (opts.animation !== undefined) result.animation = opts.animation;
+  if (opts.dx !== undefined) result.dx = opts.dx;
+  if (opts.dy !== undefined) result.dy = opts.dy;
+  return result;
+}
+
 export function useMaptalksMarkerInfoWindow(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
   opts: UseMaptalksMarkerInfoWindowOptions = {},
@@ -110,38 +127,19 @@ export function useMaptalksMarkerInfoWindow(
   const events = opts.events ?? {};
   const hasSet = shallowRef(false);
 
-  /** 构建 setInfoWindow 的选项对象 */
-  function buildOptions(): MarkerInfoWindowOptions {
-    const result: MarkerInfoWindowOptions = {};
-    const t = toValue(opts.title); if (t !== undefined) result.title = t;
-    const c = toValue(opts.content); if (c !== undefined) result.content = c;
-    if (opts.width !== undefined) result.width = opts.width;
-    if (opts.height !== undefined) result.height = opts.height;
-    if (opts.custom !== undefined) result.custom = opts.custom;
-    if (opts.autoPan !== undefined) result.autoPan = opts.autoPan;
-    if (opts.single !== undefined) result.single = opts.single;
-    if (opts.animation !== undefined) result.animation = opts.animation;
-    if (opts.dx !== undefined) result.dx = opts.dx;
-    if (opts.dy !== undefined) result.dy = opts.dy;
-    return result;
-  }
-
-  /** 对原生 Marker 调用 setInfoWindow 并绑定事件 */
-  function setup(marker: NativeMarker): void {
-    try {
-      marker.setInfoWindow(buildOptions());
-      bindEvents(marker, events);
-      hasSet.value = true;
-    } catch (cause) {
-      logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败'));
-    }
-  }
-
   // 几何就绪时配置信息框
   watch(
     () => toValue(geometry) as NativeMarker | null,
     (m) => {
-      if (m && !hasSet.value) setup(m);
+        if (m && !hasSet.value) {
+          try {
+            m.setInfoWindow(buildMarkerIWOptions(opts));
+            bindEvents(m, events);
+            hasSet.value = true;
+          } catch (cause) {
+            logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败'));
+          }
+        }
     },
     { immediate: true },
   );
@@ -152,19 +150,13 @@ export function useMaptalksMarkerInfoWindow(
     () => {
       const m = toValue(geometry) as NativeMarker | null;
       if (m && hasSet.value) {
-        m.setInfoWindow(buildOptions());
+        m.setInfoWindow(buildMarkerIWOptions(opts));
       }
     },
   );
 
-  function open(): void {
-    (toValue(geometry) as NativeMarker | null)?.openInfoWindow();
-  }
-
-  function close(): void {
-    (toValue(geometry) as NativeMarker | null)?.closeInfoWindow();
-  }
-
+  const open = (): void => { (toValue(geometry) as NativeMarker | null)?.openInfoWindow(); };
+  const close = (): void => { (toValue(geometry) as NativeMarker | null)?.closeInfoWindow(); };
   function remove(): void {
     const m = toValue(geometry) as NativeMarker | null;
     if (m && hasSet.value) {

@@ -92,6 +92,24 @@ function unbindEvents(iw: MaptalksInfoWindow, events: Record<string, MaptalksEve
  * // 在 marker click 中：
  * show(markerCoord.value);
  */
+
+/** 移除 InfoWindow 实例并清理 watcher，路由切换时地图可能已销毁，对 remove 用 try-catch 兜底 */
+function removeIW(
+  infoWindow: ShallowRef<MaptalksInfoWindow | null>,
+  s1: () => void,
+  s2: () => void,
+  events: Record<string, MaptalksEventHandler>,
+): void {
+  s1(); s2();
+  const iw = infoWindow.value;
+  if (!iw) return;
+  unbindEvents(iw, events);
+  // 路由切换/组件卸载时地图可能已销毁，hide→_updatePosition 会报错，用 try-catch 兜底
+  try { iw.remove(); } catch {
+    /* 忽略因地图销毁导致的清理报错 */
+  }
+  infoWindow.value = null;
+}
 export function useMaptalksInfoWindow(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksInfoWindowOptions = {},
@@ -132,17 +150,6 @@ export function useMaptalksInfoWindow(
   function show(coord?: unknown): void { infoWindow.value?.show(coord); }
   function hide(): void { infoWindow.value?.hide(); }
 
-  function remove(): void {
-    stop1(); stop2();
-    if (infoWindow.value) {
-      unbindEvents(infoWindow.value, events);
-      // 路由切换 / 组件卸载时地图可能已销毁，remove() 内部的 hide() → _updatePosition
-      // 会因丢失地图引用而报错，这里用 try-catch 兜底
-      try { infoWindow.value.remove(); } catch { /* 地图已销毁，忽略 */ }
-      infoWindow.value = null;
-    }
-  }
-
-  if (opts.autoDispose !== false) onScopeDispose(remove);
-  return { infoWindow, show, hide, remove };
+  if (opts.autoDispose !== false) onScopeDispose(() => removeIW(infoWindow, stop1, stop2, events));
+  return { infoWindow, show, hide, remove: () => removeIW(infoWindow, stop1, stop2, events) };
 }
