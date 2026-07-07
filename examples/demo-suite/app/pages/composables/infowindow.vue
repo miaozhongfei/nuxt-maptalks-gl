@@ -133,9 +133,20 @@ interface NativeMarker { openInfoWindow(): void; closeInfoWindow(): void; }
 
 function mkContent(title: string, color: string, coord: [number, number]): string {
   return `<div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
-    <div style="background:${color};color:#fff;padding:4px 10px;font-size:13px;font-weight:600">${title}</div>
+    <div style="background:${color};color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
+      <span>${title}</span>
+      <span class="mt-mk-iw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span>
+    </div>
     <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</div>
   </div>`;
+}
+
+/** 给自定义关闭按钮绑真实事件（onclick 在 setInfoWindow 的 HTML 字符串中不生效） */
+function bindCloseBtn(g: typeof gA) {
+  setTimeout(() => {
+    const btn = document.querySelector('.mt-mk-iw-close') as HTMLElement | null;
+    if (btn) btn.addEventListener('click', () => { (toValue(g) as unknown as NativeMarker)?.closeInfoWindow(); iw3Label.value = ''; }, { once: true });
+  }, 50);
 }
 
 const gA = useMaptalksMarker(vec3, {
@@ -144,7 +155,7 @@ const gA = useMaptalksMarker(vec3, {
 }).geometry;
 useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { (toValue(gA) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '东门店 A'; },
+  click: () => { (toValue(gA) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '东门店 A'; bindCloseBtn(gA); },
 });
 
 const gB = useMaptalksMarker(vec3, {
@@ -153,7 +164,7 @@ const gB = useMaptalksMarker(vec3, {
 }).geometry;
 useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { (toValue(gB) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '西门店 B'; },
+  click: () => { (toValue(gB) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '西门店 B'; bindCloseBtn(gB); },
 });
 
 const gC = useMaptalksMarker(vec3, {
@@ -162,6 +173,6 @@ const gC = useMaptalksMarker(vec3, {
 }).geometry;
 useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { (toValue(gC) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '南门店 C'; },
+  click: () => { (toValue(gC) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '南门店 C'; bindCloseBtn(gC); },
 });
 </script>
