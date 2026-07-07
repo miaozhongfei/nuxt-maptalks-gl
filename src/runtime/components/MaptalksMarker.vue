@@ -1,10 +1,10 @@
 <template><!-- maptalks marker · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
+import { inject, provide } from 'vue'
 
 import { useMaptalksMarker } from '../composables/presets/useMaptalksMarker'
-import { GEOMETRY_LAYER_KEY } from '../core/map-context'
+import { GEOMETRY_LAYER_KEY, MARKER_GEOMETRY_KEY } from '../core/map-context'
 import type { MarkerCoordinates } from '../types'
 
 const props = withDefaults(
@@ -27,7 +27,7 @@ const emit = defineEmits<{
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksMarker 必须在 MaptalksVectorLayer 内使用')
-useMaptalksMarker(layer, {
+const { geometry } = useMaptalksMarker(layer, {
   coordinates: () => props.coordinates,
   symbol: () => props.symbol,
   properties: () => props.properties,
@@ -39,5 +39,7 @@ useMaptalksMarker(layer, {
     mouseenter: (e) => emit('mouseenter', e),
     mouseout: (e) => emit('mouseout', e),
   },
-});
+})
+// 向子组件（如 MaptalksMarkerInfoWindow）提供 geometry 引用
+provide(MARKER_GEOMETRY_KEY, geometry)
 </script>

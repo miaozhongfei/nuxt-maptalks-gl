@@ -50,6 +50,7 @@ describe('geometry components', () => {
   const layerProvide = { [GEOMETRY_LAYER_KEY]: shallowRef<MVL | null>({} as MVL) };
 
   it('MaptalksMarker 注入 layer 并调用 useMaptalksMarker', () => {
+    marker.mockReturnValue({ geometry: shallowRef(null) });
     const wrapper = mount(MaptalksMarker, {
       props: { coordinates: [1, 2] },
       global: { provide: layerProvide },

@@ -142,7 +142,7 @@ const gA = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gA, { title: '东门店 A', content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
+useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { (toValue(gA) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '东门店 A'; },
 });
@@ -151,7 +151,7 @@ const gB = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gB, { title: '西门店 B', content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
+useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { (toValue(gB) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '西门店 B'; },
 });
@@ -160,7 +160,7 @@ const gC = useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gC, { title: '南门店 C', content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
+useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { (toValue(gC) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '南门店 C'; },
 });
