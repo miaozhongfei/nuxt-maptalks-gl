@@ -89,6 +89,8 @@
 </template>
 
 <script setup lang="ts">
+import type { MaptalksCoordinate } from '@lacqjs/nuxt-maptalks-gl';
+
 const center: [number, number] = [121.4737, 31.2304];
 
 /** 格式化经纬度显示 */
@@ -113,12 +115,14 @@ useMaptalksEvents(mainMap, {
 
 const coord = useMaptalksCoordinate();
 const centerPixel = ref('（点按钮转换）');
-/** 把地图中心的地理坐标转换为容器内屏幕像素 */
+/** 把地图中心的地理坐标转换为容器内屏幕像素（用 map.getCenter() 拿真正的 Coordinate 对象） */
 function convertCenter() {
   const m = mainMap.value;
   if (!m) return;
-  const pt = coord.toContainerPoint(m, center) as { x: number; y: number } | null;
-  if (pt) centerPixel.value = `(${Math.round(pt.x)}, ${Math.round(pt.y)}) px`;
+  // maptalks 的 coordinateToContainerPoint 需要 Coordinate 对象（含 x/y），不能传普通数组
+  const c = (m as unknown as { getCenter(): MaptalksCoordinate }).getCenter();
+  const pt = coord.toContainerPoint(m, c) as { x: number; y: number } | null;
+  if (pt && Number.isFinite(pt.x)) centerPixel.value = `(${Math.round(pt.x)}, ${Math.round(pt.y)}) px`;
 }
 /** 平滑过渡到陆家嘴 */
 function flyToLujiazui() {
