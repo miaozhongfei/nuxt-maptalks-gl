@@ -14,9 +14,9 @@
           <UBadge color="neutral" variant="outline">官网 10.4 / 10.6 / 10.10</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" @ready="onReady">
+      <!-- 通过 template ref 拿 MaptalksMap 的 expose.map，再经 computed 传给 useMaptalksEvents -->
+      <MaptalksMap ref="mapCmp" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px">
         <MaptalksTileLayer source="osm" />
-        <!-- 信息框：点击地图后更新坐标并显示；插槽内是自定义 Vue 内容 -->
         <MaptalksInfoWindow :coordinates="iwCoord" :visible="iwVisible">
           <div style="padding: 8px 12px; min-width: 160px">
             <strong style="color: #2563eb">自定义信息框</strong>
@@ -29,7 +29,7 @@
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">
-          操作：点击地图任意位置，信息框弹出。当前 iwCoord = [{{ iwCoord[0].toFixed(5) }}, {{ iwCoord[1].toFixed(5) }}]（和插槽内坐标应对齐）
+          操作：点击地图任意位置，信息框弹出。当前坐标 = [{{ iwCoord[0].toFixed(5) }}, {{ iwCoord[1].toFixed(5) }}]
         </span>
       </template>
     </UCard>
@@ -37,16 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl';
-
 const center: [number, number] = [121.4737, 31.2304];
 const iwCoord = ref<[number, number]>([121.4737, 31.2304]);
 const iwVisible = ref(false);
 
-// 地图就绪信号
-const mapRef = shallowRef<MtMap | null>(null);
-
-// 事件绑定：地图就绪（ref 从 null 变为 map）时自动绑定 click，自动解绑
+// 通过 MaptalksMap 的 expose 拿 map ref，经 computed 传给 useMaptalksEvents
+const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+const mapRef = computed(() => mapCmp.value?.map ?? null);
 useMaptalksEvents(mapRef, {
   click: (e: unknown) => {
     const ev = e as { coordinate: { x: number; y: number } };
@@ -54,8 +51,4 @@ useMaptalksEvents(mapRef, {
     iwVisible.value = true;
   },
 });
-
-function onReady(map: MtMap) {
-  mapRef.value = map;
-}
 </script>
