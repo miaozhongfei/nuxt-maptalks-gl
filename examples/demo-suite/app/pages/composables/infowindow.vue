@@ -51,7 +51,12 @@
       </p>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <span class="text-sm text-muted">操作：点蓝/红/绿 Marker 分别弹出各自的信息框（带自绘标题栏）。当前：{{ iw3Label || '—' }}</span>
+        <div class="flex gap-2 items-center flex-wrap">
+          <UButton size="sm" :color="autoClose ? 'success' : 'neutral'" variant="soft" @click="autoClose = !autoClose">
+            点别处自动关闭：{{ autoClose ? '开' : '关' }}
+          </UButton>
+          <span class="text-sm text-muted">当前开启：{{ iw3Label || '—' }}</span>
+        </div>
       </template>
     </UCard>
   </div>
@@ -131,6 +136,10 @@ const iw3Label = ref('');
 // 原生 Marker 接口
 interface NativeMarker { openInfoWindow(): void; closeInfoWindow(): void; }
 
+// Marker 点击后 250ms 内无视 map click（防止 open→close 同帧冲突）
+let mkOpenTime = 0;
+let curOpen: NativeMarker | null = null;
+
 function mkContent(title: string, color: string, coord: [number, number]): string {
   return `<div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
     <div style="background:${color};color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
@@ -141,13 +150,25 @@ function mkContent(title: string, color: string, coord: [number, number]): strin
   </div>`;
 }
 
-/** 给自定义关闭按钮绑真实事件（onclick 在 setInfoWindow 的 HTML 字符串中不生效） */
 function bindCloseBtn(g: typeof gA) {
   setTimeout(() => {
     const btn = document.querySelector('.mt-mk-iw-close') as HTMLElement | null;
-    if (btn) btn.addEventListener('click', () => { (toValue(g) as unknown as NativeMarker)?.closeInfoWindow(); iw3Label.value = ''; }, { once: true });
+    if (btn) btn.addEventListener('click', () => { (toValue(g) as unknown as NativeMarker)?.closeInfoWindow(); iw3Label.value = ''; curOpen = null; }, { once: true });
   }, 50);
 }
+
+// 开关：点击地图空白处自动关闭信息框
+const autoClose = ref(true);
+
+// 点地图空白处关闭当前信息框（Marker 点击后 250ms 内屏蔽，防同帧冲突）
+useMaptalksEvents(map3, {
+  click: () => {
+    if (!autoClose.value || Date.now() - mkOpenTime < 250) return;
+    curOpen?.closeInfoWindow();
+    iw3Label.value = '';
+    curOpen = null;
+  },
+});
 
 const gA = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
@@ -155,7 +176,7 @@ const gA = useMaptalksMarker(vec3, {
 }).geometry;
 useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { (toValue(gA) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '东门店 A'; bindCloseBtn(gA); },
+  click: () => { curOpen = toValue(gA) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '东门店 A'; bindCloseBtn(gA); },
 });
 
 const gB = useMaptalksMarker(vec3, {
@@ -164,7 +185,7 @@ const gB = useMaptalksMarker(vec3, {
 }).geometry;
 useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { (toValue(gB) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '西门店 B'; bindCloseBtn(gB); },
+  click: () => { curOpen = toValue(gB) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '西门店 B'; bindCloseBtn(gB); },
 });
 
 const gC = useMaptalksMarker(vec3, {
@@ -173,6 +194,6 @@ const gC = useMaptalksMarker(vec3, {
 }).geometry;
 useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { (toValue(gC) as unknown as NativeMarker)?.openInfoWindow(); iw3Label.value = '南门店 C'; bindCloseBtn(gC); },
+  click: () => { curOpen = toValue(gC) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '南门店 C'; bindCloseBtn(gC); },
 });
 </script>
