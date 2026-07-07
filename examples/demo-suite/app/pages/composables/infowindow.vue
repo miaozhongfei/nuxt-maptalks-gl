@@ -16,7 +16,7 @@
       </template>
       <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <span class="text-sm text-muted">操作：点击地图弹出信息框，内容实时显示点击坐标+时刻。footer 显示事件日志：{{ eventLog || '（无事件）' }}</span>
+        <span class="text-sm text-muted">操作：点击地图弹出信息框，内容实时显示点击坐标+时刻。已点击次数：{{ clickCount1 }}</span>
       </template>
     </UCard>
 
@@ -65,14 +65,13 @@ const el1 = ref<HTMLElement | null>(null);
 const { map: map1 } = useMaptalks(el1, { center, zoom: 12 });
 useMaptalksTileLayer(map1, { source: 'osm' });
 
-const eventLog = ref('');
+const clickCount1 = ref(0);
 const iw1Content = ref('点击地图试试');
 
 const { show: show1, hide: hide1 } = useMaptalksInfoWindow(map1, {
   content: () => iw1Content.value,
   events: {
-    open: () => { eventLog.value = 'open 事件触发'; },
-    close: () => { eventLog.value = 'close 事件触发'; },
+    open: () => { clickCount1.value += 1; },
   },
 });
 
@@ -145,8 +144,8 @@ const iw3Label = ref('');
 // 3 个 Marker 共用一个 useMaptalksInfoWindow，通过 content 响应式切换模拟"多个独立信息框"
 const iw3Content = ref('');
 const { show: show3, hide: hide3 } = useMaptalksInfoWindow(map3, {
-  // title 设 '' —— 隐藏 maptalks 默认标题栏，由我们自己在 content 里画
-  options: () => ({ title: '', autoPan: true }),
+  // title 设 '' 隐藏默认标题，custom: true 禁用 maptalks 整个默认模板（白底、默认关闭按钮）
+  options: () => ({ title: '', custom: true, autoPan: true }),
   content: () => iw3Content.value,
 });
 
