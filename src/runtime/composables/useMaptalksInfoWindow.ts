@@ -134,7 +134,13 @@ export function useMaptalksInfoWindow(
 
   function remove(): void {
     stop1(); stop2();
-    if (infoWindow.value) { unbindEvents(infoWindow.value, events); infoWindow.value.remove(); infoWindow.value = null; }
+    if (infoWindow.value) {
+      unbindEvents(infoWindow.value, events);
+      // 路由切换 / 组件卸载时地图可能已销毁，remove() 内部的 hide() → _updatePosition
+      // 会因丢失地图引用而报错，这里用 try-catch 兜底
+      try { infoWindow.value.remove(); } catch { /* 地图已销毁，忽略 */ }
+      infoWindow.value = null;
+    }
   }
 
   if (opts.autoDispose !== false) onScopeDispose(remove);
