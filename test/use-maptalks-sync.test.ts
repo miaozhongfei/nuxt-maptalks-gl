@@ -12,35 +12,25 @@ interface View {
   bearing: number;
 }
 
-/** 假地图：可读视图、可被 setter 写入、可捕获事件 handler 以手动触发 */
+/** 假地图：可读视图、可被 setView 写入、可捕获事件 handler 以手动触发 */
 function fakeMap(v: View) {
   const handlers: Array<() => void> = [];
-  const setters = {
-    setCenter: vi.fn((c) => {
-      v.center = c;
-    }),
-    setZoom: vi.fn((z) => {
-      v.zoom = z;
-    }),
-    setPitch: vi.fn((p) => {
-      v.pitch = p;
-    }),
-    setBearing: vi.fn((b) => {
-      v.bearing = b;
-    }),
-  };
+  const setView = vi.fn((view: Partial<View>) => {
+    Object.assign(v, view);
+  });
   const map = {
     getCenter: () => v.center,
     getZoom: () => v.zoom,
     getPitch: () => v.pitch,
     getBearing: () => v.bearing,
+    getView: () => ({ center: v.center, zoom: v.zoom, pitch: v.pitch, bearing: v.bearing }),
+    setView,
     on: vi.fn((_ev: string, h: () => void) => {
       handlers.push(h);
     }),
     off: vi.fn(),
-    ...setters,
   } as unknown as MaptalksMap;
-  return { map, handlers, ...setters };
+  return { map, handlers, setView, view: v };
 }
 
 const view = (): View => ({ center: { x: 0, y: 0 }, zoom: 10, pitch: 0, bearing: 0 });
@@ -57,7 +47,8 @@ describe('useMaptalksSync mutual', () => {
       ]),
     );
     a.handlers[0]!();
-    expect(b.setZoom).toHaveBeenCalledWith(12);
+    expect(b.setView).toHaveBeenCalled();
+    expect(b.view.zoom).toBe(12);
     scope.stop();
   });
 
@@ -73,7 +64,7 @@ describe('useMaptalksSync mutual', () => {
     );
     a.handlers[0]!();
     b.handlers[0]!();
-    expect(a.setZoom).not.toHaveBeenCalled();
+    expect(a.setView).not.toHaveBeenCalled();
     await nextTick();
     scope.stop();
   });
@@ -91,7 +82,7 @@ describe('useMaptalksSync master-slave', () => {
       ),
     );
     m.handlers[0]!();
-    expect(s.setZoom).toHaveBeenCalledWith(9);
+    expect(s.view.zoom).toBe(9);
     scope.stop();
   });
 
@@ -116,7 +107,7 @@ describe('useMaptalksSync 解析与生命周期', () => {
     const scope = effectScope();
     scope.run(() => useMaptalksSync(['sync-a', 'sync-b']));
     a.handlers[0]!();
-    expect(b.setZoom).toHaveBeenCalledWith(7);
+    expect(b.view.zoom).toBe(7);
     scope.stop();
     mapRegistry.unregister('sync-a');
     mapRegistry.unregister('sync-b');
@@ -148,7 +139,7 @@ describe('useMaptalksSync 异步地图', () => {
     await nextTick();
     // 此时应已自动绑定：触发 a 的事件应同步到 b
     a.handlers[0]!();
-    expect(b.setZoom).toHaveBeenCalledWith(8);
+    expect(b.view.zoom).toBe(8);
     scope.stop();
   });
 });

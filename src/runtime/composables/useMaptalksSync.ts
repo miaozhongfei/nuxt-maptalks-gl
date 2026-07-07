@@ -42,7 +42,8 @@ function toGetter(entry: MaybeRefOrGetter<MaptalksMap | null> | string): MapGett
 /**
  * 把源地图的指定维度应用到目标地图。
  *
- * @description 按 fields 逐项把 source 的视图值写入 target。
+ * @description 用 setView 一次性原子设置视图（center/zoom/pitch/bearing），避免逐个 setCenter/setZoom
+ * 相互干扰（会出现平移能同步、缩放不同步的问题）。未参与的维度保持 target 当前值。
  * @param {MaptalksMap} target - 目标地图
  * @param {MaptalksMap} source - 源地图
  * @param {MaptalksSyncField[]} fields - 参与同步的维度
@@ -52,12 +53,16 @@ function toGetter(entry: MaybeRefOrGetter<MaptalksMap | null> | string): MapGett
  * applyFields(slave, master, ['center', 'zoom']);
  */
 function applyFields(target: MaptalksMap, source: MaptalksMap, fields: MaptalksSyncField[]): void {
-  for (const f of fields) {
-    if (f === 'center') target.setCenter(source.getCenter());
-    else if (f === 'zoom') target.setZoom(source.getZoom());
-    else if (f === 'pitch') target.setPitch(source.getPitch());
-    else if (f === 'bearing') target.setBearing(source.getBearing());
-  }
+  const s = source as unknown as { getView(): Record<string, unknown> };
+  const t = target as unknown as {
+    getView(): Record<string, unknown>;
+    setView(view: Record<string, unknown>): void;
+  };
+  const sv = s.getView();
+  // 以 target 当前视图为基底，仅覆盖参与同步的维度，再原子设置
+  const next: Record<string, unknown> = { ...t.getView() };
+  for (const f of fields) next[f] = sv[f];
+  t.setView(next);
 }
 
 /**
