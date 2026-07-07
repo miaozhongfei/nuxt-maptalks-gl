@@ -116,7 +116,7 @@ export function useMaptalksInfoWindow(
       bindEvents(iw, events);
       infoWindow.value = iw;
       const c = toValue(opts.content); if (c !== undefined) iw.setContent(c);
-      const coord = toValue(opts.coordinates); if (coord !== undefined) iw.setCoordinates(coord);
+      const coord = toValue(opts.coordinates); if (coord !== undefined) iw.show(coord);
     } catch (cause) {
       logger.error('InfoWindow 创建失败', toMaptalksError(cause, 'control-failed', 'InfoWindow 创建失败'));
     } finally {
@@ -128,8 +128,8 @@ export function useMaptalksInfoWindow(
   const stop1 = watch([() => toValue(map), () => toValue(opts.options)], reload, { immediate: true });
   // content 变化 → setContent
   const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
-  // coordinates 变化 → setCoordinates
-  const stop3 = watch(() => toValue(opts.coordinates), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setCoordinates(c); });
+  // coordinates 变化 → show（maptalks InfoWindow 没有 setCoordinates，坐标通过 show(coord) 传入）
+  const stop3 = watch(() => toValue(opts.coordinates), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.show(c); });
 
   function show(coord?: unknown): void { infoWindow.value?.show(coord); }
   function hide(): void { infoWindow.value?.hide(); }
