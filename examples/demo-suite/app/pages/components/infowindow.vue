@@ -28,7 +28,9 @@
         </MaptalksInfoWindow>
       </MaptalksMap>
       <template #footer>
-        <span class="text-sm text-muted">操作：点击地图任意位置，信息框会在落点弹出并显示坐标。</span>
+        <span class="text-sm text-muted">
+          操作：点击地图任意位置，信息框弹出。当前 iwCoord = [{{ iwCoord[0].toFixed(5) }}, {{ iwCoord[1].toFixed(5) }}]（和插槽内坐标应对齐）
+        </span>
       </template>
     </UCard>
   </div>
@@ -41,11 +43,19 @@ const center: [number, number] = [121.4737, 31.2304];
 const iwCoord = ref<[number, number]>([121.4737, 31.2304]);
 const iwVisible = ref(false);
 
-// 地图就绪后绑定点击事件：点击位置作为信息框坐标并打开
-function onReady(map: MtMap) {
-  map.on('click', (e: { coordinate: { x: number; y: number } }) => {
-    iwCoord.value = [e.coordinate.x, e.coordinate.y];
+// 地图就绪信号
+const mapRef = shallowRef<MtMap | null>(null);
+
+// 事件绑定：地图就绪（ref 从 null 变为 map）时自动绑定 click，自动解绑
+useMaptalksEvents(mapRef, {
+  click: (e: unknown) => {
+    const ev = e as { coordinate: { x: number; y: number } };
+    iwCoord.value = [ev.coordinate.x, ev.coordinate.y];
     iwVisible.value = true;
-  });
+  },
+});
+
+function onReady(map: MtMap) {
+  mapRef.value = map;
 }
 </script>
