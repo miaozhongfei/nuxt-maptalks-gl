@@ -87,11 +87,12 @@ watch(
   { immediate: true },
 );
 
-// coordinates/geometry prop 变化 → 若可见则重新 show
+// coordinates/geometry prop 变化 → 若可见则重新 show，并重新挂载 slot 使坐标文本也更新
 watch(
   () => props.coordinates ?? props.geometry,
   (coord) => {
     if (infoWindow.value && props.visible && coord !== undefined) {
+      mountSlotContent();
       infoWindow.value.show(coord);
     }
   },

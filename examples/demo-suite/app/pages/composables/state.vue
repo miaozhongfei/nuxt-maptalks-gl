@@ -21,15 +21,25 @@
       <template #footer>
         <div class="flex flex-col gap-2">
           <div class="flex gap-2 items-center flex-wrap">
-            <UButton size="sm" @click="sync.enable()">启用同步</UButton>
-            <UButton size="sm" color="neutral" @click="sync.disable()">停用同步</UButton>
+            <span class="text-sm text-muted">同步模式：</span>
+            <UButton size="sm" :variant="syncMode === 'mutual' ? 'solid' : 'soft'" @click="syncMode = 'mutual'">
+              双向 mutual
+            </UButton>
+            <UButton size="sm" :variant="syncMode === 'master-slave' ? 'solid' : 'soft'" @click="syncMode = 'master-slave'">
+              主从 master-slave
+            </UButton>
+          </div>
+          <div class="flex gap-2 items-center flex-wrap">
+            <UButton size="sm" color="neutral" @click="enableSync">启用同步</UButton>
+            <UButton size="sm" color="neutral" @click="disableSync">停用同步</UButton>
             <UButton size="sm" :color="slaveLocked ? 'error' : 'neutral'" variant="soft" @click="toggleSlaveLock">
               {{ slaveLocked ? '解锁从图交互' : '禁用从图交互' }}
             </UButton>
           </div>
           <span class="text-sm text-muted">
-            双向 mutual，实时同步（moving/zooming 每帧跟，<code>setView</code> 原子写入）。{{ sync.isEnabled.value ? '已启用' : '已停用' }}。
-            {{ slaveLocked ? '从图交互已禁用（模拟官网主从效果）。' : '从图交互已解锁，可自由操作。' }}
+            {{ syncMode === 'mutual' ? '双向：拖动/缩放任一张地图，另一张跟随。' : '主从：仅左图（sync-master）驱动右图，右图变化不影响左图。' }}
+            实时同步（moving/zooming 每帧 + setView 原子写入）。
+            {{ slaveLocked ? '从图交互已禁用。' : '' }}
           </span>
         </div>
       </template>
@@ -71,14 +81,38 @@ const center: [number, number] = [121.4737, 31.2304];
 // —— 卡片 1：双图同步 ——
 const elA = ref<HTMLElement | null>(null);
 const elB = ref<HTMLElement | null>(null);
-const { map: mapA } = useMaptalks(elA, { center, zoom: 11 });
+// 左图命名 'sync-master'，master-slave 模式用它当主图（用注册表名传 master，异步就绪后自动解析）
+const { map: mapA } = useMaptalks(elA, { center, zoom: 11, name: 'sync-master' });
 const { map: mapB } = useMaptalks(elB, { center: [121.51, 31.245], zoom: 11 });
 useMaptalksTileLayer(mapA, { source: 'osm' });
 useMaptalksTileLayer(mapB, { source: 'osm' });
-// useMaptalksSync 会在地图异步就绪后自动（重）绑定，直接用即可
-const sync = useMaptalksSync([mapA, mapB], { mode: 'mutual' });
 
-// 模拟官网「主从」效果：禁用从图（右图）的用户交互，只让它被动跟随
+// 同步模式可切换：mutual（双向）/ master-slave（仅左图驱动右图）。
+// composable 的 mode 在创建时固定，故用 effectScope 承载，切换模式时销毁旧实例重建。
+const syncMode = ref<'mutual' | 'master-slave'>('mutual');
+let syncScope: ReturnType<typeof effectScope> | null = null;
+const currentSync = shallowRef<ReturnType<typeof useMaptalksSync> | null>(null);
+/** 按当前模式（重新）创建同步实例 */
+function setupSync() {
+  syncScope?.stop();
+  syncScope = effectScope();
+  syncScope.run(() => {
+    currentSync.value = useMaptalksSync([mapA, mapB], { mode: syncMode.value, master: 'sync-master' });
+  });
+}
+watch(syncMode, setupSync);
+setupSync();
+onScopeDispose(() => syncScope?.stop());
+/** 启用同步 */
+function enableSync() {
+  currentSync.value?.enable();
+}
+/** 停用同步 */
+function disableSync() {
+  currentSync.value?.disable();
+}
+
+// 模拟官网「主从」交互锁：禁用从图（右图）的用户交互，只让它被动跟随
 const slaveLocked = ref(false);
 /** 切换从图交互开关（config 修改 draggable/scrollWheelZoom/dblClickZoom） */
 function toggleSlaveLock() {
