@@ -41,6 +41,10 @@
           <UBadge color="neutral" variant="outline">官网 8.5</UBadge>
         </div>
       </template>
+      <p class="text-sm text-muted mb-2">
+        交互式绘制工具：先点「启用」，选点/线/面模式，然后在地图上单击绘制、双击结束。
+        DrawTool 只负责“画”，画完默认会清除临时图形；本示例监听 <code>result</code> 把画好的图形保留到一个矢量图层。
+      </p>
       <div ref="elDraw" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <div class="flex gap-2 flex-wrap items-center">
@@ -49,7 +53,8 @@
           <UButton size="sm" color="neutral" @click="draw.setMode('Point')">点</UButton>
           <UButton size="sm" color="neutral" @click="draw.setMode('LineString')">线</UButton>
           <UButton size="sm" color="neutral" @click="draw.setMode('Polygon')">面</UButton>
-          <span class="text-sm text-muted">当前模式：{{ draw.mode.value }}，启用：{{ draw.enabled.value }}</span>
+          <UButton size="sm" color="error" variant="soft" @click="clearDrawn">清空</UButton>
+          <span class="text-sm text-muted">模式：{{ draw.mode.value }}，启用：{{ draw.enabled.value }}，已保留：{{ drawnCount }} 个</span>
         </div>
       </template>
     </UCard>
@@ -134,6 +139,22 @@ const elDraw = ref<HTMLElement | null>(null);
 const { map: drawMap } = useMaptalks(elDraw, { center, zoom: 12 });
 useMaptalksTileLayer(drawMap, { source: 'osm' });
 const draw = useMaptalksDrawTool(drawMap, { mode: 'Polygon' });
+// DrawTool 只负责“画”，画完（双击结束）默认会清除临时图形。
+// 这里用一个矢量图层保留画好的图形：监听 result，把结果复制一份加到图层。
+const { layer: drawLayer } = useMaptalksVectorLayer(drawMap);
+const drawnCount = ref(0);
+watch(draw.result, (geo) => {
+  const g = geo as { copy?: () => unknown } | null;
+  if (!g || !drawLayer.value) return;
+  const clone = typeof g.copy === 'function' ? g.copy() : g;
+  (drawLayer.value as unknown as { addGeometry(x: unknown): void }).addGeometry(clone);
+  drawnCount.value += 1;
+});
+/** 清空已画的图形 */
+function clearDrawn() {
+  (drawLayer.value as unknown as { clear?: () => void } | null)?.clear?.();
+  drawnCount.value = 0;
+}
 
 // —— 卡片 3：GeoJSON ——
 const elGeo = ref<HTMLElement | null>(null);
