@@ -45,13 +45,13 @@
         </div>
       </template>
       <p class="text-sm text-muted mb-2">
-        <code>useMaptalksInfoWindow</code> 的 <code>options</code> 中 <code>{ title: '' }</code>
-        隐藏 maptalks 默认标题栏；content 用完整 HTML 自绘标题栏+关闭按钮，
-        实现<strong>真正的自定义 UI</strong>（非只填内容，而是完全掌控信息框的视觉结构）。
+         <code>useMaptalksInfoWindow</code> 的 <code>options</code> 中 <code>{ custom: true }</code>
+        禁用 maptalks 默认模板；content 用完整 HTML 自绘标题栏+关闭按钮（关闭按钮用 <code>nextTick</code> + <code>addEventListener</code> 绑真实事件，解决 <code>onclick</code> 在 <code>setContent</code> HTML 中不生效的问题），
+        实现<strong>真正的自定义 UI</strong>。
       </p>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <span class="text-sm text-muted">操作：点击 3 个 Marker 分别弹出不同自定义 UI 信息框（带自绘标题栏+关闭按钮），完全自己掌控视觉。当前开启：{{ iw3Label || '—' }}</span>
+        <span class="text-sm text-muted">操作：点击 3 个 Marker 分别弹出不同自定义 UI 信息框（带自绘标题栏+「×」关闭按钮，custom:true 完全自定义）。当前开启：{{ iw3Label || '—' }}</span>
       </template>
     </UCard>
   </div>
@@ -144,7 +144,7 @@ const iw3Content = ref('');
 
 // 传递事件回调：让 close 事件触发时更新状态
 const { show: show3, hide: hide3 } = useMaptalksInfoWindow(map3, {
-  options: () => ({ title: '', autoPan: true }),
+  options: () => ({ title: '', custom: true, autoPan: true }),
   content: () => iw3Content.value,
   events: {
     close: () => { iw3Label.value = ''; },
@@ -154,12 +154,12 @@ const { show: show3, hide: hide3 } = useMaptalksInfoWindow(map3, {
 /** 构建完整自定义 UI 的 HTML（无 onclick——改用 InfoWindow 内置关闭按钮 + close 事件） */
 function buildCustom(title: string, color: string, coord: [number, number]) {
   return `<div style="min-width:170px;border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.15)">
-    <div style="background:${color};color:#fff;padding:5px 10px;font-size:13px;font-weight:600">
-      ${title}
+    <div style="background:${color};color:#fff;padding:5px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
+      <span>${title}</span>
+      <span class="mt-iw-close-btn" style="cursor:pointer;font-size:16px;line-height:1">×</span>
     </div>
     <div style="background:#fff;padding:6px 10px;font-size:12px;color:#374151">
       [${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]
-      <br><span style="font-size:11px;color:#9ca3af">点地图空白处或内置 × 关闭</span>
     </div>
   </div>`;
 }
@@ -168,6 +168,11 @@ function openCustom(label: string, color: string, coord: [number, number]) {
   iw3Label.value = label;
   iw3Content.value = buildCustom(label, color, coord);
   show3(coord);
+  // show() 之后 DOM 已创建，用原生 addEventListener 给关闭按钮绑事件（onclick 在 setContent HTML 中不生效）
+  nextTick(() => {
+    const btn = document.querySelector('.mt-iw-close-btn') as HTMLElement | null;
+    if (btn) btn.addEventListener('click', () => hide3(), { once: true });
+  });
 }
 
 useMaptalksMarker(vec3, {
