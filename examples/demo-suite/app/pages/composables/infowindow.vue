@@ -144,7 +144,7 @@ const iw3Content = ref('');
 
 // 传递事件回调：让 close 事件触发时更新状态
 const { show: show3, hide: hide3 } = useMaptalksInfoWindow(map3, {
-  options: () => ({ title: '', custom: true, autoPan: true }),
+  options: () => ({ title: '', autoPan: true }),
   content: () => iw3Content.value,
   events: {
     close: () => { iw3Label.value = ''; },
@@ -170,24 +170,19 @@ function openCustom(label: string, color: string, coord: [number, number]) {
   show3(coord);
 }
 
-// 点击地图空白处关闭信息框（替代无法生效的内联 onclick 关闭按钮）
-useMaptalksEvents(map3, {
-  click: () => { hide3(); },
-});
-
 useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
-  events: { click: (e: unknown) => { (e as { domEvent?: { stopPropagation?: () => void } })?.domEvent?.stopPropagation?.(); openCustom('东门店 A', '#2563eb', [121.47, 31.23]); } },
+  events: { click: () => openCustom('东门店 A', '#2563eb', [121.47, 31.23]) },
 });
 useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
-  events: { click: (e: unknown) => { (e as { domEvent?: { stopPropagation?: () => void } })?.domEvent?.stopPropagation?.(); openCustom('西门店 B', '#dc2626', [121.5, 31.24]); } },
+  events: { click: () => openCustom('西门店 B', '#dc2626', [121.5, 31.24]) },
 });
 useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
-  events: { click: (e: unknown) => { (e as { domEvent?: { stopPropagation?: () => void } })?.domEvent?.stopPropagation?.(); openCustom('南门店 C', '#16a34a', [121.52, 31.22]); } },
+  events: { click: () => openCustom('南门店 C', '#16a34a', [121.52, 31.22]) },
 });
 </script>
