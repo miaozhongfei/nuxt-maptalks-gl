@@ -88,16 +88,6 @@ watch(
   { immediate: true },
 );
 
-// coordinates/geometry prop 变化 → 若可见则重新 show，定位信息框
-watch(
-  () => props.coordinates ?? props.geometry,
-  (coord) => {
-    if (infoWindow.value && props.visible && coord !== undefined) {
-      infoWindow.value.show(coord);
-    }
-  },
-);
-
 // 暴露命令式 show/hide，供父组件通过 template ref 调用
 defineExpose({ infoWindow, show, hide });
 

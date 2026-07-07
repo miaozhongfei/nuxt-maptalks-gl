@@ -128,14 +128,12 @@ export function useMaptalksInfoWindow(
   const stop1 = watch([() => toValue(map), () => toValue(opts.options)], reload, { immediate: true });
   // content 变化 → setContent
   const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
-  // coordinates 变化 → show（maptalks InfoWindow 没有 setCoordinates，坐标通过 show(coord) 传入）
-  const stop3 = watch(() => toValue(opts.coordinates), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.show(c); });
 
   function show(coord?: unknown): void { infoWindow.value?.show(coord); }
   function hide(): void { infoWindow.value?.hide(); }
 
   function remove(): void {
-    stop1(); stop2(); stop3();
+    stop1(); stop2();
     if (infoWindow.value) { unbindEvents(infoWindow.value, events); infoWindow.value.remove(); infoWindow.value = null; }
   }
 
