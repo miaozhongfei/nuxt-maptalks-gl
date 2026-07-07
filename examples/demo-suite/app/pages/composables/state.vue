@@ -15,8 +15,8 @@
         </div>
       </template>
       <div class="grid grid-cols-2 gap-3">
-        <div ref="elA" class="relative h-72 rounded border border-default overflow-hidden" />
-        <div ref="elB" class="relative h-72 rounded border border-default overflow-hidden" />
+        <div ref="elA" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
+        <div ref="elB" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
       </div>
       <template #footer>
         <div class="flex gap-2 items-center">
@@ -36,7 +36,7 @@
           <UBadge color="neutral" variant="outline">官网 11.3 / 1.15 / 6.x</UBadge>
         </div>
       </template>
-      <div ref="elC" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elC" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <div class="flex flex-col gap-2">
           <div class="flex gap-2 flex-wrap">

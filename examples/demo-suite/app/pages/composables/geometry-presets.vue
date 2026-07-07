@@ -14,7 +14,7 @@
           <UBadge color="neutral" variant="outline">官网 3.x</UBadge>
         </div>
       </template>
-      <div ref="el" class="relative h-[480px] rounded border border-default overflow-hidden" />
+      <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
       <template #footer>
         <span class="text-sm text-muted">同一矢量图层上纳管了 12 个几何：点/线/面/Multi 系列/圆/椭圆/矩形/扇形/标签/文本框。</span>
       </template>

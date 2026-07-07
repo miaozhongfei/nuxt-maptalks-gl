@@ -15,7 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 1.1</UBadge>
         </div>
       </template>
-      <div ref="elCore" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elCore" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <span class="text-sm text-muted">
           命名地图 'suite-core'：{{ coreReady ? '已就绪' : '加载中…' }}
@@ -32,7 +32,7 @@
           <UBadge color="primary" variant="subtle">composable</UBadge>
         </div>
       </template>
-      <div ref="elLayer" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elLayer" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <span class="text-sm text-muted">用 factory 手动 new TileLayer：{{ escapeLayer ? '图层已添加' : '等待就绪…' }}</span>
       </template>
@@ -46,7 +46,7 @@
           <UBadge color="primary" variant="subtle">composable</UBadge>
         </div>
       </template>
-      <div ref="elSecure" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elSecure" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <div class="text-sm text-muted break-all">
           <div>secure 源解析状态：{{ srcPending ? '解析中…' : srcError ? `失败：${srcError.message}` : '已解析' }}</div>

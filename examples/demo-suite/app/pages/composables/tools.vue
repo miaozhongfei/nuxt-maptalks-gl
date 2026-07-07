@@ -15,7 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 8.3</UBadge>
         </div>
       </template>
-      <div ref="elDist" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elDist" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <span class="text-sm text-muted">操作：地图上依次单击画线、双击结束。{{ distMsg }}</span>
       </template>
@@ -30,7 +30,7 @@
           <UBadge color="neutral" variant="outline">官网 8.4</UBadge>
         </div>
       </template>
-      <div ref="elArea" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elArea" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <span class="text-sm text-muted">操作：地图上依次单击画多边形、双击结束。{{ areaMsg }}</span>
       </template>

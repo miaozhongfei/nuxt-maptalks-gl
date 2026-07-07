@@ -14,7 +14,7 @@
           <UBadge color="neutral" variant="outline">官网 1.4~1.14 / 9.1</UBadge>
         </div>
       </template>
-      <div ref="elMain" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elMain" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <div class="flex flex-col gap-2">
           <div class="text-sm text-muted">
@@ -41,7 +41,7 @@
           <UBadge color="neutral" variant="outline">官网 8.5</UBadge>
         </div>
       </template>
-      <div ref="elDraw" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elDraw" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <div class="flex gap-2 flex-wrap items-center">
           <UButton size="sm" @click="draw.enable()">启用</UButton>
@@ -63,7 +63,7 @@
           <UBadge color="neutral" variant="outline">官网 11.1</UBadge>
         </div>
       </template>
-      <div ref="elGeo" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elGeo" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <div class="flex gap-2 items-center">
           <UButton size="sm" @click="toggleGeo">切换 GeoJSON 数据</UButton>
@@ -80,7 +80,7 @@
           <UBadge color="primary" variant="subtle">composable</UBadge>
         </div>
       </template>
-      <div ref="elGeom" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elGeom" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <span class="text-sm text-muted">用 factory 手动 new 一个圆形几何，响应式纳管到矢量图层。</span>
       </template>

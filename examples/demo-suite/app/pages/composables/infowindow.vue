@@ -13,7 +13,7 @@
           <UBadge color="neutral" variant="outline">官网 10.4</UBadge>
         </div>
       </template>
-      <div ref="el" class="relative h-96 rounded border border-default overflow-hidden" />
+      <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 384px" />
       <template #footer>
         <div class="flex gap-2 items-center flex-wrap">
           <UButton size="sm" @click="showAtCenter">在中心显示</UButton>

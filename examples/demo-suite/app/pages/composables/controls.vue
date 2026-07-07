@@ -13,7 +13,7 @@
           <UBadge color="neutral" variant="outline">官网 10.14~10.17</UBadge>
         </div>
       </template>
-      <div ref="el" class="relative h-96 rounded border border-default overflow-hidden" />
+      <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 384px" />
       <template #footer>
         <span class="text-sm text-muted">同一张地图上加了 4 个控件：缩放（左上）/ 比例尺（左下）/ 指北针（右上）/ 版权（右下）。地图设了 pitch=30。</span>
       </template>

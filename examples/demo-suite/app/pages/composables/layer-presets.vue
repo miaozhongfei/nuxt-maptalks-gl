@@ -14,7 +14,7 @@
           <UBadge color="neutral" variant="outline">官网 2.1</UBadge>
         </div>
       </template>
-      <div ref="elTile" class="relative h-72 rounded border border-default overflow-hidden" />
+      <div ref="elTile" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
       <template #footer><span class="text-sm text-muted">命名源 'osm' 栅格底图。</span></template>
     </UCard>
 
@@ -27,7 +27,7 @@
           <UBadge color="neutral" variant="outline">官网 2.6</UBadge>
         </div>
       </template>
-      <div ref="elVT" class="relative h-72 rounded border border-default overflow-hidden" />
+      <div ref="elVT" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
       <template #footer><span class="text-sm text-muted">MapLibre 公开 demo 矢量切片，蓝色国界面。</span></template>
     </UCard>
 
@@ -40,7 +40,7 @@
           <UBadge color="neutral" variant="outline">官网 6.8</UBadge>
         </div>
       </template>
-      <div ref="elVec" class="relative h-72 rounded border border-default overflow-hidden" />
+      <div ref="elVec" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
       <template #footer><span class="text-sm text-muted">矢量图层容器 + 一个 Marker。</span></template>
     </UCard>
 
@@ -53,7 +53,7 @@
           <UBadge color="neutral" variant="outline">官网 2.4</UBadge>
         </div>
       </template>
-      <div ref="elWMS" class="relative h-72 rounded border border-default overflow-hidden" />
+      <div ref="elWMS" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
       <template #footer><span class="text-sm text-muted">ahocevar GeoServer 的 topp:states（美国各州），已定位到美国。</span></template>
     </UCard>
 
@@ -65,7 +65,7 @@
           <UBadge color="primary" variant="subtle">composable</UBadge>
         </div>
       </template>
-      <div ref="elGLTF" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elGLTF" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer><span class="text-sm text-muted">GLTFLayer + 真实 3D 模型（Duck.glb），倾斜视角观察。</span></template>
     </UCard>
 
@@ -78,7 +78,7 @@
           <UBadge color="neutral" variant="outline">官网 2.3</UBadge>
         </div>
       </template>
-      <div ref="elGroup" class="relative h-80 rounded border border-default overflow-hidden" />
+      <div ref="elGroup" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer><span class="text-sm text-muted">GroupGLLayer 容器中加入含 3D 模型的 GLTFLayer。</span></template>
     </UCard>
   </div>
