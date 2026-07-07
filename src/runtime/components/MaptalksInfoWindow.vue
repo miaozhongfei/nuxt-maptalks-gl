@@ -77,7 +77,7 @@ watch(
   { immediate: true },
 )
 
-// coordinates/geometry 变化 → 先等插槽重渲染，取最新 innerHTML 再 show
+// coordinates/geometry 变化 → 先等插槽重渲染（flush:post 确保父组件插槽 DOM 已更新），取最新 innerHTML 再 show
 watch(
   () => props.coordinates ?? props.geometry,
   async (coord) => {
@@ -85,6 +85,7 @@ watch(
     await applyContent()
     infoWindow.value.show(coord)
   },
+  { flush: 'post' },
 )
 
 // 初始挂载：若 infoWindow 已就绪则设置内容
