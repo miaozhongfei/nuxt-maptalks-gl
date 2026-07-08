@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, nextTick, ref, toValue, useSlots, watch } from 'vue'
+import { inject, ref, useSlots } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -36,6 +36,8 @@ const wrapper = ref<HTMLElement | null>(null)
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
+// content 传 getter：setup 阶段 wrapper 为 null（返 ''），但 geometry 是异步创建，
+// mount 后 wrapper 已有值，geometry watch 触发时 innerHTML 正确，只调一次 setInfoWindow
 const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   title: props.title,
   width: props.width,
@@ -46,24 +48,12 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   animation: props.animation,
   autoDispose: props.autoDispose,
   autoOpenOn: props.autoOpenOn,
+  content: () => wrapper.value?.innerHTML ?? '',
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
 })
-
-// geometry + wrapper 都就绪后，用 iw.options 合并已有配置，只覆盖 content
-watch(
-  [() => toValue(geometry), wrapper],
-  async ([g, w]) => {
-    if (g && w) {
-      await nextTick()
-      const m = g as { getInfoWindow?(): { setContent?(c: string): void } | null }
-      m.getInfoWindow?.()?.setContent?.(w.innerHTML)
-    }
-  },
-  { immediate: true },
-)
 
 defineExpose({ open, close })
 </script>
