@@ -151,7 +151,7 @@ function mkContent(title: string, color: string, coord: [number, number]): strin
 function bindCloseBtn(miw: typeof miwA) {
   setTimeout(() => {
     const btn = document.querySelector('.mt-mk-iw-close') as HTMLElement | null;
-    if (btn) btn.addEventListener('click', () => { miw.value?.close(); iw3Label.value = ''; curOpen = null; }, { once: true });
+    if (btn) btn.addEventListener('click', () => { miw.close(); iw3Label.value = ''; curOpen = null; }, { once: true });
   }, 50);
 }
 
