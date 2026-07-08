@@ -52,14 +52,24 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   },
 })
 
-// geometry 和 wrapper 都就绪后一次性设 content（避免 setInfoWindow 二次调用覆盖动画）
+// geometry 和 wrapper 都就绪后一次性设完整 options+content（不丢其他参数）
 watch(
   [() => toValue(geometry), wrapper],
   async ([g, w]) => {
     if (g && w) {
       await nextTick()
       const m = g as { setInfoWindow?(opts: Record<string, unknown>): void }
-      m.setInfoWindow?.({ content: w.innerHTML })
+      m?.setInfoWindow?.({
+        title: props.title,
+        width: props.width,
+        height: props.height,
+        custom: props.custom,
+        autoPan: props.autoPan,
+        single: props.single,
+        animation: props.animation,
+        autoOpenOn: props.autoOpenOn,
+        content: w.innerHTML,
+      })
     }
   },
   { immediate: true },
