@@ -57,6 +57,8 @@ export interface UseMaptalksMarkerInfoWindowOptions {
   dy?: number;
   /** 信息框事件（open/close 等） */
   events?: Record<string, MaptalksEventHandler>;
+  /** 自动弹出事件（null/空字符串 = 禁用，默认 'click'） */
+  autoOpenOn?: string | null;
   /** 组件销毁时自动移除信息框，默认 true */
   autoDispose?: boolean;
 }
@@ -117,6 +119,7 @@ function buildMarkerIWOptions(opts: UseMaptalksMarkerInfoWindowOptions): MarkerI
   if (opts.animation !== undefined) result.animation = opts.animation;
   if (opts.dx !== undefined) result.dx = opts.dx;
   if (opts.dy !== undefined) result.dy = opts.dy;
+  if (opts.autoOpenOn !== undefined) result.autoOpenOn = opts.autoOpenOn;
   return result;
 }
 
