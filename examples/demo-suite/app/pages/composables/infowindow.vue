@@ -65,8 +65,6 @@
 </template>
 
 <script setup lang="ts">
-import { toValue } from 'vue';
-
 const center: [number, number] = [121.4737, 31.2304];
 
 // ====== 卡片 1：地图级 · 点击地图弹框 ======
@@ -135,12 +133,10 @@ const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
 const { layer: vec3 } = useMaptalksVectorLayer(map3);
 const iw3Label = ref('');
-// 原生 Marker 接口
-interface NativeMarker { openInfoWindow(): void; closeInfoWindow(): void; }
 
 // Marker 点击后 250ms 内无视 map click（防止 open→close 同帧冲突）
 let mkOpenTime = 0;
-let curOpen: NativeMarker | null = null;
+let curOpen: typeof miwA | null = null;
 
 function mkContent(title: string, color: string, coord: [number, number]): string {
   return `<div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
@@ -152,10 +148,10 @@ function mkContent(title: string, color: string, coord: [number, number]): strin
   </div>`;
 }
 
-function bindCloseBtn(g: typeof gA) {
+function bindCloseBtn(miw: typeof miwA) {
   setTimeout(() => {
     const btn = document.querySelector('.mt-mk-iw-close') as HTMLElement | null;
-    if (btn) btn.addEventListener('click', () => { (toValue(g) as unknown as NativeMarker)?.closeInfoWindow(); iw3Label.value = ''; curOpen = null; }, { once: true });
+    if (btn) btn.addEventListener('click', () => { miw.value?.close(); iw3Label.value = ''; curOpen = null; }, { once: true });
   }, 50);
 }
 
@@ -166,7 +162,7 @@ const autoClose = ref(true);
 useMaptalksEvents(map3, {
   click: () => {
     if (!autoClose.value || Date.now() - mkOpenTime < 250) return;
-    curOpen?.closeInfoWindow();
+    curOpen?.close();
     iw3Label.value = '';
     curOpen = null;
   },
@@ -178,7 +174,7 @@ const gA = useMaptalksMarker(vec3, {
 }).geometry;
 const miwA = useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { curOpen = toValue(gA) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '东门店 A'; bindCloseBtn(gA); },
+  click: () => { curOpen = miwA; mkOpenTime = Date.now(); miwA.open(); iw3Label.value = '东门店 A'; bindCloseBtn(miwA); },
 });
 
 const gB = useMaptalksMarker(vec3, {
@@ -187,7 +183,7 @@ const gB = useMaptalksMarker(vec3, {
 }).geometry;
 const miwB = useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { curOpen = toValue(gB) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '西门店 B'; bindCloseBtn(gB); },
+  click: () => { curOpen = miwB; mkOpenTime = Date.now(); miwB.open(); iw3Label.value = '西门店 B'; bindCloseBtn(miwB); },
 });
 
 const gC = useMaptalksMarker(vec3, {
@@ -196,7 +192,7 @@ const gC = useMaptalksMarker(vec3, {
 }).geometry;
 const miwC = useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
 // 记录随机打开的那个，供关闭按钮关闭同一个
-let curOpenIW: typeof miwA | null = null;
+let curOpenIW: typeof miwA | undefined = null;
 
 function randomOpen() {
   const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
@@ -209,6 +205,6 @@ function randomClose() {
   iw3Label.value = '';
 }
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { curOpen = toValue(gC) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '南门店 C'; bindCloseBtn(gC); },
+  click: () => { curOpen = miwC; mkOpenTime = Date.now(); miwC.open(); iw3Label.value = '南门店 C'; bindCloseBtn(miwC); },
 });
 </script>
