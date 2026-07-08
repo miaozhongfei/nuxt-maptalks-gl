@@ -52,17 +52,15 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   },
 })
 
-// geometry + wrapper 都就绪后，通过 getInfoWindow 只设 content，不动其他配置（animation 等保持 maptalks 默认）
+// geometry + wrapper 都就绪后，用 iw.options 合并已有配置，只覆盖 content
 watch(
   [() => toValue(geometry), wrapper],
   async ([g, w]) => {
     if (g && w) {
       await nextTick()
-      const m = g as { getInfoWindow?(): { setContent?(c: string): void } | null }
+      const m = g as { getInfoWindow?(): { options?: Record<string, unknown> } | null; setInfoWindow?(opts: Record<string, unknown>): void }
       const iw = m.getInfoWindow?.()
-      console.log('MaptalksMarkerInfoWindow watch geometry+wrapper',iw)
-      console.log('MaptalksMarkerInfoWindow watch geometry+wrapper',JSON.stringify(iw))
-      iw?.setContent?.(w.innerHTML)
+      m?.setInfoWindow?.({ ...iw?.options, content: w.innerHTML })
     }
   },
   { immediate: true },
