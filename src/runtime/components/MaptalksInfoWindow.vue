@@ -31,7 +31,7 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 Mapta
 const coord = () => props.coordinates ?? props.geometry
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
-  ...(props.options === undefined ? {} : { options: () => props.options }),
+  options: () => props.options,
   ...(coord() === undefined ? {} : { coordinates: coord }),
 }
 
@@ -41,7 +41,6 @@ const contentHost = ref<HTMLElement | null>(null)
 let skipNextUpdate = false
 
 // 类比 MaptalksMarkerInfoWindow：infoWindow + contentHost 双就绪时 setContent(innerHTML)
-// 不在 iwOpts 里传 content——reload 是 async 的，此时 contentHost 已就绪，watcher 会同步 setContent
 watch(
   [() => infoWindow.value, contentHost],
   ([iw, host]) => {
