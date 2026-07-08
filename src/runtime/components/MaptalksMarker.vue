@@ -1,4 +1,4 @@
-<template><!-- maptalks marker · 纯逻辑组件 --></template>
+<template><slot /></template>
 
 <script setup lang="ts">
 import { inject, provide } from 'vue'
