@@ -22,7 +22,7 @@ const props = withDefaults(
     autoOpenOn?: string | null
     autoDispose?: boolean
   }>(),
-  { autoDispose: true },
+  { autoDispose: true, animation: 'scale' },
 )
 
 const emit = defineEmits<{
