@@ -22,7 +22,7 @@ const props = withDefaults(
     autoOpenOn?: string | null
     autoDispose?: boolean
   }>(),
-  { autoDispose: true },
+  { autoDispose: true, autoPan: undefined, single: undefined, custom: undefined },
 )
 
 const emit = defineEmits<{
@@ -36,36 +36,36 @@ const wrapper = ref<HTMLElement | null>(null)
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
-// 不传 content——composable geometry watch 先设所有 option（animation 由 maptalks 默认）
-// 用 conditional spread 过滤 Vue withDefaults 自动填的 false 值（autoPan/single）
 const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   title: props.title,
   width: props.width,
   height: props.height,
-  custom: props.custom,
-  ...(props.autoPan ? { autoPan: true } : {}),
-  ...(props.single ? { single: true } : {}),
+  ...(props.autoPan !== undefined ? { autoPan: props.autoPan } : {}),
+  ...(props.single !== undefined ? { single: props.single } : {}),
+  ...(props.custom !== undefined ? { custom: props.custom } : {}),
   ...(props.animation !== undefined ? { animation: props.animation } : {}),
   ...(props.autoOpenOn !== undefined ? { autoOpenOn: props.autoOpenOn } : {}),
   autoDispose: props.autoDispose,
+  content:'',
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
 })
+// const { open, close } = useMaptalksMarkerInfoWindow(geometry, { title: '', custom: true, content: '<div>你好你好NIHAO</div>' })
 
 // geometry 和 wrapper 都就绪后，用 setContent 局部更新内容（不动 animation 等 maptalks 默认 option）
-// watch(
-//   [() => toValue(geometry), wrapper],
-//   async ([g, w]) => {
-//     if (g && w) {
-//       await nextTick()
-//       const m = g as { getInfoWindow?: () => { setContent?: (c: string) => void } | null }
-//       m?.getInfoWindow?.()?.setContent?.(w.innerHTML)
-//     }
-//   },
-//   { immediate: true },
-// )
+watch(
+  [() => toValue(geometry), wrapper],
+  async ([g, w]) => {
+    if (g && w) {
+      await nextTick()
+      const m = g as { getInfoWindow?: () => { setContent?: (c: string) => void } | null }
+      m?.getInfoWindow?.()?.setContent?.(w.innerHTML)
+    }
+  },
+  { immediate: true },
+)
 
 defineExpose({ open, close })
 </script>
