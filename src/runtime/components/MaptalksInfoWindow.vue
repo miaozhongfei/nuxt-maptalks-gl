@@ -1,10 +1,11 @@
 <template>
-  <div ref="slotHost" style="display: none" />
+  <div ref="contentHost" style="display: none">
+    <slot />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { createApp, h, inject, onBeforeUnmount, onMounted, onUpdated, watch } from 'vue'
-import type { App } from 'vue'
+import { inject, onUpdated, ref, watch } from 'vue'
 
 import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
 import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
@@ -24,54 +25,37 @@ const props = withDefaults(
   { visible: true, options: undefined },
 )
 
-const slots = defineSlots()
-
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 MaptalksMap 内使用')
 
 const coord = () => props.coordinates ?? props.geometry
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
-  ...(props.options !== undefined ? { options: () => props.options } : {}),
-  ...(coord() !== undefined ? { coordinates: coord } : {}),
+  ...(props.options === undefined ? {} : { options: () => props.options }),
+  ...(coord() === undefined ? {} : { coordinates: coord }),
 }
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
 
-let slotApp: App | null = null;
+const contentHost = ref<HTMLElement | null>(null)
+let skipNextUpdate = false
 
-/** 创建 Vue 子应用 mount 到临时 DOM，将 DOM 元素注入 InfoWindow.setContent。 */
-function mountSlotContent() {
-  if (!infoWindow.value || !slots.default) return;
-  // 销毁旧的应用
-  if (slotApp) {
-    slotApp.unmount();
-    slotApp = null;
-  }
-  const mountEl = document.createElement('div');
-  slotApp = createApp({
-    render() {
-      return h('div', null, slots.default?.());
-    },
-  });
-  slotApp.mount(mountEl);
-  infoWindow.value.setContent(mountEl);
-}
-
-// InfoWindow 实例就绪后挂载 slot 内容
+// 类比 MaptalksMarkerInfoWindow：infoWindow + contentHost 双就绪时 setContent(innerHTML)
+// 不在 iwOpts 里传 content——reload 是 async 的，此时 contentHost 已就绪，watcher 会同步 setContent
 watch(
-  () => infoWindow.value,
-  (v) => {
-    if (v) {
-      mountSlotContent();
-      if (props.visible && coord() !== undefined) v.show(coord());
-    }
+  [() => infoWindow.value, contentHost],
+  ([iw, host]) => {
+    if (iw && host) iw.setContent(host.innerHTML)
   },
-);
+)
 
-// 父组件每次更新时重新 mount slot 内容，确保 Vue 响应式组件也能反映变化
-onMounted(() => mountSlotContent());
-onUpdated(() => mountSlotContent());
+// 父组件数据变化时复制更新的 slot 内容（show() 触发的更新跳过，避免打断动画）
+onUpdated(() => {
+  if (skipNextUpdate) { skipNextUpdate = false; return; }
+  const iw = infoWindow.value
+  const host = contentHost.value
+  if (iw && host) iw.setContent(host.innerHTML)
+})
 
 // visible prop → show/hide（immediate 确保初始值也生效）
 watch(
@@ -79,6 +63,7 @@ watch(
   (v) => {
     if (!infoWindow.value) return;
     if (v) {
+      skipNextUpdate = true;
       if (coord() !== undefined) infoWindow.value.show(coord());
     } else {
       infoWindow.value.hide();
@@ -90,20 +75,14 @@ watch(
 // coordinates/geometry 变化 → 若可见则重新 show 定位
 watch(
   () => props.coordinates ?? props.geometry,
-  (coord) => {
-    if (infoWindow.value && props.visible && coord !== undefined) {
-      infoWindow.value.show(coord);
+  (c) => {
+    if (infoWindow.value && props.visible && c !== undefined) {
+      skipNextUpdate = true;
+      infoWindow.value.show(c);
     }
   },
 )
 
 // 暴露命令式 show/hide，供父组件通过 template ref 调用
-defineExpose({ infoWindow, show, hide });
-
-onBeforeUnmount(() => {
-  if (slotApp) {
-    slotApp.unmount();
-    slotApp = null;
-  }
-});
+defineExpose({ infoWindow, show, hide })
 </script>
