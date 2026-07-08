@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, nextTick, onMounted, ref, toValue, useSlots } from 'vue'
+import { inject, nextTick, ref, toValue, useSlots, watch } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -46,21 +46,24 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   animation: props.animation,
   autoDispose: props.autoDispose,
   autoOpenOn: props.autoOpenOn,
-  // 不在 options 里传 content——挂载后一次性 setInfoWindow，避免二次调用丢失动画
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
 })
 
-// 挂载后一次性设置 content（wrapper 此时已有 slot 内容），和 composable 页一样只调一次 setInfoWindow
-onMounted(async () => {
-  await nextTick()
-  const m = toValue(geometry) as { setInfoWindow?(opts: Record<string, unknown>): void } | null
-  if (m?.setInfoWindow && wrapper.value) {
-    m.setInfoWindow({ content: wrapper.value.innerHTML })
-  }
-})
+// geometry 和 wrapper 都就绪后一次性设 content（避免 setInfoWindow 二次调用覆盖动画）
+watch(
+  [() => toValue(geometry), wrapper],
+  async ([g, w]) => {
+    if (g && w) {
+      await nextTick()
+      const m = g as { setInfoWindow?(opts: Record<string, unknown>): void }
+      m.setInfoWindow?.({ content: w.innerHTML })
+    }
+  },
+  { immediate: true },
+)
 
 defineExpose({ open, close })
 </script>
