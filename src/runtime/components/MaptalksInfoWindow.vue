@@ -20,7 +20,19 @@ const props = withDefaults(
     /** 是否可见，默认 true */
     visible?: boolean
     /** 透传给 InfoWindow 构造器的选项 */
-    options?: Record<string, unknown>
+    options?: {
+      title?: string
+      width?: number
+      height?: number
+      custom?: boolean
+      autoPan?: boolean
+      single?: boolean
+      animation?: string
+      autoOpenOn?: string | null
+      dx?: number
+      dy?: number
+      [key: string]: unknown
+    }
   }>(),
   { visible: true, options: undefined },
 )
@@ -29,16 +41,36 @@ const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 MaptalksMap 内使用')
 
 const coord = () => props.coordinates ?? props.geometry
+const contentHost = ref<HTMLElement | null>(null)
+let skipNextUpdate = false
+
+// JSON 深比 + 过滤 undefined，防止内联字面量 :options="{ animation:'scale' }" 每次渲染触发 composable 重建
+const stableOpts = ref<Record<string, unknown> | undefined>(undefined)
+let prevJson: string | undefined
+
+watch(
+  () => props.options,
+  (o) => {
+    const json = JSON.stringify(o ?? null)
+    if (json === prevJson) return;
+    prevJson = json
+    if (!o) { stableOpts.value = undefined; return; }
+    const filtered: Record<string, unknown> = {}
+    for (const k of Object.keys(o)) {
+      const v = (o as Record<string, unknown>)[k]
+      if (v !== undefined) filtered[k] = v
+    }
+    stableOpts.value = Object.keys(filtered).length > 0 ? filtered : undefined
+  },
+  { immediate: true },
+)
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
-  options: () => props.options,
+  options: () => stableOpts.value,
   ...(coord() === undefined ? {} : { coordinates: coord }),
 }
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
-
-const contentHost = ref<HTMLElement | null>(null)
-let skipNextUpdate = false
 
 // 类比 MaptalksMarkerInfoWindow：infoWindow + contentHost 双就绪时 setContent(innerHTML)
 watch(
