@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, nextTick, onMounted, ref, toValue, useSlots } from 'vue'
+import { inject, nextTick, ref, toValue, useSlots, watch } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -36,8 +36,7 @@ const wrapper = ref<HTMLElement | null>(null)
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
-// 不传 content——setup 阶段 wrapper 为 null，composable geometry watch 先设完所有 option（animation 等由 maptalks 默认）
-// mount 后用 setContent 局部更新内容（不动任何 option）
+// 不传 content——composable geometry watch 先设所有 option（animation 由 maptalks 默认）
 const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   title: props.title,
   width: props.width,
@@ -48,19 +47,25 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   animation: props.animation,
   autoDispose: props.autoDispose,
   autoOpenOn: props.autoOpenOn,
+  content:'',
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
 })
 
-// mount 后用 getInfoWindow().setContent() 局部更新内容
-onMounted(async () => {
-  await nextTick()
-  const m = toValue(geometry) as { getInfoWindow?: () => { setContent?: (c: string) => void } | null } | null
-  console.log('MaptalksMarkerInfoWindow mounted, wrapper.innerHTML', wrapper.value?.innerHTML)
-  m?.getInfoWindow?.()?.setContent?.(wrapper.value?.innerHTML ?? '')
-})
+// geometry 和 wrapper 都就绪后，用 setContent 局部更新内容（不动 animation 等 maptalks 默认 option）
+watch(
+  [() => toValue(geometry), wrapper],
+  async ([g, w]) => {
+    if (g && w) {
+      await nextTick()
+      const m = g as { getInfoWindow?: () => { setContent?: (c: string) => void } | null }
+      m?.getInfoWindow?.()?.setContent?.(w.innerHTML)
+    }
+  },
+  { immediate: true },
+)
 
 defineExpose({ open, close })
 </script>
