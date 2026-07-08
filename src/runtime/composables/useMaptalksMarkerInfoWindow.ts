@@ -73,20 +73,6 @@ export interface UseMaptalksMarkerInfoWindowReturn {
   remove: () => void;
 }
 
-/** 给原生 Marker 绑定事件 */
-function bindEvents(target: NativeMarker, events: Record<string, MaptalksEventHandler>): void {
-  for (const [name, handler] of Object.entries(events)) {
-    target.on(name, handler);
-  }
-}
-
-/** 解绑 InfoWindow 的事件 */
-function unbindEvents(target: NativeMarker, events: Record<string, MaptalksEventHandler>): void {
-  for (const [name, handler] of Object.entries(events)) {
-    target.off(name, handler);
-  }
-}
-
 /**
  * 标记级信息框：在给定 Marker 几何上注册 setInfoWindow，响应式纳管 content/title，返回 open/close。
  *
@@ -129,7 +115,6 @@ export function useMaptalksMarkerInfoWindow(
 ): UseMaptalksMarkerInfoWindowReturn {
   const events = opts.events ?? {};
   const hasSet = shallowRef(false);
-
   // 几何就绪时配置信息框
   watch(
     () => toValue(geometry) as NativeMarker | null,
@@ -137,7 +122,6 @@ export function useMaptalksMarkerInfoWindow(
         if (m && !hasSet.value) {
           try {
             m.setInfoWindow(buildMarkerIWOptions(opts));
-            bindEvents(m, events);
             hasSet.value = true;
           } catch (cause) {
             logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败'));
@@ -157,12 +141,19 @@ export function useMaptalksMarkerInfoWindow(
     },
   );
 
-  const open = (): void => { (toValue(geometry) as NativeMarker | null)?.openInfoWindow(); };
-  const close = (): void => { (toValue(geometry) as NativeMarker | null)?.closeInfoWindow(); };
+  const open = (): void => {
+    const m = toValue(geometry) as NativeMarker | null;
+    m?.openInfoWindow();
+    events.open?.({} as never);
+  };
+  const close = (): void => {
+    const m = toValue(geometry) as NativeMarker | null;
+    m?.closeInfoWindow();
+    events.close?.({} as never);
+  };
   function remove(): void {
     const m = toValue(geometry) as NativeMarker | null;
     if (m && hasSet.value) {
-      unbindEvents(m, events);
       m.closeInfoWindow();
       hasSet.value = false;
     }
