@@ -22,7 +22,7 @@ const props = withDefaults(
     autoOpenOn?: string | null
     autoDispose?: boolean
   }>(),
-  { autoDispose: true, animation: 'scale' },
+  { autoDispose: true },
 )
 
 const emit = defineEmits<{
@@ -52,23 +52,17 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   },
 })
 
-// geometry 和 wrapper 都就绪后一次性设完整 options+content（不丢其他参数）
+// geometry + wrapper 都就绪后，通过 getInfoWindow 只设 content，不动其他配置（animation 等保持 maptalks 默认）
 watch(
   [() => toValue(geometry), wrapper],
   async ([g, w]) => {
     if (g && w) {
       await nextTick()
-      const m = g as { setInfoWindow?(opts: Record<string, unknown>): void }
-      const opts: Record<string, unknown> = { content: w.innerHTML };
-      if (props.title !== undefined) opts.title = props.title;
-      if (props.width !== undefined) opts.width = props.width;
-      if (props.height !== undefined) opts.height = props.height;
-      if (props.custom !== undefined) opts.custom = props.custom;
-      if (props.autoPan !== undefined) opts.autoPan = props.autoPan;
-      if (props.single !== undefined) opts.single = props.single;
-      if (props.animation !== undefined) opts.animation = props.animation;
-      if (props.autoOpenOn !== undefined) opts.autoOpenOn = props.autoOpenOn;
-      m?.setInfoWindow?.(opts);
+      const m = g as { getInfoWindow?(): { setContent?(c: string): void } | null }
+      const iw = m.getInfoWindow?.()
+      console.log('MaptalksMarkerInfoWindow watch geometry+wrapper',iw)
+      console.log('MaptalksMarkerInfoWindow watch geometry+wrapper',JSON.stringify(iw))
+      iw?.setContent?.(w.innerHTML)
     }
   },
   { immediate: true },
