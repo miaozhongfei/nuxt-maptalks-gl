@@ -55,6 +55,8 @@
           <UButton size="sm" :color="autoClose ? 'success' : 'neutral'" variant="soft" @click="autoClose = !autoClose">
             点别处自动关闭：{{ autoClose ? '开' : '关' }}
           </UButton>
+          <UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机打开一个</UButton>
+          <UButton size="sm" color="error" variant="soft" @click="randomClose">随机关闭一个</UButton>
           <span class="text-sm text-muted">当前开启：{{ iw3Label || '—' }}</span>
         </div>
       </template>
@@ -174,7 +176,7 @@ const gA = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
+const miwA = useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { curOpen = toValue(gA) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '东门店 A'; bindCloseBtn(gA); },
 });
@@ -183,7 +185,7 @@ const gB = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
+const miwB = useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { curOpen = toValue(gB) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '西门店 B'; bindCloseBtn(gB); },
 });
@@ -192,7 +194,19 @@ const gC = useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
+const miwC = useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
+
+function randomOpen() {
+  const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
+  pick.open();
+  // @ts-expect-error test button
+  if (pick === miwA) iw3Label.value = '东门店 A'; else if (pick === miwB) iw3Label.value = '西门店 B'; else iw3Label.value = '南门店 C';
+}
+function randomClose() {
+  const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
+  pick.close();
+  iw3Label.value = '';
+}
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { curOpen = toValue(gC) as unknown as NativeMarker; mkOpenTime = Date.now(); curOpen?.openInfoWindow(); iw3Label.value = '南门店 C'; bindCloseBtn(gC); },
 });
