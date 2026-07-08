@@ -78,11 +78,11 @@ const miwA = ref<{ open:()=>void; close:()=>void }|null>(null);
 const miwB = ref<{ open:()=>void; close:()=>void }|null>(null);
 const miwC = ref<{ open:()=>void; close:()=>void }|null>(null);
 const cmpAutoClose = ref(true);
+const cmpOpenLabel = ref('');
 const mapCmp3=ref<{map:ReturnType<typeof useMaptalks>['map']}|null>(null); const map3=computed(()=>mapCmp3.value?.map??null);
 
 // 同 composable 页 bindCloseBtn(g) 模式：在 @click 直接调用 open+bindCloseBtn
 function bindCloseBtn(miw: typeof miwA) {
-  console.log('bindCloseBtn', miw);
   setTimeout(() => {
     // innerHTML 让按钮在隐藏 wrapper + 面板两处 DOM，取 visible 的（offsetParent !== null）
     for (const el of document.querySelectorAll('.mt-miw-close')) {
