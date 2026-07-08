@@ -29,6 +29,12 @@ interface NativeMarker {
   setInfoWindow(opts: MarkerInfoWindowOptions): void;
   openInfoWindow(): void;
   closeInfoWindow(): void;
+  getInfoWindow(): NativeInfoWindow;
+  on(event: string, handler: MaptalksEventHandler): void;
+  off(event: string, handler: MaptalksEventHandler): void;
+}
+
+interface NativeInfoWindow {
   on(event: string, handler: MaptalksEventHandler): void;
   off(event: string, handler: MaptalksEventHandler): void;
 }
@@ -74,16 +80,16 @@ export interface UseMaptalksMarkerInfoWindowReturn {
 }
 
 /** 给原生 Marker 绑定事件 */
-function bindEvents(marker: NativeMarker, events: Record<string, MaptalksEventHandler>): void {
+function bindEvents(target: NativeInfoWindow, events: Record<string, MaptalksEventHandler>): void {
   for (const [name, handler] of Object.entries(events)) {
-    marker.on(name, handler);
+    target.on(name, handler);
   }
 }
 
-/** 解绑原生 Marker 的事件 */
-function unbindEvents(marker: NativeMarker, events: Record<string, MaptalksEventHandler>): void {
+/** 解绑 InfoWindow 的事件 */
+function unbindEvents(target: NativeInfoWindow, events: Record<string, MaptalksEventHandler>): void {
   for (const [name, handler] of Object.entries(events)) {
-    marker.off(name, handler);
+    target.off(name, handler);
   }
 }
 
@@ -137,7 +143,8 @@ export function useMaptalksMarkerInfoWindow(
         if (m && !hasSet.value) {
           try {
             m.setInfoWindow(buildMarkerIWOptions(opts));
-            bindEvents(m, events);
+            // 事件绑定到 InfoWindow（非 Marker）：open/close 是 InfoWindow 的事件
+            bindEvents(m.getInfoWindow(), events);
             hasSet.value = true;
           } catch (cause) {
             logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败'));
@@ -145,9 +152,8 @@ export function useMaptalksMarkerInfoWindow(
         }
     },
     { immediate: true },
-  );
-
-  // title / content 变化时重新 setInfoWindow
+    );
+    // title / content 变化时重新 setInfoWindow
   watch(
     [() => toValue(opts.title), () => toValue(opts.content)],
     () => {
@@ -163,7 +169,7 @@ export function useMaptalksMarkerInfoWindow(
   function remove(): void {
     const m = toValue(geometry) as NativeMarker | null;
     if (m && hasSet.value) {
-      unbindEvents(m, events);
+      unbindEvents(m.getInfoWindow(), events);
       m.closeInfoWindow();
       hasSet.value = false;
     }
