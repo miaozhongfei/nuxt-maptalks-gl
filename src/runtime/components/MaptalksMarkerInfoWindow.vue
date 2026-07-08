@@ -59,17 +59,16 @@ watch(
     if (g && w) {
       await nextTick()
       const m = g as { setInfoWindow?(opts: Record<string, unknown>): void }
-      m?.setInfoWindow?.({
-        title: props.title,
-        width: props.width,
-        height: props.height,
-        custom: props.custom,
-        autoPan: props.autoPan,
-        single: props.single,
-        animation: props.animation,
-        autoOpenOn: props.autoOpenOn,
-        content: w.innerHTML,
-      })
+      const opts: Record<string, unknown> = { content: w.innerHTML };
+      if (props.title !== undefined) opts.title = props.title;
+      if (props.width !== undefined) opts.width = props.width;
+      if (props.height !== undefined) opts.height = props.height;
+      if (props.custom !== undefined) opts.custom = props.custom;
+      if (props.autoPan !== undefined) opts.autoPan = props.autoPan;
+      if (props.single !== undefined) opts.single = props.single;
+      if (props.animation !== undefined) opts.animation = props.animation;
+      if (props.autoOpenOn !== undefined) opts.autoOpenOn = props.autoOpenOn;
+      m?.setInfoWindow?.(opts);
     }
   },
   { immediate: true },
