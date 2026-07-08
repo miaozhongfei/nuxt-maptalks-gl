@@ -21,10 +21,7 @@ const props = withDefaults(
     /** 透传给 InfoWindow 构造器的选项 */
     options?: Record<string, unknown>
   }>(),
-  {
-    visible: true,
-    options: () => ({}),
-  },
+  { visible: true, options: undefined },
 )
 
 const slots = defineSlots()
@@ -32,9 +29,11 @@ const slots = defineSlots()
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 MaptalksMap 内使用')
 
+const coord = () => props.coordinates ?? props.geometry
+
 const iwOpts: UseMaptalksInfoWindowOptions = {
-  options: () => props.options,
-  coordinates: () => props.coordinates ?? props.geometry,
+  ...(props.options !== undefined ? { options: () => props.options } : {}),
+  ...(coord() !== undefined ? { coordinates: coord } : {}),
 }
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
@@ -65,7 +64,7 @@ watch(
   (v) => {
     if (v) {
       mountSlotContent();
-      if (props.visible) v.show(props.coordinates ?? props.geometry);
+      if (props.visible && coord() !== undefined) v.show(coord());
     }
   },
 );
@@ -80,7 +79,7 @@ watch(
   (v) => {
     if (!infoWindow.value) return;
     if (v) {
-      infoWindow.value.show(props.coordinates ?? props.geometry);
+      if (coord() !== undefined) infoWindow.value.show(coord());
     } else {
       infoWindow.value.hide();
     }
