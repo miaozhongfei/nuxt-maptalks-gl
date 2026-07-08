@@ -3,8 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { createApp, h, inject, onBeforeUnmount, onMounted, onUpdated, watch } from 'vue'
-import type { App } from 'vue'
+import { h, inject, onBeforeUnmount, render, watch } from 'vue'
 
 import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
 import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
@@ -38,23 +37,15 @@ const iwOpts: UseMaptalksInfoWindowOptions = {
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
 
-let slotApp: App | null = null;
+let mountEl: HTMLElement | null = null;
 
-/** 创建 Vue 子应用 mount 到临时 DOM，将 DOM 元素注入 InfoWindow.setContent。 */
+/** 将 slot 内容 render 到临时 DOM，再注入 InfoWindow.setContent（不用 createApp 避免 data-v-app 干扰动画） */
 function mountSlotContent() {
   if (!infoWindow.value || !slots.default) return;
-  // 销毁旧的应用
-  if (slotApp) {
-    slotApp.unmount();
-    slotApp = null;
-  }
-  const mountEl = document.createElement('div');
-  slotApp = createApp({
-    render() {
-      return h('div', null, slots.default?.());
-    },
-  });
-  slotApp.mount(mountEl);
+  // 清理旧渲染
+  if (mountEl) { render(null, mountEl); mountEl = null; }
+  mountEl = document.createElement('div');
+  render(h('div', null, slots.default?.()), mountEl);
   infoWindow.value.setContent(mountEl);
 }
 
@@ -69,9 +60,7 @@ watch(
   },
 );
 
-// 父组件每次更新时重新 mount slot 内容，确保 Vue 响应式组件也能反映变化
-onMounted(() => mountSlotContent());
-onUpdated(() => mountSlotContent());
+let visibleJustBecameTrue = false;
 
 // visible prop → show/hide（immediate 确保初始值也生效）
 watch(
@@ -79,6 +68,7 @@ watch(
   (v) => {
     if (!infoWindow.value) return;
     if (v) {
+      visibleJustBecameTrue = true;
       if (coord() !== undefined) infoWindow.value.show(coord());
     } else {
       infoWindow.value.hide();
@@ -87,10 +77,11 @@ watch(
   { immediate: true },
 );
 
-// coordinates/geometry 变化 → 若可见则重新 show 定位
+// coordinates/geometry 变化 → 若可见则重新 show 定位（跳过因 visible 变化触发的同 tick 重复调用）
 watch(
   () => props.coordinates ?? props.geometry,
   (c) => {
+    if (visibleJustBecameTrue) { visibleJustBecameTrue = false; return; }
     if (infoWindow.value && props.visible && c !== undefined) {
       infoWindow.value.show(c);
     }
@@ -101,9 +92,6 @@ watch(
 defineExpose({ infoWindow, show, hide });
 
 onBeforeUnmount(() => {
-  if (slotApp) {
-    slotApp.unmount();
-    slotApp = null;
-  }
+  if (mountEl) { render(null, mountEl); mountEl = null; }
 });
 </script>
