@@ -29,12 +29,6 @@ interface NativeMarker {
   setInfoWindow(opts: MarkerInfoWindowOptions): void;
   openInfoWindow(): void;
   closeInfoWindow(): void;
-  getInfoWindow(): NativeInfoWindow;
-  on(event: string, handler: MaptalksEventHandler): void;
-  off(event: string, handler: MaptalksEventHandler): void;
-}
-
-interface NativeInfoWindow {
   on(event: string, handler: MaptalksEventHandler): void;
   off(event: string, handler: MaptalksEventHandler): void;
 }
@@ -80,14 +74,14 @@ export interface UseMaptalksMarkerInfoWindowReturn {
 }
 
 /** 给原生 Marker 绑定事件 */
-function bindEvents(target: NativeInfoWindow, events: Record<string, MaptalksEventHandler>): void {
+function bindEvents(target: NativeMarker, events: Record<string, MaptalksEventHandler>): void {
   for (const [name, handler] of Object.entries(events)) {
     target.on(name, handler);
   }
 }
 
 /** 解绑 InfoWindow 的事件 */
-function unbindEvents(target: NativeInfoWindow, events: Record<string, MaptalksEventHandler>): void {
+function unbindEvents(target: NativeMarker, events: Record<string, MaptalksEventHandler>): void {
   for (const [name, handler] of Object.entries(events)) {
     target.off(name, handler);
   }
@@ -143,8 +137,7 @@ export function useMaptalksMarkerInfoWindow(
         if (m && !hasSet.value) {
           try {
             m.setInfoWindow(buildMarkerIWOptions(opts));
-            // 事件绑定到 InfoWindow（非 Marker）：open/close 是 InfoWindow 的事件
-            bindEvents(m.getInfoWindow(), events);
+            bindEvents(m, events);
             hasSet.value = true;
           } catch (cause) {
             logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败'));
@@ -169,7 +162,7 @@ export function useMaptalksMarkerInfoWindow(
   function remove(): void {
     const m = toValue(geometry) as NativeMarker | null;
     if (m && hasSet.value) {
-      unbindEvents(m.getInfoWindow(), events);
+      unbindEvents(m, events);
       m.closeInfoWindow();
       hasSet.value = false;
     }
