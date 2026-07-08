@@ -17,7 +17,7 @@ interface MarkerInfoWindowOptions {
   custom?: boolean;
   autoPan?: boolean;
   single?: boolean;
-  animation?: boolean;
+  animation?: string;
   dx?: number;
   dy?: number;
   /** 自定义选项透传 */
@@ -50,7 +50,7 @@ export interface UseMaptalksMarkerInfoWindowOptions {
   /** 是否唯一（同时只显示一个） */
   single?: boolean;
   /** 动画 */
-  animation?: boolean;
+  animation?: string;
   /** 水平偏移 */
   dx?: number;
   /** 垂直偏移 */
