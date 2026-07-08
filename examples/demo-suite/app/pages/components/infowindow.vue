@@ -92,6 +92,7 @@
           <MaptalksMarker
             :coordinates="[121.47, 31.23]"
             :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 }"
+            @click="miwA?.open()"
           >
             <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '东门店 A'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
@@ -107,6 +108,7 @@
           <MaptalksMarker
             :coordinates="[121.5, 31.24]"
             :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 }"
+            @click="miwB?.open()"
           >
             <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '西门店 B'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
@@ -122,6 +124,7 @@
           <MaptalksMarker
             :coordinates="[121.52, 31.22]"
             :symbol="{ markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 }"
+            @click="miwC?.open()"
           >
             <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '南门店 C'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
