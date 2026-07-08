@@ -36,7 +36,6 @@ const wrapper = ref<HTMLElement | null>(null)
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
-console.log('props', JSON.stringify(props));
 const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   ...(props.title === undefined ? {} : { title: props.title }),
   ...(props.width === undefined ? {} : { width: props.width }),

@@ -1,5 +1,5 @@
 import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
-import type { MaybeRefOrGetter } from 'vue';
+import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { toMaptalksError } from '../core/errors';
 import type { MaptalksEventHandler, MaptalksGeometry } from '../types';
@@ -109,57 +109,52 @@ function buildMarkerIWOptions(opts: UseMaptalksMarkerInfoWindowOptions): MarkerI
   return result;
 }
 
+/** 设置 Marker 信息框的响应式 watch（几何就绪配置 + title/content 变化重建） */
+function setupMarkerIW(
+  geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
+  opts: UseMaptalksMarkerInfoWindowOptions,
+  hasSet: ShallowRef<boolean>,
+): void {
+  watch(
+    () => toValue(geometry) as NativeMarker | null,
+    (m) => {
+      if (m && !hasSet.value) {
+        try { m.setInfoWindow(buildMarkerIWOptions(opts)); hasSet.value = true; }
+        catch (cause) { logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败')); }
+      }
+    },
+    { immediate: true },
+  );
+  watch(
+    [() => toValue(opts.title), () => toValue(opts.content)],
+    () => {
+      const m = toValue(geometry) as NativeMarker | null;
+      if (m && hasSet.value) m.setInfoWindow(buildMarkerIWOptions(opts));
+    },
+  );
+}
+
 export function useMaptalksMarkerInfoWindow(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
   opts: UseMaptalksMarkerInfoWindowOptions = {},
 ): UseMaptalksMarkerInfoWindowReturn {
   const events = opts.events ?? {};
   const hasSet = shallowRef(false);
-  // 几何就绪时配置信息框
-  watch(
-    () => toValue(geometry) as NativeMarker | null,
-    (m) => {
-        if (m && !hasSet.value) {
-          try {
-            m.setInfoWindow(buildMarkerIWOptions(opts));
-            hasSet.value = true;
-          } catch (cause) {
-            logger.error('MarkerInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'MarkerInfoWindow 配置失败'));
-          }
-        }
-    },
-    { immediate: true },
-    );
-    // title / content 变化时重新 setInfoWindow
-  watch(
-    [() => toValue(opts.title), () => toValue(opts.content)],
-    () => {
-      const m = toValue(geometry) as NativeMarker | null;
-      if (m && hasSet.value) {
-        m.setInfoWindow(buildMarkerIWOptions(opts));
-      }
-    },
-  );
+  setupMarkerIW(geometry, opts, hasSet);
 
   const open = (): void => {
-    const m = toValue(geometry) as NativeMarker | null;
-    m?.openInfoWindow();
+    (toValue(geometry) as NativeMarker | null)?.openInfoWindow();
     events.open?.({} as never);
   };
   const close = (): void => {
-    const m = toValue(geometry) as NativeMarker | null;
-    m?.closeInfoWindow();
+    (toValue(geometry) as NativeMarker | null)?.closeInfoWindow();
     events.close?.({} as never);
   };
   function remove(): void {
     const m = toValue(geometry) as NativeMarker | null;
-    if (m && hasSet.value) {
-      m.closeInfoWindow();
-      hasSet.value = false;
-    }
+    if (m && hasSet.value) { m.closeInfoWindow(); hasSet.value = false; }
   }
 
   if (opts.autoDispose ?? true) onScopeDispose(remove);
-
   return { open, close, remove };
 }

@@ -32,8 +32,8 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 Mapta
 const coord = () => props.coordinates ?? props.geometry
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
-  ...(props.options !== undefined ? { options: () => props.options } : {}),
-  ...(coord() !== undefined ? { coordinates: coord } : {}),
+  ...(props.options === undefined ? {} : { options: () => props.options }),
+  ...(coord() === undefined ? {} : { coordinates: coord }),
 }
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
@@ -90,9 +90,9 @@ watch(
 // coordinates/geometry 变化 → 若可见则重新 show 定位
 watch(
   () => props.coordinates ?? props.geometry,
-  (coord) => {
-    if (infoWindow.value && props.visible && coord !== undefined) {
-      infoWindow.value.show(coord);
+  (c) => {
+    if (infoWindow.value && props.visible && c !== undefined) {
+      infoWindow.value.show(c);
     }
   },
 )
