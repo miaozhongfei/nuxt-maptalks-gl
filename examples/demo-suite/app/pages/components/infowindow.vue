@@ -25,28 +25,28 @@
 
     <!-- 卡片 3：MaptalksMarkerInfoWindow——对照 composable 页 bindCloseBtn 模式，在 @click 直接 open+bind -->
     <UCard class="mb-6"><template #header><h2 class="font-semibold">MaptalksMarkerInfoWindow · 每个 Marker 独立信息框 · 自定义关闭</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
-      <p class="text-sm text-muted mb-2"><code>&lt;MaptalksMarkerInfoWindow&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，autoOpenOn 默认 'click' 处理打开，<code>@click</code> 只绑 <code>bindCloseBtn</code>（通过 expose 的 <code>close()</code> 调 <code>closeInfoWindow</code>）。</p>
+      <p class="text-sm text-muted mb-2"><code>&lt;MaptalksMarkerInfoWindow&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，autoOpenOn 默认 'click' 处理打开，<code>@click</code> 只绑关闭按钮；关闭通过 expose 的 <code>close()</code> 调 <code>closeInfoWindow</code>。</p>
       <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:400px">
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
-          <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}" @click="miwA?.open(); bindCloseBtn(miwA)">
-            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" :auto-open-on="'' ">
+          <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}" @click="bindCloseBtn(miwA)">
+            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>东门店 A</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.47000, 31.23000]</div>
               </div>
             </MaptalksMarkerInfoWindow>
           </MaptalksMarker>
-          <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}" @click="miwB?.open(); bindCloseBtn(miwB)">
-            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" :auto-open-on="'' ">
+          <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}" @click="bindCloseBtn(miwB)">
+            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>西门店 B</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.50000, 31.24000]</div>
               </div>
             </MaptalksMarkerInfoWindow>
           </MaptalksMarker>
-          <MaptalksMarker :coordinates="[121.52,31.22]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}" @click="miwC?.open(); bindCloseBtn(miwC)">
-            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" :auto-open-on="'' ">
+          <MaptalksMarker :coordinates="[121.52,31.22]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}" @click="bindCloseBtn(miwC)">
+            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>南门店 C</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.52000, 31.22000]</div>
@@ -55,7 +55,7 @@
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>
-      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><span class="text-sm text-muted">点 Marker 弹框，点「×」或点别处关闭。</span></div></template>
+      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="warning" variant="soft" @click="cmpRandomOpen">随机打开一个</UButton><UButton size="sm" color="error" variant="soft" @click="cmpRandomClose">随机关闭一个</UButton><span class="text-sm text-muted">当前：{{ cmpOpenLabel || '—' }}</span></div></template>
     </UCard>
   </div>
 </template>
@@ -96,4 +96,8 @@ function bindCloseBtn(miw: typeof miwA) {
 
 let cmpOpenTime = 0;
 useMaptalksEvents(map3, { click: () => { if (!cmpAutoClose.value || Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
+
+let cmpCurOpen: typeof miwA | null = null;
+function cmpRandomOpen() { const all=[miwA,miwB,miwC]; cmpCurOpen = all[Math.floor(Math.random()*3)]; cmpCurOpen?.value?.open(); if(cmpCurOpen===miwA)cmpOpenLabel.value='东门店 A'; else if(cmpCurOpen===miwB)cmpOpenLabel.value='西门店 B'; else cmpOpenLabel.value='南门店 C'; }
+function cmpRandomClose() { cmpCurOpen?.value?.close(); cmpOpenLabel.value=''; }
 </script>
