@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, onMounted, ref, useSlots } from 'vue'
+import { inject, nextTick, onMounted, ref, toValue, useSlots } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -33,9 +33,6 @@ const emit = defineEmits<{
 const slots = useSlots()
 const wrapper = ref<HTMLElement | null>(null)
 
-// 用 computed 使 content 反应式：setup 阶段 wrapper 为 null，等挂载后自动更新
-const contentStr = computed(() => wrapper.value?.innerHTML ?? '')
-
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
@@ -49,11 +46,20 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   animation: props.animation,
   autoDispose: props.autoDispose,
   autoOpenOn: props.autoOpenOn,
-  content: () => contentStr.value,
+  // 不在 options 里传 content——挂载后一次性 setInfoWindow，避免二次调用丢失动画
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
+})
+
+// 挂载后一次性设置 content（wrapper 此时已有 slot 内容），和 composable 页一样只调一次 setInfoWindow
+onMounted(async () => {
+  await nextTick()
+  const m = toValue(geometry) as { setInfoWindow?(opts: Record<string, unknown>): void } | null
+  if (m?.setInfoWindow && wrapper.value) {
+    m.setInfoWindow({ content: wrapper.value.innerHTML })
+  }
 })
 
 defineExpose({ open, close })
