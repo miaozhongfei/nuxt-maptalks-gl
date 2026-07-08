@@ -58,9 +58,8 @@ watch(
   async ([g, w]) => {
     if (g && w) {
       await nextTick()
-      const m = g as { getInfoWindow?(): { options?: Record<string, unknown> } | null; setInfoWindow?(opts: Record<string, unknown>): void }
-      const iw = m.getInfoWindow?.()
-      m?.setInfoWindow?.({ ...iw?.options, content: w.innerHTML })
+      const m = g as { getInfoWindow?(): { setContent?(c: string): void } | null }
+      m.getInfoWindow?.()?.setContent?.(w.innerHTML)
     }
   },
   { immediate: true },
