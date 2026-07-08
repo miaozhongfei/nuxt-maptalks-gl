@@ -29,7 +29,7 @@
       <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:400px">
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
-          <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}" @click="bindCloseBtn(miwA)">
+          <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwA)">
             <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>东门店 A</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
@@ -99,6 +99,6 @@ let cmpOpenTime = 0;
 useMaptalksEvents(map3, { click: () => { if (!cmpAutoClose.value || Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
 
 let cmpCurOpen: typeof miwA | null = null;
-function cmpRandomOpen() { const all=[miwA,miwB,miwC]; cmpCurOpen = all[Math.floor(Math.random()*3)]; cmpCurOpen?.value?.open(); if(cmpCurOpen===miwA)cmpOpenLabel.value='东门店 A'; else if(cmpCurOpen===miwB)cmpOpenLabel.value='西门店 B'; else cmpOpenLabel.value='南门店 C'; }
+function cmpRandomOpen() { cmpOpenTime = Date.now(); const all=[miwA,miwB,miwC]; cmpCurOpen = all[Math.floor(Math.random()*3)]; cmpCurOpen?.value?.open(); if(cmpCurOpen===miwA)cmpOpenLabel.value='东门店 A'; else if(cmpCurOpen===miwB)cmpOpenLabel.value='西门店 B'; else cmpOpenLabel.value='南门店 C'; }
 function cmpRandomClose() { cmpCurOpen?.value?.close(); cmpOpenLabel.value=''; }
 </script>

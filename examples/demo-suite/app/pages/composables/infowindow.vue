@@ -174,7 +174,7 @@ const gA = useMaptalksMarker(vec3, {
 }).geometry;
 const miwA = useMaptalksMarkerInfoWindow(gA, { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { curOpen = miwA; mkOpenTime = Date.now(); miwA.open(); iw3Label.value = '东门店 A'; bindCloseBtn(miwA); },
+  click: () => { curOpen = miwA; mkOpenTime = Date.now(); iw3Label.value = '东门店 A'; bindCloseBtn(miwA); },
 });
 
 const gB = useMaptalksMarker(vec3, {
@@ -183,7 +183,7 @@ const gB = useMaptalksMarker(vec3, {
 }).geometry;
 const miwB = useMaptalksMarkerInfoWindow(gB, { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { curOpen = miwB; mkOpenTime = Date.now(); miwB.open(); iw3Label.value = '西门店 B'; bindCloseBtn(miwB); },
+  click: () => { curOpen = miwB; mkOpenTime = Date.now(); iw3Label.value = '西门店 B'; bindCloseBtn(miwB); },
 });
 
 const gC = useMaptalksMarker(vec3, {
@@ -191,20 +191,22 @@ const gC = useMaptalksMarker(vec3, {
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
 }).geometry;
 const miwC = useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
+useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
+  click: () => { curOpen = miwC; mkOpenTime = Date.now(); iw3Label.value = '南门店 C'; bindCloseBtn(miwC); },
+});
 // 记录随机打开的那个，供关闭按钮关闭同一个
-let curOpenIW: typeof miwA | undefined = null;
+let curOpenIW: typeof miwA | undefined | null = null;
 
 function randomOpen() {
+  mkOpenTime = Date.now();
   const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
   curOpenIW = pick;
-  pick.open();
+  pick?.open();
   if (pick === miwA) iw3Label.value = '东门店 A'; else if (pick === miwB) iw3Label.value = '西门店 B'; else iw3Label.value = '南门店 C';
 }
 function randomClose() {
   curOpenIW?.close();
   iw3Label.value = '';
 }
-useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
-  click: () => { curOpen = miwC; mkOpenTime = Date.now(); miwC.open(); iw3Label.value = '南门店 C'; bindCloseBtn(miwC); },
-});
+
 </script>
