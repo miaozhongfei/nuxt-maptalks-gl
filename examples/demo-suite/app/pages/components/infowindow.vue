@@ -82,12 +82,13 @@ const mapCmp3=ref<{map:ReturnType<typeof useMaptalks>['map']}|null>(null); const
 
 // 同 composable 页 bindCloseBtn(g) 模式：在 @click 直接调用 open+bindCloseBtn
 function bindCloseBtn(miw: typeof miwA) {
+  console.log('bindCloseBtn', miw);
   setTimeout(() => {
     // innerHTML 让按钮在隐藏 wrapper + 面板两处 DOM，取 visible 的（offsetParent !== null）
     for (const el of document.querySelectorAll('.mt-miw-close')) {
       const btn = el as HTMLElement;
       if (btn.offsetParent !== null) {
-        btn.addEventListener('click', () => { miw.value?.close(); }, { once: true });
+        btn.addEventListener('click', () => { miw?.close(); }, { once: true });
         return;
       }
     }
