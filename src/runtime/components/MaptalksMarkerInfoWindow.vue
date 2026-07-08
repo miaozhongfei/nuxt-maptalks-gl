@@ -38,9 +38,9 @@ if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow å¿…é
 
 console.log('props', JSON.stringify(props));
 const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
-  title: props.title,
-  width: props.width,
-  height: props.height,
+  ...(props.title === undefined ? {} : { title: props.title }),
+  ...(props.width === undefined ? {} : { width: props.width }),
+  ...(props.height === undefined ? {} : { height: props.height }),
   ...(props.autoPan === undefined ? {} : { autoPan: props.autoPan }),
   ...(props.single === undefined ? {} : { single: props.single }),
   ...(props.custom === undefined ? {} : { custom: props.custom }),
