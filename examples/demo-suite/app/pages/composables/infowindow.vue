@@ -195,16 +195,17 @@ const gC = useMaptalksMarker(vec3, {
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
 }).geometry;
 const miwC = useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) });
+// 记录随机打开的那个，供关闭按钮关闭同一个
+let curOpenIW: typeof miwA | null = null;
 
 function randomOpen() {
   const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
+  curOpenIW = pick;
   pick.open();
-  // @ts-expect-error test button
   if (pick === miwA) iw3Label.value = '东门店 A'; else if (pick === miwB) iw3Label.value = '西门店 B'; else iw3Label.value = '南门店 C';
 }
 function randomClose() {
-  const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
-  pick.close();
+  curOpenIW?.close();
   iw3Label.value = '';
 }
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
