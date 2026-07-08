@@ -88,13 +88,12 @@
       <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 400px">
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
-          <!-- 蓝 Marker + MarkerInfoWindow -->
+          <!-- 蓝 Marker + MarkerInfoWindow（原生 autoOpenOn:'click' 自动弹出） -->
           <MaptalksMarker
             :coordinates="[121.47, 31.23]"
             :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 }"
-            @click="miwA?.open()"
           >
-            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" :auto-open-on="null" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '东门店 A'" @close="cmpOpenLabel = ''">
+            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '东门店 A'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
                   <span>东门店 A</span>
@@ -108,9 +107,8 @@
           <MaptalksMarker
             :coordinates="[121.5, 31.24]"
             :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 }"
-            @click="miwB?.open()"
           >
-            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" :auto-open-on="null" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '西门店 B'" @close="cmpOpenLabel = ''">
+            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '西门店 B'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
                   <span>西门店 B</span>
@@ -124,9 +122,8 @@
           <MaptalksMarker
             :coordinates="[121.52, 31.22]"
             :symbol="{ markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 }"
-            @click="miwC?.open()"
           >
-            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" :auto-open-on="null" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '南门店 C'" @close="cmpOpenLabel = ''">
+            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '南门店 C'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
                   <span>南门店 C</span>
@@ -188,22 +185,11 @@ function closeMK() {
 }
 
 // 卡片 3：MaptalksMarkerInfoWindow 声明式组件
-const miwA = ref<{ close: () => void } | null>(null);
-const miwB = ref<{ close: () => void } | null>(null);
-const miwC = ref<{ close: () => void } | null>(null);
 const cmpAutoClose = ref(true);
 const cmpOpenLabel = ref('');
 const mapCmp3 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map3 = computed(() => mapCmp3.value?.map ?? null);
 let cmpOpenTime = 0;
-
-useMaptalksEvents(map3, {
-  click: () => {
-    if (!cmpAutoClose.value || Date.now() - cmpOpenTime < 250) return;
-    [miwA, miwB, miwC].forEach((r) => r.value?.close());
-    cmpOpenLabel.value = '';
-  },
-});
 </script>
 
 <style scoped>
