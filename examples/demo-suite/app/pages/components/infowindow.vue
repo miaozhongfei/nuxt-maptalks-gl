@@ -37,7 +37,7 @@
               </div>
             </MaptalksMarkerInfoWindow>
           </MaptalksMarker>
-          <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}" @click="bindCloseBtn(miwB)">
+          <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwB)">
             <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>西门店 B</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
@@ -45,7 +45,7 @@
               </div>
             </MaptalksMarkerInfoWindow>
           </MaptalksMarker>
-          <MaptalksMarker :coordinates="[121.52,31.22]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}" @click="bindCloseBtn(miwC)">
+          <MaptalksMarker :coordinates="[121.52,31.22]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwC)">
             <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>南门店 C</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
@@ -55,7 +55,7 @@
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>
-      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="warning" variant="soft" @click="cmpRandomOpen">随机打开一个</UButton><UButton size="sm" color="error" variant="soft" @click="cmpRandomClose">随机关闭一个</UButton><span class="text-sm text-muted">当前：{{ cmpOpenLabel || '—' }}</span></div></template>
+      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">打开东门店</UButton><UButton size="sm" color="neutral" variant="soft" @click="miwA?.close()">关闭</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="neutral" variant="soft" @click="miwB?.close()">关闭</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="neutral" variant="soft" @click="miwC?.close()">关闭</UButton><span class="text-sm text-muted">和 miw-bug 测试页完全一样的 open/close 调用方式</span></div></template>
     </UCard>
   </div>
 </template>
@@ -77,11 +77,9 @@ function closeMK(){showMK.value=false}
 const miwA = ref<{ open:()=>void; close:()=>void }|null>(null);
 const miwB = ref<{ open:()=>void; close:()=>void }|null>(null);
 const miwC = ref<{ open:()=>void; close:()=>void }|null>(null);
-const cmpAutoClose = ref(true);
-const cmpOpenLabel = ref('');
 const mapCmp3=ref<{map:ReturnType<typeof useMaptalks>['map']}|null>(null); const map3=computed(()=>mapCmp3.value?.map??null);
 
-// 同 composable 页 bindCloseBtn(g) 模式：在 @click 直接调用 open+bindCloseBtn
+// 同 composable 页 bindCloseBtn 模式
 function bindCloseBtn(miw: typeof miwA) {
   setTimeout(() => {
     // innerHTML 让按钮在隐藏 wrapper + 面板两处 DOM，取 visible 的（offsetParent !== null）
@@ -96,9 +94,5 @@ function bindCloseBtn(miw: typeof miwA) {
 }
 
 let cmpOpenTime = 0;
-useMaptalksEvents(map3, { click: () => { if (!cmpAutoClose.value || Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
-
-let cmpCurOpen: typeof miwA | null = null;
-function cmpRandomOpen() { cmpOpenTime = Date.now(); const all=[miwA,miwB,miwC]; cmpCurOpen = all[Math.floor(Math.random()*3)]; cmpCurOpen?.value?.open(); if(cmpCurOpen===miwA)cmpOpenLabel.value='东门店 A'; else if(cmpCurOpen===miwB)cmpOpenLabel.value='西门店 B'; else cmpOpenLabel.value='南门店 C'; }
-function cmpRandomClose() { cmpCurOpen?.value?.close(); cmpOpenLabel.value=''; }
+useMaptalksEvents(map3, { click: () => { if (Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
 </script>
