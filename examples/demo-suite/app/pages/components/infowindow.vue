@@ -55,7 +55,7 @@
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>
-      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">打开东门店</UButton><UButton size="sm" color="neutral" variant="soft" @click="miwA?.close()">关闭</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="neutral" variant="soft" @click="miwB?.close()">关闭</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="neutral" variant="soft" @click="miwC?.close()">关闭</UButton><span class="text-sm text-muted">和 miw-bug 测试页完全一样的 open/close 调用方式</span></div></template>
+      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">打开东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机，同 miw-bug 路径</span></div></template>
     </UCard>
   </div>
 </template>
@@ -95,4 +95,7 @@ function bindCloseBtn(miw: typeof miwA) {
 
 let cmpOpenTime = 0;
 useMaptalksEvents(map3, { click: () => { if (Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
+
+function randomOpen() { cmpOpenTime = Date.now(); const all=[miwA,miwB,miwC]; all[Math.floor(Math.random()*3)]?.open(); }
+function randomClose() { [miwA,miwB,miwC].forEach(r=>r.value?.close()); }
 </script>
