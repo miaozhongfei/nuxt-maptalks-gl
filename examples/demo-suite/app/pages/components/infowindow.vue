@@ -41,7 +41,6 @@
       </template>
       <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 380px">
         <MaptalksTileLayer source="osm" />
-        <!-- 两个 Marker —— 点击分别弹出不同信息框 -->
         <MaptalksVectorLayer>
           <MaptalksMarker
             :coordinates="[121.47, 31.23]"
@@ -54,7 +53,6 @@
             @click="onMarkerClick('B', [121.5, 31.24])"
           />
         </MaptalksVectorLayer>
-        <!-- 信息框：内容根据点击的 Marker 动态切换 -->
         <MaptalksInfoWindow :coordinates="mkCoord" :visible="showMK">
           <div class="iw-content" style="min-width: 180px">
             <strong>Marker {{ mkLabel }} 信息框</strong>
@@ -72,84 +70,14 @@
       </template>
     </UCard>
 
-    <!-- 卡片 3：MaptalksMarkerInfoWindow 声明式组件——每个 Marker 独立信息框 + 自定义 UI + slot 渲染 -->
-    <UCard class="mb-6">
-      <template #header>
-        <div class="flex items-center gap-2 flex-wrap">
-          <h2 class="font-semibold">MaptalksMarkerInfoWindow · 标记级 · 每个 Marker 独立信息框 · 自定义 UI · slot</h2>
-          <UBadge color="primary" variant="subtle">组件</UBadge>
-          <UBadge color="neutral" variant="outline">官网 10.5</UBadge>
-        </div>
-      </template>
-      <p class="text-sm text-muted mb-2">
-        <code>&lt;MaptalksMarkerInfoWindow title="" :custom="true"&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，
-        使用 <strong>slot 渲染自定义 UI</strong>（Vue 模板，<code>@click</code> 原生生效，比 HTML 字符串更灵活）。
-      </p>
-      <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 400px">
-        <MaptalksTileLayer source="osm" />
-        <MaptalksVectorLayer>
-          <!-- 蓝 Marker + MarkerInfoWindow（原生 autoOpenOn:'click' 自动弹出） -->
-          <MaptalksMarker
-            :coordinates="[121.47, 31.23]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 }"
-          >
-            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '东门店 A'" @close="cmpOpenLabel = ''">
-              <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
-                <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
-                  <span>东门店 A</span>
-                  <span style="cursor:pointer;font-size:16px;line-height:1" @click="miwA?.close()">×</span>
-                </div>
-                <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.47000, 31.23000]</div>
-              </div>
-            </MaptalksMarkerInfoWindow>
-          </MaptalksMarker>
-          <!-- 红 Marker + MarkerInfoWindow -->
-          <MaptalksMarker
-            :coordinates="[121.5, 31.24]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 }"
-          >
-            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '西门店 B'" @close="cmpOpenLabel = ''">
-              <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
-                <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
-                  <span>西门店 B</span>
-                  <span style="cursor:pointer;font-size:16px;line-height:1" @click="miwB?.close()">×</span>
-                </div>
-                <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.50000, 31.24000]</div>
-              </div>
-            </MaptalksMarkerInfoWindow>
-          </MaptalksMarker>
-          <!-- 绿 Marker + MarkerInfoWindow -->
-          <MaptalksMarker
-            :coordinates="[121.52, 31.22]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 }"
-          >
-            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '南门店 C'" @close="cmpOpenLabel = ''">
-              <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
-                <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
-                  <span>南门店 C</span>
-                  <span style="cursor:pointer;font-size:16px;line-height:1" @click="miwC?.close()">×</span>
-                </div>
-                <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.52000, 31.22000]</div>
-              </div>
-            </MaptalksMarkerInfoWindow>
-          </MaptalksMarker>
-        </MaptalksVectorLayer>
-      </MaptalksMap>
-      <template #footer>
-        <div class="flex gap-2 items-center flex-wrap">
-          <UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">
-            点别处关闭：{{ cmpAutoClose ? '开' : '关' }}
-          </UButton>
-          <span class="text-sm text-muted">Slot 渲染自定义 UI，点 Marker 自动弹出。当前：{{ cmpOpenLabel || '—' }}</span>
-        </div>
-      </template>
-    </UCard>
+    <!-- MaptalksMarkerInfoWindow 标记级组件的完整功能演示见 composable 页 -->
   </div>
 </template>
 
 <script setup lang="ts">
-// 卡片 1：地图点击弹框 + 实时坐标
 const center: [number, number] = [121.4737, 31.2304];
+
+// 卡片 1：地图点击弹框 + 实时坐标
 const iwCoord = ref<[number, number]>([121.4737, 31.2304]);
 const showIW = ref(false);
 const iwTime = ref('');
@@ -183,39 +111,13 @@ function onMarkerClick(label: string, coord: [number, number]) {
 function closeMK() {
   showMK.value = false;
 }
-
-// 卡片 3：MaptalksMarkerInfoWindow 声明式组件
-const cmpAutoClose = ref(true);
-const cmpOpenLabel = ref('');
-const mapCmp3 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map3 = computed(() => mapCmp3.value?.map ?? null);
-let cmpOpenTime = 0;
 </script>
 
 <style scoped>
-.iw-content {
-  padding: 6px 10px;
-  font-size: 13px;
-}
-.iw-content strong {
-  color: #2563eb;
-}
-.iw-content p {
-  margin: 2px 0;
-}
-.iw-time {
-  color: #6b7280;
-  font-size: 12px;
-}
-.iw-btn {
-  padding: 2px 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 12px;
-}
-.iw-btn:hover {
-  background: #f3f4f6;
-}
+.iw-content { padding: 6px 10px; font-size: 13px; }
+.iw-content strong { color: #2563eb; }
+.iw-content p { margin: 2px 0; }
+.iw-time { color: #6b7280; font-size: 12px; }
+.iw-btn { padding: 2px 8px; border: 1px solid #d1d5db; border-radius: 4px; background: #fff; cursor: pointer; font-size: 12px; }
+.iw-btn:hover { background: #f3f4f6; }
 </style>
