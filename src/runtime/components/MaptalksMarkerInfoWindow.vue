@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref, useSlots, watch } from 'vue'
+import { computed, inject, nextTick, onMounted, ref, useSlots } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -33,6 +33,9 @@ const emit = defineEmits<{
 const slots = useSlots()
 const wrapper = ref<HTMLElement | null>(null)
 
+// 用 computed 使 content 反应式：setup 阶段 wrapper 为 null，等挂载后自动更新
+const contentStr = computed(() => wrapper.value?.innerHTML ?? '')
+
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
@@ -46,7 +49,7 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   animation: props.animation,
   autoDispose: props.autoDispose,
   autoOpenOn: props.autoOpenOn,
-  content: () => wrapper.value?.innerHTML ?? '',
+  content: () => contentStr.value,
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
