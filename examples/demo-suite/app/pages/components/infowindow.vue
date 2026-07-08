@@ -55,7 +55,7 @@
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>
-      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">打开东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机，同 miw-bug 路径</span></div></template>
+      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机，同 miw-bug 路径</span></div></template>
     </UCard>
   </div>
 </template>
@@ -77,6 +77,7 @@ function closeMK(){showMK.value=false}
 const miwA = ref<{ open:()=>void; close:()=>void }|null>(null);
 const miwB = ref<{ open:()=>void; close:()=>void }|null>(null);
 const miwC = ref<{ open:()=>void; close:()=>void }|null>(null);
+const cmpAutoClose = ref(true);
 const mapCmp3=ref<{map:ReturnType<typeof useMaptalks>['map']}|null>(null); const map3=computed(()=>mapCmp3.value?.map??null);
 
 // 同 composable 页 bindCloseBtn 模式
@@ -94,7 +95,7 @@ function bindCloseBtn(miw: typeof miwA) {
 }
 
 let cmpOpenTime = 0;
-useMaptalksEvents(map3, { click: () => { if (Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
+useMaptalksEvents(map3, { click: () => { if (!cmpAutoClose.value || Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
 
 function randomOpen() { cmpOpenTime = Date.now(); const all=[miwA,miwB,miwC]; all[Math.floor(Math.random()*3)]?.open(); }
 function randomClose() { [miwA,miwB,miwC].forEach(r=>r.value?.close()); }
