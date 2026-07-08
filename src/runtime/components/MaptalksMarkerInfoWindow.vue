@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref, useSlots } from 'vue'
+import { inject, onMounted, ref, useSlots } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -32,6 +32,8 @@ const emit = defineEmits<{
 
 const slots = useSlots()
 const wrapper = ref<HTMLElement | null>(null)
+// 用 let 存 content（非 reactive），避免 content watch 检测变化触发二次 setInfoWindow
+let content = ''
 
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
@@ -48,12 +50,15 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   animation: props.animation,
   autoDispose: props.autoDispose,
   autoOpenOn: props.autoOpenOn,
-  content: () => wrapper.value?.innerHTML ?? '',
+  content: () => content,
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
 })
+
+// mount 后把 innerHTML 存到 let content（不 reactive，不触发 content watch）
+onMounted(() => { content = wrapper.value?.innerHTML ?? ''; })
 
 defineExpose({ open, close })
 </script>
