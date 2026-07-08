@@ -41,6 +41,7 @@ const items: NavigationMenuItem[][] = [
     { label: '开始', type: 'label' },
     { label: '首页', icon: 'i-lucide-home', to: '/' },
     { label: '自适应父容器', icon: 'i-lucide-maximize', to: '/fill-parent' },
+    { label: 'IW 动画测试', icon: 'i-lucide-tv', to: '/test/iw-animation' },
   ],
   [
     { label: '组件单独', type: 'label' },
