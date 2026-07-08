@@ -22,6 +22,8 @@ const props = withDefaults(
     single?: boolean
     /** 动画 */
     animation?: boolean
+    /** 自动弹出事件（null = 禁用内置自动打开，由 @click 控制） */
+    autoOpenOn?: string | null
     /** 组件销毁时自动移除，默认 true */
     autoDispose?: boolean
   }>(),
@@ -45,6 +47,7 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   single: props.single,
   animation: props.animation,
   autoDispose: props.autoDispose,
+  autoOpenOn: props.autoOpenOn,
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
