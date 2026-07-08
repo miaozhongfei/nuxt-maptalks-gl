@@ -77,18 +77,18 @@
         <MaptalksTileLayer source="osm" />
         <MaptalksVectorLayer>
           <MaptalksMarker :coordinates="[121.47, 31.23]" :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 }">
-            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '东门店 A'; bindCloseBtn('A')" @close="cmpOpenLabel = ''">
+            <MaptalksMarkerInfoWindow ref="miwA" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '东门店 A'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
                   <span>东门店 A</span>
-                  <span style="cursor:pointer;font-size:16px;line-height:1" class="mt-miw-close" @click.stop>×</span>
+                  <span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1" onclick="window.__closeMarkerIW()">×</span>
                 </div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.47000, 31.23000]</div>
               </div>
             </MaptalksMarkerInfoWindow>
           </MaptalksMarker>
           <MaptalksMarker :coordinates="[121.5, 31.24]" :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 }">
-            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '西门店 B'; bindCloseBtn('B')" @close="cmpOpenLabel = ''">
+            <MaptalksMarkerInfoWindow ref="miwB" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '西门店 B'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
                   <span>西门店 B</span>
@@ -99,7 +99,7 @@
             </MaptalksMarkerInfoWindow>
           </MaptalksMarker>
           <MaptalksMarker :coordinates="[121.52, 31.22]" :symbol="{ markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 }">
-            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '南门店 C'; bindCloseBtn('C')" @close="cmpOpenLabel = ''">
+            <MaptalksMarkerInfoWindow ref="miwC" title="" :custom="true" @open="cmpOpenTime = Date.now(); cmpOpenLabel = '南门店 C'" @close="cmpOpenLabel = ''">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">
                   <span>南门店 C</span>
@@ -166,15 +166,11 @@ const mapCmp3 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null)
 const map3 = computed(() => mapCmp3.value?.map ?? null);
 let cmpOpenTime = 0;
 
-/** InfoWindow open 后绑真实 close 事件（@click 经 innerHTML 丢失） */
-function bindCloseBtn(tag: 'A' | 'B' | 'C') {
-  setTimeout(() => {
-    const btn = document.querySelector('.mt-miw-close') as HTMLElement | null;
-    if (!btn) return;
-    const ref = tag === 'A' ? miwA : tag === 'B' ? miwB : miwC;
-    btn.addEventListener('click', (e) => { e.stopPropagation(); ref.value?.close(); }, { once: true });
-  }, 50);
-}
+// 自定义关闭按钮用 onclick HTML 属性（innerHTML 时保留，Vue @click 会丢失）
+(window as unknown as Record<string, () => void>).__closeMarkerIW = () => {
+  [miwA, miwB, miwC].forEach((r) => r.value?.close());
+  cmpOpenLabel.value = '';
+};
 
 useMaptalksEvents(map3, {
   click: () => {
