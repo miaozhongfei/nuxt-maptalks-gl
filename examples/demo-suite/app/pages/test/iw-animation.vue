@@ -46,12 +46,12 @@
         </template>
       </UCard>
 
-      <!-- 卡片 5：composable · reactive content + show 同 handler（复现 composables/infowindow 模式） -->
+      <!-- 卡片 5：composable · reactive content + 改内容（复现 composables/infowindow 模式） -->
       <UCard>
-        <template #header><h2 class="font-semibold">composable · reactive content + show</h2></template>
+        <template #header><h2 class="font-semibold">composable · reactive content + 改内容</h2></template>
         <div ref="el5" class="relative rounded border border-default overflow-hidden" style="height: 300px" />
         <template #footer>
-          <div class="flex gap-2"><UButton size="sm" color="primary" @click="show5()">显示（改内容+show）</UButton><UButton size="sm" @click="hide5c()">隐藏</UButton></div>
+          <div class="flex gap-2"><UButton size="sm" color="primary" @click="show5()">显示</UButton><UButton size="sm" color="warning" @click="changeIWC5()">改内容</UButton><UButton size="sm" @click="hide5c()">隐藏</UButton><span class="text-sm text-muted">当前：{{ iw5Content }}</span></div>
         </template>
       </UCard>
     </div>
@@ -87,14 +87,14 @@ const mapCmp4 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null)
 function show4() { coord4.value = [121.4737, 31.2304]; vis4.value = true; }
 function hide4() { vis4.value = false; }
 
-// 卡片 5：reactive content + show 同 handler（复现 composables/infowindow 模式）
+// 卡片 5：reactive content + 改内容
 const el5 = ref<HTMLElement | null>(null);
 const { map: map5 } = useMaptalks(el5, { center, zoom: 13 });
 useMaptalksTileLayer(map5, { source: 'osm' });
 const iw5Content = ref('点击试试');
 const { show: show5c, hide: hide5c } = useMaptalksInfoWindow(map5, { options: { content: () => iw5Content.value } });
-function show5() {
+function show5() { show5c([121.4737, 31.2304]); }
+function changeIWC5() {
   iw5Content.value = `<div style="padding:8px 12px">reactive content<br>${new Date().toLocaleTimeString()}</div>`;
-  show5c([121.4737, 31.2304]);
 }
 </script>
