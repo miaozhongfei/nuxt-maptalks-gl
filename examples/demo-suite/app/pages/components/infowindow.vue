@@ -18,7 +18,7 @@
           <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:22,markerHeight:22}" @click="onMarkerClick('A',[121.47,31.23])" />
           <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:22,markerHeight:22}" @click="onMarkerClick('B',[121.5,31.24])" />
         </MaptalksVectorLayer>
-        <MaptalksInfoWindow :coordinates="mkCoord" :visible="showMK"><div style="min-width:180px"><strong>Marker {{ mkLabel }}</strong><p>[{{ mkCoord[0].toFixed(5) }}, {{ mkCoord[1].toFixed(5) }}]</p><p>{{ mkTime }}</p><div style="display:flex;gap:4px"><button class="iw-btn" @click="mkCount+=1">👍 {{ mkCount }}</button><button class="iw-btn" @click="closeMK">关闭</button></div></div></MaptalksInfoWindow>
+         <MaptalksInfoWindow ref="iwRef" :coordinates="mkCoord" :visible="showMK"><div style="min-width:180px"><strong>Marker {{ mkLabel }}</strong><p>[{{ mkCoord[0].toFixed(5) }}, {{ mkCoord[1].toFixed(5) }}]</p><p>{{ mkTime }}</p><div style="display:flex;gap:4px"><button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="mkCount+=1">👍 {{ mkCount }}</button><button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="iwRef?.hide()">关闭</button></div></div></MaptalksInfoWindow>
       </MaptalksMap>
       <template #footer><span class="text-sm text-muted">点蓝/红 Marker。</span></template>
     </UCard>
@@ -72,10 +72,10 @@ useMaptalksEvents(map1,{click:(e:unknown)=>{const ev=e as {coordinate:{x:number;
 
 // 卡片 2
 const mkCoord=ref<[number,number]>([121.47,31.23]); const mkLabel=ref('A'); const mkTime=ref(''); const mkCount=ref(0); const showMK=ref(false);
+const iwRef = ref<{ hide: () => void } | null>(null);
 function onMarkerClick(label:string,coord:[number,number]){mkLabel.value=label;mkCoord.value=coord;mkTime.value=new Date().toLocaleTimeString();mkCount.value=0;
 // 不设 showMK=true——maptalks 默认行为 auto show 带动画
 }
-function closeMK(){showMK.value=false}
 
 // 卡片 3 —— 对照 composable 页 bindCloseBtn 模式
 const miwA = ref<{ open:()=>void; close:()=>void }|null>(null);
