@@ -150,7 +150,7 @@ export function useMaptalksInfoWindow(
   function show(coord?: unknown): void {
     setTimeout(() => {
       requestAnimationFrame(() => infoWindow.value?.show(coord));
-    }, 0);
+    }, 100);
   }
   function hide(): void { infoWindow.value?.hide(); }
 
