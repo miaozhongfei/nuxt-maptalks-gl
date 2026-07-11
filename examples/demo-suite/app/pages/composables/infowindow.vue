@@ -31,7 +31,7 @@
       </template>
       <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="openMK('甲',[121.47,31.23],'#2563eb')">按钮打开甲</UButton><span class="text-sm text-muted">操作：点蓝/红 Marker 切换信息框内容，点灰 Marker 关闭。当前：{{ mk2Label }}</span></div>
+        <span class="text-sm text-muted">操作：点蓝/红 Marker 切换信息框内容，点灰 Marker 关闭。当前：{{ mk2Label }}</span>
       </template>
     </UCard>
 
