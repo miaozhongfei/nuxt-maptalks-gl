@@ -53,6 +53,12 @@
         <template #footer><span class="text-sm text-muted">内置 chrome（标题栏）+ slot 内容。</span></template>
       </UCard>
     </div>
+
+    <UCard class="mt-4">
+      <template #header><h2 class="font-semibold">useMaptalksMarkerInfoWindow（composable）· 原生 DOM 按钮</h2></template>
+      <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+      <template #footer><span class="text-sm text-muted">composable 直调。点 Marker 弹出，👍计数，关闭按钮。</span></template>
+    </UCard>
   </div>
 </template>
 
@@ -60,4 +66,51 @@
 const center: [number, number] = [121.4737, 31.2304];
 const countA = ref(0);
 const countB = ref(0);
+
+// 卡片 3：useMaptalksMarkerInfoWindow composable 直调
+const el3 = ref<HTMLElement | null>(null);
+const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
+useMaptalksTileLayer(map3, { source: 'osm' });
+const { layer: vec3 } = useMaptalksVectorLayer(map3);
+
+const countC = ref(0);
+const countD = ref(0);
+
+function buildMIWDom(label: string, color: string, coord: [number, number], count: Ref<number>): HTMLElement {
+  const el = document.createElement('div');
+  el.style.minWidth = '160px';
+  el.style.borderRadius = '4px';
+  el.style.overflow = 'hidden';
+  el.style.boxShadow = '0 1px 6px rgba(0,0,0,0.12)';
+  el.innerHTML =
+    `<div style="background:${color};color:#fff;padding:4px 10px;font-size:13px;font-weight:600">${label}</div>
+    <div style="background:#fff;padding:4px 8px;font-size:12px;color:#374151">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</div>
+    <div style="padding:4px 8px;display:flex;gap:4px;background:#fff">
+      <button class="miw-like" style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px">👍 0</button>
+      <button class="miw-reset" style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px">重置</button>
+    </div>`;
+  el.querySelector('.miw-like')?.addEventListener('click', () => {
+    count.value++;
+    const b = el.querySelector('.miw-like');
+    if (b) b.textContent = `👍 ${count.value}`;
+  });
+  el.querySelector('.miw-reset')?.addEventListener('click', () => {
+    count.value = 0;
+    const b = el.querySelector('.miw-like');
+    if (b) b.textContent = `👍 ${count.value}`;
+  });
+  return el;
+}
+
+const gC = useMaptalksMarker(vec3, {
+  coordinates: [121.47, 31.23],
+  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
+}).geometry;
+useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) });
+
+const gD = useMaptalksMarker(vec3, {
+  coordinates: [121.5, 31.24],
+  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+}).geometry;
+useMaptalksMarkerInfoWindow(gD, { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) });
 </script>
