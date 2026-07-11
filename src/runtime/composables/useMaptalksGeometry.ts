@@ -42,8 +42,12 @@ function bindGeometryEvents(
 ): void {
   if (!events) return;
   for (const [name, handler] of Object.entries(events)) {
-    geo.on(name, handler);
-    state.boundEvents.push([name, handler]);
+    // RAF 包裹 handler 确保在 maptalks 渲染周期外执行，避免 geometry 事件内调 show() 无动画
+    const deferred: MaptalksEventHandler = (...args: unknown[]) => {
+      requestAnimationFrame(() => (handler as (...a: unknown[]) => void)(...args));
+    };
+    geo.on(name, deferred);
+    state.boundEvents.push([name, deferred]);
   }
 }
 
