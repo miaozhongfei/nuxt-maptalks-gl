@@ -71,12 +71,12 @@ onUpdated(() => {
   if (iw && host) iw.setContent(host.innerHTML)
 })
 
-// 合并 visible + coordinates 为单个 watcher，用 RAF 推迟 show 等浏览器完成首次布局
+// 合并 visible + coordinates 为单个 watcher，避免双 show；RAF 已由 composable 的 show() 统一处理
 watch(
   [() => props.visible, () => props.coordinates ?? props.geometry],
   ([v, c]) => {
     if (!infoWindow.value) return;
-    if (v && c !== undefined) { skipNextUpdate = true; requestAnimationFrame(() => show(c)); }
+    if (v && c !== undefined) { skipNextUpdate = true; show(c); }
     else if (!v) hide();
   },
   { immediate: true },
