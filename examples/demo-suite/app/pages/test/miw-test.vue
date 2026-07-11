@@ -59,6 +59,12 @@
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
       <template #footer><span class="text-sm text-muted">composable 直调。点 Marker 弹出，👍计数，关闭按钮。</span></template>
     </UCard>
+
+    <UCard class="mt-4">
+      <template #header><h2 class="font-semibold">useMaptalksMarkerInfoWindow · 响应式改内容</h2></template>
+      <div ref="el4" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+      <template #footer><div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="changeMIWContent()">改内容</UButton><span class="text-sm text-muted">当前内容：{{ miwContent4 }}</span></div></template>
+    </UCard>
   </div>
 </template>
 
@@ -114,4 +120,22 @@ const gD = useMaptalksMarker(vec3, {
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
 }).geometry;
 useMaptalksMarkerInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } });
+
+// 卡片 4：响应式改内容
+const el4 = ref<HTMLElement | null>(null);
+const { map: map4 } = useMaptalks(el4, { center, zoom: 13 });
+useMaptalksTileLayer(map4, { source: 'osm' });
+const { layer: vec4 } = useMaptalksVectorLayer(map4);
+const miwContent4 = ref('初始内容');
+const gE = useMaptalksMarker(vec4, {
+  coordinates: [121.47, 31.23],
+  symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 24, markerHeight: 24 },
+}).geometry;
+useMaptalksMarkerInfoWindow(gE, { options: { title: '', custom: true, content: () => miwContent4.value } });
+function changeMIWContent() {
+  miwContent4.value = `<div style="padding:10px;min-width:140px;text-align:center">
+    <strong style="color:#8b5cf6">改内容测试</strong>
+    <p style="font-size:12px;color:#6b7280;margin:4px 0">${new Date().toLocaleTimeString()}</p>
+  </div>`;
+}
 </script>
