@@ -11,17 +11,12 @@ import { MARKER_GEOMETRY_KEY } from '../core/map-context'
 
 const props = withDefaults(
   defineProps<{
-    title?: string
-    width?: number
-    height?: number
-    custom?: boolean
-    autoPan?: boolean
-    single?: boolean
-    animation?: string
-    autoOpenOn?: string | null
+    /** 透传给 marker.setInfoWindow() 的原始选项 */
+    options?: Record<string, unknown>
+    /** 组件销毁时自动移除，默认 true */
     autoDispose?: boolean
   }>(),
-  { autoDispose: true, autoPan: undefined, single: undefined, custom: undefined },
+  { options: undefined, autoDispose: true },
 )
 
 const emit = defineEmits<{
@@ -36,20 +31,12 @@ const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
 const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
-  ...(props.title === undefined ? {} : { title: props.title }),
-  ...(props.width === undefined ? {} : { width: props.width }),
-  ...(props.height === undefined ? {} : { height: props.height }),
-  ...(props.autoPan === undefined ? {} : { autoPan: props.autoPan }),
-  ...(props.single === undefined ? {} : { single: props.single }),
-  ...(props.custom === undefined ? {} : { custom: props.custom }),
-  ...(props.animation === undefined ? {} : { animation: props.animation }),
-  ...(props.autoOpenOn === undefined ? {} : { autoOpenOn: props.autoOpenOn }),
-  autoDispose: props.autoDispose,
-  content: '',
+  options: () => props.options,
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
+  autoDispose: props.autoDispose,
 })
 
 /** 用 createApp().mount() 渲染 slot 到 detached DOM，保留 Vue 事件/生命周期 */

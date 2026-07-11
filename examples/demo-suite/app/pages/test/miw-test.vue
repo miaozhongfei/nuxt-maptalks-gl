@@ -11,7 +11,7 @@
           <MaptalksTileLayer source="osm" />
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}">
-              <MaptalksMarkerInfoWindow title="" :custom="true">
+              <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">东门店</div>
                   <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
@@ -22,7 +22,7 @@
               </MaptalksMarkerInfoWindow>
             </MaptalksMarker>
             <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}">
-              <MaptalksMarkerInfoWindow title="" :custom="true">
+              <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">西门店</div>
                   <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
@@ -44,7 +44,7 @@
           <MaptalksTileLayer source="osm" />
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}">
-              <MaptalksMarkerInfoWindow title="南门店" :width="200" :height="120">
+              <MaptalksMarkerInfoWindow :options="{ title: '南门店', width: 200, height: 120 }">
                 <div style="padding:6px 10px;font-size:13px">坐标 [121.47000, 31.23000]</div>
               </MaptalksMarkerInfoWindow>
             </MaptalksMarker>
@@ -106,11 +106,11 @@ const gC = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gC, { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) });
+useMaptalksMarkerInfoWindow(gC, { options: { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) } });
 
 const gD = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gD, { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) });
+useMaptalksMarkerInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } });
 </script>

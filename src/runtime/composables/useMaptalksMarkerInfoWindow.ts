@@ -20,6 +20,7 @@ interface MarkerInfoWindowOptions {
   animation?: string;
   dx?: number;
   dy?: number;
+  autoOpenOn?: string | null;
   /** 自定义选项透传 */
   [key: string]: unknown;
 }
@@ -35,30 +36,10 @@ interface NativeMarker {
 
 /** useMaptalksMarkerInfoWindow 的选项 */
 export interface UseMaptalksMarkerInfoWindowOptions {
-  /** 标题（响应式），可用空字符串隐藏内置标题栏 */
-  title?: MaybeRefOrGetter<string | undefined>;
-  /** 信息框内容（响应式），支持 HTML 字符串或 DOM 元素 */
-  content?: MaybeRefOrGetter<string | HTMLElement | undefined>;
-  /** 宽度 */
-  width?: number;
-  /** 高度 */
-  height?: number;
-  /** 自定义模板（禁用 maptalks 内置 chrome） */
-  custom?: boolean;
-  /** 自动移动地图使信息框可见 */
-  autoPan?: boolean;
-  /** 是否唯一（同时只显示一个） */
-  single?: boolean;
-  /** 动画 */
-  animation?: string;
-  /** 水平偏移 */
-  dx?: number;
-  /** 垂直偏移 */
-  dy?: number;
+  /** 透传给 maptalks 原生 marker.setInfoWindow() 的选项（title/content/custom/animation 等） */
+  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 信息框事件（open/close 等） */
   events?: Record<string, MaptalksEventHandler>;
-  /** 自动弹出事件（null/空字符串 = 禁用，默认 'click'） */
-  autoOpenOn?: string | null;
   /** 组件销毁时自动移除信息框，默认 true */
   autoDispose?: boolean;
 }
@@ -80,36 +61,22 @@ export interface UseMaptalksMarkerInfoWindowReturn {
  * 与 useMaptalksInfoWindow（地图级）不同，此 composable 创建的信息框**只属于这一个 Marker**——点击 Marker
  * 自动弹出、点击别处自动关闭，不需手动操控坐标；内容/标题支持响应式更新。
  * @param {MaybeRefOrGetter<MaptalksGeometry | null>} geometry - useMaptalksMarker 返回的 geometry
- * @param {UseMaptalksMarkerInfoWindowOptions} [opts] - 信息框配置（title/content/width/custom/events 等）
+ * @param {UseMaptalksMarkerInfoWindowOptions} [opts] - 信息框配置（options/events/autoDispose）
  * @returns {UseMaptalksMarkerInfoWindowReturn} `{ open, close, remove }`
  *
  * @example
  * const { geometry } = useMaptalksMarker(layer, { coordinates: [113.27, 23.13] });
  * const { open } = useMaptalksMarkerInfoWindow(geometry, {
- *   title: '我的位置',
- *   content: () => `<div>${desc.value}</div>`,
+ *   options: { title: '我的位置', custom: true, content: '<div>内容</div>' },
  * });
- * // 点击该 Marker 时自动弹出（由 useMaptalksMarker 的 events.click 控制）
  */
 
-/** 从选项构建原生 setInfoWindow 入参（抽出以减少主函数体量） */
+/** 从选项构建原生 setInfoWindow 入参 */
 function buildMarkerIWOptions(opts: UseMaptalksMarkerInfoWindowOptions): MarkerInfoWindowOptions {
-  const result: MarkerInfoWindowOptions = {};
-  const t = toValue(opts.title); if (t !== undefined) result.title = t;
-  const c = toValue(opts.content); if (c !== undefined) result.content = c;
-  if (opts.width !== undefined) result.width = opts.width;
-  if (opts.height !== undefined) result.height = opts.height;
-  if (opts.custom !== undefined) result.custom = opts.custom;
-  if (opts.autoPan !== undefined) result.autoPan = opts.autoPan;
-  if (opts.single !== undefined) result.single = opts.single;
-  if (opts.animation !== undefined) result.animation = opts.animation;
-  if (opts.dx !== undefined) result.dx = opts.dx;
-  if (opts.dy !== undefined) result.dy = opts.dy;
-  if (opts.autoOpenOn !== undefined) result.autoOpenOn = opts.autoOpenOn;
-  return result;
+  return { ...toValue(opts.options) } as MarkerInfoWindowOptions;
 }
 
-/** 设置 Marker 信息框的响应式 watch（几何就绪配置 + title/content 变化重建） */
+/** 设置 Marker 信息框的响应式 watch（几何就绪配置 + options 变化重建） */
 function setupMarkerIW(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
   opts: UseMaptalksMarkerInfoWindowOptions,
@@ -126,7 +93,7 @@ function setupMarkerIW(
     { immediate: true },
   );
   watch(
-    [() => toValue(opts.title), () => toValue(opts.content)],
+    () => toValue(opts.options),
     () => {
       const m = toValue(geometry) as NativeMarker | null;
       if (m && hasSet.value) m.setInfoWindow(buildMarkerIWOptions(opts));
