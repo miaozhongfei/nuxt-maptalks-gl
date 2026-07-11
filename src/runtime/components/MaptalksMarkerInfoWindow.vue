@@ -1,11 +1,10 @@
 <template>
-  <div style="display: none">
-    <div ref="wrapper"><slot /></div>
-  </div>
+  <div />
 </template>
 
 <script setup lang="ts">
-import { inject, nextTick, ref, toValue, useSlots, watch } from 'vue'
+import { createApp, h, inject, onBeforeUnmount, toValue, useSlots, watch } from 'vue'
+import type { App } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
@@ -31,7 +30,7 @@ const emit = defineEmits<{
 }>()
 
 const slots = useSlots()
-const wrapper = ref<HTMLElement | null>(null)
+let slotApp: App | null = null
 
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
@@ -46,26 +45,29 @@ const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
   ...(props.animation === undefined ? {} : { animation: props.animation }),
   ...(props.autoOpenOn === undefined ? {} : { autoOpenOn: props.autoOpenOn }),
   autoDispose: props.autoDispose,
-  content:'',
+  content: '',
   events: {
     open: () => emit('open'),
     close: () => emit('close'),
   },
 })
-// const { open, close } = useMaptalksMarkerInfoWindow(geometry, { title: '', custom: true, content: '<div>你好你好NIHAO</div>' })
 
-// geometry 和 wrapper 都就绪后，用 setContent 局部更新内容（不动 animation 等 maptalks 默认 option）
-watch(
-  [() => toValue(geometry), wrapper],
-  async ([g, w]) => {
-    if (g && w) {
-      await nextTick()
-      const m = g as { getInfoWindow?: () => { setContent?: (c: string) => void } | null }
-      m?.getInfoWindow?.()?.setContent?.(w.innerHTML)
-    }
-  },
-  { immediate: true },
-)
+/** 用 createApp().mount() 渲染 slot 到 detached DOM，保留 Vue 事件/生命周期 */
+function mountSlotContent() {
+  const iw = (toValue(geometry) as { getInfoWindow?: () => { setContent?: (c: HTMLElement) => void } | null })?.getInfoWindow?.();
+  if (!iw || !slots.default) return;
+  if (slotApp) { slotApp.unmount(); slotApp = null; }
+  const mountEl = document.createElement('div');
+  slotApp = createApp({ render: () => h('div', null, slots.default?.()) });
+  slotApp.mount(mountEl);
+  delete mountEl.dataset.vApp;
+  iw.setContent(mountEl);
+}
+
+// geometry 就绪后挂载 slot 内容到 marker InfoWindow
+watch(() => toValue(geometry), (g) => { if (g) mountSlotContent(); }, { immediate: true })
+
+onBeforeUnmount(() => { if (slotApp) { slotApp.unmount(); slotApp = null; } })
 
 defineExpose({ open, close })
 </script>

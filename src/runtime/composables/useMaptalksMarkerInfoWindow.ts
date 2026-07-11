@@ -37,8 +37,8 @@ interface NativeMarker {
 export interface UseMaptalksMarkerInfoWindowOptions {
   /** 标题（响应式），可用空字符串隐藏内置标题栏 */
   title?: MaybeRefOrGetter<string | undefined>;
-  /** 信息框内容（响应式），支持 HTML 字符串 */
-  content?: MaybeRefOrGetter<string | undefined>;
+  /** 信息框内容（响应式），支持 HTML 字符串或 DOM 元素 */
+  content?: MaybeRefOrGetter<string | HTMLElement | undefined>;
   /** 宽度 */
   width?: number;
   /** 高度 */

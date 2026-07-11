@@ -1,0 +1,63 @@
+<template>
+  <div>
+    <h1 class="text-2xl font-bold mb-1">MarkerInfoWindow 测试</h1>
+    <p class="text-muted mb-6">测试 MaptalksMarkerInfoWindow custom slot 内的按钮事件 + 动画</p>
+
+    <div class="grid grid-cols-2 gap-4">
+      <!-- 卡片 1：custom slot 带按钮 -->
+      <UCard>
+        <template #header><h2 class="font-semibold">custom · 按钮测试</h2></template>
+        <MaptalksMap ref="mapCmp1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px">
+          <MaptalksTileLayer source="osm" />
+          <MaptalksVectorLayer>
+            <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}">
+              <MaptalksMarkerInfoWindow title="" :custom="true">
+                <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
+                  <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">东门店</div>
+                  <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countA++">👍 {{ countA }}</button>
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countA=0">重置</button>
+                  </div>
+                </div>
+              </MaptalksMarkerInfoWindow>
+            </MaptalksMarker>
+            <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}">
+              <MaptalksMarkerInfoWindow title="" :custom="true">
+                <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
+                  <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">西门店</div>
+                  <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countB++">👍 {{ countB }}</button>
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countB=0">重置</button>
+                  </div>
+                </div>
+              </MaptalksMarkerInfoWindow>
+            </MaptalksMarker>
+          </MaptalksVectorLayer>
+        </MaptalksMap>
+        <template #footer><span class="text-sm text-muted">点 Marker 弹出，点按钮计数。</span></template>
+      </UCard>
+
+      <!-- 卡片 2：默认 chrome（无 custom） -->
+      <UCard>
+        <template #header><h2 class="font-semibold">默认 chrome · title 测试</h2></template>
+        <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px">
+          <MaptalksTileLayer source="osm" />
+          <MaptalksVectorLayer>
+            <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}">
+              <MaptalksMarkerInfoWindow title="南门店" :width="200" :height="120">
+                <div style="padding:6px 10px;font-size:13px">坐标 [121.47000, 31.23000]</div>
+              </MaptalksMarkerInfoWindow>
+            </MaptalksMarker>
+          </MaptalksVectorLayer>
+        </MaptalksMap>
+        <template #footer><span class="text-sm text-muted">内置 chrome（标题栏）+ slot 内容。</span></template>
+      </UCard>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+const center: [number, number] = [121.4737, 31.2304];
+const countA = ref(0);
+const countB = ref(0);
+</script>
