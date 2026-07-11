@@ -28,6 +28,7 @@ interface MarkerInfoWindowOptions {
 /** 带 setInfoWindow/openInfoWindow/closeInfoWindow 的原生 Marker 接口 */
 interface NativeMarker {
   setInfoWindow(opts: MarkerInfoWindowOptions): void;
+  getInfoWindow(): { setContent(content: string | HTMLElement): void } | null;
   openInfoWindow(): void;
   closeInfoWindow(): void;
   on(event: string, handler: MaptalksEventHandler): void;
@@ -97,6 +98,19 @@ function setupMarkerIW(
     () => {
       const m = toValue(geometry) as NativeMarker | null;
       if (m && hasSet.value) m.setInfoWindow(buildMarkerIWOptions(opts));
+    },
+  );
+  // options.content 变化 → 直接 setContent()，不重建 InfoWindow，保持弹框打开
+  watch(
+    () => {
+      const raw = toValue(opts.options);
+      if (!raw) return;
+      return toValue(raw.content as MaybeRefOrGetter<string | HTMLElement | undefined> | undefined);
+    },
+    (c) => {
+      const m = toValue(geometry) as NativeMarker | null;
+      const iw = m?.getInfoWindow?.();
+      if (iw && c !== undefined) iw.setContent(c);
     },
   );
 }
