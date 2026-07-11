@@ -67,8 +67,8 @@ const { map: map1 } = useMaptalks(el1, { center, zoom: 13 });
 useMaptalksTileLayer(map1, { source: 'osm' });
 const { show: show1c, hide: hide1c } = useMaptalksInfoWindow(map1, { content: '<div style="padding:8px 12px">无 options</div>' });
 
-// [DEBUG] 加 useMaptalksEvents 测试 map click 是否破坏动画
-useMaptalksEvents(map1, { click: () => show1c([121.4737, 31.2304]) });
+// [DEBUG] setTimeout 逃逸 maptalks 事件上下文
+useMaptalksEvents(map1, { click: () => setTimeout(() => show1c([121.4737, 31.2304]), 0) });
 
 // 卡片 2：composable 带 animation
 const el2 = ref<HTMLElement | null>(null);
