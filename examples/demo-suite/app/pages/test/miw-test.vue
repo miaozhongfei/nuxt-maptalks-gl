@@ -76,7 +76,8 @@ const { layer: vec3 } = useMaptalksVectorLayer(map3);
 const countC = ref(0);
 const countD = ref(0);
 
-function buildMIWDom(label: string, color: string, coord: [number, number], count: Ref<number>): HTMLElement {
+function buildMIWDom(label: string, color: string, coord: [number, number], count: Ref<number>): HTMLElement | string {
+  if (typeof document === 'undefined') return '';
   const el = document.createElement('div');
   el.style.minWidth = '160px';
   el.style.borderRadius = '4px';
