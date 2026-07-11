@@ -93,8 +93,14 @@ function setupMarkerIW(
     },
     { immediate: true },
   );
+  // options（不含 content）变化 → setInfoWindow() 重建；content 由单独 watch 处理
   watch(
-    () => toValue(opts.options),
+    () => {
+      const raw = toValue(opts.options);
+      if (!raw) return;
+      const { content: _, ...rest } = raw as Record<string, unknown>;
+      return JSON.stringify(rest);
+    },
     () => {
       const m = toValue(geometry) as NativeMarker | null;
       if (m && hasSet.value) m.setInfoWindow(buildMarkerIWOptions(opts));
