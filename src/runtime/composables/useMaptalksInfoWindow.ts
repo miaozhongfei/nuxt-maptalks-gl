@@ -147,9 +147,7 @@ export function useMaptalksInfoWindow(
   // content 变化 → setContent
   const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
 
-  function show(coord?: unknown): void {
-    setTimeout(() => infoWindow.value?.show(coord), 100);
-  }
+  function show(coord?: unknown): void { infoWindow.value?.show(coord); }
   function hide(): void { infoWindow.value?.hide(); }
 
   if (opts.autoDispose !== false) onScopeDispose(() => removeIW(infoWindow, stop1, stop2, events));
