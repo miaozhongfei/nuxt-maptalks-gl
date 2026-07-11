@@ -21,7 +21,7 @@ const fakeIW = {
 const mockUseIW = {
   infoWindow: shallowRef(fakeIW),
   show: vi.fn(),
-  hide: vi.fn(),
+  hide: vi.fn(() => fakeIW.hide()),
   remove: vi.fn(),
 };
 

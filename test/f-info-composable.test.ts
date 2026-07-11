@@ -71,7 +71,7 @@ describe('useMaptalksInfoWindow 内容与坐标', () => {
     const map = shallowRef<MaptalksMap | null>({} as unknown as MaptalksMap);
     const content = shallowRef<string | undefined>('<div>hello</div>');
     const scope = effectScope();
-    scope.run(() => useMaptalksInfoWindow(map, { content }));
+    scope.run(() => useMaptalksInfoWindow(map, { options: { content } }));
     await flush();
     const lastIdx = mt.ui.InfoWindow.mock.results.length - 1;
     const iw = mt.ui.InfoWindow.mock.results[lastIdx]?.value;

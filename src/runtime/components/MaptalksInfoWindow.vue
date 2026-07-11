@@ -52,7 +52,6 @@ watch(
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
   options: () => stableOpts.value,
-  ...(coord() === undefined ? {} : { coordinates: coord }),
 }
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
@@ -69,7 +68,7 @@ function mountSlotContent() {
 }
 
 // InfoWindow 实例就绪后挂载 slot 内容
-watch(() => infoWindow.value, (v) => { if (v) mountSlotContent(); })
+watch(() => infoWindow.value, (v) => { if (v) mountSlotContent(); }, { immediate: true })
 
 // 父组件更新时重新 mount（show() 触发的更新跳过，避免打断动画）
 onUpdated(() => {
@@ -78,7 +77,7 @@ onUpdated(() => {
 })
 
 // 合并 visible + coordinates 为单个 watcher，用 prevVisible 追踪避免坐标变化触发误 hide
-let prevVisible = props.visible;
+let prevVisible: boolean | undefined;
 watch(
   [() => props.visible, () => props.coordinates ?? props.geometry],
   ([v, c]) => {

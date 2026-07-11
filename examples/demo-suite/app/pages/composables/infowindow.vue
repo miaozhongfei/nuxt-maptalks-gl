@@ -74,7 +74,7 @@ useMaptalksTileLayer(map1, { source: 'osm' });
 
 const clickCount1 = ref(0);
 const iw1Content = ref('点击地图试试');
-const { show: show1 } = useMaptalksInfoWindow(map1, { content: () => iw1Content.value });
+const { show: show1 } = useMaptalksInfoWindow(map1, { options: { content: () => iw1Content.value } });
 
 useMaptalksEvents(map1, {
   click: (e: unknown) => {
@@ -99,7 +99,7 @@ useMaptalksTileLayer(map2, { source: 'osm' });
 const { layer: vec2 } = useMaptalksVectorLayer(map2);
 const mk2Label = ref('—');
 const mkLike2 = ref(0);
-const { infoWindow: iw2, hide: hide2 } = useMaptalksInfoWindow(map2, {});
+const { infoWindow: iw2, hide: hide2 } = useMaptalksInfoWindow(map2, { options: {} });
 
 // 构建带原生事件监听器的 InfoWindow DOM
 function buildIWDom(label: string, color: string, coord: [number, number]): HTMLElement {

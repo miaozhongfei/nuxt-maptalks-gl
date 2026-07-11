@@ -15,18 +15,12 @@ const logger = createLogger('nuxt-maptalks-gl');
  *
  * @example
  * useMaptalksInfoWindow(map, {
- *   options: { title: '信息' },
- *   content: () => '<div>动态内容</div>',
- *   coordinates: () => [113.27, 23.13],
+ *   options: { title: '信息', content: '<div>动态内容</div>' },
  * });
  */
 export interface UseMaptalksInfoWindowOptions {
-  /** 透传给 InfoWindow 构造器的选项 */
+  /** 透传给 InfoWindow 构造器的选项（title/content/animation 等） */
   options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
-  /** 响应式弹出框内容（HTML 字符串或 DOM 元素） */
-  content?: MaybeRefOrGetter<string | HTMLElement | undefined>;
-  /** 响应式弹出框坐标 */
-  coordinates?: MaybeRefOrGetter<unknown>;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 `true` */
@@ -129,11 +123,14 @@ export function useMaptalksInfoWindow(
       const Ctor = mt.ui?.InfoWindow;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 ui.InfoWindow');
-      const iw = new Ctor(toValue(opts.options) ?? {}) as MaptalksInfoWindow;
+      const rawOpts = { ...toValue(opts.options) };
+      const c = toValue(rawOpts.content as MaybeRefOrGetter<string | HTMLElement | undefined> | undefined);
+      delete rawOpts.content;
+      const iw = new Ctor(rawOpts) as MaptalksInfoWindow;
       iw.addTo(m);
       bindEvents(iw, events);
       infoWindow.value = iw;
-      const c = toValue(opts.content); if (c !== undefined) iw.setContent(c);
+      if (c !== undefined) iw.setContent(c);
       // show 由 MaptalksInfoWindow 组件在 mountSlotContent 之后统一调用，避免双重 show 导致 buildOn 重复构建
     } catch (cause) {
       logger.error('InfoWindow 创建失败', toMaptalksError(cause, 'control-failed', 'InfoWindow 创建失败'));
@@ -144,8 +141,11 @@ export function useMaptalksInfoWindow(
 
   // map / options 变化 → 重建
   const stop1 = watch([() => toValue(map), () => toValue(opts.options)], reload, { immediate: true });
-  // content 变化 → setContent
-  const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
+  // content 变化 → setContent（从 options.content 读取）
+  const stop2 = watch(
+    () => (toValue(opts.options) as Record<string, unknown>)?.content,
+    (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c as string | HTMLElement); },
+  );
 
   function show(coord?: unknown): void { requestAnimationFrame(() => infoWindow.value?.show(coord)); }
   function hide(): void { infoWindow.value?.hide(); }
