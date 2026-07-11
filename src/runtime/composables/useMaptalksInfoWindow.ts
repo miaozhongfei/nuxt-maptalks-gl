@@ -147,7 +147,12 @@ export function useMaptalksInfoWindow(
   // content 变化 → setContent
   const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
 
-  function show(coord?: unknown): void { requestAnimationFrame(() => infoWindow.value?.show(coord)); }
+  // setTimeout 逃逸 map click 上下文（maptalks 事件内部 RAF 会覆盖动画），RAF 确保布局就绪
+  function show(coord?: unknown): void {
+    setTimeout(() => {
+      requestAnimationFrame(() => infoWindow.value?.show(coord));
+    }, 0);
+  }
   function hide(): void { infoWindow.value?.hide(); }
 
   if (opts.autoDispose !== false) onScopeDispose(() => removeIW(infoWindow, stop1, stop2, events));

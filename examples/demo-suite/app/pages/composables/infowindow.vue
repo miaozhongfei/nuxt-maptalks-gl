@@ -16,7 +16,7 @@
       </template>
       <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="show1([121.4737,31.2304])">按钮显示</UButton><span class="text-sm text-muted">操作：点击地图或按钮弹出信息框。硬编码内容。</span></div>
+        <span class="text-sm text-muted">操作：点击地图弹出信息框，内容实时显示坐标+时刻。已点击 {{ clickCount1 }} 次。</span>
       </template>
     </UCard>
 
@@ -72,12 +72,22 @@ const el1 = ref<HTMLElement | null>(null);
 const { map: map1 } = useMaptalks(el1, { center, zoom: 12 });
 useMaptalksTileLayer(map1, { source: 'osm' });
 
-// [DEBUG 第1步] 硬编码 content，去掉 reactive getter，排除 content 变化因素
-const { show: show1 } = useMaptalksInfoWindow(map1, { content: '<div style="padding:8px 12px">硬编码内容</div>' });
+const clickCount1 = ref(0);
+const iw1Content = ref('点击地图试试');
+const { show: show1 } = useMaptalksInfoWindow(map1, { content: () => iw1Content.value });
 
 useMaptalksEvents(map1, {
   click: (e: unknown) => {
     const ev = e as { coordinate: { x: number; y: number } };
+    const t = new Date().toLocaleTimeString();
+    iw1Content.value =
+      `<div style="padding:6px 10px;min-width:180px">
+        <strong style="color:#2563eb">地图点击信息框</strong>
+        <p style="margin:2px 0;font-size:13px">经度：${ev.coordinate.x.toFixed(6)}</p>
+        <p style="margin:2px 0;font-size:13px">纬度：${ev.coordinate.y.toFixed(6)}</p>
+        <p style="color:#6b7280;font-size:12px;margin:2px 0">时刻：${t}</p>
+      </div>`;
+    clickCount1.value += 1;
     show1([ev.coordinate.x, ev.coordinate.y]);
   },
 });
