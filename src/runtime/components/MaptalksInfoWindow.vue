@@ -71,13 +71,16 @@ onUpdated(() => {
   if (skipNextUpdate) skipNextUpdate = false
 })
 
-// 合并 visible + coordinates 为单个 watcher，避免双 show；RAF 已由 composable 的 show() 统一处理
+// 合并 visible + coordinates 为单个 watcher，用 prevVisible 追踪避免坐标变化触发误 hide
+let prevVisible = props.visible;
 watch(
   [() => props.visible, () => props.coordinates ?? props.geometry],
   ([v, c]) => {
     if (!infoWindow.value) return;
+    const visibleChanged = v !== prevVisible;
+    prevVisible = v;
     if (v && c !== undefined) { skipNextUpdate = true; show(c); }
-    else if (!v) hide();
+    else if (!v && visibleChanged) hide();
   },
   { immediate: true },
 )
