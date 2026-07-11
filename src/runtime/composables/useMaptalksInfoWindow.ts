@@ -148,9 +148,7 @@ export function useMaptalksInfoWindow(
   const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
 
   function show(coord?: unknown): void {
-    setTimeout(() => {
-      requestAnimationFrame(() => infoWindow.value?.show(coord));
-    }, 100);
+    setTimeout(() => infoWindow.value?.show(coord), 100);
   }
   function hide(): void { infoWindow.value?.hide(); }
 
