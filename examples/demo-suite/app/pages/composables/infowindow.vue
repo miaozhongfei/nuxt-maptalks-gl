@@ -16,7 +16,7 @@
       </template>
       <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <span class="text-sm text-muted">操作：点击地图弹出信息框。硬编码内容。</span>
+        <div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="show1([121.4737,31.2304])">按钮显示</UButton><span class="text-sm text-muted">操作：点击地图或按钮弹出信息框。硬编码内容。</span></div>
       </template>
     </UCard>
 
