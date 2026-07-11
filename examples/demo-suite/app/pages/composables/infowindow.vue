@@ -98,16 +98,36 @@ const { map: map2 } = useMaptalks(el2, { center, zoom: 13 });
 useMaptalksTileLayer(map2, { source: 'osm' });
 const { layer: vec2 } = useMaptalksVectorLayer(map2);
 const mk2Label = ref('—');
-const mk2Content = ref('');
-const { show: show2, hide: hide2 } = useMaptalksInfoWindow(map2, { content: () => mk2Content.value });
+const mkLike2 = ref(0);
+const { infoWindow: iw2, hide: hide2 } = useMaptalksInfoWindow(map2, {});
+
+// 构建带原生事件监听器的 InfoWindow DOM
+function buildIWDom(label: string, color: string, coord: [number, number]): HTMLElement {
+  const el = document.createElement('div');
+  el.style.minWidth = '160px';
+  el.style.borderRadius = '4px';
+  el.style.overflow = 'hidden';
+  el.style.boxShadow = '0 1px 6px rgba(0,0,0,0.12)';
+  el.innerHTML =
+    `<div style="background:${color};color:#fff;padding:4px 10px;font-size:13px;font-weight:600">Marker「${label}」</div>
+    <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</div>
+    <div style="padding:4px 8px;display:flex;gap:4px;background:#fff">
+      <button class="iw-like-btn" style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px">👍 ${mkLike2.value}</button>
+      <button class="iw-close-btn" style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px">关闭</button>
+    </div>`;
+  el.querySelector('.iw-like-btn')?.addEventListener('click', () => {
+    mkLike2.value++;
+    const btn = el.querySelector('.iw-like-btn');
+    if (btn) btn.textContent = `👍 ${mkLike2.value}`;
+  });
+  el.querySelector('.iw-close-btn')?.addEventListener('click', () => hide2());
+  return el;
+}
 
 function openMK(label: string, coord: [number, number], color: string) {
   mk2Label.value = label;
-  mk2Content.value =
-    `<div style="padding:6px 10px;min-width:160px">
-      <strong style="color:${color}">Marker「${label}」</strong>
-      <p style="margin:2px 0;font-size:13px">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</p>
-    </div>`;
+  mkLike2.value = 0;
+  iw2.value?.setContent(buildIWDom(label, color, coord));
   // 不调 show2()——maptalks 默认 map click 行为自动 show 带动画
 }
 
