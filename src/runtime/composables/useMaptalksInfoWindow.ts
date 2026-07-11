@@ -147,12 +147,7 @@ export function useMaptalksInfoWindow(
   // content 变化 → setContent
   const stop2 = watch(() => toValue(opts.content), (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c); });
 
-  // 双 RAF 确保在 maptalks 渲染周期外执行，marker/geometry 点击上下文不抑制动画
-  function show(coord?: unknown): void {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => infoWindow.value?.show(coord));
-    });
-  }
+  function show(coord?: unknown): void { requestAnimationFrame(() => infoWindow.value?.show(coord)); }
   function hide(): void { infoWindow.value?.hide(); }
 
   if (opts.autoDispose !== false) onScopeDispose(() => removeIW(infoWindow, stop1, stop2, events));

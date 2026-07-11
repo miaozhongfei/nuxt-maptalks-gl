@@ -31,7 +31,7 @@
       </template>
       <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
-        <span class="text-sm text-muted">操作：点蓝/红 Marker 切换信息框内容，点灰 Marker 关闭。当前：{{ mk2Label }}</span>
+        <div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="openMK('甲',[121.47,31.23],'#2563eb')">按钮打开甲</UButton><span class="text-sm text-muted">操作：点蓝/红 Marker 切换信息框内容，点灰 Marker 关闭。当前：{{ mk2Label }}</span></div>
       </template>
     </UCard>
 
@@ -108,7 +108,7 @@ function openMK(label: string, coord: [number, number], color: string) {
       <strong style="color:${color}">Marker「${label}」</strong>
       <p style="margin:2px 0;font-size:13px">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</p>
     </div>`;
-  requestAnimationFrame(() => show2(coord));
+  show2(coord);
 }
 
 useMaptalksMarker(vec2, {
