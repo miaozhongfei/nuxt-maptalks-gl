@@ -63,12 +63,12 @@ watch(
   },
 )
 
-// 父组件数据变化时复制更新的 slot 内容（show() 触发的更新跳过）
+// 父组件数据变化时复制更新的 slot 内容，show() 后仍同步（content 保证最新，RAF 保证 show 在下一帧不会被打断）
 onUpdated(() => {
-  if (skipNextUpdate) { skipNextUpdate = false; return; }
   const iw = infoWindow.value
   const host = contentHost.value
   if (iw && host) iw.setContent(host.innerHTML)
+  if (skipNextUpdate) skipNextUpdate = false
 })
 
 // 合并 visible + coordinates 为单个 watcher，避免双 show；RAF 已由 composable 的 show() 统一处理
