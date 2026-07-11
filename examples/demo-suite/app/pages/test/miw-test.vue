@@ -131,7 +131,7 @@ const gE = useMaptalksMarker(vec4, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 24, markerHeight: 24 },
 }).geometry;
-useMaptalksMarkerInfoWindow(gE, { options: { title: '', custom: true, content: () => miwContent4.value } });
+useMaptalksMarkerInfoWindow(gE, { options: () => ({ title: '', custom: true, content: miwContent4.value }) });
 function changeMIWContent() {
   miwContent4.value = `<div style="padding:10px;min-width:140px;text-align:center">
     <strong style="color:#8b5cf6">改内容测试</strong>
