@@ -67,9 +67,6 @@ const { map: map1 } = useMaptalks(el1, { center, zoom: 13 });
 useMaptalksTileLayer(map1, { source: 'osm' });
 const { show: show1c, hide: hide1c } = useMaptalksInfoWindow(map1, { content: '<div style="padding:8px 12px">无 options</div>' });
 
-// [测试] 空 handler——看是否也抑制动画
-useMaptalksEvents(map1, { click: () => {} });
-
 // 卡片 2：composable 带 animation
 const el2 = ref<HTMLElement | null>(null);
 const { map: map2 } = useMaptalks(el2, { center, zoom: 13 });

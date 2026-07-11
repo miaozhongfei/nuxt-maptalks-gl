@@ -26,24 +26,16 @@ export function useMaptalksEvents(
   /** 当前已绑定事件的地图实例 */
   let boundMap: MaptalksMap | null = null;
 
-  /** RAF 包装的 handler，确保在 maptalks 事件上下文外执行，避免动画被抑制 */
-  const wrappedHandlers: Record<string, MaptalksEventHandler> = {};
-  for (const [key, handler] of Object.entries(handlers)) {
-    wrappedHandlers[key] = (...args: unknown[]) => {
-      requestAnimationFrame(() => (handler as (...a: unknown[]) => void)(...args));
-    };
-  }
-
   /** 绑定全部事件到指定地图 */
   function bind(m: MaptalksMap): void {
-    for (const [eventTypes, handler] of Object.entries(wrappedHandlers)) m.on(eventTypes, handler);
+    for (const [eventTypes, handler] of Object.entries(handlers)) m.on(eventTypes, handler);
     boundMap = m;
   }
 
   /** 从已绑定地图解绑全部事件 */
   function unbind(): void {
     if (!boundMap) return;
-    for (const [eventTypes, handler] of Object.entries(wrappedHandlers)) boundMap.off(eventTypes, handler);
+    for (const [eventTypes, handler] of Object.entries(handlers)) boundMap.off(eventTypes, handler);
     boundMap = null;
   }
 

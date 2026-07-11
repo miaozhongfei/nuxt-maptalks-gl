@@ -55,7 +55,7 @@
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>
-      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机，同 miw-bug 路径</span></div></template>
+      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="primary" variant="soft" @click="miwA?.open()">打开东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.open()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.open()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机</span></div></template>
     </UCard>
   </div>
 </template>
@@ -66,7 +66,9 @@ const center: [number, number] = [121.4737, 31.2304];
 // 卡片 1
 const iwCoord = ref<[number,number]>([121.4737,31.2304]); const showIW=ref(false); const iwTime=ref('');
 const mapCmp1=ref<{map:ReturnType<typeof useMaptalks>['map']}|null>(null); const map1=computed(()=>mapCmp1.value?.map??null);
-useMaptalksEvents(map1,{click:(e:unknown)=>{const ev=e as {coordinate:{x:number;y:number}};iwCoord.value=[ev.coordinate.x,ev.coordinate.y];iwTime.value=new Date().toLocaleTimeString();showIW.value=true}});
+useMaptalksEvents(map1,{click:(e:unknown)=>{const ev=e as {coordinate:{x:number;y:number}};iwCoord.value=[ev.coordinate.x,ev.coordinate.y];iwTime.value=new Date().toLocaleTimeString();
+// 不设 showIW=true —— maptalks 默认 click 行为自动 show 并带动画，组件 onUpdated 同步 slot 内容
+}});
 
 // 卡片 2
 const mkCoord=ref<[number,number]>([121.47,31.23]); const mkLabel=ref('A'); const mkTime=ref(''); const mkCount=ref(0); const showMK=ref(false);
@@ -97,6 +99,6 @@ function bindCloseBtn(miw: typeof miwA) {
 let cmpOpenTime = 0;
 useMaptalksEvents(map3, { click: () => { if (!cmpAutoClose.value || Date.now()-cmpOpenTime<250) return; [miwA,miwB,miwC].forEach(r=>r.value?.close()); cmpOpenTime=Date.now(); } });
 
-function randomOpen() { cmpOpenTime = Date.now(); const all=[miwA,miwB,miwC]; all[Math.floor(Math.random()*3)]?.open(); }
+function randomOpen() { cmpOpenTime = Date.now(); const all=[miwA,miwB,miwC]; all[Math.floor(Math.random()*3)]?.value?.open(); }
 function randomClose() { [miwA,miwB,miwC].forEach(r=>r.value?.close()); }
 </script>

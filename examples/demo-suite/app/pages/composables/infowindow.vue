@@ -88,7 +88,7 @@ useMaptalksEvents(map1, {
         <p style="color:#6b7280;font-size:12px;margin:2px 0">时刻：${t}</p>
       </div>`;
     clickCount1.value += 1;
-    show1([ev.coordinate.x, ev.coordinate.y]);
+    // 不调 show1()——maptalks 默认 click 行为自动 show 并带动画
   },
 });
 
