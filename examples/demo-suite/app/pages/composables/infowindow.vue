@@ -108,7 +108,7 @@ function openMK(label: string, coord: [number, number], color: string) {
       <strong style="color:${color}">Marker「${label}」</strong>
       <p style="margin:2px 0;font-size:13px">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</p>
     </div>`;
-  show2(coord);
+  requestAnimationFrame(() => show2(coord));
 }
 
 useMaptalksMarker(vec2, {

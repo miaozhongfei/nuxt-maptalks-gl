@@ -72,7 +72,7 @@ useMaptalksEvents(map1,{click:(e:unknown)=>{const ev=e as {coordinate:{x:number;
 
 // 卡片 2
 const mkCoord=ref<[number,number]>([121.47,31.23]); const mkLabel=ref('A'); const mkTime=ref(''); const mkCount=ref(0); const showMK=ref(false);
-function onMarkerClick(label:string,coord:[number,number]){mkLabel.value=label;mkCoord.value=coord;mkTime.value=new Date().toLocaleTimeString();mkCount.value=0;showMK.value=true}
+function onMarkerClick(label:string,coord:[number,number]){mkLabel.value=label;mkCoord.value=coord;mkTime.value=new Date().toLocaleTimeString();mkCount.value=0;requestAnimationFrame(()=>{showMK.value=true})}
 function closeMK(){showMK.value=false}
 
 // 卡片 3 —— 对照 composable 页 bindCloseBtn 模式
