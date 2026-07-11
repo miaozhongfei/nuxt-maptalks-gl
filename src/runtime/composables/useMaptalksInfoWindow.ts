@@ -143,11 +143,7 @@ export function useMaptalksInfoWindow(
   const stop1 = watch([() => toValue(map), () => toValue(opts.options)], reload, { immediate: true });
   // content 变化 → setContent（从 options.content 读取并 unwrap）
   const stop2 = watch(
-    () => {
-      const raw = toValue(opts.options);
-      if (!raw) return;
-      return toValue(raw.content as MaybeRefOrGetter<string | HTMLElement | undefined> | undefined);
-    },
+    () => { const r = toValue(opts.options); return r ? toValue(r.content as MaybeRefOrGetter<string | HTMLElement | undefined> | undefined) : undefined; },
     (c) => { if (infoWindow.value && c !== undefined) infoWindow.value.setContent(c as string | HTMLElement); },
   );
 
