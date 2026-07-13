@@ -10,7 +10,7 @@
           <MaptalksTileLayer source="osm" />
           <MaptalksZoomControl />
         </MaptalksMap>
-        <template #footer><span class="text-sm text-muted">右上角缩放按钮。</span></template>
+        <template #footer><span class="text-sm text-muted">左上角缩放按钮。</span></template>
       </UCard>
 
       <UCard>
