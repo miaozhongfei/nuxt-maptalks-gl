@@ -28,12 +28,12 @@ const center: [number, number] = [121.4737, 31.2304];
 
 // 卡片 1：GroupGLLayer（创建 GL 容器）
 const mapCmp1 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map1 = computed(() => mapCmp1.value?.map ?? null);
+const map1 = computed(() => mapCmp1.value?.map?.value ?? null);
 const { layer: glLayer } = useMaptalksGroupGLLayer(map1, {});
 
 // 卡片 2：VectorLayer + Polygon 高度拉伸
 const mapCmp2 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map2 = computed(() => mapCmp2.value?.map ?? null);
+const map2 = computed(() => mapCmp2.value?.map?.value ?? null);
 const { layer: bldVec } = useMaptalksVectorLayer(map2);
 watch(() => toValue(bldVec), (layer) => {
   if (!layer) return;
