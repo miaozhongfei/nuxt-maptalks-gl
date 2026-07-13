@@ -27,27 +27,20 @@
 const center: [number, number] = [121.4737, 31.2304];
 
 // 卡片 1：GroupGLLayer（创建 GL 容器）
-const mapCmp1 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map1 = computed(() => mapCmp1.value?.map?.value ?? null);
+const mapCmp1 = ref<{ map: MaptalksMap | null } | null>(null);
+const map1 = computed(() => mapCmp1.value?.map ?? null);
 const { layer: glLayer } = useMaptalksGroupGLLayer(map1, {});
 
-// 卡片 2：VectorLayer + Polygon 高度拉伸
-const mapCmp2 = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map2 = computed(() => mapCmp2.value?.map?.value ?? null);
+// 卡片 2：VectorLayer + Polygon
+const mapCmp2 = ref<{ map: MaptalksMap | null } | null>(null);
+const map2 = computed(() => mapCmp2.value?.map ?? null);
 const { layer: bldVec } = useMaptalksVectorLayer(map2);
-watch(() => toValue(bldVec), (layer) => {
-  if (!layer) return;
-  import('maptalks-gl').then(mt => {
-    const p1 = new mt.Polygon(
-      [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
-      { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 300 } },
-    );
-    p1.addTo(layer as Parameters<typeof p1.addTo>[0]);
-    const p2 = new mt.Polygon(
-      [[121.474, 31.229], [121.477, 31.229], [121.477, 31.2305], [121.474, 31.2305]],
-      { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 500 } },
-    );
-    p2.addTo(layer as Parameters<typeof p2.addTo>[0]);
-  });
+useMaptalksPolygon(bldVec, {
+  coordinates: [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
+  symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#1d4ed8' },
+});
+useMaptalksPolygon(bldVec, {
+  coordinates: [[121.474, 31.229], [121.477, 31.229], [121.477, 31.2305], [121.474, 31.2305]],
+  symbol: { polygonFill: '#dc2626', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#991b1b' },
 });
 </script>
