@@ -7,10 +7,8 @@
       <!-- 卡片 1：GroupGLLayer + Polygon -->
       <UCard>
         <template #header><h2 class="font-semibold">GroupGLLayer · GL 图层分组</h2></template>
-        <MaptalksMap ref="mapCmp1" :center="center" :zoom="15" :pitch="50" class="relative rounded border border-default overflow-hidden" style="height:400px">
-          <MaptalksTileLayer source="osm" />
-        </MaptalksMap>
-        <template #footer><span class="text-sm text-muted">useMaptalksGroupGLLayer 创建 GL 容器图层。</span></template>
+        <MaptalksMap ref="mapCmp1" :center="center" :zoom="15" :pitch="50" class="relative rounded border border-default overflow-hidden" style="height:400px" />
+        <template #footer><span class="text-sm text-muted">useMaptalksGroupGLLayer + Polygon。</span></template>
       </UCard>
 
       <!-- 卡片 2：direct composable + native Polygon 逃生舱 -->
@@ -26,10 +24,15 @@
 <script setup lang="ts">
 const center: [number, number] = [121.4737, 31.2304];
 
-// 卡片 1：GroupGLLayer
+// 卡片 1：GroupGLLayer + Polygon
 const mapCmp1 = ref<{ map: MaptalksMap | null } | null>(null);
 const map1 = computed(() => mapCmp1.value?.map ?? null);
-useMaptalksGroupGLLayer(map1, {});
+useMaptalksTileLayer(map1, { source: 'osm' });
+const { layer: glLayer } = useMaptalksGroupGLLayer(map1, {});
+useMaptalksPolygon(glLayer, {
+  coordinates: [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
+  symbol: { polygonFill: '#8b5cf6', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#6d28d9' },
+});
 
 // 卡片 2：MaptalksMap 组件 + native Polygon 逃生舱
 const mapCmp2 = ref<{ map: MaptalksMap | null } | null>(null);
