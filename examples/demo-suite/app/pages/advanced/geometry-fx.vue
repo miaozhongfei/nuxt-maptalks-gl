@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import { toValue } from 'vue';
+
 const center: [number, number] = [121.4737, 31.2304];
 
 const el1 = ref<HTMLElement | null>(null);
@@ -44,14 +46,18 @@ const { geometry: g2 } = useMaptalksMarker(vec2, {
   coordinates: [121.5, 31.24],
   symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
 });
-let flashing = false;
+const colors = ['#dc2626', '#f59e0b', '#dc2626', '#2563eb', '#dc2626', '#16a34a'];
+let flashTimer: ReturnType<typeof setTimeout> | null = null;
 function flashMarker() {
-  if (flashing) return;
-  flashing = true;
+  // 防止重复点击
+  if (flashTimer) return;
   const geo = toValue(g2) as { setSymbol?: (s: Record<string, unknown>) => void } | null;
-  for (let i = 0; i < 6; i++) {
-    setTimeout(() => geo?.setSymbol?.({ markerFill: i % 2 === 0 ? '#f59e0b' : '#dc2626' }), i * 400);
-  }
-  setTimeout(() => { flashing = false; }, 3000);
+  if (!geo) return;
+  let i = 0;
+  flashTimer = setInterval(() => {
+    geo.setSymbol?.({ markerType: 'ellipse', markerFill: colors[i % colors.length], markerWidth: 24, markerHeight: 24 });
+    if (++i >= colors.length) { clearInterval(flashTimer!); flashTimer = null; }
+  }, 300);
 }
+onBeforeUnmount(() => { if (flashTimer) clearInterval(flashTimer); });
 </script>
