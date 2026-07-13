@@ -28,8 +28,9 @@ useMaptalksTileLayer(map1, { source: 'osm' });
 const { layer: drawVec } = useMaptalksVectorLayer(map1);
 
 const mode = ref<string | null>(null);
-const { enabled } = useMaptalksDrawTool(map1, { enabled: computed(() => !!mode.value), mode, once: false });
-watch(mode, (v) => { enabled.value = !!v; });
+const enabled = ref(false);
+useMaptalksDrawTool(map1, { enabled, mode, once: false });
+function setMode(m: string | null) { mode.value = m; enabled.value = !!m; }
 
 const el2 = ref<HTMLElement | null>(null);
 const { map: map2 } = useMaptalks(el2, { center, zoom: 13 });
