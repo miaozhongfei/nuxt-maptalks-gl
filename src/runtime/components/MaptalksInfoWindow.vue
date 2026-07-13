@@ -14,18 +14,22 @@ import { MAP_KEY } from '../core/map-context'
 
 const props = withDefaults(
   defineProps<{
+    /** InfoWindow 弹出框坐标 */
     coordinates?: unknown
-    geometry?: unknown
+    /** 是否可见，默认 true */
     visible?: boolean
+    /** 透传给 InfoWindow 构造器的选项 */
     options?: Record<string, unknown>
+    /** 组件销毁时自动移除 InfoWindow，默认 true */
+    autoDispose?: boolean
   }>(),
-  { visible: true, options: undefined },
+  { visible: true, options: undefined, autoDispose: true },
 )
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksInfoWindow 必须在 MaptalksMap 内使用')
 
-const coord = () => props.coordinates ?? props.geometry
+const coord = () => props.coordinates
 const slots = defineSlots()
 let skipNextUpdate = false
 let slotApp: App | null = null
@@ -52,6 +56,7 @@ watch(
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
   options: () => stableOpts.value,
+  autoDispose: props.autoDispose,
 }
 
 const { infoWindow, show, hide } = useMaptalksInfoWindow(map, iwOpts)
@@ -79,7 +84,7 @@ onUpdated(() => {
 // 合并 visible + coordinates 为单个 watcher，用 prevVisible 追踪避免坐标变化触发误 hide
 let prevVisible: boolean | undefined;
 watch(
-  [() => props.visible, () => props.coordinates ?? props.geometry],
+  [() => props.visible, () => props.coordinates],
   ([v, c]) => {
     if (!infoWindow.value) return;
     const visibleChanged = v !== prevVisible;
