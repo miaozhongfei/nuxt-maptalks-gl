@@ -100,7 +100,7 @@ function bindRefsToMap(
     watch(refs.zoom, (v) => guard(v, (m, z) => m.setZoom(z))),
     watch(refs.pitch, (v) => guard(v, (m, p) => m.setPitch(p))),
     watch(refs.bearing, (v) => guard(v, (m, b) => m.setBearing(b))),
-    watch(refs.center, (v) => guard(v, (m, c) => m.setCenter(c)), { deep: true }),
+    watch(refs.center, (v) => guard(v, (m, c) => m.setCenter([c.x, c.y])), { deep: true }),
   ];
   return () => {
     for (const stop of stops) stop();
@@ -195,7 +195,7 @@ export function useMaptalksCamera(
  */
 function cameraExtensions(getMap: () => MaptalksMap | null) {
   return {
-    panTo: (coord: MaptalksCoordinate | [number, number], opts?: Record<string, unknown>) => {
+    panTo: (coord: [number, number], opts?: Record<string, unknown>) => {
       getMap()?.panTo(coord, opts);
     },
     panBy: (offset: [number, number] | Record<string, unknown>, opts?: Record<string, unknown>) => {

@@ -1,15 +1,13 @@
-<template><!-- maptalks sector · 纯逻辑组件 --></template>
+﻿<template><!-- maptalks sector · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
 import { inject } from 'vue'
 
 import { useMaptalksSector } from '../composables/presets/useMaptalksSector'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksCoordinate } from '../types'
-
 const props = withDefaults(
   defineProps<{
-    coordinates: MaptalksCoordinate | [number, number]
+    coordinates: [number, number]
     radius: number
     startAngle: number
     endAngle: number

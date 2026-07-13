@@ -1,16 +1,14 @@
-<template><!-- maptalks label · 纯逻辑组件 --></template>
+﻿<template><!-- maptalks label · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
 import { inject } from 'vue'
 
 import { useMaptalksLabel } from '../composables/presets/useMaptalksLabel'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksCoordinate } from '../types'
-
 const props = withDefaults(
   defineProps<{
     content: string
-    coordinates: MaptalksCoordinate | [number, number]
+    coordinates: [number, number]
     symbol?: Record<string, unknown>
     properties?: Record<string, unknown>
     id?: string

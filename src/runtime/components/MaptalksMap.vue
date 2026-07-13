@@ -10,7 +10,7 @@ import { MAP_KEY } from '../core/map-context'
 import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, MaptalksNativeMapOptions, UseMaptalksOptions } from '../types'
 
 const props = withDefaults(defineProps<{
-  center?: MaptalksCoordinate | [number, number]; zoom?: number
+  center?: [number, number]; zoom?: number
   pitch?: number; bearing?: number
   minZoom?: number; maxZoom?: number
   draggable?: boolean; dragPitch?: boolean; dragRotate?: boolean; zoomable?: boolean

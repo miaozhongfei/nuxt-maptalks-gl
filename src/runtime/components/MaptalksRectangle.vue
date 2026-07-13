@@ -1,15 +1,13 @@
-<template><!-- maptalks rectangle · 纯逻辑组件 --></template>
+﻿<template><!-- maptalks rectangle · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
 import { inject } from 'vue'
 
 import { useMaptalksRectangle } from '../composables/presets/useMaptalksRectangle'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksCoordinate } from '../types'
-
 const props = withDefaults(
   defineProps<{
-    coordinates: MaptalksCoordinate | [number, number]
+    coordinates: [number, number]
     width: number
     height: number
     symbol?: Record<string, unknown>

@@ -173,7 +173,8 @@ export interface MaptalksCoordinate {
  */
 export interface MaptalksMapOptions {
   /** 地图中心，支持坐标对象或 [lng, lat] 数组 */
-  center?: MaptalksCoordinate | [number, number];
+  /** 地图中心 */
+  center?: [number, number];
   /** 缩放级别 */
   zoom?: number;
   /** 俯仰角（度），通常 0–80 */
@@ -221,7 +222,8 @@ export interface MaptalksMapOptions {
  */
 export interface MaptalksViewLike {
   /** 目标中心，支持坐标对象或 [lng, lat] 数组 */
-  center?: MaptalksCoordinate | [number, number];
+  /** 地图中心 */
+  center?: [number, number];
   /** 目标缩放级别 */
   zoom?: number;
   /** 目标俯仰角（度） */
@@ -260,7 +262,7 @@ export interface MaptalksMap {
   /** 读取当前中心坐标 */
   getCenter(): MaptalksCoordinate;
   /** 设置中心坐标 */
-  setCenter(center: MaptalksCoordinate | [number, number]): MaptalksMap;
+  setCenter(center: [number, number]): MaptalksMap;
   /** 读取当前缩放级别 */
   getZoom(): number;
   /** 设置缩放级别 */
@@ -285,7 +287,7 @@ export interface MaptalksMap {
   off(eventTypes: string, handler: MaptalksEventHandler): MaptalksMap;
   /** 平移到目标坐标 */
   panTo(
-    coord: MaptalksCoordinate | [number, number],
+    coord: [number, number],
     options?: Record<string, unknown>,
   ): MaptalksMap;
   /** 按像素偏移平移 */
@@ -770,7 +772,7 @@ export interface UseMaptalksCameraReturn {
   /** 适配范围 */
   fitExtent: (extent: unknown, zoomOffset?: number, options?: Record<string, unknown>) => void;
   /** 平移到目标坐标 */
-  panTo: (coord: MaptalksCoordinate | [number, number], options?: Record<string, unknown>) => void;
+  panTo: (coord: [number, number], options?: Record<string, unknown>) => void;
   /** 按像素偏移平移，offset 为 [x, y] 或 maptalks Point */
   panBy: (
     offset: [number, number] | Record<string, unknown>,
@@ -989,11 +991,11 @@ export interface MaptalksVectorLayer extends MaptalksLayer {
 }
 
 /** Marker 坐标：单点 */
-export type MarkerCoordinates = MaptalksCoordinate | [number, number];
+export type MarkerCoordinates = [number, number];
 /** LineString 坐标：点序列 */
-export type LineStringCoordinates = Array<MaptalksCoordinate | [number, number]>;
+export type LineStringCoordinates = Array<[number, number]>;
 /** Polygon 坐标：外环 + 内环（环为点序列） */
-export type PolygonCoordinates = Array<Array<MaptalksCoordinate | [number, number]>>;
+export type PolygonCoordinates = Array<Array<[number, number]>>;
 
 /**
  * `useMaptalksGeometry` 的可选项。
@@ -1117,11 +1119,11 @@ export interface UseMaptalksPolygonOptions extends Omit<UseMaptalksMarkerOptions
 }
 
 /** MultiPoint 坐标：点序列 */
-export type MultiPointCoordinates = Array<MaptalksCoordinate | [number, number]>;
+export type MultiPointCoordinates = Array<[number, number]>;
 /** MultiLineString 坐标：线序列 */
-export type MultiLineStringCoordinates = Array<Array<MaptalksCoordinate | [number, number]>>;
+export type MultiLineStringCoordinates = Array<Array<[number, number]>>;
 /** MultiPolygon 坐标：多边形序列（每个多边形为环数组） */
-export type MultiPolygonCoordinates = Array<Array<Array<MaptalksCoordinate | [number, number]>>>;
+export type MultiPolygonCoordinates = Array<Array<Array<[number, number]>>>;
 
 /**
  * MultiPoint 预设可选项。
@@ -1218,7 +1220,7 @@ export interface UseMaptalksGeoJSONReturn {
 }
 
 /** 形状/文本几何的坐标：单点（中心/角点/锚点） */
-export type ShapeCoordinates = MaptalksCoordinate | [number, number];
+export type ShapeCoordinates = [number, number];
 
 /**
  * Circle 预设可选项。

@@ -1,16 +1,14 @@
-<template><!-- maptalks textbox · 纯逻辑组件 --></template>
+﻿<template><!-- maptalks textbox · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
 import { inject } from 'vue'
 
 import { useMaptalksTextBox } from '../composables/presets/useMaptalksTextBox'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksCoordinate } from '../types'
-
 const props = withDefaults(
   defineProps<{
     content: string
-    coordinates: MaptalksCoordinate | [number, number]
+    coordinates: [number, number]
     width: number
     height: number
     symbol?: Record<string, unknown>
