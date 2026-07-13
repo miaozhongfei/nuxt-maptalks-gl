@@ -2,7 +2,7 @@ import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { toMaptalksError } from '../core/errors';
-import type { MaptalksEventHandler, MaptalksGeometry } from '../types';
+import type { MaptalksEventHandler, MaptalksGeometry, MaptalksNativeMarkerIWOptions } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例 */
@@ -37,8 +37,13 @@ interface NativeMarker {
 
 /** useMaptalksMarkerInfoWindow 的选项 */
 export interface UseMaptalksMarkerInfoWindowOptions {
-  /** 透传给 maptalks 原生 marker.setInfoWindow() 的选项（title/content/custom/animation 等） */
-  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /**
+   * 透传给 maptalks 原生 marker.setInfoWindow() 的选项。
+   *
+   * @description 常用字段：title / content / custom / animation / autoPan / single / width / height / dx / dy /
+   * autoOpenOn 等。完整列表参考 maptalks-gl 的 `InfoWindowOptionsType`。
+   */
+  options?: MaybeRefOrGetter<Partial<MaptalksNativeMarkerIWOptions> | undefined>;
   /** 信息框事件（open/close 等） */
   events?: Record<string, MaptalksEventHandler>;
   /** 组件销毁时自动移除信息框，默认 true */

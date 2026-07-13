@@ -14,6 +14,9 @@ import type {
 } from 'maptalks-gl'
 
 import type { MaptalksError, MaptalksErrorCode } from '../core/errors';
+
+// Import InfoWindowOptionsType from the maptalks base package (not re-exported by maptalks-gl)
+import type { InfoWindowOptionsType } from 'maptalks/dist/ui/InfoWindow';
 /**
  * 从用户安装的 maptalks-gl 版本推导的 Map 构造选项类型（全部 76 字段）。
  *
@@ -21,6 +24,22 @@ import type { MaptalksError, MaptalksErrorCode } from '../core/errors';
  * 与安装的 maptalks-gl 版本保持同步，IDE 可提示所有选项字段。
  */
 export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMapClass>[1]
+
+/**
+ * maptalks-gl 原生 InfoWindow 构造选项类型（推导自安装版本）。
+ *
+ * @description 对应 `new InfoWindow(options)` 的全部参数，IDE 可提示
+ * title/content/custom/animation/autoPan/single/width/height/dx/dy/autoOpenOn 等字段。
+ */
+export type MaptalksNativeInfoWindowOptions = InfoWindowOptionsType
+
+/**
+ * maptalks-gl 原生 marker.setInfoWindow() 的选项类型。
+ *
+ * @description 与 InfoWindow 构造器使用相同的 `InfoWindowOptionsType`，对应
+ * `marker.setInfoWindow({ title, content, custom, animation, ... })`。
+ */
+export type MaptalksNativeMarkerIWOptions = InfoWindowOptionsType
 
 /**
  * 从 maptalks-gl 推导的 TileLayer 构造选项类型。
