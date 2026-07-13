@@ -20,8 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { toValue } from 'vue';
-
 const center: [number, number] = [121.4737, 31.2304];
 
 const el1 = ref<HTMLElement | null>(null);
