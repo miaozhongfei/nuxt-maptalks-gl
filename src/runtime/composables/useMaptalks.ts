@@ -1,10 +1,13 @@
 import { onBeforeUnmount, onMounted, onScopeDispose, ref, shallowRef, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
+import { useRuntimeConfig } from '#imports';
+
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { isWebGLAvailable, loadMaptalks } from '../core/loader';
 import { mapRegistry } from '../core/registry';
-import type { MaptalksMap, UseMaptalksOptions, UseMaptalksReturn } from '../types';
+import { resolveSource } from '../core/resolve-source';
+import type { MaptalksMap, MaptalksSource, UseMaptalksOptions, UseMaptalksReturn } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例（单例） */
@@ -45,24 +48,26 @@ function buildMapOptions(options: UseMaptalksOptions): Record<string, unknown> {
  * @example
  * const map = await createMap(el, { center: [113.27, 23.13], zoom: 10 });
  */
-async function createMap(el: HTMLElement, options: UseMaptalksOptions): Promise<MaptalksMap> {
+async function createMap(
+  el: HTMLElement,
+  options: UseMaptalksOptions,
+  blConfig?: { source: MaptalksSource; id: string; extra: Record<string, unknown> },
+): Promise<MaptalksMap> {
   if (!isWebGLAvailable()) {
     throw new MaptalksError('webgl-unsupported', '当前环境不支持 WebGL');
   }
-  // maptalks-gl new Map() 会给容器加 style="height:100%;width:100%"，可能覆盖 CSS 类高度，
-  // 导致容器塌缩为 0。保存创建前的实际高度，创建后若塌缩则恢复。
   const prevHeight = el.offsetHeight;
   const mt = await loadMaptalks();
   const map = new mt.Map(el, buildMapOptions(options));
-  // 自动创建底图瓦片层（仅字符串/配置对象格式，原生 Layer 对象已透传 buildMapOptions）
-  if (options.baseLayer) {
-    const bl = options.baseLayer;
-    if (typeof bl === 'string' || (bl && typeof bl === 'object' && !('addTo' in bl))) {
-      const blSource = typeof bl === 'string' ? bl : (bl.source ?? 'osm');
-      const blOpts = typeof bl === 'string' ? {} : (bl.options ?? {});
-      const tileLayer = new mt.TileLayer(`base-${blSource}`, { ...blOpts, source: blSource });
-      map.addLayer(tileLayer as unknown as Parameters<typeof map.addLayer>[0]);
-    }
+  // 自动创建底图瓦片层
+  if (blConfig) {
+    const { source, id, extra } = blConfig;
+    const resolved = await resolveSource(source);
+    const tileOpts = { ...resolved?.options, ...extra };
+    if (resolved?.urlTemplate) tileOpts.urlTemplate = resolved.urlTemplate;
+    if (resolved?.url) tileOpts.url = resolved.url;
+    const tileLayer = new mt.TileLayer(id, tileOpts as Record<string, unknown>);
+    map.addLayer(tileLayer as unknown as Parameters<typeof map.addLayer>[0]);
   }
   if (el.offsetHeight === 0 && prevHeight > 0) {
     el.style.height = prevHeight + 'px';
@@ -87,6 +92,7 @@ async function createMap(el: HTMLElement, options: UseMaptalksOptions): Promise<
 async function runInit(
   target: MaybeRefOrGetter<HTMLElement | null>,
   options: UseMaptalksOptions,
+  blConfig: { source: MaptalksSource; id: string; extra: Record<string, unknown> } | undefined,
   map: ShallowRef<MaptalksMap | null>,
   isReady: Ref<boolean>,
   error: Ref<MaptalksError | null>,
@@ -101,7 +107,7 @@ async function runInit(
     return;
   }
   try {
-    map.value = await createMap(el, options);
+    map.value = await createMap(el, options, blConfig);
     isReady.value = true;
   } catch (cause) {
     logger.error('地图初始化失败', cause);
@@ -135,6 +141,22 @@ export function useMaptalks(
   const error = ref<MaptalksError | null>(null);
   const name = options.name;
 
+  // 解析 baseLayer 源配置（字符串/对象 → tile 创建参数），原生 Layer 对象跳过
+  const config = useRuntimeConfig();
+  const sources = ((config.public as Record<string, unknown>)?.maptalksGl as Record<string, unknown>)?.sources as Record<string, MaptalksSource> | undefined;
+  let blSource: MaptalksSource | undefined;
+  let blId = 'base';
+  const blExtra: Record<string, unknown> = {};
+  if (options.baseLayer) {
+    const bl = options.baseLayer;
+    if (typeof bl === 'string' || (bl && typeof bl === 'object' && !('addTo' in bl))) {
+      const srcName: string = typeof bl === 'string' ? bl : ((bl as { source?: string }).source ?? 'osm');
+      Object.assign(blExtra, typeof bl === 'string' ? {} : (bl.options ?? {}));
+      blId = `base-${srcName}`;
+      blSource = sources?.[srcName];
+    }
+  }
+
   // 仅在客户端登记到注册表，避免 SSR 端模块级单例跨请求串号
   if (name && import.meta.client) mapRegistry.register(name, map);
 
@@ -150,7 +172,7 @@ export function useMaptalks(
 
   // 仅客户端创建地图；服务端保持惰性空引用
   if (import.meta.client) {
-    onMounted(() => runInit(target, options, map, isReady, error));
+    onMounted(() => runInit(target, options, blSource ? { source: blSource, id: blId, extra: blExtra } : undefined, map, isReady, error));
     onBeforeUnmount(destroy);
     onScopeDispose(destroy);
   }
