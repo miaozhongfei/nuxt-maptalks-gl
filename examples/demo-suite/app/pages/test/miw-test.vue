@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">MarkerInfoWindow 测试</h1>
     <p class="text-muted mb-6">测试 MaptalksMarkerInfoWindow custom slot 内的按钮事件 + 动画</p>
@@ -7,8 +7,7 @@
       <!-- 卡片 1：custom slot 带按钮 -->
       <UCard>
         <template #header><h2 class="font-semibold">custom · 按钮测试</h2></template>
-        <MaptalksMap ref="mapCmp1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="mapCmp1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}">
               <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
@@ -40,8 +39,7 @@
       <!-- 卡片 2：默认 chrome（无 custom） -->
       <UCard>
         <template #header><h2 class="font-semibold">默认 chrome · title 测试</h2></template>
-        <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}">
               <MaptalksMarkerInfoWindow :options="{ title: '南门店', width: 200, height: 120 }">

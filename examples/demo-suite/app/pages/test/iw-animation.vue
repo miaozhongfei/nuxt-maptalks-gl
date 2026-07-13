@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">InfoWindow 动画测试</h1>
     <p class="text-muted mb-6">对比 composable / 组件，带 / 不带 animation options。</p>
@@ -25,8 +25,7 @@
       <!-- 卡片 3：组件 无 options -->
       <UCard>
         <template #header><h2 class="font-semibold">组件 · 无 options</h2></template>
-        <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 300px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 300px" baseLayer="osm">
           <MaptalksInfoWindow :coordinates="coord3" :visible="vis3"><div style="padding:8px 12px">无 options</div></MaptalksInfoWindow>
         </MaptalksMap>
         <template #footer>
@@ -37,8 +36,7 @@
       <!-- 卡片 4：组件 带 animation -->
       <UCard>
         <template #header><h2 class="font-semibold">组件 · animation:'scale'</h2></template>
-        <MaptalksMap ref="mapCmp4" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 300px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="mapCmp4" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 300px" baseLayer="osm">
           <MaptalksInfoWindow :coordinates="coord4" :visible="vis4" :options="{ animation: 'scale' }"><div style="padding:8px 12px">animation: scale</div></MaptalksInfoWindow>
         </MaptalksMap>
         <template #footer>

@@ -1,19 +1,17 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组件单独示例 · 信息框</h1>
     <p class="text-muted mb-6">演示 <code>MaptalksInfoWindow</code> 与 <code>MaptalksMarkerInfoWindow</code>。</p>
 
     <UCard class="mb-6"><template #header><h2 class="font-semibold">地图点击弹框</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
-      <MaptalksMap ref="mapCmp1" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height:380px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap ref="mapCmp1" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height:380px" baseLayer="osm">
         <MaptalksInfoWindow :coordinates="iwCoord" :visible="showIW"><div><strong>地图点击信息框</strong><p>经度：{{ iwCoord[0].toFixed(6) }}</p><p>纬度：{{ iwCoord[1].toFixed(6) }}</p><p>{{ iwTime }}</p></div></MaptalksInfoWindow>
       </MaptalksMap>
       <template #footer><span class="text-sm text-muted">点击地图弹出。</span></template>
     </UCard>
 
     <UCard class="mb-6"><template #header><h2 class="font-semibold">Marker 点击弹框</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
-      <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:380px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:380px" baseLayer="osm">
         <MaptalksVectorLayer>
           <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:22,markerHeight:22}" @click="onMarkerClick('A',[121.47,31.23])" />
           <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:22,markerHeight:22}" @click="onMarkerClick('B',[121.5,31.24])" />
@@ -26,8 +24,7 @@
     <!-- 卡片 3：MaptalksMarkerInfoWindow——对照 composable 页 bindCloseBtn 模式，在 @click 直接 open+bind -->
     <UCard class="mb-6"><template #header><h2 class="font-semibold">MaptalksMarkerInfoWindow · 每个 Marker 独立信息框 · 自定义关闭</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
       <p class="text-sm text-muted mb-2"><code>&lt;MaptalksMarkerInfoWindow&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，autoOpenOn 默认 'click' 处理打开，<code>@click</code> 只绑关闭按钮；关闭通过 expose 的 <code>close()</code> 调 <code>closeInfoWindow</code>。</p>
-      <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:400px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:400px" baseLayer="osm">
         <MaptalksVectorLayer>
           <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwA)">
             <MaptalksMarkerInfoWindow ref="miwA" :options="{ title: '', custom: true }">

@@ -6,8 +6,7 @@
     <div class="grid grid-cols-2 gap-4">
       <UCard>
         <template #header><h2 class="font-semibold">ZoomControl · 缩放控件</h2></template>
-        <MaptalksMap ref="map1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:300px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="map1" :center="center" :zoom="13" baseLayer="osm" class="relative rounded border border-default overflow-hidden" style="height:300px">
           <MaptalksZoomControl />
         </MaptalksMap>
         <template #footer><span class="text-sm text-muted">左上角缩放按钮。</span></template>
@@ -15,8 +14,7 @@
 
       <UCard>
         <template #header><h2 class="font-semibold">ScaleControl · 比例尺</h2></template>
-        <MaptalksMap ref="map2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:300px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="map2" :center="center" :zoom="13" baseLayer="osm" class="relative rounded border border-default overflow-hidden" style="height:300px">
           <MaptalksScaleControl />
         </MaptalksMap>
         <template #footer><span class="text-sm text-muted">左下角比例尺。</span></template>
@@ -24,8 +22,7 @@
 
       <UCard>
         <template #header><h2 class="font-semibold">CompassControl · 指南针</h2></template>
-        <MaptalksMap ref="map3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:300px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="map3" :center="center" :zoom="13" baseLayer="osm" class="relative rounded border border-default overflow-hidden" style="height:300px">
           <MaptalksCompassControl />
         </MaptalksMap>
         <template #footer><span class="text-sm text-muted">点击复位正北。</span></template>
@@ -33,8 +30,7 @@
 
       <UCard>
         <template #header><h2 class="font-semibold">AttributionControl · 版权信息</h2></template>
-        <MaptalksMap ref="map4" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:300px">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap ref="map4" :center="center" :zoom="13" baseLayer="osm" class="relative rounded border border-default overflow-hidden" style="height:300px">
           <MaptalksAttributionControl :options="{ content: '自定义归属：nuxt-maptalks-gl' }" />
         </MaptalksMap>
         <template #footer><span class="text-sm text-muted">左下角灰色文本标注。</span></template>

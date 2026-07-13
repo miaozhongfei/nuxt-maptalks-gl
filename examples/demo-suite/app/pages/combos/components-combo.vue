@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组合示例 · 纯组件声明式</h1>
     <p class="text-muted mb-6">
@@ -13,8 +13,7 @@
           <UBadge color="neutral" variant="outline">组合</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 520px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 520px" baseLayer="osm">
         <!-- 矢量图层 + 多种几何 -->
         <MaptalksVectorLayer>
           <MaptalksMarker

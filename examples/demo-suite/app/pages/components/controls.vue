@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组件单独示例 · 控件</h1>
     <p class="text-muted mb-6">
@@ -13,8 +13,7 @@
           <UBadge color="neutral" variant="outline">官网 10.14~10.17</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="11" :pitch="30" class="relative rounded border border-default overflow-hidden" style="height: 384px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="11" :pitch="30" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <!-- 缩放控件（+/-）：position 可切换 -->
         <MaptalksZoomControl :options="{ position: zoomPosition }" />
         <!-- 比例尺控件 -->

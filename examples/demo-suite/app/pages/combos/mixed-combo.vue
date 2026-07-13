@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组合示例 · 组件 + composable 混合</h1>
     <p class="text-muted mb-6">
@@ -15,8 +15,7 @@
         </div>
       </template>
       <!-- 地图外壳用组件声明式创建 -->
-      <MaptalksMap ref="mapCmp" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 500px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap ref="mapCmp" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 500px" baseLayer="osm">
       </MaptalksMap>
       <template #footer>
         <div class="flex flex-col gap-2">

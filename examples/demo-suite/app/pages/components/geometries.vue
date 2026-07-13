@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组件单独示例 · 图形</h1>
     <p class="text-muted mb-6">
@@ -15,8 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 3.1~3.3 / 3.10</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 384px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 点标记：@click 演示事件回传 -->
           <MaptalksMarker
@@ -56,8 +55,7 @@
           <UBadge color="neutral" variant="outline">官网 3.8</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.49, 31.235]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="[121.49, 31.235]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 圆：中心 + 半径（米） -->
           <MaptalksCircle
@@ -100,8 +98,7 @@
           <UBadge color="neutral" variant="outline">官网 3.5~3.7 / 3.11</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.47, 31.24]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="[121.47, 31.24]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 多点 -->
           <MaptalksMultiPoint

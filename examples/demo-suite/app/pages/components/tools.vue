@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组件单独示例 · 工具</h1>
     <p class="text-muted mb-6">
@@ -15,8 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 8.3</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
         <!-- 在地图上依次点击测距，双击结束；@measure 返回测量结果 -->
         <MaptalksDistanceTool @measure="onDistance" />
       </MaptalksMap>
@@ -34,8 +33,7 @@
           <UBadge color="neutral" variant="outline">官网 8.4</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
         <!-- 在地图上依次点击画多边形测面积，双击结束 -->
         <MaptalksAreaTool @measure="onArea" />
       </MaptalksMap>

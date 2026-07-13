@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组件单独示例 · 地图 · 瓦片图层</h1>
     <p class="text-muted mb-6">
@@ -21,9 +21,8 @@
         class="relative rounded border border-default overflow-hidden"
         style="height: 320px"
         @ready="ready = true"
-        @error="onError"
+        @error="onError" baseLayer="osm"
       >
-        <MaptalksTileLayer source="osm" />
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">状态：{{ ready ? '地图已就绪' : '加载中…' }}{{ errMsg }}</span>
@@ -40,7 +39,7 @@
         </div>
       </template>
       <!-- 矢量瓦片是世界范围国界数据，用较小 zoom 才能看到 -->
-      <MaptalksMap :center="[110, 30]" :zoom="2" class="relative rounded border border-default overflow-hidden" style="height: 320px">
+      <MaptalksMap :center="[110, 30]" :zoom="2" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
         <!-- MapLibre 官方公开 demo 矢量切片（无需 key），按几何类型给样式渲染国界/线 -->
         <MaptalksVectorTileLayer :options="vectorTileOptions" />
       </MaptalksMap>
@@ -58,8 +57,7 @@
           <UBadge color="neutral" variant="outline">官网 6.8</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 320px">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
         <!-- VectorLayer 是几何图形的容器，几何组件必须放在它内部；这里放一个 Marker 证明容器生效 -->
         <MaptalksVectorLayer>
           <MaptalksMarker
@@ -81,8 +79,7 @@
           <UBadge color="primary" variant="subtle">组件</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="17" :pitch="60" class="relative rounded border border-default overflow-hidden" style="height: 360px" @ready="onGltfReady">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="17" :pitch="60" class="relative rounded border border-default overflow-hidden" style="height: 360px" @ready="onGltfReady" baseLayer="osm">
         <!-- 组件创建空的 GLTFLayer，指定 id 便于就绪后取到它并加入真实 3D 模型 -->
         <MaptalksGLTFLayer id="gltf-solo" />
       </MaptalksMap>
@@ -100,8 +97,7 @@
           <UBadge color="neutral" variant="outline">官网 2.3</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="17" :pitch="60" class="relative rounded border border-default overflow-hidden" style="height: 360px" @ready="onGroupReady">
-        <MaptalksTileLayer source="osm" />
+      <MaptalksMap :center="center" :zoom="17" :pitch="60" class="relative rounded border border-default overflow-hidden" style="height: 360px" @ready="onGroupReady" baseLayer="osm">
         <!-- GroupGLLayer 是 GL 图层的分组容器（含默认光照/后处理）；就绪后往里加一个含 3D 模型的 GLTFLayer -->
         <MaptalksGroupGLLayer id="group-demo" />
       </MaptalksMap>

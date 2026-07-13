@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">自适应父容器（height:100% + 响应式）</h1>
     <p class="text-muted mb-6">
@@ -30,8 +30,7 @@
         :style="{ height: boxHeight + 'px', width: '100%', resize: 'both', minHeight: '200px', minWidth: '260px' }"
       >
         <!-- 地图不写固定高度：MaptalksMap 根节点自带 height:100%/width:100%，填满上面的父容器 -->
-        <MaptalksMap :center="center" :zoom="11" class="relative w-full h-full">
-          <MaptalksTileLayer source="osm" />
+        <MaptalksMap :center="center" :zoom="11" class="relative w-full h-full" baseLayer="osm">
           <MaptalksZoomControl :options="{ position: 'top-left' }" />
           <MaptalksScaleControl :options="{ position: 'bottom-left' }" />
         </MaptalksMap>
