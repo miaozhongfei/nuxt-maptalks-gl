@@ -13,7 +13,7 @@
       <UCard>
         <template #header><h2 class="font-semibold">逃生舱 · 原生 UIComponent</h2></template>
         <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><span class="text-sm text-muted">原生 new UIComponent() / ui.InfoWindow。</span></template>
+        <template #footer><span class="text-sm text-muted">原生 marker.setInfoWindow() 直调，点击 Marker 弹出。</span></template>
       </UCard>
     </div>
   </div>
@@ -38,10 +38,9 @@ const { geometry: mk2 } = useMaptalksMarker(vec2, {
   coordinates: [121.47, 31.23],
   symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
 });
-onMounted(() => {
-  const geo = toValue(mk2);
+// 原生 marker.setInfoWindow——不用 composable，直接调 maptalks 实例方法
+watch(() => toValue(mk2), (geo) => {
   if (!geo) return;
-  const maptalksGL = (geo as Record<string, unknown>).constructor as { setInfoWindow?: (opts: Record<string, unknown>) => void };
-  maptalksGL?.setInfoWindow?.({ title: '原生 UIComponent', content: '<div style="padding:8px">marker.setInfoWindow 原生弹出</div>' });
-});
+  (geo as Record<string, (...args: unknown[]) => void>).setInfoWindow?.({ title: '原生弹出', content: '<div style="padding:8px">marker.setInfoWindow() 直接调用</div>' });
+}, { immediate: true });
 </script>
