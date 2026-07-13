@@ -1,22 +1,21 @@
 /* eslint-disable max-lines */
 import type { ComputedRef, MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
-import type {
-  AreaTool,
-  DistanceTool,
-  DrawTool,
-  GLTFLayer,
-  GroupGLLayer,
+import {
+  type AreaTool,
+  type DistanceTool,
+  type DrawTool,
+  type GLTFLayer,
+  type GroupGLLayer,
   Map as _MaptalksMapClass,
-  TileLayer,
-  VectorLayer,
-  VectorTileLayer,
-  WMSTileLayer,
+  type TileLayer,
+  ui,
+  type VectorLayer,
+  type VectorTileLayer,
+  type WMSTileLayer,
 } from 'maptalks-gl'
 
 import type { MaptalksError, MaptalksErrorCode } from '../core/errors';
 
-// Import InfoWindowOptionsType from the maptalks base package (not re-exported by maptalks-gl)
-import type { InfoWindowOptionsType } from 'maptalks/dist/ui/InfoWindow';
 /**
  * 从用户安装的 maptalks-gl 版本推导的 Map 构造选项类型（全部 76 字段）。
  *
@@ -28,18 +27,57 @@ export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMap
 /**
  * maptalks-gl 原生 InfoWindow 构造选项类型（推导自安装版本）。
  *
- * @description 对应 `new InfoWindow(options)` 的全部参数，IDE 可提示
- * title/content/custom/animation/autoPan/single/width/height/dx/dy/autoOpenOn 等字段。
+ * @description 用 `ConstructorParameters<typeof ui.InfoWindow>[0]` 提取构造函数参数类型，
+ * IDE 可提示 title / content / custom / animation / autoPan / single / width / height / dx / dy / autoOpenOn 等字段。
  */
-export type MaptalksNativeInfoWindowOptions = InfoWindowOptionsType
+export type MaptalksNativeInfoWindowOptions = ConstructorParameters<typeof ui.InfoWindow>[0]
 
 /**
  * maptalks-gl 原生 marker.setInfoWindow() 的选项类型。
  *
- * @description 与 InfoWindow 构造器使用相同的 `InfoWindowOptionsType`，对应
- * `marker.setInfoWindow({ title, content, custom, animation, ... })`。
+ * @description 与 InfoWindow 构造器使用相同的 `InfoWindowOptionsType`，
+ * IDE 可提示 title / content / custom / animation / autoPan / single / width / height / dx / dy / autoOpenOn 等字段。
  */
-export type MaptalksNativeMarkerIWOptions = InfoWindowOptionsType
+export type MaptalksNativeMarkerInfoWindowOptions = ConstructorParameters<typeof ui.InfoWindow>[0]
+
+/**
+ * InfoWindow 常用选项（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
+ *
+ * @description 涵盖 maptalks InfoWindow 构造器 / marker.setInfoWindow() 的常用字段，
+ * 并为每个字段提供中文说明。未列出的原生字段通过 `[key: string]: unknown` 透传。
+ *
+ * @example
+ * const iwOpts: MaptalksInfoWindowOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
+ */
+export interface MaptalksInfoWindowOptions {
+  /** 信息框标题，可用空字符串隐藏内置标题栏 */
+  title?: string | HTMLElement;
+  /** 弹出框内容（HTML 字符串或 DOM 元素），支持响应式 getter */
+  content?: string | HTMLElement;
+  /** 宽度（像素）。原生类型为 string，此处统一为 number */
+  width?: number;
+  /** 高度（像素） */
+  height?: number;
+  /** 自定义模板（禁用 maptalks 内置 chrome） */
+  custom?: boolean;
+  /** 自动移动地图使信息框可见 */
+  autoPan?: boolean;
+  /** 是否唯一（同时只显示一个） */
+  single?: boolean;
+  /** 动画类型（如 'scale'） */
+  animation?: string;
+  /** 水平偏移（像素） */
+  dx?: number;
+  /** 垂直偏移（像素） */
+  dy?: number;
+  /** 自动弹出事件（null 禁用弹出，默认 'click'） */
+  autoOpenOn?: string | null;
+  /** 逃生舱：透传给未建模的 maptalks 原始 InfoWindow 选项 */
+  [key: string]: unknown;
+}
+
+/** marker.setInfoWindow() 的选项，与 InfoWindow 构造器选项完全一致 */
+export type MaptalksMarkerInfoWindowOptions = MaptalksInfoWindowOptions;
 
 /**
  * 从 maptalks-gl 推导的 TileLayer 构造选项类型。

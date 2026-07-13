@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksEventHandler, MaptalksInfoWindow, MaptalksMap, MaptalksNativeInfoWindowOptions } from '../types';
+import type { MaptalksEventHandler, MaptalksInfoWindow, MaptalksInfoWindowOptions, MaptalksMap, MaptalksNativeInfoWindowOptions } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -19,13 +19,12 @@ const logger = createLogger('nuxt-maptalks-gl');
  * });
  */
 export interface UseMaptalksInfoWindowOptions {
-  /**
-   * 透传给 maptalks InfoWindow 构造器的选项。
-   *
-   * @description 常用字段：title / content / custom / animation / autoPan / single / width / height / dx / dy /
-   * autoOpenOn 等。完整列表参考 maptalks-gl 的 `InfoWindowOptionsType`。
-   */
-  options?: MaybeRefOrGetter<Partial<MaptalksNativeInfoWindowOptions> | undefined>;
+  /** 透传给 maptalks InfoWindow 构造器的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
+  options?: MaybeRefOrGetter<
+    Partial<MaptalksInfoWindowOptions>
+    & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowOptions>
+    | undefined
+  >;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 `true` */

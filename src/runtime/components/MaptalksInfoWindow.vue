@@ -11,7 +11,7 @@ import type { App } from 'vue'
 import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
 import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksNativeInfoWindowOptions } from '../types'
+import type { MaptalksInfoWindowOptions, MaptalksNativeInfoWindowOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -19,8 +19,9 @@ const props = withDefaults(
     coordinates?: [number, number]
     /** 是否可见，默认 true */
     visible?: boolean
-    /** 透传给 InfoWindow 构造器的选项（title/content/animation 等） */
-    options?: Partial<MaptalksNativeInfoWindowOptions>
+    /** 透传给 InfoWindow 构造器的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
+    options?: Partial<MaptalksInfoWindowOptions>
+      & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowOptions>
     /** 组件销毁时自动移除 InfoWindow，默认 true */
     autoDispose?: boolean
   }>(),
