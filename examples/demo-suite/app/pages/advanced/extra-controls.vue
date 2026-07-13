@@ -35,9 +35,9 @@
         <template #header><h2 class="font-semibold">AttributionControl · 版权信息</h2></template>
         <MaptalksMap ref="map4" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:300px">
           <MaptalksTileLayer source="osm" />
-          <MaptalksAttributionControl />
+          <MaptalksAttributionControl :options="{ content: '自定义归属：nuxt-maptalks-gl' }" />
         </MaptalksMap>
-        <template #footer><span class="text-sm text-muted">右下角版权标注。</span></template>
+        <template #footer><span class="text-sm text-muted">左下角灰色文本标注。</span></template>
       </UCard>
     </div>
   </div>
