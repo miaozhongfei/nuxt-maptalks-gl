@@ -7,7 +7,7 @@
       <UCard>
         <template #header><h2 class="font-semibold">DrawTool · 绘制模式</h2></template>
         <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><div class="flex gap-2"><UButton size="sm" :color="mode==='point'?'primary':'neutral'" @click="setMode('point')">点</UButton><UButton size="sm" :color="mode==='line'?'primary':'neutral'" @click="setMode('line')">线</UButton><UButton size="sm" :color="mode==='polygon'?'primary':'neutral'" @click="setMode('polygon')">面</UButton><UButton size="sm" color="error" @click="setMode(null)">停用</UButton></div></template>
+        <template #footer><div class="flex gap-2"><UButton size="sm" :color="btnMode==='Point'?'primary':'neutral'" @click="setMode('Point')">点</UButton><UButton size="sm" :color="btnMode==='LineString'?'primary':'neutral'" @click="setMode('LineString')">线</UButton><UButton size="sm" :color="btnMode==='Polygon'?'primary':'neutral'" @click="setMode('Polygon')">面</UButton><UButton size="sm" color="error" @click="setMode(null)">停用</UButton></div></template>
       </UCard>
 
       <UCard>
@@ -27,10 +27,13 @@ const { map: map1 } = useMaptalks(el1, { center, zoom: 13 });
 useMaptalksTileLayer(map1, { source: 'osm' });
 const { layer: drawVec } = useMaptalksVectorLayer(map1);
 
-const mode = ref<string | null>(null);
-const enabled = ref(false);
-useMaptalksDrawTool(map1, { enabled, mode, once: false });
-function setMode(m: string | null) { mode.value = m; enabled.value = !!m; }
+const { enabled, mode, setMode: dtSetMode } = useMaptalksDrawTool(map1, { once: false });
+const btnMode = ref<string | null>(null);
+function setMode(m: string | null) {
+  btnMode.value = m;
+  if (m) { dtSetMode(m); enabled.value = true; }
+  else enabled.value = false;
+}
 
 const el2 = ref<HTMLElement | null>(null);
 const { map: map2 } = useMaptalks(el2, { center, zoom: 13 });
