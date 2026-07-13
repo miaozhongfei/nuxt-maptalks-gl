@@ -50,7 +50,7 @@ function mountSlotContent() {
   slotApp = createApp({ render: () => h('div', null, slots.default?.()) });
   slotApp.mount(mountEl);
   delete mountEl.dataset.vApp;
-  iw.setContent(mountEl);
+  iw.setContent?.(mountEl);
 }
 
 // geometry 就绪后挂载 slot 内容到 marker InfoWindow
