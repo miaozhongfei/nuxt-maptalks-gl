@@ -37,12 +37,10 @@ function setMode(m: string | null) {
 
 // 绘制完成后把图形加入 VectorLayer 持久保存
 watch(result, (ev) => {
-  console.log('[geometry-edit] drawend', !!ev, ev);
   if (!ev) return;
-  const e = ev as { geometry?: { copy?: () => unknown; getCoordinates?: () => unknown } };
-  const geo = e.geometry?.copy?.();
+  // drawend 事件的 ev 就是 maptalks geometry 本身，不是包含 .geometry 属性的 wrapper
+  const geo = (ev as { copy?: () => unknown })?.copy?.();
   const layer = toValue(drawVec);
-  console.log('[geometry-edit] saving', { hasGeo: !!geo, hasLayer: !!layer });
   if (geo && layer) (layer as Record<string, (...args: unknown[]) => unknown>).addGeometry?.(geo);
 });
 
