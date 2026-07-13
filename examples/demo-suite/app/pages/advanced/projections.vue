@@ -7,7 +7,7 @@
       <UCard>
         <template #header><h2 class="font-semibold">坐标转换 · containerPoint ↔ coordinate</h2></template>
         <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><span class="text-sm text-muted">点击地图查看转换结果。屏幕坐标：{{ screenPt }}，经纬度：{{ geoCoord }}</span></template>
+        <template #footer><span class="text-sm text-muted">移动鼠标查看实时转换。屏幕坐标：{{ screenPt }}，经纬度：{{ geoCoord }}</span></template>
       </UCard>
 
       <UCard>
