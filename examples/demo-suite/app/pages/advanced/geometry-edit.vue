@@ -37,10 +37,12 @@ function setMode(m: string | null) {
 
 // 绘制完成后把图形加入 VectorLayer 持久保存
 watch(result, (ev) => {
+  console.log('[geometry-edit] drawend', !!ev, ev);
   if (!ev) return;
-  const e = ev as { geometry?: { copy?: () => unknown } };
+  const e = ev as { geometry?: { copy?: () => unknown; getCoordinates?: () => unknown } };
   const geo = e.geometry?.copy?.();
   const layer = toValue(drawVec);
+  console.log('[geometry-edit] saving', { hasGeo: !!geo, hasLayer: !!layer });
   if (geo && layer) (layer as Record<string, (...args: unknown[]) => unknown>).addGeometry?.(geo);
 });
 
