@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
   minZoom?: number; maxZoom?: number
   draggable?: boolean; dragPitch?: boolean; dragRotate?: boolean; zoomable?: boolean
   name?: string; options?: Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>
+  baseLayer?: string | { source?: string; options?: Record<string, unknown> }
 }>(), { options: () => ({}) })
 
 const emit = defineEmits<{ ready: [map: MaptalksMap]; error: [err: MaptalksError] }>()
@@ -23,6 +24,7 @@ const el = ref<HTMLElement | null>(null)
 
 function buildOpts(): UseMaptalksOptions {
   const o: UseMaptalksOptions = { name: props.name, ...props.options }
+  if (props.baseLayer !== undefined) o.baseLayer = props.baseLayer;
   if (props.center !== undefined) o.center = props.center
   if (props.zoom !== undefined) o.zoom = props.zoom
   if (props.pitch !== undefined) o.pitch = props.pitch

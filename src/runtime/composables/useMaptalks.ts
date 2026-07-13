@@ -20,10 +20,13 @@ const logger = createLogger('nuxt-maptalks-gl');
  * @example
  * const mapOptions = buildMapOptions({ name: 'main', center: [0, 0], zoom: 2 });
  */
+/** 模块消费的键——name/onError/baseLayer 由本模块处理，不应传入 maptalks 构造器 */
+const MODULE_KEYS = new Set(['name', 'onError', 'baseLayer']);
+
 function buildMapOptions(options: UseMaptalksOptions): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(options)) {
-    if (key === 'name' || key === 'onError') continue;
+    if (MODULE_KEYS.has(key)) continue;
     result[key] = value;
   }
   return result;
@@ -49,6 +52,14 @@ async function createMap(el: HTMLElement, options: UseMaptalksOptions): Promise<
   const prevHeight = el.offsetHeight;
   const mt = await loadMaptalks();
   const map = new mt.Map(el, buildMapOptions(options));
+  // 自动创建底图瓦片层（保证最底层）
+  if (options.baseLayer) {
+    const bl = options.baseLayer;
+    const blSource = typeof bl === 'string' ? bl : (bl.source ?? 'osm');
+    const blOpts = typeof bl === 'string' ? {} : (bl.options ?? {});
+    const tileLayer = new mt.TileLayer(`base-${blSource}`, { ...blOpts, source: blSource });
+    map.addLayer(tileLayer as unknown as Parameters<typeof map.addLayer>[0]);
+  }
   if (el.offsetHeight === 0 && prevHeight > 0) {
     el.style.height = prevHeight + 'px';
   }
