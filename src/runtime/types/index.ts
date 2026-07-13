@@ -574,7 +574,7 @@ export interface ResolvedModuleOptions {
  * @example
  * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10, minZoom: 3 });
  */
-export interface UseMaptalksOptions extends MaptalksMapOptions {
+export interface UseMaptalksOptions extends MaptalksMapOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapOptions> {
   /** 命名实例：传入后登记进 MapRegistry，可经 useMaptalksInstance 按名获取 */
   name?: string;
   /** 初始化失败回调（与 error ref 同时触发） */
