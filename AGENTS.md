@@ -163,7 +163,7 @@ chore: 更新 oxlint 到 1.71.0
   - **playground/** — 调试验证代码，方便开发时调试功能
   - **docs/** — 模块使用文档，供模块使用者参考查阅（详见 [docs 文档编写规范](#docs-文档编写规范)）
   - 违反此规则的代码在 code review 中视为不通过
-- **强制类型提示规则**：所有封装 maptalks 原生 Map/Layer/Geometry 等构造器选项使用的 interface（如 `UseMaptalksOptions`），除模块自身字段（如 `name`/`onError`）外，必须 `extends …` **对应的原生构造器 options 类型**（如 `Partial<MaptalksNativeMapOptions>`），确保 IDE 提供完整的 maptalks-gl 原生字段自动补全。不得仅依赖 `[key: string]: unknown` 索引签名兜底。违反者 code review 不通过。
+- **强制类型提示规则**：所有封装 maptalks 原生 Map/Layer/Geometry/InfoWindow 等构造器选项使用的 interface（如 `UseMaptalksOptions`、`MaptalksInfoWindowOptions`），除模块自身字段（如 `name`/`onError`）外，必须提供完整的 maptalks-gl 原生字段 IDE 自动补全。以 `MaptalksInfoWindowOptions` 为典范：先建一个带 JSDoc 中文注释的建模 interface（含 `[key: string]: unknown` 逃生舱），再用 `Partial<Model> & Omit<Partial<Native>, keyof Model>` 组合到最终 `options` 字段类型，确保 IDE 补全既包含中文字段说明又不丢失任何原生字段。不得仅依赖 `[key: string]: unknown` 索引签名兜底。违反者 code review 不通过。
 
 ## docs 文档编写规范
 
