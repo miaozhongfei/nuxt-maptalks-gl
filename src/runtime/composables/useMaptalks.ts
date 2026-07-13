@@ -20,13 +20,15 @@ const logger = createLogger('nuxt-maptalks-gl');
  * @example
  * const mapOptions = buildMapOptions({ name: 'main', center: [0, 0], zoom: 2 });
  */
-/** 模块消费的键——name/onError/baseLayer 由本模块处理，不应传入 maptalks 构造器 */
-const MODULE_KEYS = new Set(['name', 'onError', 'baseLayer']);
+/** 模块消费的键——name/onError 由本模块处理，不应传入 maptalks 构造器 */
+const MODULE_KEYS = new Set(['name', 'onError']);
 
 function buildMapOptions(options: UseMaptalksOptions): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(options)) {
     if (MODULE_KEYS.has(key)) continue;
+    // baseLayer 是字符串/配置对象时由 createMap 另行处理，不透传原生构造器
+    if (key === 'baseLayer' && (typeof value === 'string' || (value && typeof value === 'object' && !('addTo' in value)))) continue;
     result[key] = value;
   }
   return result;
@@ -52,13 +54,15 @@ async function createMap(el: HTMLElement, options: UseMaptalksOptions): Promise<
   const prevHeight = el.offsetHeight;
   const mt = await loadMaptalks();
   const map = new mt.Map(el, buildMapOptions(options));
-  // 自动创建底图瓦片层（保证最底层）
+  // 自动创建底图瓦片层（仅字符串/配置对象格式，原生 Layer 对象已透传 buildMapOptions）
   if (options.baseLayer) {
     const bl = options.baseLayer;
-    const blSource = typeof bl === 'string' ? bl : (bl.source ?? 'osm');
-    const blOpts = typeof bl === 'string' ? {} : (bl.options ?? {});
-    const tileLayer = new mt.TileLayer(`base-${blSource}`, { ...blOpts, source: blSource });
-    map.addLayer(tileLayer as unknown as Parameters<typeof map.addLayer>[0]);
+    if (typeof bl === 'string' || (bl && typeof bl === 'object' && !('addTo' in bl))) {
+      const blSource = typeof bl === 'string' ? bl : (bl.source ?? 'osm');
+      const blOpts = typeof bl === 'string' ? {} : (bl.options ?? {});
+      const tileLayer = new mt.TileLayer(`base-${blSource}`, { ...blOpts, source: blSource });
+      map.addLayer(tileLayer as unknown as Parameters<typeof map.addLayer>[0]);
+    }
   }
   if (el.offsetHeight === 0 && prevHeight > 0) {
     el.style.height = prevHeight + 'px';

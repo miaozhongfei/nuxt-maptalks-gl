@@ -105,6 +105,19 @@
         <span class="text-sm text-muted">{{ groupNote || '正在向 GroupGLLayer 加入含 3D 模型的 GL 图层…' }}</span>
       </template>
     </UCard>
+
+    <!-- baseLayer 格式对比 -->
+    <UCard class="mb-6">
+      <template #header><h2 class="font-semibold">baseLayer 配置格式 · 字符串</h2></template>
+      <MaptalksMap :center="center" :zoom="12" baseLayer="osm" class="relative rounded border border-default overflow-hidden" style="height:280px" />
+      <template #footer><span class="text-sm text-muted"><code>baseLayer="osm"</code> — 字符串格式，模块自动创建 TileLayer。</span></template>
+    </UCard>
+
+    <UCard class="mb-6">
+      <template #header><h2 class="font-semibold">baseLayer 配置格式 · 对象</h2></template>
+      <MaptalksMap :center="center" :zoom="12" :baseLayer="{ source: 'osm' }" class="relative rounded border border-default overflow-hidden" style="height:280px" />
+      <template #footer><span class="text-sm text-muted"><code>:baseLayer="{ source: 'osm' }"</code> — 对象格式，可扩展 options。</span></template>
+    </UCard>
   </div>
 </template>
 

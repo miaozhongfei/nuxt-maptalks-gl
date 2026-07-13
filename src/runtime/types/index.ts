@@ -203,7 +203,8 @@ export interface MaptalksMapOptions {
   /** 空间参考系（含自定义 resolutions / LOD） */
   spatialReference?: Record<string, unknown>;
   /** 底图图层 */
-  baseLayer?: MaptalksLayer;
+  /** 底图图层。MaptalksLayer 对象直传原生构造器；字符串/配置对象由模块自动 new TileLayer 到最底层 */
+  baseLayer?: MaptalksLayer | string | { source?: string; options?: Record<string, unknown> };
   /** 初始图层数组 */
   layers?: MaptalksLayer[];
   /** 逃生舱口：透传任意未建模的 maptalks Map 选项（保留） */
@@ -631,16 +632,11 @@ export interface ResolvedModuleOptions {
  * @example
  * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10, minZoom: 3 });
  */
-export interface UseMaptalksOptions extends Omit<MaptalksMapOptions, 'baseLayer'>, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapOptions> {
+export interface UseMaptalksOptions extends MaptalksMapOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapOptions> {
   /** 命名实例：传入后登记进 MapRegistry，可经 useMaptalksInstance 按名获取 */
   name?: string;
   /** 初始化失败回调（与 error ref 同时触发） */
   onError?: (error: MaptalksError) => void;
-  /**
-   * 自动创建底图瓦片图层（保证在最底层，无需手动 MaptalksTileLayer）。
-   * 传字符串 = source 名称（如 'osm'）；传对象 = { source: 'osm', options: { ... } }
-   */
-  baseLayer?: string | { source?: string; options?: Record<string, unknown> };
 }
 
 /**
