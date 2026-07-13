@@ -151,7 +151,11 @@ export function useMaptalks(
     const bl = options.baseLayer;
     if (typeof bl === 'string' || (bl && typeof bl === 'object' && !('addTo' in bl))) {
       const srcName: string = typeof bl === 'string' ? bl : ((bl as { source?: string }).source ?? 'osm');
-      Object.assign(blExtra, typeof bl === 'string' ? {} : (bl.options ?? {}));
+      const blObj = typeof bl === 'string' ? {} : bl as { urlTemplate?: string; subdomains?: string[]; attribution?: string; options?: Record<string, unknown> };
+      if (blObj.urlTemplate) blExtra.urlTemplate = blObj.urlTemplate;
+      if (blObj.subdomains) blExtra.subdomains = blObj.subdomains;
+      if (blObj.attribution) blExtra.attribution = blObj.attribution;
+      if (blObj.options) Object.assign(blExtra, blObj.options);
       blId = `base-${srcName}`;
       blSource = sources?.[srcName];
     }

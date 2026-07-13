@@ -205,7 +205,13 @@ export interface MaptalksMapOptions {
   spatialReference?: Record<string, unknown>;
   /** 底图图层 */
   /** 底图图层。MaptalksLayer 对象直传原生构造器；字符串/配置对象由模块自动 new TileLayer 到最底层 */
-  baseLayer?: MaptalksLayer | string | { source?: string; options?: Record<string, unknown> };
+  baseLayer?: MaptalksLayer | string | {
+    source?: string;
+    urlTemplate?: string;
+    subdomains?: string[];
+    attribution?: string;
+    options?: Record<string, unknown>;
+  };
   /** 初始图层数组 */
   layers?: MaptalksLayer[];
   /** 逃生舱口：透传任意未建模的 maptalks Map 选项（保留） */
