@@ -43,10 +43,11 @@ const { layer: vec2 } = useMaptalksVectorLayer(map2);
 watch(() => toValue(vec2), (layer) => {
   if (!layer) return;
   import('maptalks-gl').then(mt => {
-    const line = new mt.ConnectorLine([121.47, 31.23], [121.51, 31.25], {
-      symbol: { lineColor: '#dc2626', lineWidth: 2, lineDasharray: [8, 4] },
-      connectorType: 'arc',
-    });
+    const line = new mt.ConnectorLine(
+      new mt.Coordinate(121.47, 31.23),
+      new mt.Coordinate(121.51, 31.25),
+      { symbol: { lineColor: '#dc2626', lineWidth: 2, lineDasharray: [8, 4] }, connectorType: 'arc' },
+    );
     line.addTo(layer);
   });
 }, { immediate: true });
