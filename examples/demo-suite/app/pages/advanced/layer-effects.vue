@@ -13,7 +13,7 @@
       <UCard>
         <template #header><h2 class="font-semibold">逃生舱 · 样式覆盖</h2></template>
         <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><div class="flex gap-2"><UButton size="sm" @click="toggleDarkLayer()">切换暗色瓦片</UButton><span class="text-sm text-muted">原生 <code>layer.config()</code> / <code>layer.setOpacity()</code></span></div></template>
+        <template #footer><div class="flex gap-2"><UButton size="sm" @click="toggleDarkLayer()">{{ dark ? '恢复亮色瓦片' : '切换暗色瓦片' }}</UButton><span class="text-sm text-muted">原生 <code>layer.config()</code> / <code>layer.setOpacity()</code></span></div></template>
       </UCard>
     </div>
   </div>
