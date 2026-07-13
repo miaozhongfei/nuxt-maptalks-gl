@@ -41,18 +41,18 @@ useMaptalksEvents(map1, {
 const el2 = ref<HTMLElement | null>(null);
 const { map: map2 } = useMaptalks(el2, { center, zoom: 13 });
 useMaptalksTileLayer(map2, { source: 'osm' });
-let nativeLabel: MaptalksLabel | null = null;
-watch(() => map2.value, (m) => {
+const { layer: projVec } = useMaptalksVectorLayer(map2);
+watch(() => toValue(map2), (m) => {
   if (!m) return;
+  const layer = toValue(projVec);
+  if (!layer) return;
   import('maptalks-gl').then(mt => {
     const proj = m.getProjection();
-    if (!proj) return;
-    nativeLabel = new mt.Label(
-      `投影: ${proj.code.toUpperCase()}`,
-      [121.4737, 31.2304],
-      { symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb' } }
-    ) as MaptalksLabel;
-    nativeLabel.addTo(m);
+    const text = proj ? `投影: ${proj.code.toUpperCase()} (${proj.projection})` : '未知投影';
+    const label = new mt.Label(text, [121.4737, 31.2304], {
+      symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 },
+    });
+    label.addTo(layer);
   });
 }, { immediate: true });
 </script>
