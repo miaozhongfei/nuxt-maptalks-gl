@@ -42,17 +42,14 @@ const el2 = ref<HTMLElement | null>(null);
 const { map: map2 } = useMaptalks(el2, { center, zoom: 13 });
 useMaptalksTileLayer(map2, { source: 'osm' });
 const { layer: projVec } = useMaptalksVectorLayer(map2);
-watch(() => toValue(map2), (m) => {
-  if (!m) return;
-  const layer = toValue(projVec);
-  if (!layer) return;
-  import('maptalks-gl').then(mt => {
+useMaptalksLabel(projVec, {
+  content: () => {
+    const m = toValue(map2);
+    if (!m) return '加载中…';
     const proj = m.getProjection();
-    const text = proj ? `投影: ${proj.code.toUpperCase()} (${proj.projection})` : '未知投影';
-    const label = new mt.Label(text, [121.4737, 31.2304], {
-      symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 },
-    });
-    label.addTo(layer);
-  });
-}, { immediate: true });
+    return `投影: ${proj.code.toUpperCase()}`;
+  },
+  coordinates: [121.4737, 31.2304],
+  symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 },
+});
 </script>
