@@ -141,45 +141,52 @@ export function useMaptalks(
   const error = ref<MaptalksError | null>(null);
   const name = options.name;
 
-  // 解析 baseLayer 源配置（字符串/对象 → tile 创建参数），原生 Layer 对象跳过
   const config = useRuntimeConfig();
   const sources = ((config.public as Record<string, unknown>)?.maptalksGl as Record<string, unknown>)?.sources as Record<string, MaptalksSource> | undefined;
-  let blSource: MaptalksSource | undefined;
-  let blId = 'base';
-  const blExtra: Record<string, unknown> = {};
-  if (options.baseLayer) {
-    const bl = options.baseLayer;
-    if (typeof bl === 'string' || (bl && typeof bl === 'object' && !('addTo' in bl))) {
-      const srcName: string = typeof bl === 'string' ? bl : ((bl as { source?: string }).source ?? 'osm');
-      const blObj = typeof bl === 'string' ? {} : bl as { urlTemplate?: string; subdomains?: string[]; attribution?: string; options?: Record<string, unknown> };
-      if (blObj.urlTemplate) blExtra.urlTemplate = blObj.urlTemplate;
-      if (blObj.subdomains) blExtra.subdomains = blObj.subdomains;
-      if (blObj.attribution) blExtra.attribution = blObj.attribution;
-      if (blObj.options) Object.assign(blExtra, blObj.options);
-      blId = `base-${srcName}`;
-      blSource = sources?.[srcName];
-    }
-  }
+  const blConfig = resolveBaseLayerConfig(options.baseLayer, sources);
 
-  // 仅在客户端登记到注册表，避免 SSR 端模块级单例跨请求串号
   if (name && import.meta.client) mapRegistry.register(name, map);
 
-  // 销毁地图并清理注册表条目
   function destroy(): void {
-    if (map.value) {
-      map.value.remove();
-      map.value = null;
-    }
+    if (map.value) { map.value.remove(); map.value = null; }
     isReady.value = false;
     if (name && import.meta.client) mapRegistry.unregister(name, map);
   }
 
-  // 仅客户端创建地图；服务端保持惰性空引用
   if (import.meta.client) {
-    onMounted(() => runInit(target, options, blSource ? { source: blSource, id: blId, extra: blExtra } : undefined, map, isReady, error));
+    onMounted(() => runInit(target, options, blConfig, map, isReady, error));
     onBeforeUnmount(destroy);
     onScopeDispose(destroy);
   }
 
   return { map, isReady, error };
+}
+
+/**
+ * 解析 baseLayer 选项为 blConfig（供 createMap 自动创建底图瓦片层）。
+ *
+ * @param {UseMaptalksOptions['baseLayer'] | undefined} baseLayer - 字符串/对象/原生Layer
+ * @param {Record<string, MaptalksSource> | undefined} sources - runtimeConfig 中的命名数据源表
+ * @returns {{ source: MaptalksSource; id: string; extra: Record<string, unknown> } | undefined} 解析结果
+ *
+ * @example
+ * const blConfig = resolveBaseLayer('osm', sources);
+ */
+function resolveBaseLayerConfig(
+  baseLayer: UseMaptalksOptions['baseLayer'],
+  sources: Record<string, MaptalksSource> | undefined,
+): { source: MaptalksSource; id: string; extra: Record<string, unknown> } | undefined {
+  if (!baseLayer) return undefined;
+  const bl = baseLayer;
+  if (typeof bl !== 'string' && (!bl || typeof bl !== 'object' || 'addTo' in bl)) return undefined;
+  const srcName: string = typeof bl === 'string' ? bl : ((bl as { source?: string }).source ?? 'osm');
+  const blObj = typeof bl === 'string' ? {} : bl as { urlTemplate?: string; subdomains?: string[]; attribution?: string; options?: Record<string, unknown> };
+  const extra: Record<string, unknown> = {};
+  if (blObj.urlTemplate) extra.urlTemplate = blObj.urlTemplate;
+  if (blObj.subdomains) extra.subdomains = blObj.subdomains;
+  if (blObj.attribution) extra.attribution = blObj.attribution;
+  if (blObj.options) Object.assign(extra, blObj.options);
+  const blSource = sources?.[srcName];
+  if (!blSource) return undefined;
+  return { source: blSource, id: `base-${srcName}`, extra };
 }
