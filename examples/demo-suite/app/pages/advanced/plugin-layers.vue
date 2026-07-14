@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import * as THREE from 'three';
+
 const center: [number, number] = [121.4737, 31.2304];
 
 // 卡片 1：GroupGLLayer
@@ -79,7 +81,39 @@ onMounted(async () => {
         const mt = await import('maptalks-gl');
         randomPoints.forEach(pt => instance.addGeometry!([new mt.Marker(pt)]));
       }
-      // three / e3 / mapboxgl 需要复杂配置，仅展示逃生舱模式
+      // three / e3 需要复杂配置，仅展示逃生舱模式
+      // 为 three 添加一个彩色立方体
+      if (p.name === 'maptalks.three') {
+        const tl = instance as { prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (m: unknown) => void } & Record<string, unknown>;
+        if (typeof tl.prepareToDraw === 'function') {
+          tl.prepareToDraw = function (_gl, scene, _camera) {
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(0, -10, 10).normalize();
+            (scene as { add: (o: unknown) => void }).add(light);
+            const ambient = new THREE.AmbientLight(0x404040);
+            (scene as { add: (o: unknown) => void }).add(ambient);
+            const geo = new THREE.BoxGeometry(500, 500, 500);
+            const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb, transparent: true, opacity: 0.8 });
+            const box = new THREE.Mesh(geo, mat);
+            const pos = m.coordinateToPoint([121.4737, 31.2304]);
+            box.position.set(pos.x, pos.y, 300);
+            if (typeof tl.addMesh === 'function') tl.addMesh(box);
+          };
+        }
+      }
+      // 为 e3 添加简单的散点图配置
+      if (p.name === 'maptalks.e3') {
+        const el = instance as { setEChartsOption?: (o: unknown) => void } & Record<string, unknown>;
+        if (typeof el.setEChartsOption === 'function') {
+          el.setEChartsOption({
+            series: [{
+              type: 'scatter',
+              coordinateSystem: 'maptalks',
+              data: randomPoints.map(pt => [pt[0], pt[1], Math.random() * 100]),
+            }],
+          });
+        }
+      }
       p.status = 'ok';
     } catch (e: unknown) {
       p.status = 'error';
