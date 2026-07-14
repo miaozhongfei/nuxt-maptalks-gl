@@ -50,7 +50,7 @@ function toggleDarkLayer() {
   }
 }
 
-// 卡片 3：CanvasLayer 逃生舱（maptalks-gl 中 canvas API 受限，回退到 UIMarker + canvas）
+// 卡片 3：CanvasLayer 逃生舱（maptalks-gl 中 canvas 像素 API 受限，用 UIMarker 兜底）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
@@ -80,27 +80,12 @@ watch(() => toValue(map3), (m) => {
       ctx.font = 'bold 18px sans-serif';
       ctx.fillText('✓', 140, 121);
     }
-    // 方案 A：原生 CanvasLayer（maptalks-gl 下可能不支持 getCanvas/drawImage）
-    let worked = false;
-    const layer = new mt.CanvasLayer('canvas-demo');
-    layer.onCanvasCreate = function (c: HTMLCanvasElement) {
-      if (!c || worked) return;
-      const destCtx = c.getContext('2d');
-      if (!destCtx) return;
-      destCtx.drawImage(canvas, 0, 0);
-      worked = true;
-    };
-    layer.prepareToDraw();
-    layer.addTo(m);
-    // 方案 B：UIMarker + canvas 兜底（如果 CanvasLayer 不渲染）
-    setTimeout(() => {
-      if (worked) return;
-      const ui = new mt.UIMarker([121.48, 31.23], {
-        content: canvas.outerHTML,
-        dy: -75,
-      }).addTo(m);
-      void ui;
-    }, 500);
+    const dataUrl = canvas.toDataURL();
+    const ui = new mt.UIMarker([121.48, 31.23], {
+      content: `<img src="${dataUrl}" width="280" height="150" style="display:block;" />`,
+      dy: -75,
+    }).addTo(m);
+    void ui;
   });
 });
 </script>
