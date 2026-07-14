@@ -20,7 +20,7 @@
     <UCard class="mt-4">
       <template #header><h2 class="font-semibold">逃生舱 · Marker 拖拽</h2></template>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-      <template #footer><span class="text-sm text-muted">原生 Marker 通过 enableDragging() / disableDragging() 实现拖拽。</span></template>
+        <template #footer><span class="text-sm text-muted">原生 new Marker({ draggable: true }) 构造器参数实现拖拽。</span></template>
     </UCard>
   </div>
 </template>
