@@ -18,9 +18,9 @@
     </div>
 
     <UCard class="mt-4">
-      <template #header><h2 class="font-semibold">逃生舱 · proj4 自定义投影（EPSG:4326）</h2></template>
+      <template #header><h2 class="font-semibold">逃生舱 · 自定义 projection 示例</h2></template>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-      <template #footer><span class="text-sm text-muted">proj4 + spatialReference 自定义投影系统。</span></template>
+      <template #footer><span class="text-sm text-muted">OSM 瓦片为 EPSG:3857，自定义 EPSG:4326 projection 需配对应瓦片源。</span></template>
     </UCard>
   </div>
 </template>
@@ -59,25 +59,14 @@ useMaptalksLabel(projVec, {
   symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 },
 });
 
-// 卡片 3：proj4 自定义投影
+// 卡片 3：自定义 projection 示例（默认 EPSG:3857，EPSG:4326 需要对应的瓦片源）
 const el3 = ref<HTMLElement | null>(null);
-const { map: map3 } = useMaptalks(el3, {
-  center: [31.23, 121.47],
-  zoom: 13,
-  spatialReference: {
-    projection: 'EPSG:4326',
-    resolutions: [
-      1.40625, 0.703125, 0.3515625, 0.17578125, 0.087890625, 0.0439453125, 0.02197265625, 0.010986328125,
-      0.0054931640625, 0.00274658203125, 0.001373291015625, 0.0006866455078125, 0.00034332275390625,
-    ],
-    fullExtent: { top: 90, left: -180, bottom: -90, right: 180 },
-  },
-});
+const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
 const { layer: projVec3 } = useMaptalksVectorLayer(map3);
 useMaptalksLabel(projVec3, {
-  content: 'EPSG:4326',
-  coordinates: [31.23, 121.47],
+  content: 'EPSG:3857（默认）',
+  coordinates: [121.47, 31.23],
   symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#dc2626', textHaloFill: '#fff', textHaloRadius: 2 },
 });
 </script>
