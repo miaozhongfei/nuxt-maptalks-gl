@@ -70,9 +70,9 @@ onMounted(async () => {
         p.status = 'error';
         p.note = `"${p.name}" 导出类型不是构造函数。`;
       }
-    } catch {
+    } catch (e: unknown) {
       p.status = 'error';
-      p.note = `"${p.name}" 当前不可用。`;
+      p.note = `"${p.name}" ${String(e).slice(0, 60)}`;
     }
   }
 });

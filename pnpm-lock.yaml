@@ -112,6 +112,9 @@ importers:
       maptalks-gl:
         specifier: ^0.124.0
         version: 0.124.4
+      maptalks.e3:
+        specifier: ^0.5.2
+        version: 0.5.2(echarts@3.8.5)
       maptalks.heatmap:
         specifier: ^0.8.1
         version: 0.8.1
@@ -4011,6 +4014,9 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
+  echarts@3.8.5:
+    resolution: {integrity: sha512-E+nnROMfCeiLeoT/fZyX8SE8mKzwkTjyemyoBF543oqjRtjTSKQAVDEihMXy4oC6pJS0tYGdMqCA2ATk8onyRg==}
+
   editorconfig@1.0.7:
     resolution: {integrity: sha512-e0GOtq/aTQhVdNyDU9e02+wz9oDDM+SIOQxWME2QRjzRX5yyLAuHDE+0aE8vHb9XRC8XD37eO2u57+F09JqFhw==}
     engines: {node: '>=14'}
@@ -5006,6 +5012,11 @@ packages:
 
   maptalks-gl@0.124.4:
     resolution: {integrity: sha512-w2feQ9eQ8lMl/JbDbVckrxab7GqVuJvZAfBM5xyNxxSgOlIUQIViHZf0FIDHFPjlv21/6NXOIhFPAg2ufZ2h4w==}
+
+  maptalks.e3@0.5.2:
+    resolution: {integrity: sha512-WlNJaXE1D2j2aOqOFj7Bm1l6fiH6dw2RZbWFzpWKbw6OwDXL3NdiChLQnTuIjy/MRB6w7WffaC7LtCZ5EN72/g==}
+    peerDependencies:
+      echarts: ^3.4.0
 
   maptalks.heatmap@0.8.1:
     resolution: {integrity: sha512-eawC0CEQ2lLWOT6ncCiKkmUSWTj1X/pgBaJaTMGZjZL6ZZgjcgcmARQdcu3Sct5Db7ZAexZPvaN/iDwv8sX6Xw==}
@@ -7271,6 +7282,9 @@ packages:
 
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
+  zrender@3.7.4:
+    resolution: {integrity: sha512-5Nz7+L1wIoL0+Pp/iOP56jD6eD017qC9VRSgUBheXBiAHgOBJZ4uh4/g6e83acIwa8RKSyZf/FlceKu5ntUuxQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -11025,6 +11039,10 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
+  echarts@3.8.5:
+    dependencies:
+      zrender: 3.7.4
+
   editorconfig@1.0.7:
     dependencies:
       '@one-ini/wasm': 0.1.1
@@ -12213,6 +12231,10 @@ snapshots:
       '@maptalks/video-layer': 0.124.4
       '@maptalks/vt': 0.124.4
       maptalks: 1.12.1
+
+  maptalks.e3@0.5.2(echarts@3.8.5):
+    dependencies:
+      echarts: 3.8.5
 
   maptalks.heatmap@0.8.1:
     dependencies:
@@ -15129,5 +15151,7 @@ snapshots:
       zod: 3.25.76
 
   zod@3.25.76: {}
+
+  zrender@3.7.4: {}
 
   zwitch@2.0.4: {}
