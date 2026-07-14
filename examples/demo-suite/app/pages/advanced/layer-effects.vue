@@ -57,23 +57,35 @@ useMaptalksTileLayer(map3, { source: 'osm' });
 watch(() => toValue(map3), (m) => {
   if (!m) return;
   import('maptalks-gl').then(mt => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 200; canvas.height = 100;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = 'rgba(37,99,235,0.3)';
-      ctx.fillRect(0, 0, 200, 100);
-      ctx.strokeStyle = '#2563eb';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(5, 5, 190, 90);
-      ctx.fillStyle = '#2563eb';
-      ctx.font = '14px sans-serif';
-      ctx.fillText('Canvas 绘制', 30, 55);
-    }
     const layer = new mt.CanvasLayer('canvas-demo');
-    layer.config({ render: () => { layer.drawImage(canvas as CanvasImageSource, [121.47, 31.23], 200, 100); } });
+    layer.config({
+      render() {
+        const layerCanvas = layer.getCanvas();
+        if (!layerCanvas) return;
+        const ctx = layerCanvas.getContext('2d', { willReadFrequently: false });
+        if (!ctx) return;
+        ctx.clearRect(0, 0, layerCanvas.width, layerCanvas.height);
+        // 将地图坐标转为屏幕像素，绘制 3 个半透明彩色圆
+        const points = [[121.47, 31.23], [121.49, 31.23], [121.48, 31.21]] as [number, number][];
+        const colors = ['rgba(37,99,235,0.4)', 'rgba(220,38,38,0.4)', 'rgba(22,163,74,0.4)'];
+        points.forEach((pt, i) => {
+          const pos = m.coordinateToContainerPoint(new mt.Coordinate(pt));
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, 40, 0, Math.PI * 2);
+          ctx.fillStyle = colors[i];
+          ctx.fill();
+          ctx.strokeStyle = colors[i].replace('0.4', '1');
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+        ctx.fillStyle = '#111';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        const cp = m.coordinateToContainerPoint(new mt.Coordinate([121.48, 31.23]));
+        ctx.fillText('原生 CanvasLayer', cp.x, cp.y + 50);
+      },
+    });
     layer.addTo(m);
-    layer.draw();
   });
 });
 </script>
