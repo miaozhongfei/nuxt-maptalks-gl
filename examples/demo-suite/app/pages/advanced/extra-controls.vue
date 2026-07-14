@@ -41,7 +41,7 @@
       <UCard>
         <template #header><h2 class="font-semibold">逃生舱 · 鹰眼 Overview</h2></template>
         <div ref="el5" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><span class="text-sm text-muted overview-note">创建中…</span></template>
+        <template #footer><span class="text-sm text-muted">{{ overviewNote }}</span></template>
       </UCard>
 
       <UCard>
@@ -57,9 +57,12 @@
 const center: [number, number] = [121.4737, 31.2304];
 
 // 逃生舱：Overview 鹰眼（官网用 overviewControl:true Map选项，需配合 baseLayer）
+const overviewNote = ref('创建中…');
 const el5 = ref<HTMLElement | null>(null);
 const { map: map5 } = useMaptalks(el5, { center, zoom: 13, overviewControl: true, baseLayer: 'osm' } as UseMaptalksOptions);
-document.querySelector('.overview-note')!.textContent = 'overviewControl:true + baseLayer:"osm" Map 选项——鹰眼自动显示瓦片。';
+onMounted(() => {
+  overviewNote.value = 'overviewControl:true + baseLayer:"osm" Map 选项——鹰眼自动显示瓦片。';
+});
 
 // 逃生舱：LayerSwitcher 图层选择
 const el6 = ref<HTMLElement | null>(null);
