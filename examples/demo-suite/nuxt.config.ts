@@ -23,7 +23,12 @@ export default defineNuxtConfig({
         options: {
           subdomains: ['b', 'c', 'd'],
           attribution: '© OpenStreetMap contributors, © CARTO',
-        },
+  },
+  vite: {
+    optimizeDeps: {
+      include: ['maptalks.heatmap', 'maptalks.markercluster', 'maptalks.three', 'maptalks.e3'],
+    },
+  },
       },
       secure: { kind: 'signed', type: 'tile', endpoint: '/api/maptalks/sign' },
     },
