@@ -83,19 +83,26 @@ onMounted(async () => {
     const { ThreeLayer } = await import('maptalks.three');
     const m = toValue(pluginMaps[2].map);
     if (m && typeof ThreeLayer === 'function') {
-      const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (o: unknown) => void } & Record<string, unknown>)('three');
-      layer.prepareToDraw = function (_gl, scene, _camera) {
+      const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (o: unknown) => void; getMap?: () => unknown } & Record<string, unknown>)('three');
+      layer.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
+        const cam = _camera as { position: { x: number; y: number; z: number }; lookAt: (v: unknown) => void };
         const s = scene as { add: (o: unknown) => void };
-        const cam = _camera as { position: { x: number; y: number; z: number } };
         s.add(new THREE.AmbientLight(0x666666));
         const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(1, 1, 1).normalize();
+        light.position.set(cam.position.x, cam.position.y, cam.position.z + 2000);
         s.add(light);
-        const geo = new THREE.BoxGeometry(500, 500, 500);
-        const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb });
-        const box = new THREE.Mesh(geo, mat);
-        box.position.set(cam.position.x, cam.position.y, 0);
-        s.add(box);
+        // 绕矩形排布 4 个彩色柱子
+        const colors = [0x2563eb, 0xdc2626, 0x16a34a, 0xca8a04];
+        for (let i = 0; i < 4; i++) {
+          const angle = (i / 4) * Math.PI * 2;
+          const r = 1000;
+          const geo = new THREE.BoxGeometry(300, 800, 300);
+          const mat = new THREE.MeshPhongMaterial({ color: colors[i] });
+          const bar = new THREE.Mesh(geo, mat);
+          bar.position.set(cam.position.x + Math.cos(angle) * r, cam.position.y + Math.sin(angle) * r, 400);
+          if (typeof layer.addMesh === 'function') layer.addMesh(bar);
+          else s.add(bar);
+        }
       };
       layer.addTo(m);
       plugins.value[2].status = 'ok';
