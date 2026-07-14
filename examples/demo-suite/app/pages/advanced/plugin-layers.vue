@@ -86,13 +86,15 @@ onMounted(async () => {
       const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (o: unknown) => void } & Record<string, unknown>)('three');
       layer.prepareToDraw = function (_gl, scene, _camera) {
         const s = scene as { add: (o: unknown) => void };
+        const cam = _camera as { position: { x: number; y: number; z: number } };
         s.add(new THREE.AmbientLight(0x666666));
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(1, 1, 1).normalize();
         s.add(light);
-        const geo = new THREE.BoxGeometry(800, 800, 800);
+        const geo = new THREE.BoxGeometry(500, 500, 500);
         const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb });
         const box = new THREE.Mesh(geo, mat);
+        box.position.set(cam.position.x, cam.position.y, 0);
         s.add(box);
       };
       layer.addTo(m);
