@@ -86,7 +86,7 @@ watch(() => toValue(map3), (m) => {
     cl.addTo(m);
     const UIMarkerCtor = (mt.ui as Record<string, unknown>).UIMarker as new (coords: unknown, opts: Record<string, unknown>) => { addTo: (m: unknown) => unknown };
     new UIMarkerCtor([121.48, 31.23], {
-      content: `<img src="${dataUrl}" width="280" height="150" style="display:block;" />`,
+      content: `<img src="${dataUrl}" style="display:block;width:280px;height:150px;max-width:none;" />`,
       dy: -75,
     }).addTo(m);
   });
