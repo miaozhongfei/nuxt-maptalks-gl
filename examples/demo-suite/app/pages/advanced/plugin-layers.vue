@@ -46,7 +46,7 @@ const plugins = ref([
 // 每张插件卡片预先创建 el ref → useMaptalks → template :ref 回调绑定
 const pluginEls = plugins.value.map(() => ref<HTMLElement | null>(null));
 const pluginMaps = pluginEls.map(el => {
-  const { map } = useMaptalks(el, { center, zoom: 13 });
+  const { map } = useMaptalks(el, { center, zoom: 13, pitch: 60 });
   useMaptalksTileLayer(map, { source: 'osm' });
   return { map, el };
 });
@@ -73,9 +73,12 @@ function setupThree(m: unknown, pts: [number, number][], ThreeLayer: unknown) {
     s.add(new THREE.AmbientLight(0xffffff, 0.6));
   };
   layer.addTo(m);
-  const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-  const boxes = pts.slice(0, 10).map(pt => (layer as unknown as { toBox: (c: [number, number], o: Record<string, unknown>, m: THREE.Material) => THREE.Object3D }).toBox(pt as [number, number], { height: 50000, radius: 5000, topColor: '#ff4444' }, mat));
-  layer.addMesh(boxes);
+  // addMesh 必须在场景就绪后调用；否则 getScene() 返回 null 会抛 TypeError
+  (layer as Record<string, unknown>).onCanvasCreate = function () {
+    const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const boxes = pts.slice(0, 10).map(pt => (layer as unknown as { toBox: (c: [number, number], o: Record<string, unknown>, m: THREE.Material) => THREE.Object3D }).toBox(pt as [number, number], { height: 200, radius: 100, topColor: '#ff4444' }, mat));
+    layer.addMesh(boxes);
+  };
 }
 
 function setupE3(m: unknown, pts: [number, number][], E3Layer: unknown) {
@@ -92,19 +95,19 @@ onMounted(async () => {
   const pts = Array.from({ length: 50 }, () => [121.47 + (Math.random() - 0.5) * 0.03, 31.23 + (Math.random() - 0.5) * 0.03] as [number, number]);
 
   const setups = [
-    { idx: 0, name: 'heatmap', importPkg: 'maptalks.heatmap', exportName: 'HeatLayer', fn: setupHeatmap },
-    { idx: 1, name: 'cluster', importPkg: 'maptalks.markercluster', exportName: 'ClusterLayer', fn: setupCluster },
-    { idx: 2, name: 'three', importPkg: 'maptalks.three', exportName: 'ThreeLayer', fn: setupThree },
-    { idx: 3, name: 'e3', importPkg: 'maptalks.e3', exportName: 'E3Layer', fn: setupE3 },
+    { idx: 0, pkg: 'maptalks.heatmap', importFn: () => import('maptalks.heatmap'), exportName: 'HeatLayer', fn: setupHeatmap },
+    { idx: 1, pkg: 'maptalks.markercluster', importFn: () => import('maptalks.markercluster'), exportName: 'ClusterLayer', fn: setupCluster },
+    { idx: 2, pkg: 'maptalks.three', importFn: () => import('maptalks.three'), exportName: 'ThreeLayer', fn: setupThree },
+    { idx: 3, pkg: 'maptalks.e3', importFn: () => import('maptalks.e3'), exportName: 'E3Layer', fn: setupE3 },
   ];
 
   for (const s of setups) {
     try {
-      const mod = await import(s.importPkg);
+      const mod = await s.importFn();
       const Ctor = (mod as Record<string, unknown>)[s.exportName];
       const m = toValue(pluginMaps[s.idx].map);
       if (m && typeof Ctor === 'function') { s.fn(m, pts, Ctor); plugins.value[s.idx].status = 'ok'; }
-    } catch { plugins.value[s.idx].status = 'error'; plugins.value[s.idx].note = `${s.importPkg} 不可用。`; }
+    } catch { plugins.value[s.idx].status = 'error'; plugins.value[s.idx].note = `${s.pkg} 不可用。`; }
   }
 });
 </script>
