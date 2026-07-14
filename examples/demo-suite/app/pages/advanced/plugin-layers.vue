@@ -70,9 +70,9 @@ onMounted(async () => {
       const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void; setData?: (d: unknown) => void; addGeometry?: (g: unknown) => void } & Record<string, unknown>)(p.name, {});
       instance.addTo(m);
 
-      // 为 heatmap 添加热力数据
+      // 为 heatmap 添加热力数据（格式 [[lng, lat, value], ...]）
       if (p.name === 'maptalks.heatmap' && typeof instance.setData === 'function') {
-        instance.setData(randomPoints.map(pt => ({ coordinates: pt, count: Math.random() * 100 })));
+        instance.setData(randomPoints.map(pt => [pt[0], pt[1], Math.random()]));
       }
       // 为 cluster 添加标记点
       if (p.name === 'maptalks.markercluster' && typeof instance.addGeometry === 'function') {
