@@ -18,9 +18,9 @@
     </div>
 
     <UCard class="mt-4">
-      <template #header><h2 class="font-semibold">逃生舱 · 3D 建筑（Polygon height + GroupGLLayer）</h2></template>
-      <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:380px" />
-        <template #footer><span class="text-sm text-muted">GroupGLLayer初始化WebGL + PolygonLayer + Polygon height。</span></template>
+      <template #header><h2 class="font-semibold">逃生舱 · setAltitude 高度线</h2></template>
+      <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+      <template #footer><span class="text-sm text-muted">native Marker.setAltitude() 高度垂线（maptalks 基础库，非 GL 专属）。</span></template>
     </UCard>
   </div>
 </template>
