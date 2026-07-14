@@ -16,6 +16,12 @@
         <template #footer><div class="flex gap-2"><UButton size="sm" color="primary" @click="flashMarker()">闪烁</UButton><span class="text-sm text-muted">原生 geometry.setSymbol()</span></div></template>
       </UCard>
     </div>
+
+    <UCard class="mt-4">
+      <template #header><h2 class="font-semibold">geometry.copy() / clone —— 复制图形</h2></template>
+      <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+      <template #footer><div class="flex gap-2"><UButton size="sm" color="primary" @click="copyMarker()">复制 Marker</UButton><span class="text-sm text-muted">原生 geometry.copy() 复制到新位置。</span></div></template>
+    </UCard>
   </div>
 </template>
 
@@ -58,4 +64,24 @@ function flashMarker() {
   }, 300);
 }
 onBeforeUnmount(() => { if (flashTimer) clearInterval(flashTimer); });
+
+// 卡片 3：geometry.copy() 复制图形
+const el3 = ref<HTMLElement | null>(null);
+const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
+useMaptalksTileLayer(map3, { source: 'osm' });
+const { layer: vec3 } = useMaptalksVectorLayer(map3);
+const { geometry: g3 } = useMaptalksMarker(vec3, {
+  coordinates: [121.47, 31.23],
+  symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
+});
+let copyCount = 0;
+function copyMarker() {
+  const geo = toValue(g3) as { copy?: () => { setSymbol?: (s: Record<string, unknown>) => void; addTo?: (l: unknown) => void } } | null;
+  const layer = toValue(vec3);
+  if (!geo?.copy || !layer) return;
+  copyCount++;
+  const clone = geo.copy();
+  clone.setSymbol?.({ markerType: 'ellipse', markerFill: copyCount % 2 === 0 ? '#f59e0b' : '#8b5cf6', markerWidth: 24, markerHeight: 24 });
+  clone.addTo?.(layer);
+}
 </script>

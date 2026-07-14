@@ -11,9 +11,9 @@
       </UCard>
 
       <UCard>
-        <template #header><h2 class="font-semibold">逃生舱 · LineString 连线</h2></template>
+        <template #header><h2 class="font-semibold">逃生舱 · CubicBezierCurve 贝塞尔</h2></template>
         <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><span class="text-sm text-muted">Marker 端点 + LineString 虚线连线。</span></template>
+        <template #footer><span class="text-sm text-muted">原生 new CubicBezierCurve()。</span></template>
       </UCard>
     </div>
   </div>
@@ -43,15 +43,11 @@ const { layer: vec2 } = useMaptalksVectorLayer(map2);
 watch(() => toValue(vec2), (layer) => {
   if (!layer) return;
   import('maptalks-gl').then(mt => {
-    // 端点 marker
-    const mk1 = new mt.Marker([121.47, 31.23], { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 10, markerHeight: 10 } });
-    const mk2 = new mt.Marker([121.51, 31.25], { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 10, markerHeight: 10 } });
-    mk1.addTo(layer); mk2.addTo(layer);
-    // 连线
-    const line = new mt.LineString([[121.47, 31.23], [121.51, 31.25]], {
-      symbol: { lineColor: '#dc2626', lineWidth: 2, lineDasharray: [8, 4] },
-    });
-    line.addTo(layer);
+    const curve = new mt.CubicBezierCurve(
+      [new mt.Coordinate(121.47, 31.23), new mt.Coordinate(121.49, 31.25), new mt.Coordinate(121.51, 31.24), new mt.Coordinate(121.48, 31.22)],
+      { symbol: { lineColor: '#dc2626', lineWidth: 3 } },
+    );
+    curve.addTo(layer);
   });
 }, { immediate: true });
 </script>

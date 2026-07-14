@@ -16,6 +16,12 @@
         <template #footer><div class="flex gap-2"><UButton size="sm" color="primary" @click="toggleEdit()">切换编辑模式</UButton><span class="text-sm text-muted">原生 geometry.startEdit() / endEdit()</span></div></template>
       </UCard>
     </div>
+
+    <UCard class="mt-4">
+      <template #header><h2 class="font-semibold">逃生舱 · Marker 拖拽</h2></template>
+      <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+      <template #footer><span class="text-sm text-muted">原生 Marker 通过 enableDragging() / disableDragging() 实现拖拽。</span></template>
+    </UCard>
   </div>
 </template>
 
@@ -59,4 +65,20 @@ function toggleEdit() {
   if (editing) geo?.startEdit?.();
   else geo?.endEdit?.();
 }
+
+// 卡片 3：draggable Marker
+const el3 = ref<HTMLElement | null>(null);
+const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
+useMaptalksTileLayer(map3, { source: 'osm' });
+const { layer: dragVec } = useMaptalksVectorLayer(map3);
+const { geometry: dragGeo } = useMaptalksMarker(dragVec, {
+  coordinates: [121.47, 31.23],
+  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+});
+// 地图就绪后启用拖拽
+watch(() => toValue(map3), (m) => {
+  if (!m) return;
+  const geo = toValue(dragGeo) as { enableDragging?: () => void; disableDragging?: () => void } | null;
+  geo?.enableDragging?.();
+});
 </script>
