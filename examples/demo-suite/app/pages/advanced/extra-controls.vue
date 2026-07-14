@@ -66,7 +66,7 @@ watch(() => toValue(map5), (m) => {
     const Ctor = (mt.control as Record<string, unknown>)?.Overview as { new (): { addTo: (m: unknown) => void } } | undefined;
     if (typeof Ctor === 'function') {
       new Ctor().addTo(m);
-      document.querySelector('.overview-note')!.textContent = 'Overview 鹰眼控件已创建。';
+      document.querySelector('.overview-note')!.textContent = 'Overview 鹰眼控件已创建（绿色框为主视图范围，内部瓦片需额外配置）。';
     } else {
       document.querySelector('.overview-note')!.textContent = '当前 maptalks-gl 未导出 control.Overview。';
     }
