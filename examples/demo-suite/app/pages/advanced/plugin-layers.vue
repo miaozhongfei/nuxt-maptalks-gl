@@ -51,24 +51,15 @@ const pluginMaps = pluginEls.map(el => {
 });
 
 onMounted(async () => {
-  const importSpecifiers: Record<string, string> = {
-    'maptalks.heatmap': 'maptalks.heatmap',
-    'maptalks.markercluster': 'maptalks.markercluster',
-    'maptalks.three': 'maptalks.three',
-    'maptalks.e3': 'maptalks.e3',
-    'maptalks.mapboxgl': 'maptalks.mapboxgl',
-  };
-  const exportNames: Record<string, string> = {
-    'maptalks.heatmap': 'HeatLayer',
-    'maptalks.markercluster': 'ClusterLayer',
-    'maptalks.three': 'ThreeLayer',
-    'maptalks.e3': 'E3Layer',
-    'maptalks.mapboxgl': 'MapboxglLayer',
-  };
   for (const [i, p] of plugins.value.entries()) {
     try {
-      const mod = await import(importSpecifiers[p.name]);
-      const Ctor = (mod as Record<string, unknown>)[exportNames[p.name]];
+      let Ctor: unknown;
+      if (p.name === 'maptalks.heatmap') Ctor = (await import('maptalks.heatmap')).HeatLayer;
+      else if (p.name === 'maptalks.markercluster') Ctor = (await import('maptalks.markercluster')).ClusterLayer;
+      else if (p.name === 'maptalks.three') Ctor = (await import('maptalks.three')).ThreeLayer;
+      else if (p.name === 'maptalks.e3') Ctor = (await import('maptalks.e3')).E3Layer;
+      else if (p.name === 'maptalks.mapboxgl') Ctor = (await import('maptalks.mapboxgl')).MapboxglLayer;
+      else continue;
       const { map } = pluginMaps[i];
       const m = toValue(map);
       if (m && typeof Ctor === 'function') {
@@ -77,7 +68,7 @@ onMounted(async () => {
         p.status = 'ok';
       } else {
         p.status = 'error';
-        p.note = `"${p.name}" 未找到导出 ${exportNames[p.name]}。`;
+        p.note = `"${p.name}" 导出类型不是构造函数。`;
       }
     } catch {
       p.status = 'error';
