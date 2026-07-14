@@ -56,22 +56,10 @@
 <script setup lang="ts">
 const center: [number, number] = [121.4737, 31.2304];
 
-// 逃生舱：Overview 鹰眼
+// 逃生舱：Overview 鹰眼（官网用 overviewControl:true Map选项，需配合 baseLayer）
 const el5 = ref<HTMLElement | null>(null);
-const { map: map5 } = useMaptalks(el5, { center, zoom: 13 });
-useMaptalksTileLayer(map5, { source: 'osm' });
-watch(() => toValue(map5), (m) => {
-  if (!m) return;
-  import('maptalks-gl').then(mt => {
-    const Ctor = (mt.control as Record<string, unknown>)?.Overview as { new (): { addTo: (m: unknown) => void } } | undefined;
-    if (typeof Ctor === 'function') {
-      new Ctor().addTo(m);
-      document.querySelector('.overview-note')!.textContent = 'Overview 鹰眼控件已创建（绿色框为主视图范围，内部瓦片需额外配置）。';
-    } else {
-      document.querySelector('.overview-note')!.textContent = '当前 maptalks-gl 未导出 control.Overview。';
-    }
-  });
-});
+const { map: map5 } = useMaptalks(el5, { center, zoom: 13, overviewControl: true, baseLayer: 'osm' } as UseMaptalksOptions);
+document.querySelector('.overview-note')!.textContent = 'overviewControl:true + baseLayer:"osm" Map 选项——鹰眼自动显示瓦片。';
 
 // 逃生舱：LayerSwitcher 图层选择
 const el6 = ref<HTMLElement | null>(null);
