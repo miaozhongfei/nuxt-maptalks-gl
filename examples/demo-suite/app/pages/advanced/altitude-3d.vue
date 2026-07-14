@@ -20,7 +20,7 @@
     <UCard class="mt-4">
       <template #header><h2 class="font-semibold">逃生舱 · 3D 建筑（Polygon height + GroupGLLayer）</h2></template>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:380px" />
-      <template #footer><span class="text-sm text-muted">native GroupGLLayer + Polygon properties.height 实现建筑拉伸。</span></template>
+        <template #footer><span class="text-sm text-muted">native Marker + altitude 属性 + GroupGLLayer 实现3D高度标记。</span></template>
     </UCard>
   </div>
 </template>
@@ -43,25 +43,21 @@ function animateToView() {
   toValue(map2)?.animateTo({ center: [121.5, 31.24], zoom: 15, pitch: 70, bearing: 30 }, { duration: 3000 });
 }
 
-// 卡片 3：3D 建筑（Polygon 需加入 GroupGLLayer 才能高度拉伸）
+// 卡片 3：3D 高度 Marker（逃生舱原生创建，altitude 标记位置高度）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 15, pitch: 50 });
 const { layer: glLayer3 } = useMaptalksGroupGLLayer(map3, {});
 useMaptalksTileLayer(map3, { source: 'osm' });
-// 逃生舱：原生 Polygon + GroupGLLayer（composable preset 不支持 3D 参数）
 watch(() => toValue(glLayer3), (layer) => {
   if (!layer) return;
+  // 中心位置 Marker + 四个角标记 different altitude
   import('maptalks-gl').then(mt => {
-    const p1 = new mt.Polygon(
-      [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
-      { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 300 } },
-    );
-    p1.addTo(layer as Parameters<typeof p1.addTo>[0]);
-    const p2 = new mt.Polygon(
-      [[121.474, 31.229], [121.477, 31.229], [121.477, 31.2305], [121.474, 31.2305]],
-      { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 500 } },
-    );
-    p2.addTo(layer as Parameters<typeof p2.addTo>[0]);
+    const mk = new mt.Marker([121.4737, 31.2304], { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 16, markerHeight: 16 }, properties: { altitude: 500 } });
+    mk.addTo(layer as Parameters<typeof mk.addTo>[0]);
+    const mk2 = new mt.Marker([121.474, 31.231], { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 12, markerHeight: 12 }, properties: { altitude: 300 } });
+    mk2.addTo(layer as Parameters<typeof mk2.addTo>[0]);
+    const mk3 = new mt.Marker([121.473, 31.230], { symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 12, markerHeight: 12 }, properties: { altitude: 800 } });
+    mk3.addTo(layer as Parameters<typeof mk3.addTo>[0]);
   });
 });
 </script>
