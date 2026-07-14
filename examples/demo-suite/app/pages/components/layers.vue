@@ -221,14 +221,14 @@ async function onGroupReady(map: MtMap) {
 
 // 原生 TileLayer 演示（等效于 :baseLayer 传入 native Layer 对象）
 const nativeLayerMap = ref<{ map: MtMap | null } | null>(null);
-onMounted(async () => {
-  const m = nativeLayerMap.value?.map;
+watch(() => nativeLayerMap.value?.map, (m) => {
   if (!m) return;
-  const mt = await import('maptalks-gl');
-  const tl = new mt.TileLayer('native-tile', {
-    urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    subdomains: ['a', 'b', 'c', 'd'],
+  import('maptalks-gl').then(mt => {
+    const tl = new mt.TileLayer('native-tile', {
+      urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      subdomains: ['a', 'b', 'c', 'd'],
+    });
+    m.addLayer(tl as unknown as Parameters<typeof m.addLayer>[0]);
   });
-  m.addLayer(tl as unknown as Parameters<typeof m.addLayer>[0]);
 });
 </script>
