@@ -76,11 +76,13 @@ const { geometry: g3 } = useMaptalksMarker(vec3, {
 });
 let copyCount = 0;
 function copyMarker() {
-  const geo = toValue(g3) as { copy?: () => { setSymbol?: (s: Record<string, unknown>) => void; addTo?: (l: unknown) => void } } | null;
+  const geo = toValue(g3) as { copy?: () => { setSymbol?: (s: Record<string, unknown>) => void; setCoordinates?: (c: [number, number]) => void; addTo?: (l: unknown) => void } } | null;
   const layer = toValue(vec3);
   if (!geo?.copy || !layer) return;
   copyCount++;
   const clone = geo.copy();
+  // 偏移坐标使副本可见
+  clone.setCoordinates?.([121.47 + copyCount * 0.01, 31.23 + copyCount * 0.005]);
   clone.setSymbol?.({ markerType: 'ellipse', markerFill: copyCount % 2 === 0 ? '#f59e0b' : '#8b5cf6', markerWidth: 24, markerHeight: 24 });
   clone.addTo?.(layer);
 }
