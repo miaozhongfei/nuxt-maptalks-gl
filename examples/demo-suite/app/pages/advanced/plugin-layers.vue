@@ -52,6 +52,16 @@ const pluginMaps = pluginEls.map(el => {
 });
 
 onMounted(async () => {
+  // 等待所有 4 张插件卡片的地图实例就绪（createMap 是异步的，onMounted 触发时不保证已完成）
+  await Promise.all(pluginMaps.map(({ map: mapRef }) => {
+    if (toValue(mapRef)) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      const stop = watch(() => toValue(mapRef), (m) => {
+        if (m) { stop(); resolve(); }
+      });
+    });
+  }));
+
   const pts = Array.from({ length: 50 }, () => [121.47 + (Math.random() - 0.5) * 0.03, 31.23 + (Math.random() - 0.5) * 0.03] as [number, number]);
 
   // heatmap
