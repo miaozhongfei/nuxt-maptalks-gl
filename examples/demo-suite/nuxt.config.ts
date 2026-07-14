@@ -29,4 +29,10 @@ export default defineNuxtConfig({
     },
     defaults: { camera: { center: [121.4737, 31.2304], zoom: 11 } },
   },
+  // 排除顶层访问 document/window 的包，防止 Vite 预打包崩溃
+  vite: {
+    optimizeDeps: {
+      exclude: ['maptalks.three', 'maptalks.markercluster'],
+    },
+  },
 });
