@@ -62,7 +62,7 @@ useMaptalksLabel(projVec, {
 // 卡片 3：proj4 自定义投影
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, {
-  center: [121.4737, 31.2304],
+  center: [121.47, 31.23],
   zoom: 13,
   spatialReference: {
     projection: 'EPSG:4326',
@@ -77,7 +77,7 @@ useMaptalksTileLayer(map3, { source: 'osm' });
 const { layer: projVec3 } = useMaptalksVectorLayer(map3);
 useMaptalksLabel(projVec3, {
   content: 'EPSG:4326',
-  coordinates: [121.4737, 31.2304],
+  coordinates: [121.47, 31.23],
   symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#dc2626', textHaloFill: '#fff', textHaloRadius: 2 },
 });
 </script>
