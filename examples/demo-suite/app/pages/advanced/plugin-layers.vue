@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-1">进阶 · 插件图层</h1>
-    <p class="text-muted mb-6">演示 GroupGLLayer 分组和 5 种第三方插件图层逃生舱。</p>
+    <p class="text-muted mb-6">演示 GroupGLLayer 分组和 4 种第三方插件图层逃生舱。</p>
 
     <UCard class="mb-4">
       <template #header><h2 class="font-semibold">GroupGLLayer · GL 图层分组</h2></template>
@@ -41,7 +41,6 @@ const plugins = ref([
   { name: 'maptalks.markercluster', status: 'loading' as string, note: '点聚合图层。' },
   { name: 'maptalks.three', status: 'loading' as string, note: 'Three.js 3D 图层。' },
   { name: 'maptalks.e3', status: 'loading' as string, note: 'ECharts 3D 图层。' },
-  { name: 'maptalks.mapboxgl', status: 'loading' as string, note: 'Mapbox GL JS 图层。' },
 ]);
 
 // 每张插件卡片预先创建 el ref → useMaptalks → template :ref 回调绑定
@@ -63,13 +62,35 @@ onMounted(async () => {
       else if (p.name === 'maptalks.markercluster') Ctor = (await import('maptalks.markercluster')).ClusterLayer;
       else if (p.name === 'maptalks.three') Ctor = (await import('maptalks.three')).ThreeLayer;
       else if (p.name === 'maptalks.e3') Ctor = (await import('maptalks.e3')).E3Layer;
-      else if (p.name === 'maptalks.mapboxgl') Ctor = (await import('maptalks.mapboxgl')).MapboxglLayer;
       else continue;
       const { map } = pluginMaps[i];
       const m = toValue(map);
       if (!m || typeof Ctor !== 'function') { p.status = 'error'; p.note = `"${p.name}" 导出类型不是构造函数。`; continue; }
 
-      const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void; setData?: (d: unknown) => void; addGeometry?: (g: unknown) => void } & Record<string, unknown>)(p.name, {});
+      const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void; setData?: (d: unknown) => void; addGeometry?: (g: unknown) => void; prepareToDraw?: (...args: unknown[]) => void; draw?: () => void; addMesh?: (m: unknown) => void } & Record<string, unknown>)(p.name, {});
+
+      // three / e3 配置必须在 addTo 之前，否则首次渲染看不到
+      if (p.name === 'maptalks.three' && typeof instance.prepareToDraw === 'function') {
+        instance.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
+          const light = new THREE.DirectionalLight(0xffffff, 1);
+          light.position.set(0, -10, 10).normalize();
+          (scene as { add: (o: unknown) => void }).add(light);
+          const ambient = new THREE.AmbientLight(0x404040);
+          (scene as { add: (o: unknown) => void }).add(ambient);
+          const geo = new THREE.BoxGeometry(500, 500, 500);
+          const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb, transparent: true, opacity: 0.8 });
+          const box = new THREE.Mesh(geo, mat);
+          const pos = m.coordinateToPoint([121.4737, 31.2304]);
+          box.position.set(pos.x, pos.y, 300);
+          if (typeof instance.addMesh === 'function') instance.addMesh(box);
+        };
+      }
+      if (p.name === 'maptalks.e3' && typeof (instance as Record<string, unknown>).setEChartsOption === 'function') {
+        (instance as Record<string, { (o: unknown): void }>).setEChartsOption({
+          series: [{ type: 'scatter', coordinateSystem: 'maptalks', data: randomPoints.map(pt => [pt[0], pt[1], Math.random() * 100]) }],
+        });
+      }
+
       instance.addTo(m);
 
       // 为 heatmap 添加热力数据（格式 [[lng, lat, value], ...]）
@@ -80,39 +101,6 @@ onMounted(async () => {
       if (p.name === 'maptalks.markercluster' && typeof instance.addGeometry === 'function') {
         const mt = await import('maptalks-gl');
         randomPoints.forEach(pt => instance.addGeometry!([new mt.Marker(pt)]));
-      }
-      // three / e3 需要复杂配置，仅展示逃生舱模式
-      // 为 three 添加一个彩色立方体
-      if (p.name === 'maptalks.three') {
-        const tl = instance as { prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (m: unknown) => void } & Record<string, unknown>;
-        if (typeof tl.prepareToDraw === 'function') {
-          tl.prepareToDraw = function (_gl, scene, _camera) {
-            const light = new THREE.DirectionalLight(0xffffff, 1);
-            light.position.set(0, -10, 10).normalize();
-            (scene as { add: (o: unknown) => void }).add(light);
-            const ambient = new THREE.AmbientLight(0x404040);
-            (scene as { add: (o: unknown) => void }).add(ambient);
-            const geo = new THREE.BoxGeometry(500, 500, 500);
-            const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb, transparent: true, opacity: 0.8 });
-            const box = new THREE.Mesh(geo, mat);
-            const pos = m.coordinateToPoint([121.4737, 31.2304]);
-            box.position.set(pos.x, pos.y, 300);
-            if (typeof tl.addMesh === 'function') tl.addMesh(box);
-          };
-        }
-      }
-      // 为 e3 添加简单的散点图配置
-      if (p.name === 'maptalks.e3') {
-        const el = instance as { setEChartsOption?: (o: unknown) => void } & Record<string, unknown>;
-        if (typeof el.setEChartsOption === 'function') {
-          el.setEChartsOption({
-            series: [{
-              type: 'scatter',
-              coordinateSystem: 'maptalks',
-              data: randomPoints.map(pt => [pt[0], pt[1], Math.random() * 100]),
-            }],
-          });
-        }
       }
       p.status = 'ok';
     } catch (e: unknown) {
