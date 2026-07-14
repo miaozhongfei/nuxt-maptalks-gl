@@ -50,7 +50,7 @@ function toggleDarkLayer() {
   }
 }
 
-// 卡片 3：CanvasLayer 逃生舱（maptalks-gl 中 canvas 像素 API 受限，用 UIMarker 兜底）
+// 卡片 3：CanvasLayer 逃生舱（maptalks-gl 中 CanvasLayer API 受限，用 ui.UIMarker 兜底）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
@@ -81,11 +81,14 @@ watch(() => toValue(map3), (m) => {
       ctx.fillText('✓', 140, 121);
     }
     const dataUrl = canvas.toDataURL();
-    const ui = new mt.UIMarker([121.48, 31.23], {
+    // 同时尝试原生 CanvasLayer + ui.UIMarker（maptalks-gl 中 UIMarker 在 ui 子命名空间）
+    const cl = new mt.CanvasLayer('canvas-demo');
+    cl.addTo(m);
+    const UIMarkerCtor = (mt.ui as Record<string, unknown>).UIMarker as new (coords: unknown, opts: Record<string, unknown>) => { addTo: (m: unknown) => unknown };
+    new UIMarkerCtor([121.48, 31.23], {
       content: `<img src="${dataUrl}" width="280" height="150" style="display:block;" />`,
       dy: -75,
     }).addTo(m);
-    void ui;
   });
 });
 </script>
