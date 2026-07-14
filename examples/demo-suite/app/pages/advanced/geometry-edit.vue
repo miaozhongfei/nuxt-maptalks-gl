@@ -66,19 +66,19 @@ function toggleEdit() {
   else geo?.endEdit?.();
 }
 
-// 卡片 3：draggable Marker
+// 卡片 3：draggable Marker（逃生舱原生创建，draggable 是构造器参数）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
 const { layer: dragVec } = useMaptalksVectorLayer(map3);
-const { geometry: dragGeo } = useMaptalksMarker(dragVec, {
-  coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
-});
-// 地图就绪后启用拖拽（maptalks 用 config({ draggable: true })，非 enableDragging）
-watch(() => toValue(map3), (m) => {
-  if (!m) return;
-  const geo = toValue(dragGeo) as { config?: (opts: Record<string, unknown>) => void } | null;
-  geo?.config?.({ draggable: true });
+watch(() => toValue(dragVec), (layer) => {
+  if (!layer) return;
+  import('maptalks-gl').then(mt => {
+    const mk = new mt.Marker([121.47, 31.23], {
+      symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+      draggable: true,
+    });
+    mk.addTo(layer as Parameters<typeof mk.addTo>[0]);
+  });
 });
 </script>
