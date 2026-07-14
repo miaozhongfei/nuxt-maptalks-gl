@@ -54,13 +54,16 @@ onMounted(() => {
   plugins.value.forEach((p, i) => {
     p.importFn().then((Ctor) => {
       const { map } = pluginMaps[i];
-      watch(() => toValue(map), (m) => {
+      const setupLayer = (m: unknown) => {
         if (m && typeof Ctor === 'function') {
           const instance = (Ctor as unknown as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void })(p.name, {});
           instance.addTo(m);
           p.status = 'ok';
         }
-      });
+      };
+      const mapVal = toValue(map);
+      if (mapVal) { setupLayer(mapVal); }
+      else { watch(() => toValue(map), setupLayer); }
     }).catch(() => {
       p.status = 'error';
       p.note = `"${p.name}" 当前不可用。`;
