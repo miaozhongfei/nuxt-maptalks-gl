@@ -18,6 +18,7 @@
     "maptalks-gl": "^0.124.0",
     "maptalks.heatmap": "^0.8.1",
     "maptalks.markercluster": "^0.10.0",
+    "maptalks.e3": "^0.5.2",
     "maptalks.mapboxgl": "^0.3.4",
     "maptalks.three": "^0.42.2",
     "nuxt": "^4.4.8",

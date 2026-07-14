@@ -34,12 +34,14 @@ useMaptalksPolygon(vec1, {
 });
 
 // 插件卡片数据（composable 在 setup 中创建，import 在 onMounted 中执行）
+// new Function 构造 import 对 Vite 完全不透明，避免服务端 require() 崩溃（maptalks.three/markercluster 顶层访问 document）
+const importModule = (specifier: string) => new Function('specifier', 'return import(specifier)')(specifier) as Promise<Record<string, unknown>>;
 const plugins = ref([
-  { name: 'maptalks.heatmap', status: 'loading', note: '热力图图层。', el: null as HTMLElement | null, importFn: () => import(/* @vite-ignore */ 'maptalks.heatmap').then(m => (m as Record<string,unknown>).HeatLayer) },
-  { name: 'maptalks.markercluster', status: 'loading', note: '点聚合图层。', el: null as HTMLElement | null, importFn: () => import(/* @vite-ignore */ 'maptalks.markercluster').then(m => (m as Record<string,unknown>).ClusterLayer) },
-  { name: '@maptalks/three', status: 'loading', note: 'Three.js 3D 图层。', el: null as HTMLElement | null, importFn: () => import(/* @vite-ignore */ '@maptalks/three').then(m => (m as Record<string,unknown>).ThreeLayer) },
-  { name: 'maptalks.e3', status: 'loading', note: 'ECharts 3D 图层。', el: null as HTMLElement | null, importFn: () => import(/* @vite-ignore */ 'maptalks.e3').then(m => (m as Record<string,unknown>).E3Layer) },
-  { name: 'mapbox-gl-js-maptalks', status: 'loading', note: 'Mapbox GL JS 图层。', el: null as HTMLElement | null, importFn: () => import(/* @vite-ignore */ 'mapbox-gl-js-maptalks').then(m => (m as Record<string,unknown>).MapboxglLayer) },
+  { name: 'maptalks.heatmap', status: 'loading', note: '热力图图层。', el: null as HTMLElement | null, importFn: () => importModule('maptalks.heatmap').then(m => m.HeatLayer) },
+  { name: 'maptalks.markercluster', status: 'loading', note: '点聚合图层。', el: null as HTMLElement | null, importFn: () => importModule('maptalks.markercluster').then(m => m.ClusterLayer) },
+  { name: 'maptalks.three', status: 'loading', note: 'Three.js 3D 图层。', el: null as HTMLElement | null, importFn: () => importModule('maptalks.three').then(m => m.ThreeLayer) },
+  { name: 'maptalks.e3', status: 'loading', note: 'ECharts 3D 图层。', el: null as HTMLElement | null, importFn: () => importModule('maptalks.e3').then(m => m.E3Layer) },
+  { name: 'maptalks.mapboxgl', status: 'loading', note: 'Mapbox GL JS 图层。', el: null as HTMLElement | null, importFn: () => importModule('maptalks.mapboxgl').then(m => m.MapboxglLayer) },
 ]);
 
 // 为每张插件卡片预先创建 map（composable 必须在 setup 中调用）
