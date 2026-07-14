@@ -118,6 +118,12 @@
       <MaptalksMap :center="center" :zoom="12" :baseLayer="{ source: 'osm' }" class="relative rounded border border-default overflow-hidden" style="height:280px" />
       <template #footer><span class="text-sm text-muted"><code>:baseLayer="{ source: 'osm' }"</code> — 对象格式，可扩展 options。</span></template>
     </UCard>
+
+    <UCard class="mb-6">
+      <template #header><h2 class="font-semibold">baseLayer 配置格式 · 原生 Layer 对象</h2></template>
+      <MaptalksMap ref="nativeLayerMap" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height:280px" />
+      <template #footer><span class="text-sm text-muted">native new TileLayer() → map.addLayer()，等效 :baseLayer 传原生对象。</span></template>
+    </UCard>
   </div>
 </template>
 
@@ -212,4 +218,17 @@ async function onGroupReady(map: MtMap) {
     groupNote.value = `加载失败：${(e as Error)?.message ?? e}`;
   }
 }
+
+// 原生 TileLayer 演示（等效于 :baseLayer 传入 native Layer 对象）
+const nativeLayerMap = ref<{ map: MtMap | null } | null>(null);
+onMounted(async () => {
+  const m = nativeLayerMap.value?.map;
+  if (!m) return;
+  const mt = await import('maptalks-gl');
+  const tl = new mt.TileLayer('native-tile', {
+    urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    subdomains: ['a', 'b', 'c', 'd'],
+  });
+  m.addLayer(tl as unknown as Parameters<typeof m.addLayer>[0]);
+});
 </script>
