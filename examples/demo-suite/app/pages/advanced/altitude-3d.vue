@@ -11,9 +11,9 @@
       </UCard>
 
       <UCard>
-        <template #header><h2 class="font-semibold">逃生舱 · 原生 animateTo</h2></template>
-        <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><div class="flex gap-2"><UButton size="sm" @click="animateToView()">动画飞行</UButton><span class="text-sm text-muted">原生 map.animateTo()</span></div></template>
+        <template #header><h2 class="font-semibold">逃生舱 · setAltitude 高度线</h2></template>
+        <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+        <template #footer><span class="text-sm text-muted">native Marker.setAltitude() 画高度垂线（maptalks 基础库，非 GL 专属）。</span></template>
       </UCard>
     </div>
 
@@ -43,25 +43,20 @@ function animateToView() {
   toValue(map2)?.animateTo({ center: [121.5, 31.24], zoom: 15, pitch: 70, bearing: 30 }, { duration: 3000 });
 }
 
-// 卡片 3：3D 建筑 - PolygonLayer + GroupGLLayer 提供 WebGL 上下文 + Polygon height
+// 卡片 3：setAltitude 高度线（maptalks 基础库支持，画从 Marker 到地面的垂线）
 const el3 = ref<HTMLElement | null>(null);
-const { map: map3 } = useMaptalks(el3, { center, zoom: 15, pitch: 50 });
+const { map: map3 } = useMaptalks(el3, { center, zoom: 14, pitch: 50 });
 useMaptalksTileLayer(map3, { source: 'osm' });
-// GroupGLLayer 初始化 WebGL 上下文后再添加 PolygonLayer
-const { layer: glLayer3 } = useMaptalksGroupGLLayer(map3, {});
-watch(() => toValue(glLayer3), (layer) => {
+const { layer: vec3 } = useMaptalksVectorLayer(map3);
+watch(() => toValue(vec3), (layer) => {
   if (!layer) return;
   import('maptalks-gl').then(mt => {
-    const pl = new mt.PolygonLayer('buildings');
-    pl.addTo(toValue(map3)! as Record<string, unknown>);
-    pl.addGeometry(new mt.Polygon(
-      [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
-      { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 1 }, properties: { height: 300 } },
-    ) as Parameters<typeof pl.addGeometry>[0]);
-    pl.addGeometry(new mt.Polygon(
-      [[121.474, 31.229], [121.477, 31.229], [121.477, 31.2305], [121.474, 31.2305]],
-      { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.7, lineWidth: 1 }, properties: { height: 500 } },
-    ) as Parameters<typeof pl.addGeometry>[0]);
+    const mk = new mt.Marker([121.4737, 31.2304], { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 14, markerHeight: 14 } });
+    mk.setAltitude(500);
+    mk.addTo(layer as Parameters<typeof mk.addTo>[0]);
+    const mk2 = new mt.Marker([121.475, 31.231], { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 12, markerHeight: 12 } });
+    mk2.setAltitude(300);
+    mk2.addTo(layer as Parameters<typeof mk2.addTo>[0]);
   });
 });
 </script>
