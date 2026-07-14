@@ -52,61 +52,63 @@ const pluginMaps = pluginEls.map(el => {
 });
 
 onMounted(async () => {
-  // 生成 50 个上海周边的随机点，供 heatmap/cluster 使用
-  const randomPoints = Array.from({ length: 50 }, () => [121.47 + (Math.random() - 0.5) * 0.03, 31.23 + (Math.random() - 0.5) * 0.03] as [number, number]);
+  const pts = Array.from({ length: 50 }, () => [121.47 + (Math.random() - 0.5) * 0.03, 31.23 + (Math.random() - 0.5) * 0.03] as [number, number]);
 
-  for (const [i, p] of plugins.value.entries()) {
-    try {
-      let Ctor: unknown;
-      if (p.name === 'maptalks.heatmap') Ctor = (await import('maptalks.heatmap')).HeatLayer;
-      else if (p.name === 'maptalks.markercluster') Ctor = (await import('maptalks.markercluster')).ClusterLayer;
-      else if (p.name === 'maptalks.three') Ctor = (await import('maptalks.three')).ThreeLayer;
-      else if (p.name === 'maptalks.e3') Ctor = (await import('maptalks.e3')).E3Layer;
-      else continue;
-      const { map } = pluginMaps[i];
-      const m = toValue(map);
-      if (!m || typeof Ctor !== 'function') { p.status = 'error'; p.note = `"${p.name}" 导出类型不是构造函数。`; continue; }
-
-      const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void; setData?: (d: unknown) => void; addGeometry?: (g: unknown) => void; prepareToDraw?: (...args: unknown[]) => void; draw?: () => void; addMesh?: (m: unknown) => void } & Record<string, unknown>)(p.name, {});
-
-      // three / e3 配置必须在 addTo 之前，否则首次渲染看不到
-      if (p.name === 'maptalks.three' && typeof instance.prepareToDraw === 'function') {
-        instance.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
-          const light = new THREE.DirectionalLight(0xffffff, 1);
-          light.position.set(0, -10, 10).normalize();
-          (scene as { add: (o: unknown) => void }).add(light);
-          const ambient = new THREE.AmbientLight(0x404040);
-          (scene as { add: (o: unknown) => void }).add(ambient);
-          const geo = new THREE.BoxGeometry(500, 500, 500);
-          const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb, transparent: true, opacity: 0.8 });
-          const box = new THREE.Mesh(geo, mat);
-          const pos = m.coordinateToPoint([121.4737, 31.2304]);
-          box.position.set(pos.x, pos.y, 300);
-          if (typeof instance.addMesh === 'function') instance.addMesh(box);
-        };
-      }
-      if (p.name === 'maptalks.e3' && typeof (instance as Record<string, unknown>).setEChartsOption === 'function') {
-        (instance as Record<string, { (o: unknown): void }>).setEChartsOption({
-          series: [{ type: 'scatter', coordinateSystem: 'maptalks', data: randomPoints.map(pt => [pt[0], pt[1], Math.random() * 100]) }],
-        });
-      }
-
-      instance.addTo(m);
-
-      // 为 heatmap 添加热力数据（格式 [[lng, lat, value], ...]）
-      if (p.name === 'maptalks.heatmap' && typeof instance.setData === 'function') {
-        instance.setData(randomPoints.map(pt => [pt[0], pt[1], Math.random()]));
-      }
-      // 为 cluster 添加标记点
-      if (p.name === 'maptalks.markercluster' && typeof instance.addGeometry === 'function') {
-        const mt = await import('maptalks-gl');
-        randomPoints.forEach(pt => instance.addGeometry!([new mt.Marker(pt)]));
-      }
-      p.status = 'ok';
-    } catch (e: unknown) {
-      p.status = 'error';
-      p.note = `"${p.name}" ${String(e).slice(0, 60)}`;
+  // heatmap
+  try {
+    const { HeatLayer } = await import('maptalks.heatmap');
+    const m = toValue(pluginMaps[0].map);
+    if (m && typeof HeatLayer === 'function') {
+      const layer = new (HeatLayer as new (id: string, data?: unknown) => { addTo: (m: unknown) => void } & Record<string, unknown>)('heat', pts.map(p => [p[0], p[1], Math.random()]));
+      layer.addTo(m);
+      plugins.value[0].status = 'ok';
     }
-  }
+  } catch { plugins.value[0].status = 'error'; plugins.value[0].note = 'maptalks.heatmap 不可用。'; }
+
+  // markercluster
+  try {
+    const { ClusterLayer } = await import('maptalks.markercluster');
+    const m = toValue(pluginMaps[1].map);
+    if (m && typeof ClusterLayer === 'function') {
+      const layer = new (ClusterLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; addGeometry: (g: unknown[]) => void } & Record<string, unknown>)('cluster');
+      const mt = await import('maptalks-gl');
+      layer.addTo(m);
+      layer.addGeometry(pts.map(p => new mt.Marker(p)));
+      plugins.value[1].status = 'ok';
+    }
+  } catch { plugins.value[1].status = 'error'; plugins.value[1].note = 'maptalks.markercluster 不可用。'; }
+
+  // three
+  try {
+    const { ThreeLayer } = await import('maptalks.three');
+    const m = toValue(pluginMaps[2].map);
+    if (m && typeof ThreeLayer === 'function') {
+      const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (o: unknown) => void } & Record<string, unknown>)('three');
+      layer.prepareToDraw = function (_gl, scene, _camera) {
+        const s = scene as { add: (o: unknown) => void };
+        s.add(new THREE.AmbientLight(0x666666));
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(1, 1, 1).normalize();
+        s.add(light);
+        const geo = new THREE.BoxGeometry(800, 800, 800);
+        const mat = new THREE.MeshPhongMaterial({ color: 0x2563eb });
+        const box = new THREE.Mesh(geo, mat);
+        s.add(box);
+      };
+      layer.addTo(m);
+      plugins.value[2].status = 'ok';
+    }
+  } catch { plugins.value[2].status = 'error'; plugins.value[2].note = 'maptalks.three 不可用。'; }
+
+  // e3
+  try {
+    const { E3Layer } = await import('maptalks.e3');
+    const m = toValue(pluginMaps[3].map);
+    if (m && typeof E3Layer === 'function') {
+      const layer = new (E3Layer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void } & Record<string, unknown>)('e3', { series: [{ type: 'scatter', coordinateSystem: 'maptalks', data: pts.map(p => [p[0], p[1], Math.random() * 100]) }] });
+      layer.addTo(m);
+      plugins.value[3].status = 'ok';
+    }
+  } catch { plugins.value[3].status = 'error'; plugins.value[3].note = 'maptalks.e3 不可用。'; }
 });
 </script>
