@@ -51,6 +51,9 @@ const pluginMaps = pluginEls.map(el => {
 });
 
 onMounted(async () => {
+  // 生成 50 个上海周边的随机点，供 heatmap/cluster 使用
+  const randomPoints = Array.from({ length: 50 }, () => [121.47 + (Math.random() - 0.5) * 0.03, 31.23 + (Math.random() - 0.5) * 0.03] as [number, number]);
+
   for (const [i, p] of plugins.value.entries()) {
     try {
       let Ctor: unknown;
@@ -62,14 +65,22 @@ onMounted(async () => {
       else continue;
       const { map } = pluginMaps[i];
       const m = toValue(map);
-      if (m && typeof Ctor === 'function') {
-        const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void })(p.name, {});
-        instance.addTo(m);
-        p.status = 'ok';
-      } else {
-        p.status = 'error';
-        p.note = `"${p.name}" 导出类型不是构造函数。`;
+      if (!m || typeof Ctor !== 'function') { p.status = 'error'; p.note = `"${p.name}" 导出类型不是构造函数。`; continue; }
+
+      const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void; setData?: (d: unknown) => void; addGeometry?: (g: unknown) => void } & Record<string, unknown>)(p.name, {});
+      instance.addTo(m);
+
+      // 为 heatmap 添加热力数据
+      if (p.name === 'maptalks.heatmap' && typeof instance.setData === 'function') {
+        instance.setData(randomPoints.map(pt => ({ coordinates: pt, count: Math.random() * 100 })));
       }
+      // 为 cluster 添加标记点
+      if (p.name === 'maptalks.markercluster' && typeof instance.addGeometry === 'function') {
+        const mt = await import('maptalks-gl');
+        randomPoints.forEach(pt => instance.addGeometry!([new mt.Marker(pt)]));
+      }
+      // three / e3 / mapboxgl 需要复杂配置，仅展示逃生舱模式
+      p.status = 'ok';
     } catch (e: unknown) {
       p.status = 'error';
       p.note = `"${p.name}" ${String(e).slice(0, 60)}`;
