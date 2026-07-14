@@ -43,20 +43,25 @@ function animateToView() {
   toValue(map2)?.animateTo({ center: [121.5, 31.24], zoom: 15, pitch: 70, bearing: 30 }, { duration: 3000 });
 }
 
-// 卡片 3：3D 建筑
+// 卡片 3：3D 建筑（Polygon 需加入 GroupGLLayer 才能高度拉伸）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 15, pitch: 50 });
 const { layer: glLayer3 } = useMaptalksGroupGLLayer(map3, {});
-const { layer: vec3 } = useMaptalksVectorLayer(map3);
 useMaptalksTileLayer(map3, { source: 'osm' });
-useMaptalksPolygon(vec3, {
-  coordinates: [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
-  symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#1d4ed8' },
-  properties: { height: 300 },
-});
-useMaptalksPolygon(vec3, {
-  coordinates: [[121.474, 31.229], [121.477, 31.229], [121.477, 31.2305], [121.474, 31.2305]],
-  symbol: { polygonFill: '#dc2626', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#991b1b' },
-  properties: { height: 500 },
+// 逃生舱：原生 Polygon + GroupGLLayer（composable preset 不支持 3D 参数）
+watch(() => toValue(glLayer3), (layer) => {
+  if (!layer) return;
+  import('maptalks-gl').then(mt => {
+    const p1 = new mt.Polygon(
+      [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
+      { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 300 } },
+    );
+    p1.addTo(layer as Parameters<typeof p1.addTo>[0]);
+    const p2 = new mt.Polygon(
+      [[121.474, 31.229], [121.477, 31.229], [121.477, 31.2305], [121.474, 31.2305]],
+      { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 500 } },
+    );
+    p2.addTo(layer as Parameters<typeof p2.addTo>[0]);
+  });
 });
 </script>
