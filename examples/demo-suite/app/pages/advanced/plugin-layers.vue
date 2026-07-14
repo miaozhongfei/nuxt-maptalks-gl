@@ -64,9 +64,9 @@ onMounted(() => {
       const mapVal = toValue(map);
       if (mapVal) { setupLayer(mapVal); }
       else { watch(() => toValue(map), setupLayer); }
-    }).catch((e: unknown) => {
+    }).catch(() => {
       p.status = 'error';
-      p.note = `"${p.name}" 当前不可用。(${(e as Error).message?.substring(0, 40) || String(e).substring(0, 40)})`;
+      p.note = `"${p.name}" 当前不可用。`;
     });
   });
 });

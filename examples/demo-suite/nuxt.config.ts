@@ -29,10 +29,12 @@ export default defineNuxtConfig({
     },
     defaults: { camera: { center: [121.4737, 31.2304], zoom: 11 } },
   },
-  // 将插件包加入 Vite 预打包（esbuild 不执行代码，不会因 document 崩溃）
+  // 插件包排除预打包（esbuild 会破坏 CJS class 构造函数 new 语义）
+  // 这些包由 Vite dev server 按原始 ESM/CJS 服务，配合 optimizeDeps 中 maptalks-gl 的预构建
   vite: {
     optimizeDeps: {
-      include: ['maptalks.heatmap', 'maptalks.markercluster', 'maptalks.three', 'maptalks.e3', 'maptalks.mapboxgl'],
+      exclude: ['maptalks.heatmap', 'maptalks.markercluster', 'maptalks.three', 'maptalks.e3', 'maptalks.mapboxgl'],
+      include: [],
     },
   },
 });
