@@ -33,13 +33,13 @@ useMaptalksPolygon(vec1, {
   symbol: { polygonFill: '#8b5cf6', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#6d28d9' },
 });
 
-// 插件卡片数据（composable 在 setup 中创建，import 在 onMounted 中执行）
+// 插件卡片数据
 const plugins = ref([
-  { name: 'maptalks.heatmap', status: 'loading', note: '热力图图层。', importFn: () => import('maptalks.heatmap').then(m => (m as Record<string,unknown>).HeatLayer) },
-  { name: 'maptalks.markercluster', status: 'loading', note: '点聚合图层。', importFn: () => import('maptalks.markercluster').then(m => (m as Record<string,unknown>).ClusterLayer) },
-  { name: 'maptalks.three', status: 'loading', note: 'Three.js 3D 图层。', importFn: () => import('maptalks.three').then(m => (m as Record<string,unknown>).ThreeLayer) },
-  { name: 'maptalks.e3', status: 'loading', note: 'ECharts 3D 图层。', importFn: () => import('maptalks.e3').then(m => (m as Record<string,unknown>).E3Layer) },
-  { name: 'maptalks.mapboxgl', status: 'loading', note: 'Mapbox GL JS 图层。', importFn: () => import('maptalks.mapboxgl').then(m => (m as Record<string,unknown>).MapboxglLayer) },
+  { name: 'maptalks.heatmap', status: 'loading' as string, note: '热力图图层。' },
+  { name: 'maptalks.markercluster', status: 'loading' as string, note: '点聚合图层。' },
+  { name: 'maptalks.three', status: 'loading' as string, note: 'Three.js 3D 图层。' },
+  { name: 'maptalks.e3', status: 'loading' as string, note: 'ECharts 3D 图层。' },
+  { name: 'maptalks.mapboxgl', status: 'loading' as string, note: 'Mapbox GL JS 图层。' },
 ]);
 
 // 每张插件卡片预先创建 el ref → useMaptalks → template :ref 回调绑定
@@ -50,24 +50,39 @@ const pluginMaps = pluginEls.map(el => {
   return { map, el };
 });
 
-onMounted(() => {
-  plugins.value.forEach((p, i) => {
-    p.importFn().then((Ctor) => {
+onMounted(async () => {
+  const importSpecifiers: Record<string, string> = {
+    'maptalks.heatmap': 'maptalks.heatmap',
+    'maptalks.markercluster': 'maptalks.markercluster',
+    'maptalks.three': 'maptalks.three',
+    'maptalks.e3': 'maptalks.e3',
+    'maptalks.mapboxgl': 'maptalks.mapboxgl',
+  };
+  const exportNames: Record<string, string> = {
+    'maptalks.heatmap': 'HeatLayer',
+    'maptalks.markercluster': 'ClusterLayer',
+    'maptalks.three': 'ThreeLayer',
+    'maptalks.e3': 'E3Layer',
+    'maptalks.mapboxgl': 'MapboxglLayer',
+  };
+  for (const [i, p] of plugins.value.entries()) {
+    try {
+      const mod = await import(importSpecifiers[p.name]);
+      const Ctor = (mod as Record<string, unknown>)[exportNames[p.name]];
       const { map } = pluginMaps[i];
-      const setupLayer = (m: unknown) => {
-        if (m && typeof Ctor === 'function') {
-          const instance = (Ctor as unknown as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void })(p.name, {});
-          instance.addTo(m);
-          p.status = 'ok';
-        }
-      };
-      const mapVal = toValue(map);
-      if (mapVal) { setupLayer(mapVal); }
-      else { watch(() => toValue(map), setupLayer); }
-    }).catch(() => {
+      const m = toValue(map);
+      if (m && typeof Ctor === 'function') {
+        const instance = new (Ctor as new (id: string, opts: Record<string, unknown>) => { addTo: (m: unknown) => void })(p.name, {});
+        instance.addTo(m);
+        p.status = 'ok';
+      } else {
+        p.status = 'error';
+        p.note = `"${p.name}" 未找到导出 ${exportNames[p.name]}。`;
+      }
+    } catch {
       p.status = 'error';
       p.note = `"${p.name}" 当前不可用。`;
-    });
-  });
+    }
+  }
 });
 </script>
