@@ -84,19 +84,24 @@ onMounted(async () => {
     const maptalksGL = await import('maptalks-gl');
     const m = toValue(pluginMaps[2].map);
     if (m && typeof ThreeLayer === 'function' && maptalksGL.GroupGLLayer) {
-      const threeLayer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; toBox: (coord: [number, number], opts: Record<string, unknown>, mat: THREE.Material) => unknown; addMesh: (ms: unknown[]) => void } & Record<string, unknown>)('three', { forceRenderOnMoving: true, forceRenderOnRotating: true });
-      threeLayer.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
-        const s = scene as { add: (o: unknown) => void };
-        const light = new THREE.DirectionalLight(0xffffff);
-        light.position.set(0, -10, 10).normalize();
-        s.add(light);
-        s.add(new THREE.AmbientLight(0xffffff, 0.6));
-        const mat = new THREE.MeshLambertMaterial({ color: 0x2563eb });
-        const boxes = pts.slice(0, 10).map(pt => threeLayer.toBox(pt as [number, number], { height: 20000, radius: 15000, topColor: '#fff' }, mat));
-        threeLayer.addMesh(boxes);
-      };
-      const group = new (maptalksGL.GroupGLLayer as new (id: string, layers: unknown[], opts?: Record<string, unknown>) => { addTo: (m: unknown) => void })('group3d', [threeLayer], { sceneConfig: { postProcess: { enable: true, antialias: { enable: true } } } });
-      group.addTo(m);
+        const threeLayer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; toBox: (coord: [number, number], opts: Record<string, unknown>, mat: THREE.Material) => unknown; addMesh: (ms: unknown[]) => void; toPoint: (coord: [number, number]) => { x: number; y: number; z: number }; coordinateToVector3: (coord: [number, number], z?: number) => THREE.Vector3 } & Record<string, unknown>)('three', { forceRenderOnMoving: true, forceRenderOnRotating: true });
+        const group = new (maptalksGL.GroupGLLayer as new (id: string, layers: unknown[], opts?: Record<string, unknown>) => { addTo: (m: unknown) => void })('group3d', [threeLayer], { sceneConfig: { postProcess: { enable: true, antialias: { enable: true } } } });
+        threeLayer.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
+          console.log('prepareToDraw called', typeof threeLayer.addMesh, typeof threeLayer.toBox);
+          const s = scene as { add: (o: unknown) => void; children: unknown[] };
+          const light = new THREE.DirectionalLight(0xffffff);
+          light.position.set(0, -10, 10).normalize();
+          s.add(light);
+          s.add(new THREE.AmbientLight(0xffffff, 0.6));
+          const mat = new THREE.MeshLambertMaterial({ color: 0x2563eb });
+          const boxes = pts.slice(0, 10).map(pt => {
+            const box = (threeLayer as { toBox: (c: [number, number], o: Record<string, unknown>, m: THREE.Material) => THREE.Object3D }).toBox(pt as [number, number], { height: 20000, radius: 15000, topColor: '#fff' }, mat);
+            console.log('toBox result', box);
+            return box;
+          });
+          threeLayer.addMesh(boxes);
+        };
+        group.addTo(m);
       plugins.value[2].status = 'ok';
     }
   } catch { plugins.value[2].status = 'error'; plugins.value[2].note = 'maptalks.three 不可用。'; }
