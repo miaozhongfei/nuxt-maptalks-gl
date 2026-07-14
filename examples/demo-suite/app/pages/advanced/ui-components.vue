@@ -16,6 +16,12 @@
         <template #footer><span class="text-sm text-muted">原生 marker.setInfoWindow() 直调，点击 Marker 弹出。</span></template>
       </UCard>
     </div>
+
+    <UCard class="mt-4">
+      <template #header><h2 class="font-semibold">逃生舱 · 原生 UIMarker（HTML 锚点）</h2></template>
+      <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+      <template #footer><span class="text-sm text-muted">native UIMarker + HTML 内容锚定在地图坐标上。</span></template>
+    </UCard>
   </div>
 </template>
 
@@ -43,4 +49,18 @@ watch(() => toValue(mk2), (geo) => {
   if (!geo) return;
   (geo as Record<string, (...args: unknown[]) => void>).setInfoWindow?.({ title: '原生弹出', content: '<div style="padding:8px">marker.setInfoWindow() 直接调用</div>' });
 }, { immediate: true });
+
+// 卡片 3：UIMarker（HTML 锚点）
+const el3 = ref<HTMLElement | null>(null);
+const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
+useMaptalksTileLayer(map3, { source: 'osm' });
+watch(() => toValue(map3), (m) => {
+  if (!m) return;
+  import('maptalks-gl').then(mt => {
+    const uiMarker = new mt.ui.UIMarker([121.47, 31.23], {
+      content: '<div style="background:#2563eb;color:#fff;padding:4px 10px;border-radius:4px;white-space:nowrap;font-size:13px">📍 自定义 HTML 锚点</div>',
+    });
+    uiMarker.addTo(m);
+  });
+});
 </script>
