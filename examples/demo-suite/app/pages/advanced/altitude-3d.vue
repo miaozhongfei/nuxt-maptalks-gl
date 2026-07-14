@@ -43,15 +43,16 @@ function animateToView() {
   toValue(map2)?.animateTo({ center: [121.5, 31.24], zoom: 15, pitch: 70, bearing: 30 }, { duration: 3000 });
 }
 
-// 卡片 3：3D 建筑（PolygonLayer + Polygon height 实现拉伸）
+// 卡片 3：3D 建筑（PolygonLayer 需加到 GroupGLLayer 才能 WebGL 渲染）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 15, pitch: 50 });
+const { layer: glLayer3 } = useMaptalksGroupGLLayer(map3, {});
 useMaptalksTileLayer(map3, { source: 'osm' });
-watch(() => toValue(map3), (m) => {
-  if (!m) return;
+watch(() => toValue(glLayer3), (layer) => {
+  if (!layer) return;
   import('maptalks-gl').then(mt => {
-    const pl = new mt.PolygonLayer('buildings');
-    pl.addTo(m);
+    // PolygonLayer 挂在 GroupGLLayer 下获得 WebGL 渲染上下文
+    const pl = new mt.PolygonLayer('buildings').addTo(layer as Record<string, unknown>);
     const p1 = new mt.Polygon(
       [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
       { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.7, lineWidth: 0 }, properties: { height: 300 } },
