@@ -7,6 +7,6 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el);
+const { map } = useMaptalks(el, { center: [121.4737, 31.2304], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'amap' });
 </script>
