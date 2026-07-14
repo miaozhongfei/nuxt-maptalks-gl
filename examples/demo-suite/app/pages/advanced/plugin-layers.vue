@@ -10,9 +10,9 @@
     </UCard>
 
     <div class="grid grid-cols-2 gap-4">
-      <UCard v-for="p in plugins" :key="p.name">
+      <UCard v-for="(p, index) in plugins" :key="p.name">
         <template #header><div class="flex items-center gap-2"><h2 class="font-semibold">{{ p.name }}</h2><UBadge :color="p.status==='ok'?'success':p.status==='loading'?'neutral':'error'" variant="subtle">{{ p.status === 'ok' ? '已加载' : p.status === 'loading' ? '加载中' : '不可用' }}</UBadge></div></template>
-        <div :ref="(el: unknown) => p.el = el as HTMLElement | null" class="relative rounded border border-default overflow-hidden" style="height:320px" />
+        <div :ref="(el: unknown) => pluginEls[index].value = el as HTMLElement | null" class="relative rounded border border-default overflow-hidden" style="height:320px" />
         <template #footer><span class="text-sm text-muted">{{ p.note }}</span></template>
       </UCard>
     </div>
@@ -35,19 +35,19 @@ useMaptalksPolygon(vec1, {
 
 // 插件卡片数据（composable 在 setup 中创建，import 在 onMounted 中执行）
 const plugins = ref([
-  { name: 'maptalks.heatmap', status: 'loading', note: '热力图图层。', el: null as HTMLElement | null, importFn: () => import('maptalks.heatmap').then(m => (m as Record<string,unknown>).HeatLayer) },
-  { name: 'maptalks.markercluster', status: 'loading', note: '点聚合图层。', el: null as HTMLElement | null, importFn: () => import('maptalks.markercluster').then(m => (m as Record<string,unknown>).ClusterLayer) },
-  { name: 'maptalks.three', status: 'loading', note: 'Three.js 3D 图层。', el: null as HTMLElement | null, importFn: () => import('maptalks.three').then(m => (m as Record<string,unknown>).ThreeLayer) },
-  { name: 'maptalks.e3', status: 'loading', note: 'ECharts 3D 图层。', el: null as HTMLElement | null, importFn: () => import('maptalks.e3').then(m => (m as Record<string,unknown>).E3Layer) },
-  { name: 'maptalks.mapboxgl', status: 'loading', note: 'Mapbox GL JS 图层。', el: null as HTMLElement | null, importFn: () => import('maptalks.mapboxgl').then(m => (m as Record<string,unknown>).MapboxglLayer) },
+  { name: 'maptalks.heatmap', status: 'loading', note: '热力图图层。', importFn: () => import('maptalks.heatmap').then(m => (m as Record<string,unknown>).HeatLayer) },
+  { name: 'maptalks.markercluster', status: 'loading', note: '点聚合图层。', importFn: () => import('maptalks.markercluster').then(m => (m as Record<string,unknown>).ClusterLayer) },
+  { name: 'maptalks.three', status: 'loading', note: 'Three.js 3D 图层。', importFn: () => import('maptalks.three').then(m => (m as Record<string,unknown>).ThreeLayer) },
+  { name: 'maptalks.e3', status: 'loading', note: 'ECharts 3D 图层。', importFn: () => import('maptalks.e3').then(m => (m as Record<string,unknown>).E3Layer) },
+  { name: 'maptalks.mapboxgl', status: 'loading', note: 'Mapbox GL JS 图层。', importFn: () => import('maptalks.mapboxgl').then(m => (m as Record<string,unknown>).MapboxglLayer) },
 ]);
 
-// 为每张插件卡片预先创建 map（composable 必须在 setup 中调用）
-const pluginMaps = plugins.value.map(() => {
-  const el = ref<HTMLElement | null>(null);
+// 每张插件卡片预先创建 el ref → useMaptalks → template :ref 回调绑定
+const pluginEls = plugins.value.map(() => ref<HTMLElement | null>(null));
+const pluginMaps = pluginEls.map(el => {
   const { map } = useMaptalks(el, { center, zoom: 13 });
   useMaptalksTileLayer(map, { source: 'osm' });
-  return { map };
+  return { map, el };
 });
 
 onMounted(() => {
