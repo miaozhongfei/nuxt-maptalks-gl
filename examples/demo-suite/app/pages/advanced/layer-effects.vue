@@ -50,42 +50,57 @@ function toggleDarkLayer() {
   }
 }
 
-// 卡片 3：CanvasLayer 逃生舱
+// 卡片 3：CanvasLayer 逃生舱（maptalks-gl 中 canvas API 受限，回退到 UIMarker + canvas）
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
 watch(() => toValue(map3), (m) => {
   if (!m) return;
   import('maptalks-gl').then(mt => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 280; canvas.height = 150;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = 'rgba(37,99,235,0.25)';
+      ctx.fillRect(0, 0, 280, 150);
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(5, 5, 270, 140);
+      ctx.fillStyle = '#2563eb';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('原生 Canvas 绘制', 140, 55);
+      ctx.font = '12px sans-serif';
+      ctx.fillText('maptalks-gl CanvasLayer', 140, 80);
+      ctx.fillStyle = 'rgba(22,163,74,0.3)';
+      ctx.beginPath();
+      ctx.arc(140, 115, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#16a34a';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.fillText('✓', 140, 121);
+    }
+    // 方案 A：原生 CanvasLayer（maptalks-gl 下可能不支持 getCanvas/drawImage）
+    let worked = false;
     const layer = new mt.CanvasLayer('canvas-demo');
-    layer.config({
-      render() {
-        const layerCanvas = layer.getCanvas();
-        if (!layerCanvas) return;
-        const ctx = layerCanvas.getContext('2d', { willReadFrequently: false });
-        if (!ctx) return;
-        ctx.clearRect(0, 0, layerCanvas.width, layerCanvas.height);
-        // 将地图坐标转为屏幕像素，绘制 3 个半透明彩色圆
-        const points = [[121.47, 31.23], [121.49, 31.23], [121.48, 31.21]] as [number, number][];
-        const colors = ['rgba(37,99,235,0.4)', 'rgba(220,38,38,0.4)', 'rgba(22,163,74,0.4)'];
-        points.forEach((pt, i) => {
-          const pos = m.coordinateToContainerPoint(new mt.Coordinate(pt));
-          ctx.beginPath();
-          ctx.arc(pos.x, pos.y, 40, 0, Math.PI * 2);
-          ctx.fillStyle = colors[i];
-          ctx.fill();
-          ctx.strokeStyle = colors[i].replace('0.4', '1');
-          ctx.lineWidth = 2;
-          ctx.stroke();
-        });
-        ctx.fillStyle = '#111';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.textAlign = 'center';
-        const cp = m.coordinateToContainerPoint(new mt.Coordinate([121.48, 31.23]));
-        ctx.fillText('原生 CanvasLayer', cp.x, cp.y + 50);
-      },
-    });
+    layer.onCanvasCreate = function (c: HTMLCanvasElement) {
+      if (!c || worked) return;
+      const destCtx = c.getContext('2d');
+      if (!destCtx) return;
+      destCtx.drawImage(canvas, 0, 0);
+      worked = true;
+    };
+    layer.prepareToDraw();
     layer.addTo(m);
+    // 方案 B：UIMarker + canvas 兜底（如果 CanvasLayer 不渲染）
+    setTimeout(() => {
+      if (worked) return;
+      const ui = new mt.UIMarker([121.48, 31.23], {
+        content: canvas.outerHTML,
+        dy: -75,
+      }).addTo(m);
+      void ui;
+    }, 500);
   });
 });
 </script>
