@@ -81,30 +81,22 @@ onMounted(async () => {
   // three
   try {
     const { ThreeLayer } = await import('maptalks.three');
+    const maptalksGL = await import('maptalks-gl');
     const m = toValue(pluginMaps[2].map);
-    if (m && typeof ThreeLayer === 'function') {
-      const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; addMesh?: (o: unknown) => void; getMap?: () => unknown } & Record<string, unknown>)('three');
-      layer.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
-        const cam = _camera as { position: { x: number; y: number; z: number }; lookAt: (v: unknown) => void };
+    if (m && typeof ThreeLayer === 'function' && maptalksGL.GroupGLLayer) {
+      const threeLayer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; toBox: (coord: [number, number], opts: Record<string, unknown>, mat: THREE.Material) => unknown; addMesh: (ms: unknown[]) => void } & Record<string, unknown>)('three', { forceRenderOnMoving: true, forceRenderOnRotating: true });
+      threeLayer.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
         const s = scene as { add: (o: unknown) => void };
-        s.add(new THREE.AmbientLight(0x666666));
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(cam.position.x, cam.position.y, cam.position.z + 2000);
+        const light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, -10, 10).normalize();
         s.add(light);
-        // 绕矩形排布 4 个彩色柱子
-        const colors = [0x2563eb, 0xdc2626, 0x16a34a, 0xca8a04];
-        for (let i = 0; i < 4; i++) {
-          const angle = (i / 4) * Math.PI * 2;
-          const r = 1000;
-          const geo = new THREE.BoxGeometry(300, 800, 300);
-          const mat = new THREE.MeshPhongMaterial({ color: colors[i] });
-          const bar = new THREE.Mesh(geo, mat);
-          bar.position.set(cam.position.x + Math.cos(angle) * r, cam.position.y + Math.sin(angle) * r, 400);
-          if (typeof layer.addMesh === 'function') layer.addMesh(bar);
-          else s.add(bar);
-        }
+        s.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const mat = new THREE.MeshLambertMaterial({ color: 0x2563eb });
+        const boxes = pts.slice(0, 10).map(pt => threeLayer.toBox(pt as [number, number], { height: 20000, radius: 15000, topColor: '#fff' }, mat));
+        threeLayer.addMesh(boxes);
       };
-      layer.addTo(m);
+      const group = new (maptalksGL.GroupGLLayer as new (id: string, layers: unknown[], opts?: Record<string, unknown>) => { addTo: (m: unknown) => void })('group3d', [threeLayer], { sceneConfig: { postProcess: { enable: true, antialias: { enable: true } } } });
+      group.addTo(m);
       plugins.value[2].status = 'ok';
     }
   } catch { plugins.value[2].status = 'error'; plugins.value[2].note = 'maptalks.three 不可用。'; }
