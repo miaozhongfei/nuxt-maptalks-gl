@@ -23,15 +23,15 @@ export default defineNuxtConfig({
         options: {
           subdomains: ['b', 'c', 'd'],
           attribution: '© OpenStreetMap contributors, © CARTO',
+        },
+      },
+      secure: { kind: 'signed', type: 'tile', endpoint: '/api/maptalks/sign' },
+    },
+    defaults: { camera: { center: [121.4737, 31.2304], zoom: 11 } },
   },
   vite: {
     optimizeDeps: {
       include: ['maptalks.heatmap', 'maptalks.markercluster', 'maptalks.three', 'maptalks.e3'],
     },
-  },
-      },
-      secure: { kind: 'signed', type: 'tile', endpoint: '/api/maptalks/sign' },
-    },
-    defaults: { camera: { center: [121.4737, 31.2304], zoom: 11 } },
   },
 });
