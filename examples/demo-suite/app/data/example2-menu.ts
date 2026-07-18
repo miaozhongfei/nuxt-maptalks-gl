@@ -89,7 +89,7 @@ export const example2Menu: Example2Group[] = [
       { no: '2.14', title: 'IDENTITY投影底图', slug: 'identity', implemented: true },
       { no: '2.15', title: '百度投影底图', slug: 'baidu', implemented: true },
       { no: '2.16', title: 'Proj4js自定义投影底图', slug: 'proj4', implemented: true },
-      { no: '2.17', title: 'D3投影', slug: 'd3-projection' },
+      { no: '2.17', title: 'D3投影', slug: 'd3-projection', implemented: true },
       { no: '2.18', title: '载入不同投影的TileLayer', slug: 'mixed-projection' },
       { no: '2.19', title: '底图风格滤镜', slug: 'css-filter' },
       { no: '2.20', title: '自定义处理瓦片图片', slug: 'custom-tile-image' },
