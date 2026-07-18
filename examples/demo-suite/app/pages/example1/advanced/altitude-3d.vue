@@ -11,9 +11,9 @@
       </UCard>
 
       <UCard>
-        <template #header><h2 class="font-semibold">逃生舱 · setAltitude 高度线</h2></template>
-        <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><span class="text-sm text-muted">native Marker.setAltitude() 画高度垂线（maptalks 基础库，非 GL 专属）。</span></template>
+        <template #header><h2 class="font-semibold">逃生舱 · animateTo 3D</h2></template>
+        <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height:350px" />
+        <template #footer><div class="flex gap-2"><UButton size="sm" @click="animateToView()">飞向新视角</UButton></div></template>
       </UCard>
     </div>
 
