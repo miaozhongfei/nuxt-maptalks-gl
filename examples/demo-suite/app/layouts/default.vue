@@ -3,7 +3,7 @@
     <!-- 顶部横向一级菜单 -->
     <UHeader :ui="{ root: 'relative z-10 shrink-0' }">
       <template #left>
-        <NuxtLink to="/" class="font-mono font-bold text-sm">
+        <NuxtLink to="/example1" class="font-mono font-bold text-sm">
           nuxt-maptalks-gl
         </NuxtLink>
       </template>
@@ -55,53 +55,53 @@ import type { NavigationMenuItem } from '@nuxt/ui';
 const items: NavigationMenuItem[][] = [
   [
     { label: '开始', type: 'label' },
-    { label: '首页', icon: 'i-lucide-home', to: '/' },
-    { label: '自适应父容器', icon: 'i-lucide-maximize', to: '/fill-parent' },
-    { label: 'IW 动画测试', icon: 'i-lucide-tv', to: '/test/iw-animation' },
-    { label: 'MIW 测试', icon: 'i-lucide-tv', to: '/test/miw-test' },
+    { label: '首页', icon: 'i-lucide-home', to: '/example1' },
+    { label: '自适应父容器', icon: 'i-lucide-maximize', to: '/example1/fill-parent' },
+    { label: 'IW 动画测试', icon: 'i-lucide-tv', to: '/example1/test/iw-animation' },
+    { label: 'MIW 测试', icon: 'i-lucide-tv', to: '/example1/test/miw-test' },
   ],
   [
     { label: '组件单独', type: 'label' },
-    { label: '地图·瓦片图层', to: '/components/layers' },
-    { label: '图形', to: '/components/geometries' },
-    { label: '控件', to: '/components/controls' },
-    { label: '工具', to: '/components/tools' },
-    { label: '信息框', to: '/components/infowindow' },
+    { label: '地图·瓦片图层', to: '/example1/components/layers' },
+    { label: '图形', to: '/example1/components/geometries' },
+    { label: '控件', to: '/example1/components/controls' },
+    { label: '工具', to: '/example1/components/tools' },
+    { label: '信息框', to: '/example1/components/infowindow' },
   ],
   [
     { label: 'Composable 单独', type: 'label' },
-    { label: '核心', to: '/composables/core' },
-    { label: '图层预设', to: '/composables/layer-presets' },
-    { label: '图形预设', to: '/composables/geometry-presets' },
-    { label: '相机·事件·坐标', to: '/composables/interaction' },
-    { label: '绘制·测量', to: '/composables/tools' },
-    { label: '状态·序列化', to: '/composables/state' },
-    { label: '控件', to: '/composables/controls' },
-    { label: '信息框', to: '/composables/infowindow' },
+    { label: '核心', to: '/example1/composables/core' },
+    { label: '图层预设', to: '/example1/composables/layer-presets' },
+    { label: '图形预设', to: '/example1/composables/geometry-presets' },
+    { label: '相机·事件·坐标', to: '/example1/composables/interaction' },
+    { label: '绘制·测量', to: '/example1/composables/tools' },
+    { label: '状态·序列化', to: '/example1/composables/state' },
+    { label: '控件', to: '/example1/composables/controls' },
+    { label: '信息框', to: '/example1/composables/infowindow' },
   ],
   [
     { label: '组合示例', type: 'label' },
-    { label: '组件组合', to: '/combos/components-combo' },
-    { label: 'composable 组合', to: '/combos/composables-combo' },
-    { label: '混合组合', to: '/combos/mixed-combo' },
+    { label: '组件组合', to: '/example1/combos/components-combo' },
+    { label: 'composable 组合', to: '/example1/combos/composables-combo' },
+    { label: '混合组合', to: '/example1/combos/mixed-combo' },
   ],
   [
     { label: '进阶·逃生舱', type: 'label' },
-    { label: '3D 高度', to: '/advanced/altitude-3d' },
-    { label: '动画', to: '/advanced/geometry-fx' },
-    { label: '编辑·拖拽', to: '/advanced/geometry-edit' },
-    { label: '曲线·连接线', to: '/advanced/curves-connector' },
-    { label: 'UI 组件', to: '/advanced/ui-components' },
-    { label: '更多控件', to: '/advanced/extra-controls' },
-    { label: '图层特效', to: '/advanced/layer-effects' },
-    { label: '投影', to: '/advanced/projections' },
-    { label: '插件图层', to: '/advanced/plugin-layers' },
+    { label: '3D 高度', to: '/example1/advanced/altitude-3d' },
+    { label: '动画', to: '/example1/advanced/geometry-fx' },
+    { label: '编辑·拖拽', to: '/example1/advanced/geometry-edit' },
+    { label: '曲线·连接线', to: '/example1/advanced/curves-connector' },
+    { label: 'UI 组件', to: '/example1/advanced/ui-components' },
+    { label: '更多控件', to: '/example1/advanced/extra-controls' },
+    { label: '图层特效', to: '/example1/advanced/layer-effects' },
+    { label: '投影', to: '/example1/advanced/projections' },
+    { label: '插件图层', to: '/example1/advanced/plugin-layers' },
   ],
 ];
 
 // 菜单集合：一级菜单为一个集合，含完整侧栏菜单 后续在此追加新集合即可
 const menuSets = [
-  { label: '示例1', to: '/', groups: items },
+  { label: '示例1', to: '/example1', groups: items },
 ];
 
 // 顶栏横向一级菜单：由 menuSets 派生
