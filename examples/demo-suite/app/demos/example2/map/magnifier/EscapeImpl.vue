@@ -17,10 +17,10 @@ const elMag = ref<HTMLElement | null>(null);
 const visible = ref(false);
 const pos = ref({ x: 0, y: 0 });
 
-const { map: mainMap } = useMaptalks(elMain, { center: [-0.113049, 51.498568], zoom: 13 });
+const { map: mainMap } = useMaptalks(elMain, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(mainMap, { source: 'osm' });
 const { map: magMap } = useMaptalks(elMag, {
-  center: [-0.113049, 51.498568],
+  center: [121.5057, 31.2453],
   zoom: 15,
   draggable: false,
   zoomable: false,

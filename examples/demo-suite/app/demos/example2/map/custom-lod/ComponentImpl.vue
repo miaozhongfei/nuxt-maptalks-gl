@@ -2,7 +2,7 @@
   <div>
     <!-- 组件单独：spatialReference 在 options 透传，zoom 范围变为 0~5 -->
     <MaptalksMap
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="3"
       base-layer="osm"
       :options="{ spatialReference }"

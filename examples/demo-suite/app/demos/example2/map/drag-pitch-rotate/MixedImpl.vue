@@ -3,7 +3,7 @@
     <!-- 组合：组件开启拖拽；相机 composable 实时显示角度 -->
     <MaptalksMap
       ref="mapCmp"
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="14"
       :drag-pitch="true"
       :drag-rotate="true"

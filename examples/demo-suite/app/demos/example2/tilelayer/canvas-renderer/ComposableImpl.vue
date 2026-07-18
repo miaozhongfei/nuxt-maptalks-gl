@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 // renderer: 'canvas' 强制瓦片图层走 Canvas 渲染
 useMaptalksTileLayer(map, {
   options: {

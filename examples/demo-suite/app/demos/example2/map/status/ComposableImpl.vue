@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
 // 四个状态 ref 自动跟随地图（moveend/zoomend/pitch/rotate）
 const cam = useMaptalksCamera(map);

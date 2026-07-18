@@ -2,7 +2,7 @@
   <div>
     <!-- 组件单独：@ready 载荷即地图实例，读取一次初始状态（组件事件面） -->
     <MaptalksMap
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="14"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"

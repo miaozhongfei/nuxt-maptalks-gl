@@ -14,14 +14,14 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 11 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 11 });
 useMaptalksTileLayer(map, { source: 'osm' });
 
 // 目标多边形（用几何预设画出来）
 const { layer } = useMaptalksVectorLayer(map);
 const { geometry } = useMaptalksPolygon(layer, {
   coordinates: [
-    [[-0.13, 51.5], [-0.1, 51.5], [-0.1, 51.51], [-0.13, 51.51], [-0.13, 51.5]],
+    [[121.49, 31.24], [121.52, 31.24], [121.52, 31.255], [121.49, 31.255], [121.49, 31.24]],
   ],
   symbol: { polygonFill: '#2563eb', polygonOpacity: 0.3, lineColor: '#1d4ed8', lineWidth: 2 },
 });

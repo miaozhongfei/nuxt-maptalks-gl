@@ -16,7 +16,7 @@
 const el = ref<HTMLElement | null>(null);
 // 建图选项即开启拖拽倾斜/旋转
 const { map } = useMaptalks(el, {
-  center: [-0.113049, 51.498568],
+  center: [121.5057, 31.2453],
   zoom: 14,
   dragPitch: true,
   dragRotate: true,

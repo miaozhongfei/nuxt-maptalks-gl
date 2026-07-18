@@ -2,7 +2,7 @@
   <div>
     <!-- 组件单独：dragPitch / dragRotate 是运行期响应式 prop（组件内部 watch 并热更新） -->
     <MaptalksMap
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="14"
       :drag-pitch="dragPitch"
       :drag-rotate="dragRotate"

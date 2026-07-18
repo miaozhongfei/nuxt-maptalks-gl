@@ -17,7 +17,7 @@
 const el = ref<HTMLElement | null>(null);
 // 建图时先给一组上下限
 const { map } = useMaptalks(el, {
-  center: [-0.113049, 51.498568],
+  center: [121.5057, 31.2453],
   zoom: 14,
   minZoom: 12,
   maxZoom: 16,

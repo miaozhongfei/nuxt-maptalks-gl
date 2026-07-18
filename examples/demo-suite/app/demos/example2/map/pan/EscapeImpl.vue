@@ -6,16 +6,16 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-2 mt-3 flex-wrap">
-      <UButton size="sm" @click="panTo([-0.088, 51.505])">原生 panTo 塔桥</UButton>
-      <UButton size="sm" color="neutral" variant="outline" @click="setCenter([-0.1, 51.51])">原生 setCenter（瞬移）</UButton>
-      <UButton size="sm" color="neutral" @click="panTo([-0.113049, 51.498568])">回到原点</UButton>
+      <UButton size="sm" @click="panTo([121.4906, 31.2397])">原生 panTo 外滩</UButton>
+      <UButton size="sm" color="neutral" variant="outline" @click="setCenter([121.52, 31.235])">原生 setCenter（瞬移）</UButton>
+      <UButton size="sm" color="neutral" @click="panTo([121.5057, 31.2453])">回到原点</UButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
 
 // 逃生舱：原生 panTo / setCenter（坐标数组会被 maptalks 自动转为 Coordinate）

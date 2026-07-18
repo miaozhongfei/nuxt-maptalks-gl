@@ -20,7 +20,7 @@ const spatialReference = { projection: 'EPSG:3857', resolutions };
 const el = ref<HTMLElement | null>(null);
 // spatialReference 直接进建图选项
 const { map } = useMaptalks(el, {
-  center: [-0.113049, 51.498568],
+  center: [121.5057, 31.2453],
   zoom: 3,
   spatialReference,
 });

@@ -26,8 +26,8 @@
 // 两张命名地图（name 会登记进 MapRegistry，供 useMaptalksSync 按名引用）
 const elA = ref<HTMLElement | null>(null);
 const elB = ref<HTMLElement | null>(null);
-const { map: mapA } = useMaptalks(elA, { name: 'sync-u-a', center: [-0.113049, 51.498568], zoom: 13 });
-const { map: mapB } = useMaptalks(elB, { name: 'sync-u-b', center: [-0.113049, 51.498568], zoom: 13 });
+const { map: mapA } = useMaptalks(elA, { name: 'sync-u-a', center: [121.5057, 31.2453], zoom: 13 });
+const { map: mapB } = useMaptalks(elB, { name: 'sync-u-b', center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(mapA, { source: 'osm' });
 useMaptalksTileLayer(mapB, { source: 'osm' });
 // 视图同步 composable：按名同步两张地图

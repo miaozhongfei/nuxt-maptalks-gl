@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
 
 // 相机 zoom 双向 ref：滑杆写 0.1 步进的小数级别

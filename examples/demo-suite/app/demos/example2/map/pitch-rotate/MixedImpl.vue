@@ -3,7 +3,7 @@
     <!-- 组合：组件建图（含初始视角），滑杆经 useMaptalksCamera 双向同步 -->
     <MaptalksMap
       ref="mapCmp"
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="14"
       :pitch="45"
       :bearing="-30"

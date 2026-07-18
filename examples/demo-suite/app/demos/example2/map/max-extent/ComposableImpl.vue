@@ -14,10 +14,10 @@
 
 <script setup lang="ts">
 // 限制范围（JSON 形式，maptalks 内部会转 Extent）
-const EXT = { xmin: -0.16, ymin: 51.48, xmax: -0.07, ymax: 51.52 };
+const EXT = { xmin: 121.47, ymin: 31.22, xmax: 121.55, ymax: 31.27 };
 
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
 // setMaxExtent 由 camera composable 提供，传 null 解除
 const cam = useMaptalksCamera(map);

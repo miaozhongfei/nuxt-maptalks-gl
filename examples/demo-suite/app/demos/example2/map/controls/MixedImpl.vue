@@ -2,7 +2,7 @@
   <!-- 组合：组件建图，控件全部用 composable 挂载 -->
   <MaptalksMap
     ref="mapCmp"
-    :center="[-0.113049, 51.498568]"
+    :center="[121.5057, 31.2453]"
     :zoom="14"
     base-layer="osm"
     class="relative rounded border border-default overflow-hidden"

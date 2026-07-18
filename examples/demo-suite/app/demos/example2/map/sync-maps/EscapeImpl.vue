@@ -21,8 +21,8 @@ import type { MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl';
 
 const elA = ref<HTMLElement | null>(null);
 const elB = ref<HTMLElement | null>(null);
-const { map: mapA } = useMaptalks(elA, { center: [-0.113049, 51.498568], zoom: 13 });
-const { map: mapB } = useMaptalks(elB, { center: [-0.113049, 51.498568], zoom: 13 });
+const { map: mapA } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13 });
+const { map: mapB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(mapA, { source: 'osm' });
 useMaptalksTileLayer(mapB, { source: 'osm' });
 

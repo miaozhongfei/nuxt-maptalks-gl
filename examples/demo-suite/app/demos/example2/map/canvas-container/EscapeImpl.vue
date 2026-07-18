@@ -17,6 +17,6 @@
 <script setup lang="ts">
 // canvas 亦是 HTMLElement，直接作为容器传入 useMaptalks
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
 </script>

@@ -3,7 +3,7 @@
     <!-- 组合：组件建图（options 透传 SR），camera 显示当前 zoom -->
     <MaptalksMap
       ref="mapCmp"
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="3"
       base-layer="osm"
       :options="{ spatialReference }"

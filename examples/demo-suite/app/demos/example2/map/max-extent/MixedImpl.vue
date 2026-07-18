@@ -3,7 +3,7 @@
     <!-- 组合：组件建图 + camera composable 设置/解除限制 -->
     <MaptalksMap
       ref="mapCmp"
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="14"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-const EXT = { xmin: -0.16, ymin: 51.48, xmax: -0.07, ymax: 51.52 };
+const EXT = { xmin: 121.47, ymin: 31.22, xmax: 121.55, ymax: 31.27 };
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const cam = useMaptalksCamera(map);

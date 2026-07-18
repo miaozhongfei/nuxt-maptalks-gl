@@ -21,7 +21,7 @@
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, {
-  center: [-0.113049, 51.498568],
+  center: [121.5057, 31.2453],
   zoom: 14,
   pitch: 45,
   bearing: -30,

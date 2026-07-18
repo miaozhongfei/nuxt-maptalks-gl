@@ -4,7 +4,7 @@
     <div class="grid grid-cols-2 gap-3">
       <MaptalksMap
         name="sync-m-a"
-        :center="[-0.113049, 51.498568]"
+        :center="[121.5057, 31.2453]"
         :zoom="13"
         base-layer="osm"
         class="relative rounded border border-default overflow-hidden"
@@ -12,7 +12,7 @@
       />
       <MaptalksMap
         name="sync-m-b"
-        :center="[-0.113049, 51.498568]"
+        :center="[121.5057, 31.2453]"
         :zoom="13"
         base-layer="osm"
         class="relative rounded border border-default overflow-hidden"

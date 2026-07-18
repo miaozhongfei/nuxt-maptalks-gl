@@ -3,7 +3,7 @@
     <!-- 组合：组件建图 + 几何/相机 composable -->
     <MaptalksMap
       ref="mapCmp"
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="11"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
@@ -23,7 +23,7 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
 const { geometry } = useMaptalksPolygon(layer, {
   coordinates: [
-    [[-0.13, 51.5], [-0.1, 51.5], [-0.1, 51.51], [-0.13, 51.51], [-0.13, 51.5]],
+    [[121.49, 31.24], [121.52, 31.24], [121.52, 31.255], [121.49, 31.255], [121.49, 31.24]],
   ],
   symbol: { polygonFill: '#16a34a', polygonOpacity: 0.3, lineColor: '#15803d', lineWidth: 2 },
 });

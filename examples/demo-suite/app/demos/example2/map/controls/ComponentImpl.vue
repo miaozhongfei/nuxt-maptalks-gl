@@ -1,7 +1,7 @@
 <template>
   <!-- 组件单独：四个控件组件挂到地图四角 -->
   <MaptalksMap
-    :center="[-0.113049, 51.498568]"
+    :center="[121.5057, 31.2453]"
     :zoom="14"
     base-layer="osm"
     class="relative rounded border border-default overflow-hidden"

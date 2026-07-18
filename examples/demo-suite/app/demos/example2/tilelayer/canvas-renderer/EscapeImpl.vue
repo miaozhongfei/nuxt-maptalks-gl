@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-0.113049, 51.498568], zoom: 14 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 // 工厂回调注入 maptalks-gl 命名空间（mt），renderer: 'canvas' 强制 Canvas 渲染
 useMaptalksLayer(map, (mt) =>
   new mt.TileLayer('base', {

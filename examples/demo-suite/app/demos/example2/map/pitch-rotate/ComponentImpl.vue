@@ -2,7 +2,7 @@
   <div>
     <!-- 组件单独：pitch / bearing props 设定初始视角（这两个 prop 不做运行期重设） -->
     <MaptalksMap
-      :center="[-0.113049, 51.498568]"
+      :center="[121.5057, 31.2453]"
       :zoom="14"
       :pitch="45"
       :bearing="-30"
