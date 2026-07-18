@@ -63,7 +63,7 @@ export const example2Menu: Example2Group[] = [
       { no: '1.13', title: '同步地图', slug: 'sync-maps', implemented: true },
       { no: '1.14', title: '屏幕坐标转换', slug: 'coordinate-convert', implemented: true },
       { no: '1.15', title: '导出为图片', slug: 'export-image', implemented: true },
-      { no: '1.16', title: '地图放大镜', slug: 'magnifier' },
+      { no: '1.16', title: '地图放大镜', slug: 'magnifier', implemented: true },
       { no: '1.17', title: '自定义地图LOD', slug: 'custom-lod' },
       { no: '1.18', title: '缩放地图容器解决高分辨率地图卡顿', slug: 'container-scale' },
     ],
