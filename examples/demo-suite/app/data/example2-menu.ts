@@ -76,7 +76,7 @@ export const example2Menu: Example2Group[] = [
       { no: '2.1', title: 'Canvas渲染方式的瓦片图层', slug: 'canvas-renderer', implemented: true },
       { no: '2.2', title: '添加多个瓦片图层', slug: 'multi-tilelayers', implemented: true },
       { no: '2.3', title: '添加瓦片图层组', slug: 'group-tilelayer', implemented: true },
-      { no: '2.4', title: 'WMS瓦片图层', slug: 'wms' },
+      { no: '2.4', title: 'WMS瓦片图层', slug: 'wms', implemented: true },
       { no: '2.5', title: 'Tilelayer强制重载', slug: 'force-reload' },
       { no: '2.6', title: 'Vector-Tile图层', slug: 'vector-tile' },
       { no: '2.7', title: 'ArcGIS瓦片图层', slug: 'arcgis' },
