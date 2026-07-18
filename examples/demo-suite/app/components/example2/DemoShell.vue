@@ -8,10 +8,12 @@
 
     <UTabs
       :items="items"
+      :default-value="tabs[0]?.key"
       :unmount-on-hide="true"
       variant="link"
       class="w-full"
     >
+      <!-- default-value 必须显式指到首个 tab 的 key（items 用了自定义 value，UTabs 默认按索引选中会失配） -->
       <!-- 每个实现方式一个具名插槽；unmount-on-hide 确保切换 tab 即销毁旧地图实例 -->
       <template v-for="t in tabs" :key="t.key" #[t.key]>
         <component :is="t.comp" class="mt-4" />
