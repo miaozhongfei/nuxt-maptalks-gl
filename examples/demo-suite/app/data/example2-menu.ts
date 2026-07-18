@@ -61,7 +61,7 @@ export const example2Menu: Example2Group[] = [
       { no: '1.11', title: '在Canvas容器中加载', slug: 'canvas-container', implemented: true },
       { no: '1.12', title: '监听地图事件', slug: 'events', implemented: true },
       { no: '1.13', title: '同步地图', slug: 'sync-maps', implemented: true },
-      { no: '1.14', title: '屏幕坐标转换', slug: 'coordinate-convert' },
+      { no: '1.14', title: '屏幕坐标转换', slug: 'coordinate-convert', implemented: true },
       { no: '1.15', title: '导出为图片', slug: 'export-image' },
       { no: '1.16', title: '地图放大镜', slug: 'magnifier' },
       { no: '1.17', title: '自定义地图LOD', slug: 'custom-lod' },
