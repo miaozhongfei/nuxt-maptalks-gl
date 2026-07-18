@@ -14,12 +14,13 @@
   "dependencies": {
     "@lacqjs/nuxt-maptalks-gl": "workspace:*",
     "@nuxt/ui": "^4.9.0",
+    "d3-geo": "^3.1.1",
     "mapbox-gl": "^3.7.0",
     "maptalks-gl": "^0.124.0",
-    "maptalks.heatmap": "^0.8.1",
-    "maptalks.markercluster": "^0.10.0",
     "maptalks.e3": "^0.5.2",
+    "maptalks.heatmap": "^0.8.1",
     "maptalks.mapboxgl": "^0.3.4",
+    "maptalks.markercluster": "^0.10.0",
     "maptalks.three": "^0.42.2",
     "nuxt": "^4.4.8",
     "proj4": "^2.12.0",
@@ -27,6 +28,7 @@
     "vue": "^3.5.35"
   },
   "devDependencies": {
+    "@types/d3-geo": "^3.1.0",
     "oxfmt": "^0.56.0",
     "oxlint": "^1.71.0",
     "typescript": "~6.0.3",
