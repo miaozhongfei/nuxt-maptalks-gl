@@ -19,8 +19,9 @@ const layerResolutions = Array.from(
   (_, i) => (2 * 6378137 * Math.PI) / (256 * 2 ** (i + 10)),
 );
 const tileOptions = {
-  urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-  subdomains: ['b', 'c', 'd'],
+  // 图层携带独立 SR 时 {z} 是图层 LOD 索引（0~5），用函数映射回真实级别 z10~z15
+  urlTemplate: (x: number, y: number, z: number) =>
+    `https://b.basemaps.cartocdn.com/light_all/${z + 10}/${x}/${y}.png`,
   // TileLayer 自带 spatialReference：图层用自己的 LOD 取瓦片，地图缩放时自动就近匹配
   spatialReference: { projection: 'EPSG:3857', resolutions: layerResolutions },
 };

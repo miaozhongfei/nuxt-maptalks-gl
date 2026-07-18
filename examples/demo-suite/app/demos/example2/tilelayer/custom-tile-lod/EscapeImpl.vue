@@ -18,10 +18,11 @@ const layerResolutions = Array.from(
   (_, i) => (2 * 6378137 * Math.PI) / (256 * 2 ** (i + 10)),
 );
 // TileLayer 自带 spatialReference：图层用自己的 LOD 取瓦片，地图缩放时自动就近匹配
+// 注意：图层携带独立 SR 时，urlTemplate 的 {z} 是图层 LOD 索引（0~5），需手动映射回真实级别 z10~z15
 useMaptalksLayer(map, (mt) =>
   new mt.TileLayer('base', {
-    urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-    subdomains: ['b', 'c', 'd'],
+    urlTemplate: (x: number, y: number, z: number) =>
+      `https://b.basemaps.cartocdn.com/light_all/${z + 10}/${x}/${y}.png`,
     spatialReference: { projection: 'EPSG:3857', resolutions: layerResolutions },
     attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
   }),
