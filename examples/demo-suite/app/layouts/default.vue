@@ -1,9 +1,8 @@
 <template>
   <div class="h-screen flex flex-col">
     <!-- 顶部横向一级菜单 -->
-    <UHeader :ui="{ root: 'relative z-10 shrink-0' }">
+    <UHeader :ui="{ root: 'relative z-10 shrink-0' }" title="">
       <template #left />
-      <template #title />
 
       <UNavigationMenu
         orientation="horizontal"
@@ -24,7 +23,6 @@
           :min-size="14"
           :max-size="28"
         >
-          <template #header />
           <UNavigationMenu orientation="vertical" :items="items" />
         </UDashboardSidebar>
 
