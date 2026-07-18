@@ -57,7 +57,7 @@ export const example2Menu: Example2Group[] = [
       { no: '1.7', title: '自动适配区域', slug: 'fit-extent', implemented: true },
       { no: '1.8', title: '限制地图区域', slug: 'max-extent', implemented: true },
       { no: '1.9', title: '限制缩放级别', slug: 'zoom-limit', implemented: true },
-      { no: '1.10', title: '细微缩放(Fractional Zoom)', slug: 'fractional-zoom' },
+      { no: '1.10', title: '细微缩放(Fractional Zoom)', slug: 'fractional-zoom', implemented: true },
       { no: '1.11', title: '在Canvas容器中加载', slug: 'canvas-container' },
       { no: '1.12', title: '监听地图事件', slug: 'events' },
       { no: '1.13', title: '同步地图', slug: 'sync-maps' },
