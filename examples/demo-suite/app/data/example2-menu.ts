@@ -54,7 +54,7 @@ export const example2Menu: Example2Group[] = [
       { no: '1.4', title: '移动地图', slug: 'pan', implemented: true },
       { no: '1.5', title: '添加常用控件', slug: 'controls', implemented: true },
       { no: '1.6', title: '获取地图状态', slug: 'status', implemented: true },
-      { no: '1.7', title: '自动适配区域', slug: 'fit-extent' },
+      { no: '1.7', title: '自动适配区域', slug: 'fit-extent', implemented: true },
       { no: '1.8', title: '限制地图区域', slug: 'max-extent' },
       { no: '1.9', title: '限制缩放级别', slug: 'zoom-limit' },
       { no: '1.10', title: '细微缩放(Fractional Zoom)', slug: 'fractional-zoom' },
