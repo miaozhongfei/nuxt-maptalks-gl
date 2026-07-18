@@ -93,7 +93,7 @@ export const example2Menu: Example2Group[] = [
       { no: '2.18', title: '载入不同投影的TileLayer', slug: 'mixed-projection', implemented: true },
       { no: '2.19', title: '底图风格滤镜', slug: 'css-filter', implemented: true },
       { no: '2.20', title: '自定义处理瓦片图片', slug: 'custom-tile-image', implemented: true },
-      { no: '2.21', title: '增大空间参考的maxZoom', slug: 'max-zoom-extend' },
+      { no: '2.21', title: '增大空间参考的maxZoom', slug: 'max-zoom-extend', implemented: true },
     ],
   },
   {
