@@ -83,7 +83,7 @@ export const example2Menu: Example2Group[] = [
       { no: '2.8', title: 'WMTS瓦片图层', slug: 'wmts', implemented: true },
       { no: '2.9', title: 'LOD和自定义瓦片图层', slug: 'custom-tile-lod', implemented: true },
       { no: '2.10', title: '用base64编码载入瓦片', slug: 'base64-tile', implemented: true },
-      { no: '2.11', title: '设置瓦片图层透明度', slug: 'tile-opacity' },
+      { no: '2.11', title: '设置瓦片图层透明度', slug: 'tile-opacity', implemented: true },
       { no: '2.12', title: '只显示指定范围内的瓦片', slug: 'tile-extent' },
       { no: '2.13', title: '4326投影底图', slug: 'epsg4326' },
       { no: '2.14', title: 'IDENTITY投影底图', slug: 'identity' },
