@@ -1,35 +1,53 @@
 <template>
-  <!-- @nuxt/ui Dashboard 布局：侧边栏固定、内容区独立滚动，移动端自动折叠为抽屉 -->
-  <UDashboardGroup>
-    <UDashboardSidebar
-      collapsible
-      resizable
-      :default-size="18"
-      :min-size="14"
-      :max-size="28"
-    >
-      <template #header="{ collapsed }">
-        <!-- 折叠时只显示简称 -->
-        <NuxtLink to="/" class="font-mono font-bold text-sm truncate">
-          {{ collapsed ? 'MT' : 'nuxt-maptalks-gl' }}
+  <div class="h-screen flex flex-col">
+    <!-- 顶部横向一级菜单 -->
+    <UHeader :ui="{ root: 'relative z-10 shrink-0' }">
+      <template #left>
+        <NuxtLink to="/" class="font-mono font-bold text-sm">
+          nuxt-maptalks-gl
         </NuxtLink>
       </template>
 
-      <!-- 侧边栏主体：竖向导航菜单（这块会独立滚动，不随内容区滚动） -->
-      <UNavigationMenu orientation="vertical" :items="sidebarItems" />
-    </UDashboardSidebar>
+      <template #center>
+        <UNavigationMenu
+          orientation="horizontal"
+          :items="navItems"
+          :ui="{ link: 'text-sm' }"
+        />
+      </template>
+    </UHeader>
 
-    <UDashboardPanel id="main">
-      <template #header>
-        <!-- 顶栏：移动端在此显示侧边栏开关 -->
-        <UDashboardNavbar title="@lacqjs/nuxt-maptalks-gl 示例合集" />
-      </template>
-      <template #body>
-        <!-- 内容区：独立滚动 -->
-        <slot />
-      </template>
-    </UDashboardPanel>
-  </UDashboardGroup>
+    <!-- 下方 Dashboard 布局 -->
+    <div class="flex-1 relative">
+      <UDashboardGroup
+        :ui="{ base: '!absolute inset-0 flex overflow-hidden' }"
+      >
+        <UDashboardSidebar
+          collapsible
+          resizable
+          :default-size="18"
+          :min-size="14"
+          :max-size="28"
+        >
+          <template #header="{ collapsed }">
+            <NuxtLink to="/" class="font-mono font-bold text-sm truncate">
+              {{ collapsed ? 'MT' : activeSection.label }}
+            </NuxtLink>
+          </template>
+          <UNavigationMenu orientation="vertical" :items="sidebarItems" />
+        </UDashboardSidebar>
+
+        <UDashboardPanel id="main">
+          <template #header>
+            <UDashboardNavbar :title="`@lacqjs/nuxt-maptalks-gl: ${activeSection.label}`" />
+          </template>
+          <template #body>
+            <slot />
+          </template>
+        </UDashboardPanel>
+      </UDashboardGroup>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -103,6 +121,15 @@ const activeSection = computed(() => {
   // 开始（兜底：'/','/fill-parent','/test/*'）
   return sections[0];
 });
+
+// 顶栏横向菜单 items：由 sections 派生
+const navItems = computed<NavigationMenuItem[][]>(() => [
+  sections.map((s) => ({
+    label: s.label,
+    icon: s.icon,
+    to: s.to,
+  })),
+]);
 
 // 侧边栏 items：当前分区 label 标题 + children 列表
 const sidebarItems = computed<NavigationMenuItem[][]>(() => [
