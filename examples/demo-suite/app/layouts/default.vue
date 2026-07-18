@@ -8,13 +8,11 @@
         </NuxtLink>
       </template>
 
-      <template #center>
-        <UNavigationMenu
-          orientation="horizontal"
-          :items="navItems"
-          :ui="{ link: 'text-sm' }"
-        />
-      </template>
+      <UNavigationMenu
+        orientation="horizontal"
+        :items="navItems"
+        :ui="{ link: 'text-sm' }"
+      />
     </UHeader>
 
     <!-- 下方 Dashboard 布局 -->
