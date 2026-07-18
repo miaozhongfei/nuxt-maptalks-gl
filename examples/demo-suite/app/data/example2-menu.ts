@@ -78,7 +78,7 @@ export const example2Menu: Example2Group[] = [
       { no: '2.3', title: '添加瓦片图层组', slug: 'group-tilelayer', implemented: true },
       { no: '2.4', title: 'WMS瓦片图层', slug: 'wms', implemented: true },
       { no: '2.5', title: 'Tilelayer强制重载', slug: 'force-reload', implemented: true },
-      { no: '2.6', title: 'Vector-Tile图层', slug: 'vector-tile' },
+      { no: '2.6', title: 'Vector-Tile图层', slug: 'vector-tile', implemented: true },
       { no: '2.7', title: 'ArcGIS瓦片图层', slug: 'arcgis' },
       { no: '2.8', title: 'WMTS瓦片图层', slug: 'wmts' },
       { no: '2.9', title: 'LOD和自定义瓦片图层', slug: 'custom-tile-lod' },
