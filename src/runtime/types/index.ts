@@ -405,6 +405,8 @@ export interface MaptalksGLNamespace {
   VectorTileLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
   /** WMS 图层构造器（OGC WMS 服务，与 TileLayer 同构：id + options） */
   WMSLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
+  /** WMS 图层构造器的 maptalks-gl 实际导出名（maptalks 核心导出为 WMSTileLayer） */
+  WMSTileLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
   /** GroupGLLayer 构造器（承载 GL 图层与光照/后处理） */
   GroupGLLayer?: new (
     id: string,
