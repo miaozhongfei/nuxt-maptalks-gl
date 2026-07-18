@@ -2,11 +2,8 @@
   <div class="h-screen flex flex-col">
     <!-- 顶部横向一级菜单 -->
     <UHeader :ui="{ root: 'relative z-10 shrink-0' }">
-      <template #left>
-        <NuxtLink to="/example1" class="font-mono font-bold text-sm">
-          nuxt-maptalks-gl
-        </NuxtLink>
-      </template>
+      <template #left />
+      <template #title />
 
       <UNavigationMenu
         orientation="horizontal"
@@ -27,11 +24,7 @@
           :min-size="14"
           :max-size="28"
         >
-          <template #header="{ collapsed }">
-            <NuxtLink to="/" class="font-mono font-bold text-sm truncate">
-                {{ collapsed ? 'MT' : 'nuxt-maptalks-gl' }}
-            </NuxtLink>
-          </template>
+          <template #header />
           <UNavigationMenu orientation="vertical" :items="items" />
         </UDashboardSidebar>
 
