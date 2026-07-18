@@ -49,7 +49,7 @@ export const example2Menu: Example2Group[] = [
     slug: 'map',
     demos: [
       { no: '1.1', title: '显示', slug: 'load', implemented: true },
-      { no: '1.2', title: '倾斜与旋转', slug: 'pitch-rotate' },
+      { no: '1.2', title: '倾斜与旋转', slug: 'pitch-rotate', implemented: true },
       { no: '1.3', title: '拖动倾斜与旋转', slug: 'drag-pitch-rotate' },
       { no: '1.4', title: '移动地图', slug: 'pan' },
       { no: '1.5', title: '添加常用控件', slug: 'controls' },
