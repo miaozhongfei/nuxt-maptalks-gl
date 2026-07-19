@@ -116,7 +116,7 @@ export const example2Menu: Example2Group[] = [
       { no: '3.13', title: '克隆', slug: 'clone', implemented: true },
       { no: '3.14', title: '监听图形事件', slug: 'geometry-events', implemented: true },
       { no: '3.15', title: '闪烁', slug: 'flash', implemented: true },
-      { no: '3.16', title: 'GeometryCollection的条件查询', slug: 'collection-filter' },
+      { no: '3.16', title: 'GeometryCollection的条件查询', slug: 'collection-filter', implemented: true },
     ],
   },
   {
