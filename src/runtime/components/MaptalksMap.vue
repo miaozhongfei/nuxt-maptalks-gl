@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, ref, shallowRef, watch, nextTick } from 'vue'
+import { provide, ref, shallowRef, watch } from 'vue'
 import { useMaptalks } from '../composables/useMaptalks'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
@@ -31,6 +31,11 @@ function buildOpts(): UseMaptalksOptions {
   if (props.bearing !== undefined) o.bearing = props.bearing
   if (props.minZoom !== undefined) o.minZoom = props.minZoom
   if (props.maxZoom !== undefined) o.maxZoom = props.maxZoom
+  // 交互开关必须写进构造选项：maptalks 使用值的判断需要首次传入，仅靠 watch 在 toggle 场景下可能因异步调度丢失配置回路
+  if (props.draggable !== undefined) o.draggable = props.draggable
+  if (props.dragPitch !== undefined) o.dragPitch = props.dragPitch
+  if (props.dragRotate !== undefined) o.dragRotate = props.dragRotate
+  if (props.zoomable !== undefined) o.zoomable = props.zoomable
   return o
 }
 
@@ -42,22 +47,29 @@ defineExpose({ map, isReady, error })
 watch(isReady, (v) => { if (v && map.value) emit('ready', map.value) })
 watch(error, (e) => { if (e) emit('error', e) })
 
-// 运行时 prop 同步——nextTick 确保在 Vue DOM 稳定后操作 maptalks
+// 运行时 prop 同步——每一项独立 watch 避免组合数组在异步调度下丢失变更
 watch(
-  () => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable] as const,
-  () => {
-    const m = map.value
-    if (!m) return
-    nextTick(() => {
-      const mn = props.minZoom; if (mn !== undefined) m.setMinZoom(mn)
-      const mx = props.maxZoom; if (mx !== undefined) m.setMaxZoom(mx)
-      const conf: Record<string, boolean> = {}
-      const d = props.draggable; if (d !== undefined) conf.draggable = d
-      const dp = props.dragPitch; if (dp !== undefined) conf.dragPitch = dp
-      const dr = props.dragRotate; if (dr !== undefined) conf.dragRotate = dr
-      const z = props.zoomable; if (z !== undefined) conf.zoomable = z
-      if (Object.keys(conf).length > 0) m.config(conf)
-    })
-  },
+  () => props.minZoom,
+  (v) => { if (v !== undefined && map.value) map.value.setMinZoom(v) },
+)
+watch(
+  () => props.maxZoom,
+  (v) => { if (v !== undefined && map.value) map.value.setMaxZoom(v) },
+)
+watch(
+  () => props.draggable,
+  (v) => { if (v !== undefined && map.value) map.value.config({ draggable: v }) },
+)
+watch(
+  () => props.dragPitch,
+  (v) => { if (v !== undefined && map.value) map.value.config({ dragPitch: v }) },
+)
+watch(
+  () => props.dragRotate,
+  (v) => { if (v !== undefined && map.value) map.value.config({ dragRotate: v }) },
+)
+watch(
+  () => props.zoomable,
+  (v) => { if (v !== undefined && map.value) map.value.config({ zoomable: v }) },
 )
 </script>
