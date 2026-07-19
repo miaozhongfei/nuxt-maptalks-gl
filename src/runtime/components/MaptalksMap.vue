@@ -31,11 +31,6 @@ function buildOpts(): UseMaptalksOptions {
   if (props.bearing !== undefined) o.bearing = props.bearing
   if (props.minZoom !== undefined) o.minZoom = props.minZoom
   if (props.maxZoom !== undefined) o.maxZoom = props.maxZoom
-  // 交互开关必须写进构造选项：maptalks 使用值的判断需要首次传入，仅靠 watch 在 toggle 场景下可能因异步调度丢失配置回路
-  if (props.draggable !== undefined) o.draggable = props.draggable
-  if (props.dragPitch !== undefined) o.dragPitch = props.dragPitch
-  if (props.dragRotate !== undefined) o.dragRotate = props.dragRotate
-  if (props.zoomable !== undefined) o.zoomable = props.zoomable
   return o
 }
 
