@@ -165,7 +165,7 @@ export const example2Menu: Example2Group[] = [
       { no: '5.26', title: '根据zoom设置样式', slug: 'zoom-style', implemented: true },
       { no: '5.27', title: '根据属性数据设置样式', slug: 'property-style', implemented: true },
       { no: '5.28', title: '颜色插值', slug: 'color-interpolate', implemented: true },
-      { no: '5.29', title: 'HTML自定义标注', slug: 'html-marker' },
+      { no: '5.29', title: 'HTML自定义标注', slug: 'html-marker', implemented: true },
       { no: '5.30', title: 'D3图表样式', slug: 'd3-chart' },
       { no: '5.31', title: 'Echarts图表样式', slug: 'echarts-chart' },
       { no: '5.32', title: 'Highcharts图表样式', slug: 'highcharts-chart' },
