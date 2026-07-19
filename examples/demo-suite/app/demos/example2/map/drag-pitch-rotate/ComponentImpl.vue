@@ -2,6 +2,7 @@
   <div>
     <!-- 组件单独：dragPitch / dragRotate 是运行期响应式 prop（组件内部 watch 并热更新） -->
     <MaptalksMap
+      ref="mapCmp"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       :drag-pitch="dragPitch"
@@ -14,6 +15,10 @@
       <USwitch v-model="dragPitch" label="dragPitch（右键拖拽俯仰）" />
       <USwitch v-model="dragRotate" label="dragRotate（右键拖拽旋转）" />
     </div>
+    <p class="text-sm text-muted mt-2">
+      按住右键（或 Ctrl+左键）拖拽。
+      当前俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
+    </p>
   </div>
 </template>
 
@@ -21,4 +26,8 @@
 // 两个开关实时生效
 const dragPitch = ref(true);
 const dragRotate = ref(true);
+// 经组件 expose 的 map 桥接给相机 composable，只读显示角度
+const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+const map = computed(() => mapCmp.value?.map ?? null);
+const cam = useMaptalksCamera(map);
 </script>
