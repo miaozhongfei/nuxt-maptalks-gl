@@ -147,7 +147,7 @@ export const example2Menu: Example2Group[] = [
       { no: '5.8', title: '旋转标注', slug: 'marker-rotation', implemented: true },
       { no: '5.9', title: '文字标注', slug: 'text-marker', implemented: true },
       { no: '5.10', title: '旋转文字标注', slug: 'text-rotation', implemented: true },
-      { no: '5.11', title: '带文字的图片标注', slug: 'image-text-marker' },
+      { no: '5.11', title: '带文字的图片标注', slug: 'image-text-marker', implemented: true },
       { no: '5.12', title: '线样式', slug: 'line-style' },
       { no: '5.13', title: '线的模式填充', slug: 'line-pattern' },
       { no: '5.14', title: '线的模式填充动画', slug: 'line-pattern-animation' },
