@@ -141,7 +141,7 @@ export const example2Menu: Example2Group[] = [
       { no: '5.2', title: '多图片标注', slug: 'multi-image-marker', implemented: true },
       { no: '5.3', title: '矢量标注', slug: 'vector-marker', implemented: true },
       { no: '5.4', title: '矢量标注模式填充', slug: 'vector-pattern', implemented: true },
-      { no: '5.5', title: '矢量标注渐变填充', slug: 'vector-gradient' },
+      { no: '5.5', title: '矢量标注渐变填充', slug: 'vector-gradient', implemented: true },
       { no: '5.6', title: 'SVG矢量标注', slug: 'svg-marker' },
       { no: '5.7', title: '标注水平和垂直对齐', slug: 'marker-alignment' },
       { no: '5.8', title: '旋转标注', slug: 'marker-rotation' },
