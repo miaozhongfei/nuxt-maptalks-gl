@@ -1,0 +1,18 @@
+<template>
+  <MaptalksMap
+    :center="[121.5057, 31.2453]"
+    :zoom="13"
+    :pitch="55"
+    base-layer="osm"
+    class="relative rounded border border-default overflow-hidden"
+    style="height: 480px"
+  >
+    <MaptalksVectorLayer :options="{ enableAltitude: true, altitudeProperty: 'altitude', drawAltitude: true }">
+      <MaptalksLineString
+        :coordinates="[[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]]"
+        :properties="{ altitude: 400 }"
+        :symbol="{ lineColor: '#dc2626', lineWidth: 3 }"
+      />
+    </MaptalksVectorLayer>
+  </MaptalksMap>
+</template>
