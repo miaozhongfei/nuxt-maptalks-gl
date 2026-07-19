@@ -137,7 +137,7 @@ export const example2Menu: Example2Group[] = [
     title: '图形样式',
     slug: 'style',
     demos: [
-      { no: '5.1', title: '图片标注', slug: 'image-marker' },
+      { no: '5.1', title: '图片标注', slug: 'image-marker', implemented: true },
       { no: '5.2', title: '多图片标注', slug: 'multi-image-marker' },
       { no: '5.3', title: '矢量标注', slug: 'vector-marker' },
       { no: '5.4', title: '矢量标注模式填充', slug: 'vector-pattern' },
