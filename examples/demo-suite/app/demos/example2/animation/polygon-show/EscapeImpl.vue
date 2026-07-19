@@ -1,0 +1,32 @@
+<template>
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <UButton size="sm" variant="outline" class="mt-3" @click="animateShow">animateShow 展示</UButton>
+  </div>
+</template>
+
+<script setup lang="ts">
+const el = ref<HTMLElement | null>(null);
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
+useMaptalksTileLayer(map, { source: 'osm' });
+const { layer } = useMaptalksVectorLayer(map);
+
+let polyGeo: unknown = null;
+
+useMaptalksGeometry(layer, (mt) => {
+  polyGeo = new mt.Polygon(
+    [[[121.49, 31.255], [121.52, 31.255], [121.52, 31.238], [121.49, 31.238], [121.49, 31.255]]],
+    { symbol: { lineColor: '#2563eb', lineWidth: 3, polygonFill: '#22c55e', polygonOpacity: 0.4 } },
+  );
+  return polyGeo as any;
+});
+
+function animateShow() {
+  if (!polyGeo) return;
+  (polyGeo as { animateShow: (o: Record<string, unknown>) => void }).animateShow({ duration: 3000 });
+}
+</script>
