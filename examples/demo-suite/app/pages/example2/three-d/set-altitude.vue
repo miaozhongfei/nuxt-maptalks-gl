@@ -1,0 +1,19 @@
+<template>
+  <Example2DemoShell
+    description="动态 setAltitude() 滑块修改 Marker 高度（对应官网 4.6）。"
+    :tabs="tabs"
+  />
+</template>
+
+<script setup lang="ts">
+import type { DemoTab } from '~/data/example2-menu';
+import ComposableImpl from '~/demos/example2/three-d/set-altitude/ComposableImpl.vue';
+import EscapeImpl from '~/demos/example2/three-d/set-altitude/EscapeImpl.vue';
+import MixedImpl from '~/demos/example2/three-d/set-altitude/MixedImpl.vue';
+
+const tabs: DemoTab[] = [
+  { key: 'composable', label: 'Composable', comp: ComposableImpl },
+  { key: 'mixed', label: '组合', comp: MixedImpl },
+  { key: 'escape', label: '逃生舱', comp: EscapeImpl },
+];
+</script>
