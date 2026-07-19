@@ -9,16 +9,10 @@
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-// 工厂回调注入 maptalks-gl 命名空间（mt），创建底图
-useMaptalksLayer(map, (mt) =>
-  new mt.TileLayer('base', {
-    urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-    subdomains: ['b', 'c', 'd'],
-    attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
-  }),
-);
+// 逃生舱：底图也用模块托管（osm 命名源），保持与其他 tab 视觉统一
+useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-// 陆家嘴点标注（工厂模式）
+// 陆家嘴点标注（工厂模式——逃生舱口径：直接 new 原生几何）
 useMaptalksGeometry(layer, (mt) => new mt.Marker([121.5057, 31.2453], {
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
 }));
