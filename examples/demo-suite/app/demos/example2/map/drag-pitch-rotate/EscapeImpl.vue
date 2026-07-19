@@ -6,8 +6,8 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-6 mt-3 flex-wrap">
-      <USwitch v-model="dragPitch" label="dragPitch" />
-      <USwitch v-model="dragRotate" label="dragRotate" />
+      <USwitch v-model="dragPitch" label="dragPitch（右键拖拽俯仰）" />
+      <USwitch v-model="dragRotate" label="dragRotate（右键拖拽旋转）" />
     </div>
     <p class="text-sm text-muted mt-2">
       按住右键（或 Ctrl+左键）拖拽。
