@@ -168,7 +168,7 @@ export const example2Menu: Example2Group[] = [
       { no: '5.29', title: 'HTML自定义标注', slug: 'html-marker', implemented: true },
       { no: '5.30', title: 'D3图表样式', slug: 'd3-chart', implemented: true },
       { no: '5.31', title: 'Echarts图表样式', slug: 'echarts-chart', implemented: true },
-      { no: '5.32', title: 'Highcharts图表样式', slug: 'highcharts-chart' },
+      { no: '5.32', title: 'Highcharts图表样式', slug: 'highcharts-chart', implemented: true },
     ],
   },
   {
