@@ -126,7 +126,7 @@ export const example2Menu: Example2Group[] = [
     demos: [
       { no: '4.1', title: '有高度的Marker', slug: 'marker-altitude', implemented: true },
       { no: '4.2', title: '绘制Marker的高度线', slug: 'altitude-line', implemented: true },
-      { no: '4.3', title: '有高度的线', slug: 'line-altitude' },
+      { no: '4.3', title: '有高度的线', slug: 'line-altitude', implemented: true },
       { no: '4.4', title: '绘制Line的高度面', slug: 'line-altitude-wall' },
       { no: '4.5', title: '有高度的多边形', slug: 'polygon-altitude' },
       { no: '4.6', title: '设置图形高度', slug: 'set-altitude' },
