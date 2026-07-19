@@ -105,7 +105,7 @@ export const example2Menu: Example2Group[] = [
       { no: '3.2', title: 'LineString', slug: 'linestring', implemented: true },
       { no: '3.3', title: 'Polygon', slug: 'polygon', implemented: true },
       { no: '3.4', title: 'GeometryCollection', slug: 'collection', implemented: true },
-      { no: '3.5', title: 'MultiPoint', slug: 'multipoint' },
+      { no: '3.5', title: 'MultiPoint', slug: 'multipoint', implemented: true },
       { no: '3.6', title: 'MultiLineString', slug: 'multilinestring' },
       { no: '3.7', title: 'MultiPolygon', slug: 'multipolygon' },
       { no: '3.8', title: '矩形, 圆形, 椭圆和扇形', slug: 'rect-circle-ellipse-sector' },
