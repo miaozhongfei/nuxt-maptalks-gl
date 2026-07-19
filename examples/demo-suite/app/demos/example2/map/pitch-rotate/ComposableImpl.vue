@@ -43,5 +43,5 @@ const bearing = computed({
   get: () => cam.bearing.value ?? 0,
   set: (v) => { cam.bearing.value = v; },
 });
-function set(p: number, b: number) { pitch.value = p; bearing.value = b; }
+function set(p: number, b: number) { cam.animateTo({ pitch: p, bearing: b }); }
 </script>
