@@ -21,7 +21,7 @@ watch(() => toValue(geometry), (geo) => {
 // 监听 zoom 变化来更新 marker 大小
 const cam = useMaptalksCamera(map);
 watch(() => cam.zoom.value, (z) => {
-  if (!geoRef || z == null) return;
+  if (!geoRef || z === null || z === undefined) return;
   const size = z * 2;
   geoRef.setSymbol({ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: size, markerHeight: size });
 });
