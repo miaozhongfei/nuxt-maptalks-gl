@@ -1,25 +1,26 @@
 <template>
   <div>
-    <!-- 组件单独：@ready 载荷即地图实例，读取一次初始状态（组件事件面） -->
     <MaptalksMap
+      ref="mapCmp"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
-      @ready="onReady"
     />
-    <p class="text-sm text-muted mt-2">就绪时中心：{{ info.center }} · 缩放：{{ info.zoom }}</p>
+    <!-- 四状态实时回流：拖动/缩放地图，数字跟着变 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-sm">
+      <div class="rounded border border-default p-2">中心<br>{{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}</div>
+      <div class="rounded border border-default p-2">缩放<br>{{ (cam.zoom.value ?? 0).toFixed(2) }}</div>
+      <div class="rounded border border-default p-2">俯仰<br>{{ (cam.pitch.value ?? 0).toFixed(1) }}°</div>
+      <div class="rounded border border-default p-2">旋转<br>{{ (cam.bearing.value ?? 0).toFixed(1) }}°</div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl';
-
-// ready 事件回调里读取一次地图初始状态
-const info = ref<{ center: string; zoom: string | number }>({ center: '-', zoom: '-' });
-function onReady(m: MtMap) {
-  const c = m.getCenter();
-  info.value = { center: `${c.x.toFixed(4)}, ${c.y.toFixed(4)}`, zoom: m.getZoom() };
-}
+// 通过组件 expose 的 map 桥接——即使声明式模式也用表格对齐 view
+const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+const map = computed(() => mapCmp.value?.map ?? null);
+const cam = useMaptalksCamera(map);
 </script>

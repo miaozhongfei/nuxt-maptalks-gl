@@ -5,11 +5,13 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <p class="text-sm text-muted mt-2">
-      中心 {{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
-      · 缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}
-      · 俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
-    </p>
+    <!-- 四状态实时回流：拖动/缩放地图，数字跟着变 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-sm">
+      <div class="rounded border border-default p-2">中心<br>{{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}</div>
+      <div class="rounded border border-default p-2">缩放<br>{{ (cam.zoom.value ?? 0).toFixed(2) }}</div>
+      <div class="rounded border border-default p-2">俯仰<br>{{ (cam.pitch.value ?? 0).toFixed(1) }}°</div>
+      <div class="rounded border border-default p-2">旋转<br>{{ (cam.bearing.value ?? 0).toFixed(1) }}°</div>
+    </div>
     <div class="mt-3">
       <UButton size="sm" @click="read">原生 API 读取完整状态</UButton>
       <pre v-if="stateText" class="text-xs mt-2 p-3 rounded border border-default overflow-auto">{{ stateText }}</pre>
