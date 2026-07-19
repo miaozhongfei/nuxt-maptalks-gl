@@ -102,7 +102,7 @@ export const example2Menu: Example2Group[] = [
     slug: 'geometry',
     demos: [
       { no: '3.1', title: 'Marker', slug: 'marker', implemented: true },
-      { no: '3.2', title: 'LineString', slug: 'linestring' },
+      { no: '3.2', title: 'LineString', slug: 'linestring', implemented: true },
       { no: '3.3', title: 'Polygon', slug: 'polygon' },
       { no: '3.4', title: 'GeometryCollection', slug: 'collection' },
       { no: '3.5', title: 'MultiPoint', slug: 'multipoint' },
