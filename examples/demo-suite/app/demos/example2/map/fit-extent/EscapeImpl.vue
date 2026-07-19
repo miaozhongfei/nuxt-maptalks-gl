@@ -9,6 +9,10 @@
       <UButton size="sm" @click="fit">原生 map.fitExtent</UButton>
       <UButton size="sm" color="neutral" @click="shrink">缩小视野</UButton>
     </div>
+    <p class="text-sm text-muted mt-2">
+      中心 {{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
+      · 缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}
+    </p>
   </div>
 </template>
 

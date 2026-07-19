@@ -32,6 +32,7 @@ watch(() => toValue(geometry), (g) => {
   const geo = g as unknown as { on?: (t: string, fn: (e: unknown) => void) => void } | null;
   if (!geo?.on) return;
   geo.on('click', () => push('click'));
+  geo.on('dblclick', () => push('dblclick'));
   geo.on('mouseenter', () => push('mouseenter'));
   geo.on('mouseout', () => push('mouseout'));
 }, { immediate: true });

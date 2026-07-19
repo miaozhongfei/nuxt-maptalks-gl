@@ -5,6 +5,11 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
+    <p class="text-sm text-muted mt-2">
+      中心 {{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
+      · 缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}
+      · 俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
+    </p>
     <div class="mt-3">
       <UButton size="sm" @click="read">原生 API 读取完整状态</UButton>
       <pre v-if="stateText" class="text-xs mt-2 p-3 rounded border border-default overflow-auto">{{ stateText }}</pre>
@@ -16,6 +21,8 @@
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
+// 相机实时回流四状态
+const cam = useMaptalksCamera(map);
 
 const stateText = ref('');
 // 逃生舱：getCenter/getZoom/getPitch/getBearing/getSize 原生读取

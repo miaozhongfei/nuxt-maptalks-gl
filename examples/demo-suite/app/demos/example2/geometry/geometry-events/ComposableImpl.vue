@@ -29,6 +29,7 @@ useMaptalksMarker(layer, {
   symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
   events: {
     click: () => push('click'),
+    dblclick: () => push('dblclick'),
     mouseenter: () => push('mouseenter'),
     mouseout: () => push('mouseout'),
   },
