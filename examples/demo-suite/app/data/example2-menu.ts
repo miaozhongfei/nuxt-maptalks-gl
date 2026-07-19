@@ -113,7 +113,7 @@ export const example2Menu: Example2Group[] = [
       { no: '3.10', title: '文字标签(Label)', slug: 'label', implemented: true },
       { no: '3.11', title: '文本框(TextBox)', slug: 'textbox', implemented: true },
       { no: '3.12', title: '连接线', slug: 'connector-line', implemented: true },
-      { no: '3.13', title: '克隆', slug: 'clone' },
+      { no: '3.13', title: '克隆', slug: 'clone', implemented: true },
       { no: '3.14', title: '监听图形事件', slug: 'geometry-events' },
       { no: '3.15', title: '闪烁', slug: 'flash' },
       { no: '3.16', title: 'GeometryCollection的条件查询', slug: 'collection-filter' },
