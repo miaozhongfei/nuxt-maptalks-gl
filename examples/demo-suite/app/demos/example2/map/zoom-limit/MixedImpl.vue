@@ -12,6 +12,7 @@
     <div class="flex items-center gap-2 mt-3">
       <UButton size="sm" @click="cam.setZoomRange(12, 16)">限制 12 ~ 16</UButton>
       <UButton size="sm" color="neutral" @click="cam.setZoomRange(1, 19)">解除限制</UButton>
+      <span class="text-sm text-muted">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</span>
     </div>
   </div>
 </template>

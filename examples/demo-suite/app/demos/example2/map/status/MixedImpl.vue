@@ -12,6 +12,7 @@
     <p class="text-sm text-muted mt-2">
       中心 {{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
       · 缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}
+      · 俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
     </p>
   </div>
 </template>

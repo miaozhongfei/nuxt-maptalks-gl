@@ -25,9 +25,12 @@ useMaptalksEvents(map, {
     const m = map.value;
     if (!m || !ev.coordinate) return;
     const pt = coord.toContainerPoint(m, ev.coordinate) as { x: number; y: number };
+    // 反算验证：像素 → 经纬度
+    const back = coord.toCoordinate(m, { x: pt.x, y: pt.y }) as { x: number; y: number };
     resultText.value =
       `经纬度 ${ev.coordinate.x.toFixed(5)}, ${ev.coordinate.y.toFixed(5)}`
-      + ` → 像素 ${Math.round(pt.x)}, ${Math.round(pt.y)}`;
+      + ` → 像素 ${Math.round(pt.x)}, ${Math.round(pt.y)}`
+      + ` → 反算 ${back.x.toFixed(5)}, ${back.y.toFixed(5)}`;
   },
 });
 </script>

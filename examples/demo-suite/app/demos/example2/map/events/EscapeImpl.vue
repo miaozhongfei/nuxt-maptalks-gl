@@ -18,7 +18,7 @@ useMaptalksTileLayer(map, { source: 'osm' });
 
 const logs = ref<string[]>([]);
 function push(line: string) {
-  logs.value = [line, ...logs.value].slice(0, 8);
+  logs.value = [`${new Date().toLocaleTimeString()} ${line}`, ...logs.value].slice(0, 8);
 }
 // 逃生舱：原生 map.on 直接监听（地图销毁时监听随实例一并释放）
 watch(

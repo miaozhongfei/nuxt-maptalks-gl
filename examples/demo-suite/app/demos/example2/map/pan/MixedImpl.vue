@@ -12,7 +12,11 @@
     <div class="flex items-center gap-2 mt-3 flex-wrap">
       <UButton size="sm" @click="cam.panTo([121.4906, 31.2397])">panTo 外滩</UButton>
       <UButton size="sm" color="neutral" variant="outline" @click="cam.panBy([150, 0])">panBy 右移 150px</UButton>
+      <UButton size="sm" color="neutral" variant="outline" @click="cam.panBy([0, -120])">panBy 上移 120px</UButton>
       <UButton size="sm" color="neutral" @click="cam.panTo([121.5057, 31.2453])">回到原点</UButton>
+      <span class="text-sm text-muted">
+        中心：{{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
+      </span>
     </div>
   </div>
 </template>

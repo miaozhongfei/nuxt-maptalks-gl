@@ -7,6 +7,7 @@
     />
     <div class="flex gap-2 mt-3">
       <UButton size="sm" @click="fit">原生 map.fitExtent</UButton>
+      <UButton size="sm" color="neutral" @click="shrink">缩小视野</UButton>
     </div>
   </div>
 </template>
@@ -29,9 +30,14 @@ useMaptalksLayer(map, (mt) => {
   return layer;
 });
 
+const cam = useMaptalksCamera(map);
+
 // 原生 fitExtent 直调
 function fit() {
   const m = map.value as unknown as { fitExtent: (e: unknown, z?: number) => void } | null;
   if (m && poly) m.fitExtent(poly.getExtent(), 0);
+}
+function shrink() {
+  cam.animateTo({ zoom: 11 });
 }
 </script>

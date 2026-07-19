@@ -28,6 +28,7 @@ useMaptalksEvents(map, {
     const ev = e as { coordinate?: { x: number; y: number } };
     push(`click @ ${ev.coordinate?.x.toFixed(4)}, ${ev.coordinate?.y.toFixed(4)}`);
   },
+  dblclick: () => push('dblclick'),
   'zoomend moveend': () => push('视野变化（zoomend/moveend）'),
 });
 </script>

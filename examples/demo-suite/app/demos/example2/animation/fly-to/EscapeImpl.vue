@@ -15,23 +15,15 @@
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksLayer(map, (mt) =>
-  new mt.TileLayer('base', {
-    urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-    subdomains: ['b', 'c', 'd'],
-    attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
-  }),
-);
+useMaptalksTileLayer(map, { source: 'osm' });
 
-watch(
-  () => toValue(map),
-  (m) => {
-    if (!m) return;
-    void import('maptalks-gl').then((mt) => {
-      (m as unknown as { flyTo: (o: Record<string, unknown>) => void }).flyTo?.(
-        new (mt as unknown as { Camera: new (m: unknown) => { flyTo: (o: Record<string, unknown>) => void } }).Camera(m).flyTo({ center: [121.5057, 31.2453], zoom: 13 }),
-      );
-    });
-  },
-);
+// 逃生舱：原生 flyTo 直调
+function flyNear() {
+  const m = map.value as unknown as { flyTo: (c: [number, number], z?: number, o?: Record<string, unknown>) => void } | null;
+  m?.flyTo?.([121.5057, 31.2453], 16);
+}
+function flyFar() {
+  const m = map.value as unknown as { flyTo: (c: [number, number], z?: number, o?: Record<string, unknown>) => void } | null;
+  m?.flyTo?.([121.5057, 31.2453], 5);
+}
 </script>

@@ -12,6 +12,13 @@
         style="height: 420px"
       />
     </div>
+    <div class="flex items-center gap-2 mt-3">
+      <UButton size="sm" @click="enableSync">开启同步</UButton>
+      <UButton size="sm" color="neutral" @click="disableSync">关闭同步</UButton>
+      <UBadge :color="syncEnabled ? 'success' : 'neutral'" variant="subtle">
+        {{ syncEnabled ? '同步中' : '未同步' }}
+      </UBadge>
+    </div>
     <p class="text-sm text-muted mt-2">原生事件互相镜像（moving/zooming/rotate/pitch），拖动任意一侧另一侧跟随。</p>
   </div>
 </template>
@@ -28,6 +35,9 @@ useMaptalksTileLayer(mapB, { source: 'osm' });
 
 // 逃生舱：官网同款事件镜像；lock 防止 A→B→A 循环触发
 let lock = false;
+const syncEnabled = ref(true);
+function enableSync() { syncEnabled.value = true; }
+function disableSync() { syncEnabled.value = false; }
 function bind(src: MtMap, dst: MtMap) {
   const s = src as unknown as {
     on: (t: string, fn: () => void) => void;
@@ -43,7 +53,7 @@ function bind(src: MtMap, dst: MtMap) {
     setBearing: (v: number) => void;
   };
   s.on('moving moveend zooming zoomend rotate pitch', () => {
-    if (lock) return;
+    if (lock || !syncEnabled.value) return;
     lock = true;
     d.setCenter(s.getCenter());
     d.setZoom(s.getZoom(), { animation: false });
