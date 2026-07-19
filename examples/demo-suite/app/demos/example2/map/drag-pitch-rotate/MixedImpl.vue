@@ -16,7 +16,8 @@
       <USwitch v-model="dragRotate" label="dragRotate（右键拖拽旋转）" />
     </div>
     <p class="text-sm text-muted mt-2">
-      按住右键（或 Ctrl+左键）拖拽。俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
+      按住右键（或 Ctrl+左键）拖拽。
+      当前俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
     </p>
   </div>
 </template>
