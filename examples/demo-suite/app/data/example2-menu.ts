@@ -124,7 +124,7 @@ export const example2Menu: Example2Group[] = [
     title: '三维',
     slug: 'three-d',
     demos: [
-      { no: '4.1', title: '有高度的Marker', slug: 'marker-altitude' },
+      { no: '4.1', title: '有高度的Marker', slug: 'marker-altitude', implemented: true },
       { no: '4.2', title: '绘制Marker的高度线', slug: 'altitude-line' },
       { no: '4.3', title: '有高度的线', slug: 'line-altitude' },
       { no: '4.4', title: '绘制Line的高度面', slug: 'line-altitude-wall' },
