@@ -8,10 +8,10 @@
 
 <script setup lang="ts">
 import type { DemoTab } from '~/data/example2-menu';
-import ComponentImpl from '~/demos/example2/tilelayer/multi-tilelayers/ComponentImpl.vue';
-import ComposableImpl from '~/demos/example2/tilelayer/multi-tilelayers/ComposableImpl.vue';
-import EscapeImpl from '~/demos/example2/tilelayer/multi-tilelayers/EscapeImpl.vue';
-import MixedImpl from '~/demos/example2/tilelayer/multi-tilelayers/MixedImpl.vue';
+import ComponentImpl from '~/components/example2/tilelayer/multi-tilelayers/ComponentImpl.vue';
+import ComposableImpl from '~/components/example2/tilelayer/multi-tilelayers/ComposableImpl.vue';
+import EscapeImpl from '~/components/example2/tilelayer/multi-tilelayers/EscapeImpl.vue';
+import MixedImpl from '~/components/example2/tilelayer/multi-tilelayers/MixedImpl.vue';
 
 const tabs: DemoTab[] = [
   { key: 'component', label: '组件', comp: ComponentImpl },

@@ -7,9 +7,9 @@
 
 <script setup lang="ts">
 import type { DemoTab } from '~/data/example2-menu';
-import ComposableImpl from '~/demos/example2/layer/show-hide/ComposableImpl.vue';
-import EscapeImpl from '~/demos/example2/layer/show-hide/EscapeImpl.vue';
-import MixedImpl from '~/demos/example2/layer/show-hide/MixedImpl.vue';
+import ComposableImpl from '~/components/example2/layer/show-hide/ComposableImpl.vue';
+import EscapeImpl from '~/components/example2/layer/show-hide/EscapeImpl.vue';
+import MixedImpl from '~/components/example2/layer/show-hide/MixedImpl.vue';
 
 const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },

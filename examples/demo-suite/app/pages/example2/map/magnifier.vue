@@ -8,8 +8,8 @@
 
 <script setup lang="ts">
 import type { DemoTab } from '~/data/example2-menu';
-import ComposableImpl from '~/demos/example2/map/magnifier/ComposableImpl.vue';
-import EscapeImpl from '~/demos/example2/map/magnifier/EscapeImpl.vue';
+import ComposableImpl from '~/components/example2/map/magnifier/ComposableImpl.vue';
+import EscapeImpl from '~/components/example2/map/magnifier/EscapeImpl.vue';
 
 const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },

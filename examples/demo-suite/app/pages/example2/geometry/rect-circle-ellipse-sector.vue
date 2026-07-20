@@ -7,10 +7,10 @@
 
 <script setup lang="ts">
 import type { DemoTab } from '~/data/example2-menu';
-import ComponentImpl from '~/demos/example2/geometry/rect-circle-ellipse-sector/ComponentImpl.vue';
-import ComposableImpl from '~/demos/example2/geometry/rect-circle-ellipse-sector/ComposableImpl.vue';
-import EscapeImpl from '~/demos/example2/geometry/rect-circle-ellipse-sector/EscapeImpl.vue';
-import MixedImpl from '~/demos/example2/geometry/rect-circle-ellipse-sector/MixedImpl.vue';
+import ComponentImpl from '~/components/example2/geometry/rect-circle-ellipse-sector/ComponentImpl.vue';
+import ComposableImpl from '~/components/example2/geometry/rect-circle-ellipse-sector/ComposableImpl.vue';
+import EscapeImpl from '~/components/example2/geometry/rect-circle-ellipse-sector/EscapeImpl.vue';
+import MixedImpl from '~/components/example2/geometry/rect-circle-ellipse-sector/MixedImpl.vue';
 
 const tabs: DemoTab[] = [
   { key: 'component', label: '组件', comp: ComponentImpl },
