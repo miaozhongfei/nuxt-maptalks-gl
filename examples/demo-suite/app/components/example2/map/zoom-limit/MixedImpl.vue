@@ -4,6 +4,8 @@
       ref="mapCmp"
       :center="[121.5057, 31.2453]"
       :zoom="14"
+      :min-zoom="12"
+      :max-zoom="16"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
@@ -30,5 +32,5 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const cam = useMaptalksCamera(map);
 watch([minZoom, maxZoom], ([min, max]) => {
   if (map.value) cam.setZoomRange(min, max);
-});
+}, { immediate: true });
 </script>

@@ -23,11 +23,17 @@
 const el = ref<HTMLElement | null>(null);
 const minZoom = ref(12);
 const maxZoom = ref(16);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
+const { map } = useMaptalks(el, {
+  center: [121.5057, 31.2453],
+  zoom: 14,
+  // 初始上下限与滑杆默认值一致，确保首次加载即生效
+  minZoom: 12,
+  maxZoom: 16,
+});
 useMaptalksTileLayer(map, { source: 'osm' });
 const cam = useMaptalksCamera(map);
 // 滑杆变化时通过 camera composable 更新缩放范围
 watch([minZoom, maxZoom], ([min, max]) => {
   if (map.value) cam.setZoomRange(min, max);
-});
+}, { immediate: true });
 </script>

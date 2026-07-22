@@ -23,7 +23,13 @@
 const el = ref<HTMLElement | null>(null);
 const minZoom = ref(12);
 const maxZoom = ref(16);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
+const { map } = useMaptalks(el, {
+  center: [121.5057, 31.2453],
+  zoom: 14,
+  // 初始上下限与滑杆默认值一致，确保首次加载即生效
+  minZoom: 12,
+  maxZoom: 16,
+});
 useMaptalksTileLayer(map, { source: 'osm' });
 const cam = useMaptalksCamera(map);
 // 逃生舱：滑杆变化时用原生 setMinZoom / setMaxZoom 直调
@@ -31,5 +37,5 @@ watch([minZoom, maxZoom], ([min, max]) => {
   const m = map.value as unknown as { setMinZoom: (v: number) => void; setMaxZoom: (v: number) => void } | null;
   m?.setMinZoom(min);
   m?.setMaxZoom(max);
-});
+}, { immediate: true });
 </script>
