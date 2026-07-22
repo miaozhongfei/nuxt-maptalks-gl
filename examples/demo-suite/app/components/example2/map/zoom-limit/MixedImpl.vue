@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- 组合：组件建图 + camera composable 改缩放范围 -->
     <MaptalksMap
       ref="mapCmp"
       :center="[121.5057, 31.2453]"
@@ -9,16 +8,27 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <div class="flex items-center gap-2 mt-3">
-      <UButton size="sm" @click="cam.setZoomRange(12, 16)">限制 12 ~ 16</UButton>
-      <UButton size="sm" color="neutral" @click="cam.setZoomRange(1, 19)">解除限制</UButton>
-      <span class="text-sm text-muted">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</span>
+    <div class="flex items-center gap-6 mt-3 flex-wrap">
+      <div class="flex items-center gap-2 w-72">
+        <span class="text-sm w-24 shrink-0">minZoom {{ minZoom }}</span>
+        <USlider v-model="minZoom" :min="1" :max="15" :step="1" />
+      </div>
+      <div class="flex items-center gap-2 w-72">
+        <span class="text-sm w-24 shrink-0">maxZoom {{ maxZoom }}</span>
+        <USlider v-model="maxZoom" :min="15" :max="19" :step="1" />
+      </div>
     </div>
+    <p class="text-sm text-muted mt-2">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const minZoom = ref(12);
+const maxZoom = ref(16);
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const cam = useMaptalksCamera(map);
+watch([minZoom, maxZoom], ([min, max]) => {
+  if (map.value) cam.setZoomRange(min, max);
+});
 </script>

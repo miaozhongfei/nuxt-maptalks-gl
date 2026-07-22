@@ -5,30 +5,31 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <div class="flex items-center gap-2 mt-3">
-      <UButton size="sm" @click="limit">原生 setMinZoom(12) / setMaxZoom(16)</UButton>
-      <UButton size="sm" color="neutral" @click="unlimit">解除限制</UButton>
-      <span class="text-sm text-muted">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</span>
+    <div class="flex items-center gap-6 mt-3 flex-wrap">
+      <div class="flex items-center gap-2 w-72">
+        <span class="text-sm w-24 shrink-0">minZoom {{ minZoom }}</span>
+        <USlider v-model="minZoom" :min="1" :max="15" :step="1" />
+      </div>
+      <div class="flex items-center gap-2 w-72">
+        <span class="text-sm w-24 shrink-0">maxZoom {{ maxZoom }}</span>
+        <USlider v-model="maxZoom" :min="15" :max="19" :step="1" />
+      </div>
     </div>
+    <p class="text-sm text-muted mt-2">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
+const minZoom = ref(12);
+const maxZoom = ref(16);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
-// 相机实时回流缩放（逃生舱按钮仍用原生 setMinZoom/setMaxZoom）
 const cam = useMaptalksCamera(map);
-
-// 逃生舱：原生 setMinZoom / setMaxZoom
-function limit() {
+// 逃生舱：滑杆变化时用原生 setMinZoom / setMaxZoom 直调
+watch([minZoom, maxZoom], ([min, max]) => {
   const m = map.value as unknown as { setMinZoom: (v: number) => void; setMaxZoom: (v: number) => void } | null;
-  m?.setMinZoom(12);
-  m?.setMaxZoom(16);
-}
-function unlimit() {
-  const m = map.value as unknown as { setMinZoom: (v: number) => void; setMaxZoom: (v: number) => void } | null;
-  m?.setMinZoom(1);
-  m?.setMaxZoom(19);
-}
+  m?.setMinZoom(min);
+  m?.setMaxZoom(max);
+});
 </script>

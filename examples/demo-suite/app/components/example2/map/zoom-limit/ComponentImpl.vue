@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- 组件单独：minZoom / maxZoom 是运行期响应式 prop -->
     <MaptalksMap
+      ref="mapCmp"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       :min-zoom="minZoom"
@@ -20,11 +20,14 @@
         <USlider v-model="maxZoom" :min="15" :max="19" :step="1" />
       </div>
     </div>
+    <p class="text-sm text-muted mt-2">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-// 两个滑杆实时热更新缩放上下限
 const minZoom = ref(12);
 const maxZoom = ref(16);
+const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+const map = computed(() => mapCmp.value?.map ?? null);
+const cam = useMaptalksCamera(map);
 </script>
