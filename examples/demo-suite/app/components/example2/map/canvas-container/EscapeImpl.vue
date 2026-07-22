@@ -5,8 +5,8 @@
       ref="el"
       width="1200"
       height="480"
-      class="w-full rounded border border-default"
-      style="height: 480px"
+      class="w-full rounded"
+      style="height: 480px; border: 1px solid #d1d5db"
     />
     <p class="text-sm text-muted mt-2">
       useMaptalks 的容器参数是 HTMLElement——canvas 元素同样可以直接传入（官网 1.11 同款能力）。
