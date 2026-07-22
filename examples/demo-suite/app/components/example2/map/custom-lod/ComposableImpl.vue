@@ -24,6 +24,12 @@ const { map } = useMaptalks(el, {
   zoom: 3,
   spatialReference,
 });
-useMaptalksTileLayer(map, { source: 'osm' });
+useMaptalksTileLayer(map, {
+  // 自定义 SR 下 {z} 是 LOD 索引（0~5），用函数映射回真实级别 z10~z15
+  options: {
+    urlTemplate: (x: number, y: number, z: number) =>
+      `https://b.basemaps.cartocdn.com/light_all/${z + 10}/${x}/${y}.png`,
+  },
+});
 const cam = useMaptalksCamera(map);
 </script>

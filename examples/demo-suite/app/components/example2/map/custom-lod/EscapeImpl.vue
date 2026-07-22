@@ -22,6 +22,7 @@ const customSR = { projection: 'EPSG:3857', resolutions };
 
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
+// 默认 SR 下用命名源，但按钮切换自定义 SR 时需同步切瓦片 URL
 useMaptalksTileLayer(map, { source: 'osm' });
 
 // 逃生舱：原生 setSpatialReference 运行时切换 LOD
