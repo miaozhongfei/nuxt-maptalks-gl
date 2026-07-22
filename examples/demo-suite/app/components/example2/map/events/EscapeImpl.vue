@@ -30,7 +30,9 @@ watch(
       const ev = e as { coordinate?: { x: number; y: number } };
       push(`原生 click @ ${ev.coordinate?.x.toFixed(4)}, ${ev.coordinate?.y.toFixed(4)}`);
     });
+    raw.on('dblclick', () => push('原生 dblclick'));
     raw.on('zoomend', () => push('原生 zoomend'));
+    raw.on('moveend', () => push('原生 moveend'));
   },
 );
 </script>
