@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- 组合：两张组件地图（name prop 登记注册表）+ useMaptalksSync 按名同步 -->
     <div class="grid grid-cols-2 gap-3">
       <MaptalksMap
         name="sync-m-a"
@@ -11,6 +10,7 @@
         style="height: 420px"
       />
       <MaptalksMap
+        ref="mapBComp"
         name="sync-m-b"
         :center="[121.5057, 31.2453]"
         :zoom="13"
@@ -19,16 +19,52 @@
         style="height: 420px"
       />
     </div>
-    <div class="flex items-center gap-2 mt-3">
-      <UButton size="sm" @click="enable()">开启同步</UButton>
+    <div class="flex items-center gap-2 mt-3 flex-wrap">
+      <UButton size="sm" @click="dualEnable()">开启同步</UButton>
       <UButton size="sm" color="neutral" @click="disable()">关闭同步</UButton>
       <UBadge :color="isEnabled ? 'success' : 'neutral'" variant="subtle">
         {{ isEnabled ? '同步中' : '未同步' }}
       </UBadge>
     </div>
+    <div class="flex items-center gap-3 mt-2 flex-wrap">
+      <div class="flex items-center gap-2">
+        <span class="text-sm">双向</span>
+        <USwitch v-model="isDualMode" @update:model-value="onModeChange" />
+        <span class="text-sm">单向（主→从）</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <UButton size="sm" color="neutral" variant="outline" @click="lockSlave">{{ slaveLocked ? '解锁从图交互' : '禁用从图交互' }}</UButton>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const { enable, disable, isEnabled } = useMaptalksSync(['sync-m-a', 'sync-m-b']);
+// 从图 ref 用于交互锁定
+const mapBComp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+
+const sMutual = useMaptalksSync(['sync-m-a', 'sync-m-b']);
+const sMaster = useMaptalksSync(['sync-m-a', 'sync-m-b'], { mode: 'master-slave', master: 'sync-m-a' });
+sMaster.disable();
+
+const isDualMode = ref(true);
+const isEnabled = computed(() => isDualMode.value ? sMutual.isEnabled.value : sMaster.isEnabled.value);
+
+function disable() { sMutual.disable(); sMaster.disable(); }
+function dualEnable() {
+  if (isDualMode.value) { sMaster.disable(); sMutual.enable(); }
+  else { sMutual.disable(); sMaster.enable(); }
+}
+function onModeChange(v: boolean) {
+  if (v) { sMaster.disable(); sMutual.enable(); }
+  else { sMutual.disable(); sMaster.enable(); }
+}
+
+const slaveLocked = ref(false);
+function lockSlave() {
+  slaveLocked.value = !slaveLocked.value;
+  const m = mapBComp.value?.map as unknown as { value?: unknown } | null;
+  const mm = (m as unknown as { config?: (o: Record<string, unknown>) => void } | null);
+  mm?.config?.({ draggable: !slaveLocked.value, scrollWheelZoom: !slaveLocked.value });
+}
 </script>
