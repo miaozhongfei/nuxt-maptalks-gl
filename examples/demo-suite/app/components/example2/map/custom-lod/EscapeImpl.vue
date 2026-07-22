@@ -13,7 +13,6 @@
 </template>
 
 <script setup lang="ts">
-// 自定义 LOD：仅 6 级分辨率（对应 Web 墨卡托 z10~z15，逐级减半）
 const resolutions = Array.from(
   { length: 6 },
   (_, i) => (2 * 6378137 * Math.PI) / (256 * 2 ** (i + 10)),
@@ -21,19 +20,29 @@ const resolutions = Array.from(
 const customSR = { projection: 'EPSG:3857', resolutions };
 
 const el = ref<HTMLElement | null>(null);
+// 跟踪当前是否在自定义 SR 模式，urlTemplate 函数据此决定是否加 10 偏移
+const customMode = ref(false);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-// 默认 SR 下用命名源，但按钮切换自定义 SR 时需同步切瓦片 URL
-useMaptalksTileLayer(map, { source: 'osm' });
+// 使用函数型 urlTemplate：默认 SR 下 z 即真实级别；自定义 SR 下 z 是 LOD 索引，需 +10
+useMaptalksTileLayer(map, {
+  options: {
+    urlTemplate: (x: number, y: number, z: number) => {
+      const offset = customMode.value ? 10 : 0;
+      return `https://b.basemaps.cartocdn.com/light_all/${z + offset}/${x}/${y}.png`;
+    },
+    attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
+  },
+});
 
-// 逃生舱：原生 setSpatialReference 运行时切换 LOD
 function applyCustom() {
   const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
+  customMode.value = true;
   m?.setSpatialReference(customSR);
   m?.setZoom(3);
 }
 function applyDefault() {
   const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
-  // 传 null 让 maptalks 回退到默认空间参考
+  customMode.value = false;
   m?.setSpatialReference(null);
   m?.setZoom(14);
 }
