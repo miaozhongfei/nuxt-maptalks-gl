@@ -23,6 +23,7 @@ const spatialReference = { projection: 'EPSG:3857', resolutions };
 const customSR = { projection: 'EPSG:3857', resolutions };
 
 const el = ref<HTMLElement | null>(null);
+const customMode = ref(true);
 const { map } = useMaptalks(el, {
   center: [121.5057, 31.2453],
   zoom: 3,
@@ -30,18 +31,22 @@ const { map } = useMaptalks(el, {
 });
 useMaptalksTileLayer(map, {
   options: {
-    urlTemplate: (x: number, y: number, z: number) =>
-      `https://b.basemaps.cartocdn.com/light_all/${z + 10}/${x}/${y}.png`,
+    urlTemplate: (x: number, y: number, z: number) => {
+      const offset = customMode.value ? 10 : 0;
+      return `https://b.basemaps.cartocdn.com/light_all/${z + offset}/${x}/${y}.png`;
+    },
   },
 });
 const cam = useMaptalksCamera(map);
 
 function applyCustom() {
+  customMode.value = true;
   const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
   m?.setSpatialReference(customSR);
   m?.setZoom(3);
 }
 function applyDefault() {
+  customMode.value = false;
   const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
   m?.setSpatialReference(null);
   m?.setZoom(14);

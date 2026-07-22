@@ -25,9 +25,12 @@ const resolutions = Array.from(
   (_, i) => (2 * 6378137 * Math.PI) / (256 * 2 ** (i + 10)),
 );
 const spatialReference = { projection: 'EPSG:3857', resolutions };
+const customMode = ref(true);
 const tileOptions = {
-  urlTemplate: (x: number, y: number, z: number) =>
-    `https://b.basemaps.cartocdn.com/light_all/${z + 10}/${x}/${y}.png`,
+  urlTemplate: (x: number, y: number, z: number) => {
+    const offset = customMode.value ? 10 : 0;
+    return `https://b.basemaps.cartocdn.com/light_all/${z + offset}/${x}/${y}.png`;
+  },
   attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
 };
 
@@ -38,12 +41,14 @@ const cam = useMaptalksCamera(map);
 // 切到自定义 LOD
 const customSR = { projection: 'EPSG:3857', resolutions };
 function applyCustom() {
+  customMode.value = true;
   const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
   m?.setSpatialReference(customSR);
   m?.setZoom(3);
 }
 // 恢复默认 LOD
 function applyDefault() {
+  customMode.value = false;
   const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
   m?.setSpatialReference(null);
   m?.setZoom(14);
