@@ -16,11 +16,13 @@
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
-
-// 逃生舱：原生 setZoom(v, { animation: false })——无动画立即到位
-const zoom = ref(14);
-watch(zoom, (v) => {
-  const m = map.value as unknown as { setZoom: (z: number, o?: Record<string, unknown>) => void } | null;
-  m?.setZoom(v, { animation: false });
+// 逃生舱：相机 ref 读取方向（拖动地图回流），set 方向走原生 setZoom 无动画
+const cam = useMaptalksCamera(map);
+const zoom = computed({
+  get: () => cam.zoom.value ?? 14,
+  set: (v) => {
+    const m = map.value as unknown as { setZoom: (z: number, o?: Record<string, unknown>) => void } | null;
+    m?.setZoom(v, { animation: false });
+  },
 });
 </script>
