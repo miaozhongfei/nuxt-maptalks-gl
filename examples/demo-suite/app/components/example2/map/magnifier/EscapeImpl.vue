@@ -26,7 +26,13 @@ const { map: magMap } = useMaptalks(elMag, {
   zoomable: false,
   controls: false,
 });
-useMaptalksTileLayer(magMap, { source: 'osm' });
+useMaptalksTileLayer(magMap, {
+  options: {
+    urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+    subdomains: ['b', 'c', 'd'],
+    attribution: '',
+  },
+});
 
 // 逃生舱：原生 mousemove + setCenterAndZoom（官网 1.16 同款套路）
 watch(
