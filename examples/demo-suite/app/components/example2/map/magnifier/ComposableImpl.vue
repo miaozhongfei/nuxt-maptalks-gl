@@ -28,6 +28,7 @@ const { map: magMap } = useMaptalks(elMag, {
   zoom: 15,
   draggable: false,
   zoomable: false,
+  controls: false,
 });
 useMaptalksTileLayer(magMap, { source: 'osm' });
 
