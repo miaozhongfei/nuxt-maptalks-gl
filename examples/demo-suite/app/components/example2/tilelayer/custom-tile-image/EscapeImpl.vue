@@ -6,7 +6,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">
-      urlTemplate 按 (x+y) 奇偶混搭两套底图 + cssFilter 添加 sepia/invert 滤镜 + CanvasLayer 叠加 "hello maptalks" 水印。
+      urlTemplate 按 (x+y) 奇偶混搭两套底图 + renderer: 'canvas' 启用逐瓦片图片处理——renderercreate 拦截每张瓦片的 loadTileImage，在 Canvas 上添加 sepia 滤镜和水印。
     </p>
   </div>
 </template>
@@ -18,35 +18,47 @@ const tileOptions = {
     const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
     return (x + y) % 2 === 0 ? light : dark;
   },
-  cssFilter: 'sepia(100%) invert(90%)',
+  renderer: 'canvas',
   attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
 };
 
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
+const { layer } = useMaptalksLayer(map, (mt) => new mt.TileLayer('base', tileOptions));
 
-// 逃生舱：useMaptalksLayer 工厂同时创建 TileLayer（底图） + CanvasLayer（水印）
-useMaptalksLayer(map, (mt) => new mt.TileLayer('base', tileOptions));
-useMaptalksLayer(map, (mt) => {
-  const cl = new mt.CanvasLayer('wm');
-  cl.draw = function (ctx: CanvasRenderingContext2D) {
-    // 瓦片像素尺寸
-    const T = 256;
-    const w = ctx.canvas.width;
-    const h = ctx.canvas.height;
-    ctx.save();
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.font = '20px serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    for (let x = T / 2; x < w; x += T) {
-      for (let y = T / 2; y < h; y += T) {
-        ctx.fillText('hello maptalks', x, y);
-      }
-    }
-    ctx.restore();
-    (cl as unknown as { completeRender: () => void }).completeRender?.();
-  };
-  return cl;
-});
+let wmCanvas: HTMLCanvasElement | null = null;
+function getWmCanvas(): HTMLCanvasElement {
+  if (wmCanvas) return wmCanvas;
+  wmCanvas = document.createElement('canvas');
+  return wmCanvas;
+}
+watch(() => toValue(layer), (l) => {
+  const raw = l as unknown as { on?: (e: string, cb: (e: unknown) => void) => void } | null;
+  raw?.on?.('renderercreate', (e) => {
+    const renderer = (e as { renderer: { loadTileImage: (img: HTMLImageElement, url: string) => void } }).renderer;
+    renderer.loadTileImage = function (img: HTMLImageElement, url: string) {
+      const remote = new Image();
+      remote.crossOrigin = 'anonymous';
+      remote.addEventListener('load', () => {
+        const c = getWmCanvas();
+        c.width = remote.width;
+        c.height = remote.height;
+        const ctx = c.getContext('2d')!;
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.filter = 'sepia(100%) invert(90%)';
+        ctx.drawImage(remote, 0, 0);
+        ctx.filter = 'none';
+        ctx.fillStyle = 'white';
+        ctx.font = '20px serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('hello maptalks', c.width / 2, c.height / 2);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(0, 0, c.width, c.height);
+        img.src = c.toDataURL('image/jpeg', 0.7);
+      });
+      remote.src = url;
+    };
+  });
+}, { immediate: true });
 </script>
