@@ -14,18 +14,19 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const tiandituKey = ref('46680d606754c1da1972f835f4cb83d6');
+const tiandituKey = ref('');
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 12 });
-// 逃生舱：useMaptalksLayer 的 options 支持 MaybeRefOrGetter，computed 变化自动应用 setOptions
+const tileOptions = computed(() => ({
+  urlTemplate: tiandituKey.value
+    ? `https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${tiandituKey.value}`
+    : '',
+  subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+  attribution: '© 天地图',
+}));
+// 逃生舱：useMaptalksLayer 的 options 参数支持 MaybeRefOrGetter
 useMaptalksLayer(
   map,
   (mt) => new mt.TileLayer('base', {}),
-  {
-    options: computed(() => ({
-      urlTemplate: `https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${tiandituKey.value}`,
-      subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
-      attribution: '© 天地图',
-    })),
-  },
+  { options: tileOptions },
 );
 </script>

@@ -16,10 +16,19 @@
 </template>
 
 <script setup lang="ts">
-const tiandituKey = ref('46680d606754c1da1972f835f4cb83d6');
-const tileOptions = computed(() => ({
-  urlTemplate: `https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${tiandituKey.value}`,
-  subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+const tiandituKey = ref('');
+const tileOptions = ref({
+  urlTemplate: '',
+  subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'] as string[],
   attribution: '© 天地图',
-}));
+});
+watch(tiandituKey, (key) => {
+  tileOptions.value = {
+    urlTemplate: key
+      ? `https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${key}`
+      : '',
+    subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+    attribution: '© 天地图',
+  };
+}, { immediate: true });
 </script>
