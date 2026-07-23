@@ -1026,6 +1026,36 @@ export interface UseMaptalksGeometryOptions {
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;
+  /** 几何 id（统一从预设选项中声明） */
+  id?: string;
+  /** 响应式可见性：false 隐藏几何但不销毁 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 是否响应鼠标/触摸事件 */
+  interactive?: MaybeRefOrGetter<boolean | undefined>;
+  /** 是否可编辑（出现编辑锚点） */
+  editable?: MaybeRefOrGetter<boolean | undefined>;
+  /** 鼠标悬停 CSS cursor */
+  cursor?: MaybeRefOrGetter<string | undefined>;
+  /** 是否可拖拽 */
+  draggable?: MaybeRefOrGetter<boolean | undefined>;
+  /** 拖拽时是否显示影子 */
+  dragShadow?: MaybeRefOrGetter<boolean | undefined>;
+  /** 拖拽约束轴（true 或 'x' / 'y'） */
+  dragOnAxis?: MaybeRefOrGetter<boolean | string | undefined>;
+  /** 是否仅在屏幕轴向拖拽 */
+  dragOnScreenAxis?: MaybeRefOrGetter<boolean | undefined>;
+  /** 几何在图层内的叠放顺序 */
+  zIndex?: MaybeRefOrGetter<number | undefined>;
+  /** 是否处理反子午线跨越 */
+  antiMeridian?: MaybeRefOrGetter<boolean | undefined>;
+  /** 缺省投影 */
+  defaultProjection?: MaybeRefOrGetter<string | undefined>;
+  /** 量测方式（如 'EPSG:4326'） */
+  measure?: MaybeRefOrGetter<string | undefined>;
+  /** 旋转角度（度） */
+  rotateAngle?: MaybeRefOrGetter<number | undefined>;
+  /** 旋转锚点 */
+  rotatePivot?: MaybeRefOrGetter<[number, number] | undefined>;
   /**
    * 额外响应式属性（形状/文本几何的 radius/width/height/angles/content 等）。
    * 逐项 shallow watch，变化时调 `apply` 写回几何。
