@@ -18,19 +18,15 @@
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const tiandituKey = ref('');
-const tileOptions = ref({
-  urlTemplate: '',
-  subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'] as string[],
+const TDT_BASE = {
+  subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
   attribution: '© 天地图',
-});
+};
+const { layer } = useMaptalksTileLayer(map, { options: TDT_BASE });
 watch(tiandituKey, (key) => {
-  tileOptions.value = {
-    urlTemplate: key
-      ? `https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${key}`
-      : '',
-    subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
-    attribution: '© 天地图',
-  };
-}, { immediate: true });
-useMaptalksTileLayer(map, { options: tileOptions });
+  const l = toValue(layer) as unknown as { setUrlTemplate?: (u: string) => void } | null;
+  if (key) {
+    l?.setUrlTemplate?.(`https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=${key}`);
+  }
+});
 </script>
