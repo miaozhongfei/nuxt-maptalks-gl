@@ -15,23 +15,77 @@ useMaptalksTileLayer(map, { source: 'osm' });
 // 圆弧和贝塞尔曲线一体工厂：三种曲线（ArcCurve / QuadBezierCurve / CubicBezierCurve）
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v');
-  const ArcCurve = (mt as unknown as { ArcCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry }).ArcCurve;
-  const QuadBezierCurve = (mt as unknown as { QuadBezierCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry }).QuadBezierCurve;
-  const CubicBezierCurve = (mt as unknown as { CubicBezierCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry }).CubicBezierCurve;
+  const ArcCurve = (
+    mt as unknown as { ArcCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry }
+  ).ArcCurve;
+  const QuadBezierCurve = (
+    mt as unknown as {
+      QuadBezierCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry;
+    }
+  ).QuadBezierCurve;
+  const CubicBezierCurve = (
+    mt as unknown as {
+      CubicBezierCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry;
+    }
+  ).CubicBezierCurve;
   (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(
-    new ArcCurve([[121.49, 31.238], [121.52, 31.252]], {
-      symbol: { lineColor: '#2563eb', lineWidth: 3, arcDegree: 90 },
-    }),
+    new ArcCurve(
+      [
+        [121.49, 31.238],
+        [121.52, 31.252],
+      ],
+      {
+        symbol: { lineColor: '#2563eb', lineWidth: 3, arcDegree: 90 },
+      },
+    ),
   );
   (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(
-    new QuadBezierCurve([[121.488, 31.246], [121.503, 31.258], [121.518, 31.246]], {
-      symbol: { lineColor: '#7c3aed', lineWidth: 3 },
-    }),
+    new QuadBezierCurve(
+      [
+        [121.488, 31.246],
+        [121.503, 31.258],
+        [121.518, 31.246],
+      ],
+      {
+        symbol: { lineColor: '#7c3aed', lineWidth: 3 },
+      },
+    ),
   );
   (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(
-    new CubicBezierCurve([[121.49, 31.232], [121.50, 31.242], [121.512, 31.228], [121.522, 31.24]], {
-      symbol: { lineColor: '#dc2626', lineWidth: 3 },
-    }),
+    new CubicBezierCurve(
+      [
+        [121.49, 31.232],
+        [121.5, 31.242],
+        [121.512, 31.228],
+        [121.522, 31.24],
+      ],
+      {
+        // symbol: { lineColor: '#dc2626', lineWidth: 3 },
+        symbol: [
+          {
+            lineColor: '#dc2626',
+            lineWidth: 3,
+            arcDegree: 90,
+          },
+          {
+            markerType: 'ellipse',
+            markerWidth: 8,
+            markerHeight: 8,
+            markerFill: '#f00',
+            markerPlacement: 'vertex',
+          },
+          {
+            textName: 'Cubic\nBézier',
+            textFill: '#f00',
+            textWeight: 'bold',
+            textHaloColor: '#fff',
+            textHaloRadius: 3,
+            textSize: 20,
+            textWrapCharacter: '\n',
+          },
+        ],
+      },
+    ),
   );
   return layer;
 });
