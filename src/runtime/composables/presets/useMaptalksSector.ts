@@ -28,12 +28,7 @@ export function useMaptalksSector(
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 Sector');
       }
-      return new Ctor(
-        toValue(opts.coordinates),
-        toValue(opts.radius),
-        toValue(opts.startAngle),
-        toValue(opts.endAngle),
-        {
+      const options: Record<string, unknown> = {
           symbol: toValue(opts.symbol),
           properties: toValue(opts.properties),
           id: opts.id,
@@ -51,7 +46,16 @@ export function useMaptalksSector(
           measure: toValue(opts.measure),
           rotateAngle: toValue(opts.rotateAngle),
           rotatePivot: toValue(opts.rotatePivot),
-        },
+        };
+      for (const key of Object.keys(options)) {
+        if (options[key] === undefined) delete options[key];
+      }
+      return new Ctor(
+        toValue(opts.coordinates),
+        toValue(opts.radius),
+        toValue(opts.startAngle),
+        toValue(opts.endAngle),
+        options,
       );
     },
     {
