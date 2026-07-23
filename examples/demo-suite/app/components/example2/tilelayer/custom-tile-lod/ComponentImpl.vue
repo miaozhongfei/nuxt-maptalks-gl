@@ -8,21 +8,25 @@
     >
       <MaptalksTileLayer :options="tileOptions" />
     </MaptalksMap>
-    <p class="text-sm text-muted mt-2">图层用自己的 6 级 LOD（z10~z15）取瓦片，地图缩放时自动就近匹配。</p>
+    <p class="text-sm text-muted mt-2">TileLayer 自带独立空间参考（仅6级分辨率 z10~z15）+ tileSystem 定义瓦片编号规则，与地图默认 SR 解耦。</p>
   </div>
 </template>
 
 <script setup lang="ts">
-// 图层专属 LOD：只保留 z10~z15 六级分辨率（与地图默认 LOD 不同）
 const layerResolutions = Array.from(
   { length: 6 },
   (_, i) => (2 * 6378137 * Math.PI) / (256 * 2 ** (i + 10)),
 );
+// 标准 Web 墨卡托瓦片编号系统：原点在左上角 (-20037508.34, 20037508.34)，x 向右 y 向下
+const tileSystem: [number, number, number, number] = [1, -1, -20037508.34, 20037508.34];
 const tileOptions = {
-  // 图层携带独立 SR 时 {z} 是图层 LOD 索引（0~5），用函数映射回真实级别 z10~z15
   urlTemplate: (x: number, y: number, z: number) =>
     `https://b.basemaps.cartocdn.com/light_all/${z + 10}/${x}/${y}.png`,
-  // TileLayer 自带 spatialReference：图层用自己的 LOD 取瓦片，地图缩放时自动就近匹配
-  spatialReference: { projection: 'EPSG:3857', resolutions: layerResolutions },
+  spatialReference: {
+    projection: 'EPSG:3857',
+    resolutions: layerResolutions,
+    fullExtent: { top: 20037508.34, left: -20037508.34, bottom: -20037508.34, right: 20037508.34 },
+  },
+  tileSystem,
 };
 </script>
