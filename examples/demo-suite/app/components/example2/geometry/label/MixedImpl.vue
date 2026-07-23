@@ -14,12 +14,10 @@ const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
 // 文字标签 Label
-const { geometry } = useMaptalksLabel(layer, {
+useMaptalksLabel(layer, {
   content: '文字标签 Label',
   coordinates: [121.5057, 31.2453],
+  draggable: true,
   symbol: { textFill: '#dc2626', textSize: 16 },
 });
-watch(() => toValue(geometry), (g) => {
-  (g as unknown as { config?: (o: Record<string, unknown>) => void } | null)?.config?.({ draggable: true });
-}, { immediate: true });
 </script>
