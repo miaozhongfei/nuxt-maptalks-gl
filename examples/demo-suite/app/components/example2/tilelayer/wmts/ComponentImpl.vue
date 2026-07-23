@@ -1,7 +1,7 @@
 <template>
   <MaptalksMap
-    :center="[-98, 39]"
-    :zoom="4"
+    :center="[121.5057, 31.2453]"
+    :zoom="12"
     class="relative rounded border border-default overflow-hidden"
     style="height: 480px"
   >
@@ -10,9 +10,10 @@
 </template>
 
 <script setup lang="ts">
+// 天地图影像 WMTS（EPSG:3857 Web 墨卡托）
 const tileOptions = {
-  // USGS 数据仅覆盖美国，中心点例外设北美中部
-  urlTemplate: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/WMTS/tile/1.0.0/USGSTopo/default/GoogleMapsCompatible/{z}/{y}/{x}',
-  attribution: '© USGS',
+  urlTemplate: 'https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=46680d606754c1da1972f835f4cb83d6',
+  subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+  attribution: '© 天地图',
 };
 </script>

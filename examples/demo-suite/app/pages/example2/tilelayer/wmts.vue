@@ -1,7 +1,7 @@
 <template>
   <!-- 2.8 WMTS瓦片图层 -->
   <Example2DemoShell
-    description="以 WMTS RESTful 模板加载 USGS 瓦片矩阵集（GoogleMapsCompatible，对应官网 2.8；服务数据仅覆盖美国，中心点例外不设陆家嘴；该演示源在部分网络下不可达，可替换为任意同协议源）。"
+    description="天地图影像 WMTS（EPSG:3857 Web 墨卡托），对应官网「瓦片图层与地理投影 - WMTS瓦片图层」。"
     :tabs="tabs"
   />
 </template>

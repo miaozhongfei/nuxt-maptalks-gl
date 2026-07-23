@@ -8,12 +8,13 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [-98, 39], zoom: 4 });
-// USGS 数据仅覆盖美国，中心点例外设北美中部
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 12 });
+// 天地图影像 WMTS（EPSG:3857 Web 墨卡托）
 useMaptalksLayer(map, (mt) =>
   new mt.TileLayer('base', {
-    urlTemplate: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/WMTS/tile/1.0.0/USGSTopo/default/GoogleMapsCompatible/{z}/{y}/{x}',
-    attribution: '© USGS',
+    urlTemplate: 'https://t{s}.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=46680d606754c1da1972f835f4cb83d6',
+    subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+    attribution: '© 天地图',
   }),
 );
 </script>
