@@ -1334,6 +1334,30 @@ export interface UseMaptalksTextBoxOptions extends Omit<UseMaptalksCircleOptions
 }
 
 /**
+ * 所有几何 symbol 的公共基类（原生 SymbolCommon 等价）。
+ *
+ * @description 可见性 / 透明度 / 阴影，所有 Marker / Line / Polygon / Text 均可使用。
+ * 所有字段均可选；不传时 maptalks 使用内部默认值。
+ *
+ * @example
+ * const sym = { opacity: 0.7, shadowBlur: 4, shadowColor: '#000' };
+ */
+export interface SymbolBase {
+  /** 是否可见，false 隐藏几何但不销毁 */
+  visible?: boolean | Stops<boolean>;
+  /** 整体透明度（0–1） */
+  opacity?: number | Stops<number>;
+  /** 阴影模糊半径（像素） */
+  shadowBlur?: number | Stops<number>;
+  /** 阴影颜色（CSS 颜色字符串） */
+  shadowColor?: string | Stops<string>;
+  /** 阴影水平偏移（像素） */
+  shadowOffsetX?: number | Stops<number>;
+  /** 阴影垂直偏移（像素） */
+  shadowOffsetY?: number | Stops<number>;
+}
+
+/**
  * 线几何 symbol 强类型建模（高频线样式字段）。
  *
  * @description 为 LineString / MultiLineString 等线几何的 symbol 提供精确字段提示。
@@ -1395,7 +1419,7 @@ export interface PolygonSymbol {
  * @example
  * const sym: MarkerSymbol = { markerType: 'ellipse', markerWidth: 20, markerFill: '#e74c3c' };
  */
-export interface MarkerSymbol {
+export interface MarkerSymbol extends SymbolBase {
   /** 点标注类型，如 'ellipse' / 'square' / 'pin' / 'path' */
   markerType?: string;
   /** 点标注宽度（像素） */
@@ -1416,6 +1440,22 @@ export interface MarkerSymbol {
   markerDx?: number;
   /** 点标注垂直偏移（像素） */
   markerDy?: number;
+  /** Marker 水平对齐方式 */
+  markerHorizontalAlignment?: 'left' | 'middle' | 'right';
+  /** Marker 垂直对齐方式 */
+  markerVerticalAlignment?: 'top' | 'middle' | 'bottom';
+  /** Marker 摆放模式 */
+  markerPlacement?: 'center' | 'point' | 'vertex' | 'line' | 'vertex-first' | 'vertex-last' | 'vertex-firstlast';
+  /** Marker 旋转角度（度） */
+  markerRotation?: number;
+  /** 标注填充纹理文件 URL */
+  markerFillPatternFile?: string;
+  /** 标注描边透明度（0–1） */
+  markerLineOpacity?: number;
+  /** 标注描边虚线模式 */
+  markerLineDasharray?: number[];
+  /** 标注描边纹理文件 URL */
+  markerLinePatternFile?: string;
   /** 兜底：透传任意未建模的点样式键（向后兼容，故为 any） */
   [key: string]: any;
 }
