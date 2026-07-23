@@ -1,24 +1,26 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mapCmp"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
-    >
-      <MaptalksTileLayer :options="tileOptions" />
-    </MaptalksMap>
-    <p class="text-sm mt-2 text-muted">
-      opacity: 0.5 静态半透明瓦片（深色页面背景可衬出半透明效果）
-    </p>
+    />
+    <div class="flex items-center gap-2 mt-3 w-72">
+      <span class="text-sm w-28 shrink-0">透明度 {{ op.toFixed(2) }}</span>
+      <USlider v-model="op" :min="0" :max="1" :step="0.05" />
+    </div>
+    <p class="text-sm text-muted mt-2">深色页面背景可衬出半透明效果</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const tileOptions = {
-  urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-  subdomains: ['b', 'c', 'd'],
-  // opacity 选项静态设置瓦片图层半透明
-  opacity: 0.5,
-};
+const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+const map = computed(() => mapCmp.value?.map ?? null);
+const { layer } = useMaptalksTileLayer(map, { source: 'osm' });
+const op = ref(1);
+watch(op, (v) => {
+  (toValue(layer) as unknown as { setOpacity?: (n: number) => void } | null)?.setOpacity?.(v);
+});
 </script>

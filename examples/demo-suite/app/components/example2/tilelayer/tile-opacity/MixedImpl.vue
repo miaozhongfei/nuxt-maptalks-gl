@@ -11,6 +11,7 @@
       <span class="text-sm w-28 shrink-0">透明度 {{ op.toFixed(2) }}</span>
       <USlider v-model="op" :min="0" :max="1" :step="0.05" />
     </div>
+    <p class="text-sm text-muted mt-2">深色页面背景可衬出半透明效果</p>
   </div>
 </template>
 
