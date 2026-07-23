@@ -7,6 +7,7 @@ import {
   type GLTFLayer,
   type GroupGLLayer,
   Map as _MaptalksMapClass,
+  Marker as _MarkerClass,
   type TileLayer,
   ui,
   type VectorLayer,
@@ -141,6 +142,15 @@ export type MaptalksNativeDistanceToolOptions = ConstructorParameters<typeof Dis
  * @description `ConstructorParameters<typeof AreaTool>[0]`。
  */
 export type MaptalksNativeAreaToolOptions = ConstructorParameters<typeof AreaTool>[0]
+
+/**
+ * 从用户安装的 maptalks-gl 版本推导的几何构造选项类型。
+ *
+ * @description 用 `ConstructorParameters<typeof Marker>[1]` 提取构造函数第二个参数的类型
+ * （所有几何共享同一个 GeometryOptionsType 基类），与安装的 maptalks-gl 版本保持同步，
+ * IDE 可提示全部原生几何字段。
+ */
+export type MaptalksNativeGeometryOptions = ConstructorParameters<typeof _MarkerClass>[1]
 
 export type { MaptalksError, MaptalksErrorCode };
 
@@ -1106,7 +1116,7 @@ export interface UseMaptalksVectorLayerOptions {
  * @example
  * useMaptalksMarker(layer, { coordinates: () => pos.value, symbol: { markerType: 'ellipse' } });
  */
-export interface UseMaptalksMarkerOptions {
+export interface UseMaptalksMarkerOptions extends Omit<Partial<MaptalksNativeGeometryOptions>, 'id' | 'symbol' | 'properties'> {
   /** 响应式 Marker 坐标 */
   coordinates: MaybeRefOrGetter<MarkerCoordinates>;
   /** 响应式 symbol（点类型，MarkerSymbol 强类型字段提示 + 兜底透传） */
@@ -1119,34 +1129,6 @@ export interface UseMaptalksMarkerOptions {
   id?: string;
   /** 自动销毁，默认 true */
   autoDispose?: boolean;
-  /** 响应式可见性：false 隐藏几何但不销毁 */
-  visible?: MaybeRefOrGetter<boolean | undefined>;
-  /** 是否响应鼠标/触摸事件 */
-  interactive?: MaybeRefOrGetter<boolean | undefined>;
-  /** 是否可编辑（出现编辑锚点） */
-  editable?: MaybeRefOrGetter<boolean | undefined>;
-  /** 鼠标悬停 CSS cursor */
-  cursor?: MaybeRefOrGetter<string | undefined>;
-  /** 是否可拖拽 */
-  draggable?: MaybeRefOrGetter<boolean | undefined>;
-  /** 拖拽时是否显示影子 */
-  dragShadow?: MaybeRefOrGetter<boolean | undefined>;
-  /** 拖拽约束轴（true 或 'x' / 'y'） */
-  dragOnAxis?: MaybeRefOrGetter<boolean | string | undefined>;
-  /** 是否仅在屏幕轴向拖拽 */
-  dragOnScreenAxis?: MaybeRefOrGetter<boolean | undefined>;
-  /** 几何在图层内的叠放顺序 */
-  zIndex?: MaybeRefOrGetter<number | undefined>;
-  /** 是否处理反子午线跨越 */
-  antiMeridian?: MaybeRefOrGetter<boolean | undefined>;
-  /** 缺省投影 */
-  defaultProjection?: MaybeRefOrGetter<string | undefined>;
-  /** 量测方式（如 'EPSG:4326'） */
-  measure?: MaybeRefOrGetter<string | undefined>;
-  /** 旋转角度（度） */
-  rotateAngle?: MaybeRefOrGetter<number | undefined>;
-  /** 旋转锚点 */
-  rotatePivot?: MaybeRefOrGetter<[number, number] | undefined>;
 }
 
 /**
@@ -1296,7 +1278,7 @@ export type ShapeCoordinates = [number, number];
  * @example
  * useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value });
  */
-export interface UseMaptalksCircleOptions {
+export interface UseMaptalksCircleOptions extends Omit<Partial<MaptalksNativeGeometryOptions>, 'id' | 'symbol' | 'properties'> {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式半径（米） */
@@ -1312,34 +1294,6 @@ export interface UseMaptalksCircleOptions {
   id?: string;
   /** 自动销毁，默认 true */
   autoDispose?: boolean;
-  /** 响应式可见性：false 隐藏几何但不销毁 */
-  visible?: MaybeRefOrGetter<boolean | undefined>;
-  /** 是否响应鼠标/触摸事件 */
-  interactive?: MaybeRefOrGetter<boolean | undefined>;
-  /** 是否可编辑（出现编辑锚点） */
-  editable?: MaybeRefOrGetter<boolean | undefined>;
-  /** 鼠标悬停 CSS cursor */
-  cursor?: MaybeRefOrGetter<string | undefined>;
-  /** 是否可拖拽 */
-  draggable?: MaybeRefOrGetter<boolean | undefined>;
-  /** 拖拽时是否显示影子 */
-  dragShadow?: MaybeRefOrGetter<boolean | undefined>;
-  /** 拖拽约束轴（true 或 'x' / 'y'） */
-  dragOnAxis?: MaybeRefOrGetter<boolean | string | undefined>;
-  /** 是否仅在屏幕轴向拖拽 */
-  dragOnScreenAxis?: MaybeRefOrGetter<boolean | undefined>;
-  /** 几何在图层内的叠放顺序 */
-  zIndex?: MaybeRefOrGetter<number | undefined>;
-  /** 是否处理反子午线跨越 */
-  antiMeridian?: MaybeRefOrGetter<boolean | undefined>;
-  /** 缺省投影 */
-  defaultProjection?: MaybeRefOrGetter<string | undefined>;
-  /** 量测方式（如 'EPSG:4326'） */
-  measure?: MaybeRefOrGetter<string | undefined>;
-  /** 旋转角度（度） */
-  rotateAngle?: MaybeRefOrGetter<number | undefined>;
-  /** 旋转锚点 */
-  rotatePivot?: MaybeRefOrGetter<[number, number] | undefined>;
 }
 
 /**

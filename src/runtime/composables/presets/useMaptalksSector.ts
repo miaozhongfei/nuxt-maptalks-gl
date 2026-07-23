@@ -1,4 +1,5 @@
 import { toValue } from 'vue';
+import { buildGeometryOptions } from '../../core/geometry-options';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -28,34 +29,12 @@ export function useMaptalksSector(
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 Sector');
       }
-      const options: Record<string, unknown> = {
-          symbol: toValue(opts.symbol),
-          properties: toValue(opts.properties),
-          id: opts.id,
-          visible: toValue(opts.visible),
-          interactive: toValue(opts.interactive),
-          editable: toValue(opts.editable),
-          cursor: toValue(opts.cursor),
-          draggable: toValue(opts.draggable),
-          dragShadow: toValue(opts.dragShadow),
-          dragOnAxis: toValue(opts.dragOnAxis),
-          dragOnScreenAxis: toValue(opts.dragOnScreenAxis),
-          zIndex: toValue(opts.zIndex),
-          antiMeridian: toValue(opts.antiMeridian),
-          defaultProjection: toValue(opts.defaultProjection),
-          measure: toValue(opts.measure),
-          rotateAngle: toValue(opts.rotateAngle),
-          rotatePivot: toValue(opts.rotatePivot),
-        };
-      for (const key of Object.keys(options)) {
-        if (options[key] === undefined) delete options[key];
-      }
       return new Ctor(
         toValue(opts.coordinates),
         toValue(opts.radius),
         toValue(opts.startAngle),
         toValue(opts.endAngle),
-        options,
+        buildGeometryOptions(opts as unknown as Record<string, unknown>),
       );
     },
     {
