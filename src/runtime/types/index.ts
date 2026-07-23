@@ -1367,7 +1367,7 @@ export interface SymbolBase {
  * @example
  * const sym: LineSymbol = { lineColor: '#1bbc9b', lineWidth: 3, lineDasharray: [10, 5] };
  */
-export interface LineSymbol {
+export interface LineSymbol extends SymbolBase {
   /** 线颜色（CSS 颜色字符串） */
   lineColor?: string;
   /** 线宽（像素） */
@@ -1384,6 +1384,14 @@ export interface LineSymbol {
   lineDx?: number;
   /** 线整体垂直偏移（像素） */
   lineDy?: number;
+  /** 线纹理文件 URL */
+  linePatternFile?: string;
+  /** 线渐变色属性名（配合 properties 使用） */
+  lineGradientProperty?: string;
+  /** 线外边颜色 */
+  lineStrokeColor?: string | Stops<string>;
+  /** 线外边宽度（像素） */
+  lineStrokeWidth?: number | Stops<number>;
   /** 兜底：透传任意未建模的线样式键（向后兼容，故为 any） */
   [key: string]: any;
 }
@@ -1398,13 +1406,15 @@ export interface LineSymbol {
  * @example
  * const sym: PolygonSymbol = { polygonFill: '#3498db', polygonFillOpacity: 0.6 };
  */
-export interface PolygonSymbol {
+export interface PolygonSymbol extends SymbolBase {
   /** 面填充颜色（CSS 颜色字符串） */
   polygonFill?: string;
   /** 面填充透明度（0–1） */
   polygonFillOpacity?: number;
   /** 面整体透明度（0–1） */
   polygonOpacity?: number;
+  /** 面纹理文件 URL */
+  polygonPatternFile?: string;
   /** 兜底：透传任意未建模的面样式键（向后兼容，故为 any） */
   [key: string]: any;
 }
@@ -1470,7 +1480,7 @@ export interface MarkerSymbol extends SymbolBase {
  * @example
  * const sym: TextSymbol = { textName: 'Hello', textSize: 14, textFill: '#222222' };
  */
-export interface TextSymbol {
+export interface TextSymbol extends SymbolBase {
   /** 文字内容（也可由几何 content 提供） */
   textName?: string;
   /** 文字字号（像素） */
@@ -1483,6 +1493,34 @@ export interface TextSymbol {
   textHaloFill?: string;
   /** 文字描边（halo）半径（像素） */
   textHaloRadius?: number;
+  /** 文字相对于几何的摆放模式 */
+  textPlacement?: 'point' | 'vertex' | 'line' | 'vertex-first' | 'vertex-last';
+  /** 文字字间距（像素） */
+  textSpacing?: number;
+  /** 文字字体名称（兼容旧 API） */
+  textFaceName?: string;
+  /** 文字字体（CSS font-family） */
+  textFont?: string;
+  /** 文字粗细（CSS font-weight） */
+  textWeight?: string;
+  /** 文字样式（CSS font-style） */
+  textStyle?: string;
+  /** 文字描边透明度（0–1） */
+  textHaloOpacity?: number;
+  /** 文字自动换行宽度（像素） */
+  textWrapWidth?: number;
+  /** 文字换行分隔符 */
+  textWrapCharacter?: string;
+  /** 文字行间距（像素） */
+  textLineSpacing?: number;
+  /** 文字水平对齐 */
+  textHorizontalAlignment?: 'left' | 'middle' | 'right';
+  /** 文字垂直对齐 */
+  textVerticalAlignment?: 'top' | 'middle' | 'bottom';
+  /** 文字对齐（CSS text-align） */
+  textAlign?: 'left' | 'right' | 'center';
+  /** 文字旋转角度（度） */
+  textRotation?: number;
   /** 兜底：透传任意未建模的文字样式键（向后兼容，故为 any） */
   [key: string]: any;
 }
