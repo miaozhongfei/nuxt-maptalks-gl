@@ -1109,18 +1109,13 @@ export interface UseMaptalksVectorLayerOptions {
 }
 
 /**
- * Marker 预设可选项。
+ * 所有几何预设 Option 的共享基类。
  *
- * @description 响应式坐标（必填）+ symbol/properties/events/id/autoDispose。
- *
- * @example
- * useMaptalksMarker(layer, { coordinates: () => pos.value, symbol: { markerType: 'ellipse' } });
+ * @description 继承原生全部几何构造选项（从安装的 maptalks-gl 版本自动推导）+ 模块通用字段。
+ * 每个具体的预设类型（Marker / LineString / Circle / Label 等）独立 extends 本接口，
+ * 不存在跨几何类型的继承链条——原生几何之间也没有这样的继承关系。
  */
-export interface UseMaptalksMarkerOptions extends Omit<Partial<MaptalksNativeGeometryOptions>, 'id' | 'symbol' | 'properties'> {
-  /** 响应式 Marker 坐标 */
-  coordinates: MaybeRefOrGetter<MarkerCoordinates>;
-  /** 响应式 symbol（点类型，MarkerSymbol 强类型字段提示 + 兜底透传） */
-  symbol?: MaybeRefOrGetter<MarkerSymbol | Stops<MarkerSymbol> | undefined>;
+export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryOptions>, 'id' | 'symbol' | 'properties'> {
   /** 响应式 properties */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器 */
@@ -1132,17 +1127,29 @@ export interface UseMaptalksMarkerOptions extends Omit<Partial<MaptalksNativeGeo
 }
 
 /**
+ * Marker 预设可选项。
+ *
+ * @description 响应式坐标（必填）+ symbol/properties/events/id/autoDispose。
+ *
+ * @example
+ * useMaptalksMarker(layer, { coordinates: () => pos.value, symbol: { markerType: 'ellipse' } });
+ */
+export interface UseMaptalksMarkerOptions extends GeometryPresetBase {
+  /** 响应式 Marker 坐标 */
+  coordinates: MaybeRefOrGetter<MarkerCoordinates>;
+  /** 响应式 symbol（点类型，MarkerSymbol 强类型字段提示 + 兜底透传） */
+  symbol?: MaybeRefOrGetter<MarkerSymbol | Stops<MarkerSymbol> | undefined>;
+}
+
+/**
  * LineString 预设可选项。
  *
- * @description 同 Marker，坐标为点序列。
+ * @description 坐标为点序列，独立继承共用基类，不通过 Marker 中转。
  *
  * @example
  * useMaptalksLineString(layer, { coordinates: () => path.value });
  */
-export interface UseMaptalksLineStringOptions extends Omit<
-  UseMaptalksMarkerOptions,
-  'coordinates'
-> {
+export interface UseMaptalksLineStringOptions extends GeometryPresetBase {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<LineStringCoordinates>;
   /** 响应式 symbol（线类型，LineSymbol；联合 Stops 以支持动态样式） */
@@ -1152,12 +1159,12 @@ export interface UseMaptalksLineStringOptions extends Omit<
 /**
  * Polygon 预设可选项。
  *
- * @description 同 Marker，坐标为环数组（外环+内环）。
+ * @description 坐标为环数组（外环+内环），独立继承共用基类。
  *
  * @example
  * useMaptalksPolygon(layer, { coordinates: () => rings.value });
  */
-export interface UseMaptalksPolygonOptions extends Omit<UseMaptalksMarkerOptions, 'coordinates'> {
+export interface UseMaptalksPolygonOptions extends GeometryPresetBase {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<PolygonCoordinates>;
   /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol；联合 Stops 以支持动态样式） */
@@ -1175,32 +1182,18 @@ export type MultiPolygonCoordinates = Array<Array<Array<[number, number]>>>;
 
 /**
  * MultiPoint 预设可选项。
- *
- * @description 同 Marker 预设，坐标为点序列。
- *
- * @example
- * useMaptalksMultiPoint(layer, { coordinates: () => points.value });
  */
-export interface UseMaptalksMultiPointOptions extends Omit<
-  UseMaptalksMarkerOptions,
-  'coordinates'
-> {
+export interface UseMaptalksMultiPointOptions extends GeometryPresetBase {
   /** 响应式 MultiPoint 坐标 */
   coordinates: MaybeRefOrGetter<MultiPointCoordinates>;
+  /** 响应式 symbol（点类型） */
+  symbol?: MaybeRefOrGetter<MarkerSymbol | Stops<MarkerSymbol> | undefined>;
 }
 
 /**
  * MultiLineString 预设可选项。
- *
- * @description 同 Marker 预设，坐标为线序列。
- *
- * @example
- * useMaptalksMultiLineString(layer, { coordinates: () => lines.value });
  */
-export interface UseMaptalksMultiLineStringOptions extends Omit<
-  UseMaptalksMarkerOptions,
-  'coordinates'
-> {
+export interface UseMaptalksMultiLineStringOptions extends GeometryPresetBase {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
   symbol?: MaybeRefOrGetter<LineSymbol | Stops<LineSymbol> | undefined>;
@@ -1208,16 +1201,8 @@ export interface UseMaptalksMultiLineStringOptions extends Omit<
 
 /**
  * MultiPolygon 预设可选项。
- *
- * @description 同 Marker 预设，坐标为多边形序列。
- *
- * @example
- * useMaptalksMultiPolygon(layer, { coordinates: () => polygons.value });
  */
-export interface UseMaptalksMultiPolygonOptions extends Omit<
-  UseMaptalksMarkerOptions,
-  'coordinates'
-> {
+export interface UseMaptalksMultiPolygonOptions extends GeometryPresetBase {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
   symbol?: MaybeRefOrGetter<
@@ -1278,7 +1263,7 @@ export type ShapeCoordinates = [number, number];
  * @example
  * useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value });
  */
-export interface UseMaptalksCircleOptions extends Omit<Partial<MaptalksNativeGeometryOptions>, 'id' | 'symbol' | 'properties'> {
+export interface UseMaptalksCircleOptions extends GeometryPresetBase {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式半径（米） */
@@ -1286,14 +1271,6 @@ export interface UseMaptalksCircleOptions extends Omit<Partial<MaptalksNativeGeo
   symbol?: MaybeRefOrGetter<
     (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
   >;
-  /** 响应式 properties */
-  properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
-  /** 事件名 → 处理器 */
-  events?: Record<string, MaptalksEventHandler>;
-  /** 几何 id */
-  id?: string;
-  /** 自动销毁，默认 true */
-  autoDispose?: boolean;
 }
 
 /**
@@ -1304,11 +1281,16 @@ export interface UseMaptalksCircleOptions extends Omit<Partial<MaptalksNativeGeo
  * @example
  * useMaptalksRectangle(layer, { coordinates: () => topLeft.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksRectangleOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+export interface UseMaptalksRectangleOptions extends GeometryPresetBase {
+  /** 响应式坐标 */
+  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
+  symbol?: MaybeRefOrGetter<
+    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
+  >;
 }
 
 /**
@@ -1319,11 +1301,16 @@ export interface UseMaptalksRectangleOptions extends Omit<UseMaptalksCircleOptio
  * @example
  * useMaptalksEllipse(layer, { coordinates: () => center.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksEllipseOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+export interface UseMaptalksEllipseOptions extends GeometryPresetBase {
+  /** 响应式中心坐标 */
+  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
+  symbol?: MaybeRefOrGetter<
+    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
+  >;
 }
 
 /**
@@ -1334,11 +1321,18 @@ export interface UseMaptalksEllipseOptions extends Omit<UseMaptalksCircleOptions
  * @example
  * useMaptalksSector(layer, { coordinates: () => center.value, radius: () => r.value, startAngle: () => 0, endAngle: () => 90 });
  */
-export interface UseMaptalksSectorOptions extends UseMaptalksCircleOptions {
+export interface UseMaptalksSectorOptions extends GeometryPresetBase {
+  /** 响应式中心坐标 */
+  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  /** 响应式半径（米） */
+  radius: MaybeRefOrGetter<number>;
   /** 响应式起始角（度） */
   startAngle: MaybeRefOrGetter<number>;
   /** 响应式结束角（度） */
   endAngle: MaybeRefOrGetter<number>;
+  symbol?: MaybeRefOrGetter<
+    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
+  >;
 }
 
 /**
@@ -1349,9 +1343,11 @@ export interface UseMaptalksSectorOptions extends UseMaptalksCircleOptions {
  * @example
  * useMaptalksLabel(layer, { content: () => text.value, coordinates: () => anchor.value });
  */
-export interface UseMaptalksLabelOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+export interface UseMaptalksLabelOptions extends GeometryPresetBase {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
+  /** 响应式坐标 */
+  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   symbol?: MaybeRefOrGetter<TextSymbol | Stops<TextSymbol> | undefined>;
 }
 
@@ -1363,9 +1359,11 @@ export interface UseMaptalksLabelOptions extends Omit<UseMaptalksCircleOptions, 
  * @example
  * useMaptalksTextBox(layer, { content: () => text.value, coordinates: () => anchor.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksTextBoxOptions extends Omit<UseMaptalksCircleOptions, 'radius'> {
+export interface UseMaptalksTextBoxOptions extends GeometryPresetBase {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
+  /** 响应式坐标 */
+  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
