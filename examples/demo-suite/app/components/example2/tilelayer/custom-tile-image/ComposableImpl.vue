@@ -6,7 +6,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">
-      urlTemplate 函数按 (x+y) 奇偶混搭两套底图 + renderercreate 拦截 tile 加载并添加 sepia 滤镜与 "hello maptalks" 水印。
+      urlTemplate 按 (x+y) 奇偶混搭两套底图 + cssFilter 添加 sepia/invert 滤镜 + CanvasLayer 叠加 "hello maptalks" 水印。
     </p>
   </div>
 </template>
@@ -18,48 +18,28 @@ const tileOptions = {
     const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
     return (x + y) % 2 === 0 ? light : dark;
   },
+  cssFilter: 'sepia(100%) invert(90%)',
   attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
 };
 
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-const { layer } = useMaptalksTileLayer(map, { options: tileOptions });
+useMaptalksTileLayer(map, { options: tileOptions });
 
-// 瓦片水印：Canvas 复用避免 GC
-let wmCanvas: HTMLCanvasElement | null = null;
-function getWmCanvas(): HTMLCanvasElement {
-  if (wmCanvas) return wmCanvas;
-  wmCanvas = document.createElement('canvas');
-  return wmCanvas;
-}
-// renderercreate 事件：拦截每张瓦片的图片加载，在 Canvas 上添加水印后再交给渲染器
-watch(() => toValue(layer), (l) => {
-  const raw = l as unknown as { on?: (e: string, cb: (e: unknown) => void) => void } | null;
-  raw?.on?.('renderercreate', (e) => {
-    const renderer = (e as { renderer: { loadTileImage: (img: HTMLImageElement, url: string) => void } }).renderer;
-    renderer.loadTileImage = function (img: HTMLImageElement, url: string) {
-      const remote = new Image();
-      remote.crossOrigin = 'anonymous';
-      remote.addEventListener('load', () => {
-        const c = getWmCanvas();
-        c.width = remote.width;
-        c.height = remote.height;
-        const ctx = c.getContext('2d')!;
-        ctx.clearRect(0, 0, c.width, c.height);
-        ctx.filter = 'sepia(100%) invert(90%)';
-        ctx.drawImage(remote, 0, 0);
-        ctx.filter = 'none';
-        ctx.fillStyle = 'white';
-        ctx.font = '20px serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('hello maptalks', c.width / 2, c.height / 2);
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 0.5;
-        ctx.strokeRect(0, 0, c.width, c.height);
-        img.src = c.toDataURL('image/jpeg', 0.7);
-      });
-      remote.src = url;
-    };
-  });
-}, { immediate: true });
+// CanvasLayer 叠加水印文字（maptalks-gl 代替 renderercreate 的等效方案）
+useMaptalksLayer(map, (mt) => {
+  const cl = new mt.CanvasLayer('wm');
+  cl.draw = function (ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '20px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('hello maptalks', ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.restore();
+    // CanvasLayer 需要通知 maptalks 渲染完成
+    (cl as unknown as { completeRender: () => void }).completeRender?.();
+  };
+  return cl;
+});
 </script>
