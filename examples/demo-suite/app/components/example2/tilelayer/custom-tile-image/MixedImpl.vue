@@ -14,19 +14,8 @@
 </template>
 
 <script setup lang="ts">
-const tileOptions = {
-  urlTemplate: (x: number, y: number, z: number) => {
-    const light = `https://b.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`;
-    const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
-    return (x + y) % 2 === 0 ? light : dark;
-  },
-  renderer: 'canvas',
-  attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
-};
-
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
-const { layer } = useMaptalksTileLayer(map, { options: tileOptions });
 
 let wmCanvas: HTMLCanvasElement | null = null;
 function getWmCanvas(): HTMLCanvasElement {
@@ -34,9 +23,18 @@ function getWmCanvas(): HTMLCanvasElement {
   wmCanvas = document.createElement('canvas');
   return wmCanvas;
 }
-watch(() => toValue(layer), (l) => {
-  const raw = l as unknown as { on?: (e: string, cb: (e: unknown) => void) => void } | null;
-  raw?.on?.('renderercreate', (e) => {
+
+useMaptalksLayer(map, (mt) => {
+  const tileLayer = new mt.TileLayer('base', {
+    urlTemplate: (x: number, y: number, z: number) => {
+      const light = `https://b.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`;
+      const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
+      return (x + y) % 2 === 0 ? light : dark;
+    },
+    renderer: 'canvas',
+    attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
+  });
+  (tileLayer as unknown as { on: (e: string, cb: (e: unknown) => void) => void }).on('renderercreate', (e) => {
     const renderer = (e as { renderer: { loadTileImage: (img: HTMLImageElement, url: string) => void } }).renderer;
     renderer.loadTileImage = function (img: HTMLImageElement, url: string) {
       const remote = new Image();
@@ -62,5 +60,6 @@ watch(() => toValue(layer), (l) => {
       remote.src = url;
     };
   });
-}, { immediate: true });
+  return tileLayer;
+});
 </script>
