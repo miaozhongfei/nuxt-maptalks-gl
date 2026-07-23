@@ -31,12 +31,20 @@ useMaptalksTileLayer(map, { options: tileOptions });
 useMaptalksLayer(map, (mt) => {
   const cl = new mt.CanvasLayer('wm');
   cl.draw = function (ctx: CanvasRenderingContext2D) {
+    // 瓦片像素尺寸
+    const T = 256;
+    const w = ctx.canvas.width;
+    const h = ctx.canvas.height;
     ctx.save();
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.font = '20px serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('hello maptalks', ctx.canvas.width / 2, ctx.canvas.height / 2);
+    for (let x = T / 2; x < w; x += T) {
+      for (let y = T / 2; y < h; y += T) {
+        ctx.fillText('hello maptalks', x, y);
+      }
+    }
     ctx.restore();
     (cl as unknown as { completeRender: () => void }).completeRender?.();
   };
