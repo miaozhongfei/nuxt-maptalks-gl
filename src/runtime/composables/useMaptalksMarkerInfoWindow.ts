@@ -2,7 +2,7 @@ import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { toMaptalksError } from '../core/errors';
-import type { MaptalksEventHandler, MaptalksGeometry, MaptalksInfoWindowOptions, MaptalksNativeMarkerInfoWindowOptions } from '../types';
+import type { MaptalksEventHandler, MaptalksGeometry, MaptalksInfoWindowCombinedOptions } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例 */
@@ -39,8 +39,7 @@ interface NativeMarker {
 export interface UseMaptalksMarkerInfoWindowOptions {
   /** 透传给 marker.setInfoWindow() 的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
   options?: MaybeRefOrGetter<
-    Partial<MaptalksInfoWindowOptions>
-    & Omit<Partial<MaptalksNativeMarkerInfoWindowOptions>, keyof MaptalksInfoWindowOptions>
+    MaptalksInfoWindowCombinedOptions
     | undefined
   >;
   /** 信息框事件（open/close 等） */

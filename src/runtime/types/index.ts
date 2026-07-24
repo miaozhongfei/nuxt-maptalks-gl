@@ -26,6 +26,17 @@ import type { MaptalksError, MaptalksErrorCode } from '../core/errors';
 export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMapClass>[1]
 
 /**
+ * Map 构造选项的组合类型：建模字段（MaptalksMapOptions）+ 原生字段（MaptalksNativeMapOptions）。
+ *
+ * @description `Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>`，
+ * 用户构建 `ref<MaptalksMapCombinedOptions>({})` 时获得完整 IDE 补全。
+ *
+ * @example
+ * const opts: MaptalksMapCombinedOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3 };
+ */
+export type MaptalksMapCombinedOptions = Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>
+
+/**
  * maptalks-gl 原生 InfoWindow 构造选项类型（推导自安装版本）。
  *
  * @description 用 `ConstructorParameters<typeof ui.InfoWindow>[0]` 提取构造函数参数类型，
@@ -81,11 +92,34 @@ export interface MaptalksInfoWindowOptions {
 export type MaptalksMarkerInfoWindowOptions = MaptalksInfoWindowOptions;
 
 /**
+ * InfoWindow 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
+ *
+ * @description `Partial<MaptalksInfoWindowOptions> & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowOptions>`，
+ * 用户构建 `ref<MaptalksInfoWindowCombinedOptions>({})` 时获得完整 IDE 补全。
+ *
+ * @example
+ * const opts: MaptalksInfoWindowCombinedOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
+ */
+export type MaptalksInfoWindowCombinedOptions = Partial<MaptalksInfoWindowOptions>
+  & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowOptions>;
+
+/**
  * 从 maptalks-gl 推导的 TileLayer 构造选项类型。
  *
  * @description `ConstructorParameters<typeof TileLayer>[1]`，IDE 可提示 urlTemplate / opacity / zIndex 等所有字段。
  */
 export type MaptalksNativeTileLayerOptions = ConstructorParameters<typeof TileLayer>[1]
+
+/**
+ * TileLayer 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeTileLayerOptions> & Record<string, unknown>`，
+ * 允许用户传任意额外字段（透传给 maptalks 原生构造器）。
+ *
+ * @example
+ * const opts: MaptalksTileLayerCombinedOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png' };
+ */
+export type MaptalksTileLayerCombinedOptions = Partial<MaptalksNativeTileLayerOptions> & Record<string, unknown>
 
 /**
  * 从 maptalks-gl 推导的 VectorTileLayer 构造选项类型。
@@ -95,11 +129,31 @@ export type MaptalksNativeTileLayerOptions = ConstructorParameters<typeof TileLa
 export type MaptalksNativeVectorTileLayerOptions = ConstructorParameters<typeof VectorTileLayer>[1]
 
 /**
+ * VectorTileLayer 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeVectorTileLayerOptions> & Record<string, unknown>`。
+ *
+ * @example
+ * const opts: MaptalksVectorTileLayerCombinedOptions = { style: 'https://.../style.json' };
+ */
+export type MaptalksVectorTileLayerCombinedOptions = Partial<MaptalksNativeVectorTileLayerOptions> & Record<string, unknown>
+
+/**
  * 从 maptalks-gl 推导的 GLTFLayer 构造选项类型。
  *
  * @description `ConstructorParameters<typeof GLTFLayer>[1]`。
  */
 export type MaptalksNativeGLTFLayerOptions = ConstructorParameters<typeof GLTFLayer>[1]
+
+/**
+ * GLTFLayer 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeGLTFLayerOptions> & Record<string, unknown>`。
+ *
+ * @example
+ * const opts: MaptalksGLTFLayerCombinedOptions = { url: 'https://.../model.gltf' };
+ */
+export type MaptalksGLTFLayerCombinedOptions = Partial<MaptalksNativeGLTFLayerOptions> & Record<string, unknown>
 
 /**
  * 从 maptalks-gl 推导的 WMSTileLayer 构造选项类型。
@@ -116,11 +170,31 @@ export type MaptalksNativeWMSTileLayerOptions = ConstructorParameters<typeof WMS
 export type MaptalksNativeGroupGLLayerOptions = ConstructorParameters<typeof GroupGLLayer>[2]
 
 /**
+ * GroupGLLayer 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>`。
+ *
+ * @example
+ * const opts: MaptalksGroupGLLayerCombinedOptions = { lighting: { ambient: '#fff' } };
+ */
+export type MaptalksGroupGLLayerCombinedOptions = Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>
+
+/**
  * 从 maptalks-gl 推导的 VectorLayer 构造选项类型。
  *
  * @description `ConstructorParameters<typeof VectorLayer>[2]`（第三个参数，geometries 之后）。
  */
 export type MaptalksNativeVectorLayerOptions = ConstructorParameters<typeof VectorLayer>[2]
+
+/**
+ * VectorLayer 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeVectorLayerOptions> & Record<string, unknown>`。
+ *
+ * @example
+ * const opts: MaptalksVectorLayerCombinedOptions = { enableSimplify: false };
+ */
+export type MaptalksVectorLayerCombinedOptions = Partial<MaptalksNativeVectorLayerOptions> & Record<string, unknown>
 
 /**
  * 从 maptalks-gl 推导的 DrawTool 构造选项类型。
@@ -137,11 +211,31 @@ export type MaptalksNativeDrawToolOptions = ConstructorParameters<typeof DrawToo
 export type MaptalksNativeDistanceToolOptions = ConstructorParameters<typeof DistanceTool>[0]
 
 /**
+ * DistanceTool 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>`。
+ *
+ * @example
+ * const opts: MaptalksDistanceToolCombinedOptions = { symbol: { lineColor: '#ff0000' } };
+ */
+export type MaptalksDistanceToolCombinedOptions = Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>
+
+/**
  * 从 maptalks-gl 推导的 AreaTool 构造选项类型。
  *
  * @description `ConstructorParameters<typeof AreaTool>[0]`。
  */
 export type MaptalksNativeAreaToolOptions = ConstructorParameters<typeof AreaTool>[0]
+
+/**
+ * AreaTool 构造选项的用户输入类型。
+ *
+ * @description `Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>`。
+ *
+ * @example
+ * const opts: MaptalksAreaToolCombinedOptions = { symbol: { polygonFill: '#00ff00' } };
+ */
+export type MaptalksAreaToolCombinedOptions = Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>
 
 /**
  * 从用户安装的 maptalks-gl 版本推导的几何构造选项类型。

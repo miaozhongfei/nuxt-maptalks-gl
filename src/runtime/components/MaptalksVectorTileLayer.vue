@@ -5,13 +5,13 @@ import { inject } from 'vue'
 
 import { useMaptalksVectorTileLayer } from '../composables/presets/useMaptalksVectorTileLayer'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksNativeVectorTileLayerOptions, MaptalksSource } from '../types'
+import type { MaptalksVectorTileLayerCombinedOptions, MaptalksSource } from '../types'
 
 const props = withDefaults(
   defineProps<{
     source?: string | MaptalksSource
     id?: string
-    options?: Partial<MaptalksNativeVectorTileLayerOptions> & Record<string, unknown>
+    options?: MaptalksVectorTileLayerCombinedOptions
     autoDispose?: boolean
   }>(),
   { options: () => ({}), autoDispose: true },

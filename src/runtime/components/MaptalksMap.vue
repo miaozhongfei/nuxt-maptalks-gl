@@ -7,14 +7,14 @@ import { provide, ref, shallowRef, watch } from 'vue'
 import { useMaptalks } from '../composables/useMaptalks'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, MaptalksNativeMapOptions, UseMaptalksOptions } from '../types'
+import type { MaptalksCoordinate, MaptalksMap, MaptalksMapCombinedOptions, UseMaptalksOptions } from '../types'
 
 const props = withDefaults(defineProps<{
   center?: [number, number]; zoom?: number
   pitch?: number; bearing?: number
   minZoom?: number; maxZoom?: number
   draggable?: boolean; dragPitch?: boolean; dragRotate?: boolean; zoomable?: boolean
-  name?: string; options?: Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>
+  name?: string; options?: MaptalksMapCombinedOptions
   baseLayer?: string | { source?: string; options?: Record<string, unknown> }
 }>(), { options: () => ({}) })
 

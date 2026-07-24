@@ -5,13 +5,13 @@ import { inject } from 'vue'
 
 import { useMaptalksGroupGLLayer } from '../composables/presets/useMaptalksGroupGLLayer'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksLayer, MaptalksNativeGroupGLLayerOptions } from '../types'
+import type { MaptalksLayer, MaptalksGroupGLLayerCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
     id?: string
     layers?: MaptalksLayer[]
-    options?: Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>
+    options?: MaptalksGroupGLLayerCombinedOptions
     autoDispose?: boolean
   }>(),
   { layers: () => [], options: () => ({}), autoDispose: true },
