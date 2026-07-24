@@ -1466,6 +1466,86 @@ export interface UseMaptalksTextBoxOptions extends GeometryPresetBase {
 }
 
 /**
+ * 几何组件 options prop 类型。
+ *
+ * @description 参照 `MaptalksInfoWindowCombinedOptions` 模式：组件独立 props 中已声明的字段
+ * 从 options 中 Omit，避免重名冲突。其余全部原生字段均可用——用户通过 `:options="{ ... }"` 一次设定。
+ * maptalks 新增字段时无需修改组件代码。
+ */
+
+/** Marker 组件 options prop 类型 */
+export type MaptalksMarkerCombinedOptions = Omit<
+  Partial<UseMaptalksMarkerOptions>,
+  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** LineString 组件 options prop 类型 */
+export type MaptalksLineStringCombinedOptions = Omit<
+  Partial<UseMaptalksLineStringOptions>,
+  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** Polygon 组件 options prop 类型 */
+export type MaptalksPolygonCombinedOptions = Omit<
+  Partial<UseMaptalksPolygonOptions>,
+  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** MultiPoint 组件 options prop 类型 */
+export type MaptalksMultiPointCombinedOptions = Omit<
+  Partial<UseMaptalksMultiPointOptions>,
+  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** MultiLineString 组件 options prop 类型 */
+export type MaptalksMultiLineStringCombinedOptions = Omit<
+  Partial<UseMaptalksMultiLineStringOptions>,
+  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** MultiPolygon 组件 options prop 类型 */
+export type MaptalksMultiPolygonCombinedOptions = Omit<
+  Partial<UseMaptalksMultiPolygonOptions>,
+  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** Circle 组件 options prop 类型——额外 Omit radius */
+export type MaptalksCircleCombinedOptions = Omit<
+  Partial<UseMaptalksCircleOptions>,
+  'coordinates' | 'radius' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** Rectangle 组件 options prop 类型——额外 Omit width / height */
+export type MaptalksRectangleCombinedOptions = Omit<
+  Partial<UseMaptalksRectangleOptions>,
+  'coordinates' | 'width' | 'height' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** Ellipse 组件 options prop 类型——额外 Omit width / height */
+export type MaptalksEllipseCombinedOptions = Omit<
+  Partial<UseMaptalksEllipseOptions>,
+  'coordinates' | 'width' | 'height' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** Sector 组件 options prop 类型——额外 Omit radius / startAngle / endAngle */
+export type MaptalksSectorCombinedOptions = Omit<
+  Partial<UseMaptalksSectorOptions>,
+  'coordinates' | 'radius' | 'startAngle' | 'endAngle' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** Label 组件 options prop 类型——额外 Omit content */
+export type MaptalksLabelCombinedOptions = Omit<
+  Partial<UseMaptalksLabelOptions>,
+  'content' | 'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/** TextBox 组件 options prop 类型——额外 Omit content / width / height */
+export type MaptalksTextBoxCombinedOptions = Omit<
+  Partial<UseMaptalksTextBoxOptions>,
+  'content' | 'coordinates' | 'width' | 'height' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
+>;
+
+/**
  * 所有几何 symbol 的公共基类（原生 SymbolCommon 等价）。
  *
  * @description 可见性 / 透明度 / 阴影，所有 Marker / Line / Polygon / Text 均可使用。
