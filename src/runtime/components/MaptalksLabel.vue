@@ -5,6 +5,7 @@ import { inject } from 'vue'
 
 import { useMaptalksLabel } from '../composables/presets/useMaptalksLabel'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
+import type { MaptalksLabelCombinedOptions } from '../types'
 const props = withDefaults(
   defineProps<{
     content: string
@@ -13,8 +14,9 @@ const props = withDefaults(
     properties?: Record<string, unknown>
     id?: string
     autoDispose?: boolean
+    options?: MaptalksLabelCombinedOptions
   }>(),
-  { autoDispose: true },
+  { autoDispose: true, options: undefined },
 )
 
 const emit = defineEmits<{
@@ -27,6 +29,7 @@ const emit = defineEmits<{
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksLabel 必须在 MaptalksVectorLayer 内使用')
 useMaptalksLabel(layer, {
+  ...props.options,
   content: () => props.content,
   coordinates: () => props.coordinates,
   symbol: () => props.symbol,

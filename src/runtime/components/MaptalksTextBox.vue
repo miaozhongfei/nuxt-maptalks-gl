@@ -5,6 +5,7 @@ import { inject } from 'vue'
 
 import { useMaptalksTextBox } from '../composables/presets/useMaptalksTextBox'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
+import type { MaptalksTextBoxCombinedOptions } from '../types'
 const props = withDefaults(
   defineProps<{
     content: string
@@ -15,8 +16,9 @@ const props = withDefaults(
     properties?: Record<string, unknown>
     id?: string
     autoDispose?: boolean
+    options?: MaptalksTextBoxCombinedOptions
   }>(),
-  { autoDispose: true },
+  { autoDispose: true, options: undefined },
 )
 
 const emit = defineEmits<{
@@ -29,6 +31,7 @@ const emit = defineEmits<{
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksTextBox 必须在 MaptalksVectorLayer 内使用')
 useMaptalksTextBox(layer, {
+  ...props.options,
   content: () => props.content,
   coordinates: () => props.coordinates,
   width: () => props.width,

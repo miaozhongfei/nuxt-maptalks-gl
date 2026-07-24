@@ -5,7 +5,7 @@ import { inject } from 'vue'
 
 import { useMaptalksLineString } from '../composables/presets/useMaptalksLineString'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { LineStringCoordinates } from '../types'
+import type { MaptalksLineStringCombinedOptions, LineStringCoordinates } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -14,8 +14,9 @@ const props = withDefaults(
     properties?: Record<string, unknown>
     id?: string
     autoDispose?: boolean
+    options?: MaptalksLineStringCombinedOptions
   }>(),
-  { autoDispose: true },
+  { autoDispose: true, options: undefined },
 )
 
 const emit = defineEmits<{
@@ -28,6 +29,7 @@ const emit = defineEmits<{
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksLineString 必须在 MaptalksVectorLayer 内使用')
 useMaptalksLineString(layer, {
+  ...props.options,
   coordinates: () => props.coordinates,
   symbol: () => props.symbol,
   properties: () => props.properties,
