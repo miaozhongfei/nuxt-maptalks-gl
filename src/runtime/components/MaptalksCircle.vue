@@ -8,12 +8,19 @@ import { GEOMETRY_LAYER_KEY } from '../core/map-context'
 import type { MaptalksCircleCombinedOptions } from '../types'
 const props = withDefaults(
   defineProps<{
+    /** 圆心坐标 */
     coordinates: [number, number]
+    /** 半径（米） */
     radius: number
+    /** 渲染样式（详见 Symbol 类型定义） */
     symbol?: Record<string, unknown>
+    /** 自定义属性 */
     properties?: Record<string, unknown>
+    /** 几何图形唯一标识 */
     id?: string
+    /** 组件销毁时自动移除几何图形，默认 true */
     autoDispose?: boolean
+    /** 透传给几何构造器的额外选项（含中文字段注释，详见 MaptalksCircleCombinedOptions） */
     options?: MaptalksCircleCombinedOptions
   }>(),
   { autoDispose: true, options: undefined },

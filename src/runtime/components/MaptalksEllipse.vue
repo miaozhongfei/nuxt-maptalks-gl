@@ -8,13 +8,21 @@ import { GEOMETRY_LAYER_KEY } from '../core/map-context'
 import type { MaptalksEllipseCombinedOptions } from '../types'
 const props = withDefaults(
   defineProps<{
+    /** 椭圆中心坐标 */
     coordinates: [number, number]
+    /** 宽度（米） */
     width: number
+    /** 高度（米） */
     height: number
+    /** 渲染样式（详见 Symbol 类型定义） */
     symbol?: Record<string, unknown>
+    /** 自定义属性 */
     properties?: Record<string, unknown>
+    /** 几何图形唯一标识 */
     id?: string
+    /** 组件销毁时自动移除几何图形，默认 true */
     autoDispose?: boolean
+    /** 透传给几何构造器的额外选项（含中文字段注释，详见 MaptalksEllipseCombinedOptions） */
     options?: MaptalksEllipseCombinedOptions
   }>(),
   { autoDispose: true, options: undefined },
