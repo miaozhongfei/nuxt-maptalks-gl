@@ -12,9 +12,16 @@
         :options="{
           symbol: {
             markerType: 'ellipse',
-            markerFill: { type: 'radial', colorStops: [[0, '#60a5fa'], [0.5, '#2563eb'], [1, '#1e3a8a']] },
-            markerWidth: 30,
-            markerHeight: 30,
+            markerFill: {
+              type: 'radial',
+              colorStops: [
+                [0, '#60a5fa'],
+                [0.5, '#2563eb'],
+                [1, '#1e3a8a'],
+              ],
+            },
+            markerWidth: 300,
+            markerHeight: 300,
           },
         }"
       />
