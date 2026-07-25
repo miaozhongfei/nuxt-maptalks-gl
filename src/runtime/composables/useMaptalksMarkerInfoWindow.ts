@@ -1,5 +1,6 @@
 import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
+import { dequal } from 'dequal';
 
 import { toMaptalksError } from '../core/errors';
 import type { MaptalksEventHandler, MaptalksGeometry, MaptalksInfoWindowCombinedOptions } from '../types';
@@ -97,14 +98,17 @@ function setupMarkerIW(
     { immediate: true },
   );
   // options（不含 content）变化 → setInfoWindow() 重建；content 由单独 watch 处理
+  let prevRest: Record<string, unknown> | undefined;
   watch(
     () => {
       const raw = toValue(opts.options);
       if (!raw) return;
       const { content: _, ...rest } = raw as Record<string, unknown>;
-      return JSON.stringify(rest);
+      return rest;
     },
-    () => {
+    (rest) => {
+      if (!rest || dequal(rest, prevRest)) return;
+      prevRest = rest;
       const m = toValue(geometry) as NativeMarker | null;
       if (m && hasSet.value) m.setInfoWindow(buildMarkerIWOptions(opts));
     },

@@ -1,5 +1,6 @@
 import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
+import { dequal } from 'dequal';
 
 import { toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
@@ -167,7 +168,7 @@ function bindExtraProps(
 /**
  * 监听 options 整体变化 → remove + recreate（对标 useMaptalksInfoWindow 的 options 重建机制）。
  *
- * @description 仅在 options.options 存在时生效；通过 JSON.stringify 深比较过滤引用变化但内容不变的情况，
+ * @description 仅在 options.options 存在时生效；通过 dequal 深比较过滤引用变化但内容不变的情况，
  * 避免父组件 re-render 导致内联对象字面量产生新引用 → 不必要的全量 remove + addGeometry。
  * 内容确实变化时才重建几何。
  * @param {() => MaptalksVectorLayer | null} getLayer - 取矢量图层
@@ -183,13 +184,12 @@ function bindOptionsRebuild(
   state: GeometryState,
 ): () => void {
   if (!options.options) return () => {};
-  let prevJson: string | undefined;
+  let prevOpts: Record<string, unknown> | undefined;
   return watch(
     () => toValue(options.options),
     (opts) => {
-      const json = JSON.stringify(opts);
-      if (json === prevJson) return;
-      prevJson = json;
+      if (dequal(opts, prevOpts)) return;
+      prevOpts = opts as Record<string, unknown> | undefined;
       const geo = state.geometry.value;
       if (geo) {
         for (const [name, handler] of state.boundEvents) geo.off(name, handler);

@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { createApp, h, inject, onBeforeUnmount, onUpdated, ref, watch } from 'vue'
 import type { App } from 'vue'
+import { dequal } from 'dequal'
 
 import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
 import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
@@ -35,16 +36,13 @@ const slots = defineSlots()
 let skipNextUpdate = false
 let slotApp: App | null = null
 
-// JSON 深比防内联字面量每次渲染触发 composable 重建
+// dequal 深比较防内联字面量每次渲染触发 composable 重建
 const stableOpts = ref<Record<string, unknown> | undefined>(undefined)
-let prevJson: string | undefined
 
 watch(
   () => props.options,
   (o) => {
-    const json = JSON.stringify(o ?? null)
-    if (json === prevJson) return;
-    prevJson = json
+    if (dequal(o, stableOpts.value)) return;
     if (!o) { stableOpts.value = undefined; return; }
     const filtered: Record<string, unknown> = { ...o }
     for (const k of Object.keys(filtered)) {
