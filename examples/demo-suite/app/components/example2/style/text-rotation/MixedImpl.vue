@@ -13,10 +13,74 @@
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
-// textRotation 旋转文字标注
+// 文字标签 Label
 useMaptalksLabel(layer, {
-  content: '旋转文字',
+  content: '文字标签 Label',
   coordinates: [121.5057, 31.2453],
-  options: { symbol: { textFill: '#2563eb', textSize: 18, textRotation: 45 } },
+  options: {
+    draggable: true,
+    textSymbol: {
+      textFaceName: 'monospace',
+      textFill: '#34495e',
+      textHaloFill: '#fff',
+      textHaloRadius: 4,
+      textSize: 18,
+      textWeight: 'bold',
+      textVerticalAlignment: 'top',
+      textRotation: 60,
+    },
+  },
+});
+useMaptalksLabel(layer, {
+  content: '文字标签 Label',
+  coordinates: [121.5057, 31.2553],
+  options: {
+    draggable: true,
+    boxStyle: {
+      padding: [12, 8],
+      verticalAlignment: 'top',
+      horizontalAlignment: 'left',
+      minWidth: 200,
+      minHeight: 30,
+      symbol: {
+        markerType: 'square',
+        markerFill: 'rgb(135,196,240)',
+        markerFillOpacity: 0.9,
+        markerLineColor: '#34495e',
+        markerLineWidth: 1,
+        markerRotation: 60,
+      },
+    },
+    textSymbol: {
+      textFaceName: 'monospace',
+      textFill: '#34495e',
+      textHaloFill: '#fff',
+      textHaloRadius: 4,
+      textSize: 18,
+      textWeight: 'bold',
+      textVerticalAlignment: 'top',
+      textRotation: 60,
+    },
+  },
+});
+// 文字标注 Marker（useMaptalksMarker，无 markerType 则为纯文字）
+useMaptalksMarker(layer, {
+  coordinates: [121.5557, 31.2513],
+  options: {
+    properties: { name: 'Hello\nMapTalks' },
+    symbol: {
+      textFaceName: 'sans-serif',
+      textName: '{name}',
+      textSize: 40,
+      textFill: '#34495e',
+      textHaloFill: '#fff',
+      textHaloRadius: 5,
+      textWrapCharacter: '\n',
+      textHorizontalAlignment: 'middle',
+      textVerticalAlignment: 'middle',
+      textAlign: 'center',
+      textRotation: 60,
+    },
+  },
 });
 </script>
