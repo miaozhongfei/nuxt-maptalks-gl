@@ -5,12 +5,12 @@ import { inject, provide } from 'vue'
 
 import { useMaptalksMarker } from '../composables/presets/useMaptalksMarker'
 import { GEOMETRY_LAYER_KEY, MARKER_GEOMETRY_KEY } from '../core/map-context'
-import type { MaptalksMarkerCombinedOptions, MarkerCoordinates } from '../types'
+import type { MaptalksMarkerCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: MarkerCoordinates
+    coordinates: [number, number]
     /** 几何图形唯一标识 */
     id?: string
     /** 是否可见 */

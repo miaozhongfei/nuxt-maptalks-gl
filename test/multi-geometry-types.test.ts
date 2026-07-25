@@ -2,21 +2,18 @@ import { describe, expectTypeOf, it } from 'vitest';
 
 import type {
   GeoJSONData,
-  MultiLineStringCoordinates,
-  MultiPointCoordinates,
-  MultiPolygonCoordinates,
   UseMaptalksGeoJSONReturn,
 } from '../src/runtime/types';
 
 describe('Multi 几何与 GeoJSON 类型', () => {
-  it('Multi 坐标别名形状正确', () => {
-    expectTypeOf<MultiPointCoordinates>().toMatchTypeOf<
+  it('Multi 坐标形状正确', () => {
+    expectTypeOf<Array<[number, number]>>().toMatchTypeOf<
       Array<[number, number] | { x: number; y: number }>
     >();
-    expectTypeOf<MultiLineStringCoordinates>().toMatchTypeOf<
+    expectTypeOf<Array<Array<[number, number]>>>().toMatchTypeOf<
       Array<Array<[number, number] | { x: number; y: number }>>
     >();
-    expectTypeOf<MultiPolygonCoordinates>().toMatchTypeOf<
+    expectTypeOf<Array<Array<Array<[number, number]>>>>().toMatchTypeOf<
       Array<Array<Array<[number, number] | { x: number; y: number }>>>
     >();
   });

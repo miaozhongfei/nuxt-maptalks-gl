@@ -1125,13 +1125,6 @@ export interface MaptalksVectorLayer extends MaptalksLayer {
   clear(): MaptalksVectorLayer;
 }
 
-/** Marker 坐标：单点 */
-export type MarkerCoordinates = [number, number];
-/** LineString 坐标：点序列 */
-export type LineStringCoordinates = Array<[number, number]>;
-/** Polygon 坐标：外环 + 内环（环为点序列） */
-export type PolygonCoordinates = Array<Array<[number, number]>>;
-
 /**
  * `useMaptalksGeometry` 的可选项。
  *
@@ -1255,7 +1248,7 @@ export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryO
  */
 export interface UseMaptalksMarkerOptions {
   /** 响应式 Marker 坐标 */
-  coordinates: MaybeRefOrGetter<MarkerCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 透传给 Marker 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMarkerCombinedOptions | undefined>;
   /** 几何 id */
@@ -1278,7 +1271,7 @@ export interface UseMaptalksMarkerOptions {
  */
 export interface UseMaptalksLineStringOptions {
   /** 响应式 LineString 坐标 */
-  coordinates: MaybeRefOrGetter<LineStringCoordinates>;
+  coordinates: MaybeRefOrGetter<Array<[number, number]>>;
   /** 透传给 LineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksLineStringCombinedOptions | undefined>;
   /** 几何 id */
@@ -1301,7 +1294,7 @@ export interface UseMaptalksLineStringOptions {
  */
 export interface UseMaptalksPolygonOptions {
   /** 响应式 Polygon 坐标 */
-  coordinates: MaybeRefOrGetter<PolygonCoordinates>;
+  coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
   /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksPolygonCombinedOptions | undefined>;
   /** 几何 id */
@@ -1314,19 +1307,12 @@ export interface UseMaptalksPolygonOptions {
   autoDispose?: boolean;
 }
 
-/** MultiPoint 坐标：点序列 */
-export type MultiPointCoordinates = Array<[number, number]>;
-/** MultiLineString 坐标：线序列 */
-export type MultiLineStringCoordinates = Array<Array<[number, number]>>;
-/** MultiPolygon 坐标：多边形序列（每个多边形为环数组） */
-export type MultiPolygonCoordinates = Array<Array<Array<[number, number]>>>;
-
 /**
  * MultiPoint 预设可选项。
  */
 export interface UseMaptalksMultiPointOptions {
   /** 响应式 MultiPoint 坐标 */
-  coordinates: MaybeRefOrGetter<MultiPointCoordinates>;
+  coordinates: MaybeRefOrGetter<Array<[number, number]>>;
   /** 透传给 MultiPoint 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiPointCombinedOptions | undefined>;
   /** 几何 id */
@@ -1344,7 +1330,7 @@ export interface UseMaptalksMultiPointOptions {
  */
 export interface UseMaptalksMultiLineStringOptions {
   /** 响应式 MultiLineString 坐标 */
-  coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
+  coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
   /** 透传给 MultiLineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiLineStringCombinedOptions | undefined>;
   /** 几何 id */
@@ -1362,7 +1348,7 @@ export interface UseMaptalksMultiLineStringOptions {
  */
 export interface UseMaptalksMultiPolygonOptions {
   /** 响应式 MultiPolygon 坐标 */
-  coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
+  coordinates: MaybeRefOrGetter<Array<Array<Array<[number, number]>>>>;
   /** 透传给 MultiPolygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiPolygonCombinedOptions | undefined>;
   /** 几何 id */
@@ -1417,9 +1403,6 @@ export interface UseMaptalksGeoJSONReturn {
   remove: () => void;
 }
 
-/** 形状/文本几何的坐标：单点（中心/角点/锚点） */
-export type ShapeCoordinates = [number, number];
-
 /**
  * Circle 预设可选项。
  *
@@ -1430,7 +1413,7 @@ export type ShapeCoordinates = [number, number];
  */
 export interface UseMaptalksCircleOptions {
   /** 响应式中心坐标 */
-  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式半径（米） */
   radius: MaybeRefOrGetter<number>;
   /** 透传给 Circle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -1455,7 +1438,7 @@ export interface UseMaptalksCircleOptions {
  */
 export interface UseMaptalksRectangleOptions {
   /** 响应式坐标 */
-  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
@@ -1482,7 +1465,7 @@ export interface UseMaptalksRectangleOptions {
  */
 export interface UseMaptalksEllipseOptions {
   /** 响应式中心坐标 */
-  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
@@ -1509,7 +1492,7 @@ export interface UseMaptalksEllipseOptions {
  */
 export interface UseMaptalksSectorOptions {
   /** 响应式中心坐标 */
-  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式半径（米） */
   radius: MaybeRefOrGetter<number>;
   /** 响应式起始角（度） */
@@ -1547,7 +1530,7 @@ export interface UseMaptalksLabelOptions {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
   /** 响应式坐标 */
-  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 透传给 Label 构造器的完整选项（symbol / properties / textSymbol / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksLabelCombinedOptions | undefined>;
   /** 几何 id */
@@ -1572,7 +1555,7 @@ export interface UseMaptalksTextBoxOptions {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
   /** 响应式坐标 */
-  coordinates: MaybeRefOrGetter<ShapeCoordinates>;
+  coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */

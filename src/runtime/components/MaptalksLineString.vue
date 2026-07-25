@@ -5,12 +5,12 @@ import { inject } from 'vue'
 
 import { useMaptalksLineString } from '../composables/presets/useMaptalksLineString'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksLineStringCombinedOptions, LineStringCoordinates } from '../types'
+import type { MaptalksLineStringCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: LineStringCoordinates
+    coordinates: Array<[number, number]>
     /** 几何图形唯一标识 */
     id?: string
     /** 是否可见 */

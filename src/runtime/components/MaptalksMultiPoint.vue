@@ -5,12 +5,12 @@ import { inject } from 'vue'
 
 import { useMaptalksMultiPoint } from '../composables/presets/useMaptalksMultiPoint'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksMultiPointCombinedOptions, MultiPointCoordinates } from '../types'
+import type { MaptalksMultiPointCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: MultiPointCoordinates
+    coordinates: Array<[number, number]>
     /** 几何图形唯一标识 */
     id?: string
     /** 是否可见 */

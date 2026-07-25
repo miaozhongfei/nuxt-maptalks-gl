@@ -5,12 +5,12 @@ import { inject } from 'vue'
 
 import { useMaptalksPolygon } from '../composables/presets/useMaptalksPolygon'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksPolygonCombinedOptions, PolygonCoordinates } from '../types'
+import type { MaptalksPolygonCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: PolygonCoordinates
+    coordinates: Array<Array<[number, number]>>
     /** 几何图形唯一标识 */
     id?: string
     /** 是否可见 */
