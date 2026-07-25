@@ -13,9 +13,26 @@
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
-// markerDx/markerDy 偏移 Marker 渲染锚点
+// m4：右偏，markerHorizontalAlignment / markerVerticalAlignment 对齐演示
 useMaptalksMarker(layer, {
-  coordinates: [121.5057, 31.2453],
-  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 16, markerHeight: 16, markerDx: 15, markerDy: 15 } },
+  coordinates: [121.5157, 31.2453],
+  options: { symbol: {
+    textName: 'm4',
+    textSize: 14,
+    markerFile: '/images/m4.png',
+    markerHorizontalAlignment: 'middle',
+    markerVerticalAlignment: 'middle',
+  } },
+});
+// m5：左偏
+useMaptalksMarker(layer, {
+  coordinates: [121.4957, 31.2453],
+  options: { symbol: {
+    textName: 'm5',
+    textSize: 14,
+    markerFile: '/images/m5.png',
+    markerHorizontalAlignment: 'middle',
+    markerVerticalAlignment: 'middle',
+  } },
 });
 </script>
