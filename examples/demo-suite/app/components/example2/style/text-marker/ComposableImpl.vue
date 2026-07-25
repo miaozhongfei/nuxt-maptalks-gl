@@ -60,7 +60,7 @@ useMaptalksLabel(layer, {
 });
 // 文字标注 Marker（useMaptalksMarker，无 markerType 则为纯文字）
 useMaptalksMarker(layer, {
-  coordinates: [121.5057, 31.2513],
+  coordinates: [121.5557, 31.2513],
   options: {
     properties: { name: 'Hello\nMapTalks' },
     symbol: {

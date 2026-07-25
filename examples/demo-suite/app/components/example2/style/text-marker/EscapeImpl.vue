@@ -63,7 +63,7 @@ useMaptalksGeometry(
 useMaptalksGeometry(
   layer,
   (mt) =>
-    new mt.Marker([121.5057, 31.2513], {
+    new mt.Marker([121.5557, 31.2513], {
       properties: { name: 'Hello\nMapTalks' },
       symbol: {
         textFaceName: 'sans-serif',
