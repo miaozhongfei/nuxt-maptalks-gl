@@ -17,7 +17,6 @@ const { layer } = useMaptalksVectorLayer(map);
 useMaptalksLabel(layer, {
   content: '文字标签 Label',
   coordinates: [121.5057, 31.2453],
-  draggable: true,
-  symbol: { textFill: '#dc2626', textSize: 16 },
+  options: { symbol: { textFill: '#dc2626', textSize: 16 }, draggable: true },
 });
 </script>

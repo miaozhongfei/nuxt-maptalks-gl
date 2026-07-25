@@ -23,7 +23,7 @@ const { geometry } = useMaptalksPolygon(layer, {
   coordinates: [
     [[121.49, 31.24], [121.52, 31.24], [121.52, 31.255], [121.49, 31.255], [121.49, 31.24]],
   ],
-  symbol: { polygonFill: '#2563eb', polygonOpacity: 0.3, lineColor: '#1d4ed8', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.3, lineColor: '#1d4ed8', lineWidth: 2 } },
 });
 
 const cam = useMaptalksCamera(map);

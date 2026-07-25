@@ -32,7 +32,7 @@ useMaptalksGroupGLLayer(map1, {});
 const { layer: vec1 } = useMaptalksVectorLayer(map1);
 useMaptalksPolygon(vec1, {
   coordinates: [[121.472, 31.231], [121.476, 31.231], [121.476, 31.234], [121.472, 31.234]],
-  symbol: { polygonFill: '#8b5cf6', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#6d28d9' },
+  options: { symbol: { polygonFill: '#8b5cf6', polygonOpacity: 0.7, lineWidth: 2, lineColor: '#6d28d9' } },
 });
 
 // 插件卡片数据

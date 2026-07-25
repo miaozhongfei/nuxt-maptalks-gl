@@ -15,7 +15,6 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 },
-  properties: { draggable: true },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 }, properties: { draggable: true } },
 });
 </script>

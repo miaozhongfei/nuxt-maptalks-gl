@@ -19,7 +19,7 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer: bottomLayer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(bottomLayer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 } },
 });
 
 const { layer: topLayer } = useMaptalksVectorLayer(map, {
@@ -27,6 +27,6 @@ const { layer: topLayer } = useMaptalksVectorLayer(map, {
 });
 useMaptalksMarker(topLayer, {
   coordinates: [121.5055, 31.2451],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 30, markerHeight: 30 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 30, markerHeight: 30 } },
 });
 </script>

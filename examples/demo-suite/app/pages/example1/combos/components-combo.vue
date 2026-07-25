@@ -18,20 +18,20 @@
         <MaptalksVectorLayer>
           <MaptalksMarker
             :coordinates="center"
-            :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 }"
+            :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } }"
           />
           <MaptalksLineString
             :coordinates="[[121.45, 31.22], [121.48, 31.24]]"
-            :symbol="{ lineColor: '#dc2626', lineWidth: 3 }"
+            :options="{ symbol: { lineColor: '#dc2626', lineWidth: 3 } }"
           />
           <MaptalksPolygon
             :coordinates="[[[121.45, 31.23], [121.48, 31.23], [121.48, 31.25], [121.45, 31.25], [121.45, 31.23]]]"
-            :symbol="{ polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 } }"
           />
           <MaptalksCircle
             :coordinates="[121.5, 31.23]"
             :radius="700"
-            :symbol="{ polygonFill: '#6366f1', polygonOpacity: 0.3, lineColor: '#4f46e5', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#6366f1', polygonOpacity: 0.3, lineColor: '#4f46e5', lineWidth: 2 } }"
           />
           <MaptalksTextBox content="组件组合" :coordinates="[121.51, 31.26]" :width="100" :height="36" />
         </MaptalksVectorLayer>

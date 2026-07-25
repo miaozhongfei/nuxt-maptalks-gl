@@ -15,6 +15,6 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksPolygon(layer, {
   coordinates: [[[121.495, 31.238], [121.515, 31.238], [121.515, 31.252], [121.495, 31.252], [121.495, 31.238]]],
-  symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, lineColor: '#16a34a', lineWidth: 2, vertexMarker: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 8, markerHeight: 8 } },
+  options: { symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, lineColor: '#16a34a', lineWidth: 2, vertexMarker: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 8, markerHeight: 8 } } },
 });
 </script>

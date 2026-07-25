@@ -12,12 +12,12 @@
         :coordinates="[500, 500]"
         :width="2000"
         :height="1200"
-        :symbol="{ polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 }"
+        :options="{ symbol: { polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 } }"
       />
       <MaptalksCircle
         :coordinates="[-1500, -800]"
         :radius="400"
-        :symbol="{ polygonFill: '#22c55e', polygonOpacity: 0.3, lineColor: '#16a34a', lineWidth: 2 }"
+        :options="{ symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, lineColor: '#16a34a', lineWidth: 2 } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

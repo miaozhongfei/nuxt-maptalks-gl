@@ -11,14 +11,14 @@
       <MaptalksVectorLayer>
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 } }"
         />
       </MaptalksVectorLayer>
       <!-- 上层红色矢量图层（xor 混合模式） -->
       <MaptalksVectorLayer :options="{ globalCompositeOperation: 'xor' }">
         <MaptalksMarker
           :coordinates="[121.5055, 31.2451]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 30, markerHeight: 30 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 30, markerHeight: 30 } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>

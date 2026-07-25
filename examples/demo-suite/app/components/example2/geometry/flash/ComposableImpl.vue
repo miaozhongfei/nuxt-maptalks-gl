@@ -20,7 +20,7 @@ const { layer } = useMaptalksVectorLayer(map);
 // 源 Marker
 const { geometry } = useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 // 原生 flash(间隔ms, 次数, 回调, 上下文) 闪烁强调
 function flashIt() {

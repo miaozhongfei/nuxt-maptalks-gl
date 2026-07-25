@@ -42,9 +42,9 @@ const mixMap = computed(() => mapCmp.value?.map ?? null);
 
 // composable 经 computed map 接入
 const { layer } = useMaptalksVectorLayer(mixMap);
-useMaptalksMarker(layer, { coordinates: center, symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } });
-useMaptalksLineString(layer, { coordinates: [[121.45, 31.22], [121.48, 31.24]], symbol: { lineColor: '#dc2626', lineWidth: 3 } });
-useMaptalksPolygon(layer, { coordinates: [[[121.45, 31.23], [121.48, 31.23], [121.48, 31.25], [121.45, 31.25], [121.45, 31.23]]], symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 } });
+useMaptalksMarker(layer, { coordinates: center, options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } } });
+useMaptalksLineString(layer, { coordinates: [[121.45, 31.22], [121.48, 31.24]], options: { symbol: { lineColor: '#dc2626', lineWidth: 3 } } });
+useMaptalksPolygon(layer, { coordinates: [[[121.45, 31.23], [121.48, 31.23], [121.48, 31.25], [121.45, 31.25], [121.45, 31.23]]], options: { symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 } } });
 
 // 控件
 useMaptalksZoom(mixMap, { position: 'top-left' });

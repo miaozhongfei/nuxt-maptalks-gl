@@ -18,7 +18,7 @@ useMaptalksTileLayer(map, { source: 'osm' });
 const { layer: bottomLayer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(bottomLayer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 } },
 });
 
 // 上层：xor 混合模式，使用逃生舱工厂

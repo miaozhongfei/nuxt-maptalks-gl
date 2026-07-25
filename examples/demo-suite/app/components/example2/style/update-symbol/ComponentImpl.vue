@@ -10,7 +10,7 @@
       <MaptalksVectorLayer>
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="symbol"
+          :options="{ symbol: symbol }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>

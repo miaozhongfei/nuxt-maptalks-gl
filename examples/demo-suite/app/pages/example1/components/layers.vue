@@ -62,7 +62,7 @@
         <MaptalksVectorLayer>
           <MaptalksMarker
             :coordinates="center"
-            :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 }"
+            :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } }"
           />
         </MaptalksVectorLayer>
       </MaptalksMap>

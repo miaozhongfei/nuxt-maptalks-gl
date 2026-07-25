@@ -42,7 +42,7 @@ useMaptalksTileLayer(map2, { source: 'osm' });
 const { layer: vec2 } = useMaptalksVectorLayer(map2);
 const { geometry: mk2 } = useMaptalksMarker(vec2, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 } },
 });
 // 原生 marker.setInfoWindow——不用 composable，直接调 maptalks 实例方法
 watch(() => toValue(mk2), (geo) => {

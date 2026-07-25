@@ -22,17 +22,17 @@ const { layer } = useMaptalksVectorLayer(map);
 
 useMaptalksMarker(layer, {
   coordinates: [121.4887, 31.2453] as [number, number],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 } },
   id: 'm1',
 });
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453] as [number, number],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 } },
   id: 'm2',
 });
 useMaptalksMarker(layer, {
   coordinates: [121.5227, 31.2453] as [number, number],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 } },
   id: 'm3',
 });
 

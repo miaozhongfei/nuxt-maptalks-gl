@@ -11,12 +11,12 @@
         <!-- 底层：蓝色 zIndex=5（后声明，在模板中靠后则叠加在上层 --><!-- 因为模板渲染顺序决定了添加顺序，先渲染的先添加，后渲染的覆盖在前 -->
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } }"
         />
         <!-- 上层：红色 zIndex=10（后声明 → 模板顺序靠后 → 绘制在上层） -->
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 10, markerHeight: 10 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 10, markerHeight: 10 } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>

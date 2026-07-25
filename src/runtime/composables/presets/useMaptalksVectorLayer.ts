@@ -1,11 +1,11 @@
-import type { MaybeRefOrGetter } from 'vue';
+import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
-  MaptalksNativeVectorLayerOptions,
-  UseMaptalksLayerReturn,
+  MaptalksVectorLayer,
   UseMaptalksVectorLayerOptions,
+  UseMaptalksVectorLayerReturn,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -13,13 +13,14 @@ import { useMaptalksLayer } from '../useMaptalksLayer';
 let vectorSeq = 0;
 
 /**
- * 预设：矢量图层（VectorLayer，承载几何），= useMaptalksLayer 包一层 + 自动 id。
+ * 预设：矢量图层（VectorLayer，承载几何），= useMaptalksLayer 包一层 + 自动 id + 窄返回类型。
  *
  * @description 创建一个 VectorLayer 并纳管；几何经 useMaptalksMarker/LineString/Polygon 加到它上面。
+ * 返回类型窄化为 UseMaptalksVectorLayerReturn（含 addGeometry 等），下游 geometry preset 可直接消费。
  * 生命周期（addLayer / dispose）复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksVectorLayerOptions} [opts] - id / 选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn} `{ layer, update, remove }`
+ * @returns {UseMaptalksVectorLayerReturn} `{ layer, update, remove }`
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -27,11 +28,11 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorLayerOptions & { options?: Partial<MaptalksNativeVectorLayerOptions> } = {},
-): UseMaptalksLayerReturn {
+  opts: UseMaptalksVectorLayerOptions & { options?: Record<string, unknown> } = {},
+): UseMaptalksVectorLayerReturn {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;
-  return useMaptalksLayer(
+  const result = useMaptalksLayer(
     map,
     (mt) => {
       const Ctor = mt.VectorLayer;
@@ -42,4 +43,9 @@ export function useMaptalksVectorLayer(
     },
     { options: opts.options, autoDispose: opts.autoDispose },
   );
+  return {
+    layer: result.layer as ShallowRef<MaptalksVectorLayer | null>,
+    update: result.update,
+    remove: result.remove,
+  };
 }

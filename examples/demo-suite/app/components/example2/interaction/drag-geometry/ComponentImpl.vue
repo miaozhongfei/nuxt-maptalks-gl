@@ -9,8 +9,7 @@
     <MaptalksVectorLayer>
       <MaptalksMarker
         :coordinates="[121.5057, 31.2453]"
-        :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 }"
-        :properties="{ draggable: true }"
+        :options="{ symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 }, properties: { draggable: true } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

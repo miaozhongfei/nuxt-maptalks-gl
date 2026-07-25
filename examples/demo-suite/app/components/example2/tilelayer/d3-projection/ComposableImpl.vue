@@ -49,14 +49,14 @@ const { map } = useMaptalks(el, {
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksLineString(layer, {
   coordinates: [[-120, 0], [-60, 0], [0, 0], [60, 0], [120, 0]],
-  symbol: { lineColor: '#dc2626', lineWidth: 2 },
+  options: { symbol: { lineColor: '#dc2626', lineWidth: 2 } },
 });
 useMaptalksLineString(layer, {
   coordinates: [[0, -60], [0, 0], [0, 60]],
-  symbol: { lineColor: '#2563eb', lineWidth: 2 },
+  options: { symbol: { lineColor: '#2563eb', lineWidth: 2 } },
 });
 useMaptalksMarker(layer, {
   coordinates: [116.4, 39.9],
-  symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 14, markerHeight: 14 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 14, markerHeight: 14 } },
 });
 </script>

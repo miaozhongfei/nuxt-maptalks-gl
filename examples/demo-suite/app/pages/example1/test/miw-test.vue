@@ -9,7 +9,7 @@
         <template #header><h2 class="font-semibold">custom · 按钮测试</h2></template>
         <MaptalksMap ref="mapCmp1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
-            <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24}">
+            <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24} }">
               <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">东门店</div>
@@ -20,7 +20,7 @@
                 </div>
               </MaptalksMarkerInfoWindow>
             </MaptalksMarker>
-            <MaptalksMarker :coordinates="[121.5,31.24]" :symbol="{markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24}">
+            <MaptalksMarker :coordinates="[121.5,31.24]" :options="{ symbol: {markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24} }">
               <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">西门店</div>
@@ -41,7 +41,7 @@
         <template #header><h2 class="font-semibold">默认 chrome · title 测试</h2></template>
         <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
-            <MaptalksMarker :coordinates="[121.47,31.23]" :symbol="{markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24}">
+            <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24} }">
               <MaptalksMarkerInfoWindow :options="{ title: '南门店', width: 200, height: 120 }">
                 <div style="padding:6px 10px;font-size:13px">坐标 [121.47000, 31.23000]</div>
               </MaptalksMarkerInfoWindow>
@@ -109,13 +109,13 @@ function buildMIWDom(label: string, color: string, coord: [number, number], coun
 
 const gC = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
 useMaptalksMarkerInfoWindow(gC, { options: { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) } });
 
 const gD = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
 useMaptalksMarkerInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } });
 
@@ -127,7 +127,7 @@ const { layer: vec4 } = useMaptalksVectorLayer(map4);
 const miwContent4 = ref('初始内容');
 const gE = useMaptalksMarker(vec4, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
 useMaptalksMarkerInfoWindow(gE, { options: () => ({ title: '', custom: true, content: miwContent4.value }) });
 function changeMIWContent() {

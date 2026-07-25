@@ -11,7 +11,7 @@
         <!-- 组件 emits 四个事件：click / dblclick / mouseenter / mouseout -->
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
           @click="push('click')"
           @dblclick="push('dblclick')"
           @mouseenter="push('mouseenter')"

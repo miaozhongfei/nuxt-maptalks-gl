@@ -28,7 +28,7 @@ function push(name: string) {
 // 预设 events 选项直绑原生事件
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
   events: {
     click: () => push('click'),
     dblclick: () => push('dblclick'),

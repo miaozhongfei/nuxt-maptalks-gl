@@ -23,7 +23,7 @@ const { layer } = useMaptalksVectorLayer(map);
 // 源 Marker（蓝色点，原地不动）
 const { geometry } = useMaptalksMarker(layer, {
   coordinates: [121.497, 31.242],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 const count = ref(0);
 // geometry.copy() 克隆几何并加回图层

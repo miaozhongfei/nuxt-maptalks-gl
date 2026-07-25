@@ -16,6 +16,6 @@ const { layer } = useMaptalksVectorLayer(map);
 // markerRotation 旋转标注角度
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'bar', markerFill: '#dc2626', markerWidth: 8, markerHeight: 28, markerRotation: 45 },
+  options: { symbol: { markerType: 'bar', markerFill: '#dc2626', markerWidth: 8, markerHeight: 28, markerRotation: 45 } },
 });
 </script>

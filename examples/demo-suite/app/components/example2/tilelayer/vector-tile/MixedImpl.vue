@@ -17,13 +17,13 @@ const vtStyle = [
     // 面要素填充
     filter: ['==', '$type', 'Polygon'],
     renderPlugin: { type: 'fill', dataConfig: { type: 'fill' } },
-    symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 },
+    options: { symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 } },
   },
   {
     // 线要素描边
     filter: ['==', '$type', 'LineString'],
     renderPlugin: { type: 'line', dataConfig: { type: 'line' } },
-    symbol: { lineColor: '#1e3a8a', lineWidth: 1 },
+    options: { symbol: { lineColor: '#1e3a8a', lineWidth: 1 } },
   },
 ];
 // VectorTileLayer 加载 MVT 矢量瓦片并用 style 规则渲染

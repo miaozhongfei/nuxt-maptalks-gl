@@ -805,6 +805,25 @@ export interface UseMaptalksLayerReturn {
 }
 
 /**
+ * `useMaptalksVectorLayer` 的返回（窄类型，含几何增删方法）。
+ *
+ * @description VectorLayer 独有 `addGeometry` / `removeGeometry` / `getGeometries` / `clear` 等方法，
+ * 下游 geometry preset 依赖此类型。基类 `UseMaptalksLayerReturn` 仅暴露图层通用方法。
+ *
+ * @example
+ * const { layer, update, remove } = useMaptalksVectorLayer(map);
+ * layer.value?.addGeometry(geo);
+ */
+export interface UseMaptalksVectorLayerReturn {
+  /** VectorLayer 实例（创建前为 null） */
+  layer: ShallowRef<MaptalksVectorLayer | null>;
+  /** 命令式应用一组图层选项 */
+  update: (options: Record<string, unknown>) => void;
+  /** 命令式移除并销毁图层 */
+  remove: () => void;
+}
+
+/**
  * `useMaptalksLayerControl` 的可选项。
  *
  * @description 响应式 `visible` 驱动 show/hide，响应式 `opacity` 驱动 setOpacity；
@@ -1072,6 +1091,10 @@ export interface MaptalksGeometry {
   setEndAngle?(angle: number): MaptalksGeometry;
   /** 设置文本内容（Label/TextBox） */
   setContent?(content: string): MaptalksGeometry;
+  /** 显示几何图形 */
+  show?(): MaptalksGeometry;
+  /** 隐藏几何图形 */
+  hide?(): MaptalksGeometry;
   /** 带动画过渡 show 显示（Line / Polygon 几何逐段绘制动画） */
   animateShow?(opts?: Record<string, unknown>): void;
   /** 样式动画过渡（interpolate） */
@@ -1130,6 +1153,8 @@ export interface UseMaptalksGeometryOptions {
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;
+  /** 选项整体变化时触发全量重建（remove + recreate），对标 useMaptalksInfoWindow 的 options 重建机制 */
+  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 几何 id（统一从预设选项中声明） */
   id?: string;
   /** 响应式可见性：false 隐藏几何但不销毁 */
@@ -1221,50 +1246,72 @@ export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryO
 }
 
 /**
- * Marker 预设可选项。
+ * Marker 预设可选项（对标 useMaptalksInfoWindowOptions 的 options-based 模式）。
  *
- * @description 响应式坐标（必填）+ symbol/properties/events/id/autoDispose。
+ * @description 坐标保留在顶层；其余全部原生字段经 options 透传（含 symbol / properties / draggable 等）。
  *
  * @example
- * useMaptalksMarker(layer, { coordinates: () => pos.value, symbol: { markerType: 'ellipse' } });
+ * useMaptalksMarker(layer, { coordinates: () => pos.value, options: { symbol: { markerType: 'ellipse' }, draggable: true } });
  */
-export interface UseMaptalksMarkerOptions extends GeometryPresetBase {
+export interface UseMaptalksMarkerOptions {
   /** 响应式 Marker 坐标 */
   coordinates: MaybeRefOrGetter<MarkerCoordinates>;
-  /** 响应式 symbol（点类型，MarkerSymbol 强类型字段提示 + 兜底透传） */
-  symbol?: MaybeRefOrGetter<MarkerSymbol | Stops<MarkerSymbol> | undefined>;
+  /** 透传给 Marker 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksMarkerCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * LineString 预设可选项。
  *
- * @description 坐标为点序列，独立继承共用基类，不通过 Marker 中转。
+ * @description 坐标保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
- * useMaptalksLineString(layer, { coordinates: () => path.value });
+ * useMaptalksLineString(layer, { coordinates: () => path.value, options: { symbol: { lineColor: '#ff0000' } } });
  */
-export interface UseMaptalksLineStringOptions extends GeometryPresetBase {
+export interface UseMaptalksLineStringOptions {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<LineStringCoordinates>;
-  /** 响应式 symbol（线类型，LineSymbol；联合 Stops 以支持动态样式） */
-  symbol?: MaybeRefOrGetter<LineSymbol | Stops<LineSymbol> | undefined>;
+  /** 透传给 LineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksLineStringCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * Polygon 预设可选项。
  *
- * @description 坐标为环数组（外环+内环），独立继承共用基类。
+ * @description 坐标保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
- * useMaptalksPolygon(layer, { coordinates: () => rings.value });
+ * useMaptalksPolygon(layer, { coordinates: () => rings.value, options: { symbol: { polygonFill: '#00ff00' } } });
  */
-export interface UseMaptalksPolygonOptions extends GeometryPresetBase {
+export interface UseMaptalksPolygonOptions {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<PolygonCoordinates>;
-  /** 响应式 symbol（面类型，PolygonSymbol & LineSymbol；联合 Stops 以支持动态样式） */
-  symbol?: MaybeRefOrGetter<
-    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
-  >;
+  /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksPolygonCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /** MultiPoint 坐标：点序列 */
@@ -1277,31 +1324,55 @@ export type MultiPolygonCoordinates = Array<Array<Array<[number, number]>>>;
 /**
  * MultiPoint 预设可选项。
  */
-export interface UseMaptalksMultiPointOptions extends GeometryPresetBase {
+export interface UseMaptalksMultiPointOptions {
   /** 响应式 MultiPoint 坐标 */
   coordinates: MaybeRefOrGetter<MultiPointCoordinates>;
-  /** 响应式 symbol（点类型） */
-  symbol?: MaybeRefOrGetter<MarkerSymbol | Stops<MarkerSymbol> | undefined>;
+  /** 透传给 MultiPoint 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksMultiPointCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * MultiLineString 预设可选项。
  */
-export interface UseMaptalksMultiLineStringOptions extends GeometryPresetBase {
+export interface UseMaptalksMultiLineStringOptions {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<MultiLineStringCoordinates>;
-  symbol?: MaybeRefOrGetter<LineSymbol | Stops<LineSymbol> | undefined>;
+  /** 透传给 MultiLineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksMultiLineStringCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * MultiPolygon 预设可选项。
  */
-export interface UseMaptalksMultiPolygonOptions extends GeometryPresetBase {
+export interface UseMaptalksMultiPolygonOptions {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<MultiPolygonCoordinates>;
-  symbol?: MaybeRefOrGetter<
-    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
-  >;
+  /** 透传给 MultiPolygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksMultiPolygonCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
@@ -1352,70 +1423,91 @@ export type ShapeCoordinates = [number, number];
 /**
  * Circle 预设可选项。
  *
- * @description 中心坐标 + 半径（米），均响应式；symbol/properties/events/id/autoDispose 同其它预设。
+ * @description 中心坐标 + 半径保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
- * useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value });
+ * useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value, options: { symbol: { polygonFill: '#00ff00' } } });
  */
-export interface UseMaptalksCircleOptions extends GeometryPresetBase {
+export interface UseMaptalksCircleOptions {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式半径（米） */
   radius: MaybeRefOrGetter<number>;
-  symbol?: MaybeRefOrGetter<
-    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
-  >;
+  /** 透传给 Circle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksCircleCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * Rectangle 预设可选项。
  *
- * @description 左上角坐标 + 宽高，均响应式。
+ * @description 坐标 + 宽高保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
- * useMaptalksRectangle(layer, { coordinates: () => topLeft.value, width: () => w.value, height: () => h.value });
+ * useMaptalksRectangle(layer, { coordinates: () => topLeft.value, width: () => w.value, height: () => h.value, options: { draggable: true } });
  */
-export interface UseMaptalksRectangleOptions extends GeometryPresetBase {
+export interface UseMaptalksRectangleOptions {
   /** 响应式坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
-  symbol?: MaybeRefOrGetter<
-    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
-  >;
+  /** 透传给 Rectangle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksRectangleCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * Ellipse 预设可选项。
  *
- * @description 中心坐标 + 宽高，均响应式。
+ * @description 坐标 + 宽高保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
  * useMaptalksEllipse(layer, { coordinates: () => center.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksEllipseOptions extends GeometryPresetBase {
+export interface UseMaptalksEllipseOptions {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式宽度（米） */
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
-  symbol?: MaybeRefOrGetter<
-    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
-  >;
+  /** 透传给 Ellipse 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksEllipseCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * Sector 预设可选项。
  *
- * @description 中心坐标 + 半径 + 起止角度，均响应式。
+ * @description 坐标 + 半径 + 起止角度保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
  * useMaptalksSector(layer, { coordinates: () => center.value, radius: () => r.value, startAngle: () => 0, endAngle: () => 90 });
  */
-export interface UseMaptalksSectorOptions extends GeometryPresetBase {
+export interface UseMaptalksSectorOptions {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
   /** 响应式半径（米） */
@@ -1424,36 +1516,59 @@ export interface UseMaptalksSectorOptions extends GeometryPresetBase {
   startAngle: MaybeRefOrGetter<number>;
   /** 响应式结束角（度） */
   endAngle: MaybeRefOrGetter<number>;
-  symbol?: MaybeRefOrGetter<
-    (PolygonSymbol & LineSymbol) | Stops<PolygonSymbol & LineSymbol> | undefined
-  >;
+  /** 透传给 Sector 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksSectorCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
- * Label 预设可选项。
+
+/**
+ * `useMaptalksLabel` 的可选项（对标 useMaptalksInfoWindowOptions 的 options-based 模式）。
  *
- * @description 文本内容 + 锚点坐标，均响应式。
+ * @description 必需字段（content / coordinates）在顶层；其余全部原生字段经 `options` 字段透传，
+ * IDE 通过 `MaptalksLabelCombinedOptions` 获得 symbol / properties / textSymbol / draggable 等完整补全。
  *
  * @example
- * useMaptalksLabel(layer, { content: () => text.value, coordinates: () => anchor.value });
+ * useMaptalksLabel(layer, {
+ *   content: () => text.value,
+ *   coordinates: () => anchor.value,
+ *   options: { symbol: { textSize: 16 }, draggable: true },
+ * });
  */
-export interface UseMaptalksLabelOptions extends GeometryPresetBase {
+export interface UseMaptalksLabelOptions {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
   /** 响应式坐标 */
   coordinates: MaybeRefOrGetter<ShapeCoordinates>;
-  symbol?: MaybeRefOrGetter<TextSymbol | Stops<TextSymbol> | undefined>;
+  /** 透传给 Label 构造器的完整选项（symbol / properties / textSymbol / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksLabelCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
  * TextBox 预设可选项。
  *
- * @description 文本内容 + 锚点坐标 + 宽高，均响应式。
+ * @description 文本内容 + 坐标 + 宽高保留在顶层；其余全部原生字段经 options 透传。
  *
  * @example
  * useMaptalksTextBox(layer, { content: () => text.value, coordinates: () => anchor.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksTextBoxOptions extends GeometryPresetBase {
+export interface UseMaptalksTextBoxOptions {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
   /** 响应式坐标 */
@@ -1462,88 +1577,133 @@ export interface UseMaptalksTextBoxOptions extends GeometryPresetBase {
   width: MaybeRefOrGetter<number>;
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
-  symbol?: MaybeRefOrGetter<TextSymbol | Stops<TextSymbol> | undefined>;
+  /** 透传给 TextBox 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+  options?: MaybeRefOrGetter<MaptalksTextBoxCombinedOptions | undefined>;
+  /** 几何 id */
+  id?: string;
+  /** 响应式可见性 */
+  visible?: MaybeRefOrGetter<boolean | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除，默认 true */
+  autoDispose?: boolean;
 }
 
 /**
- * 几何组件 options prop 类型。
+ * 几何构造选项的公共高频字段（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
  *
- * @description 参照 `MaptalksInfoWindowCombinedOptions` 模式：组件独立 props 中已声明的字段
- * 从 options 中 Omit，避免重名冲突。其余全部原生字段均可用——用户通过 `:options="{ ... }"` 一次设定。
- * maptalks 新增字段时无需修改组件代码。
+ * @description 所有几何类型共享这些字段；各 preset 的建模 interface 继承此后可追加独有字段。
+ * 未列出的原生字段经 `MaptalksNativeGeometryOptions` 补齐 IDE 自动补全。
+ *
+ * @example
+ * const opts: MaptalksMarkerOptions = { symbol: { markerType: 'ellipse' }, draggable: true };
  */
+export interface MaptalksGeometryBaseOptions {
+  /** 渲染样式（支持 zoom-stops 数组） */
+  symbol?: Record<string, unknown> | Array<[number, Record<string, unknown>]>;
+  /** 自定义业务属性 */
+  properties?: Record<string, unknown>;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 不透明度（0–1） */
+  opacity?: number;
+  /** 是否响应鼠标/触摸事件 */
+  interactive?: boolean;
+  /** 是否可拖拽 */
+  draggable?: boolean;
+  /** 拖拽时是否显示影子 */
+  dragShadow?: boolean;
+  /** 几何在图层内的叠放顺序 */
+  zIndex?: number;
+  /** 鼠标悬停 CSS cursor */
+  cursor?: string;
+  /** 是否可编辑（出现编辑锚点） */
+  editable?: boolean;
+  /** 拖拽约束轴（true 或 'x' / 'y'） */
+  dragOnAxis?: boolean | string;
+  /** 是否仅在屏幕轴向拖拽 */
+  dragOnScreenAxis?: boolean;
+  /** 是否处理反子午线跨越 */
+  antiMeridian?: boolean;
+  /** 缺省投影（如 'EPSG:4326'） */
+  defaultProjection?: string;
+  /** 量测方式（如 'EPSG:4326'） */
+  measure?: string;
+  /** 逃生舱：透传给未建模的 maptalks 原始几何选项 */
+  [key: string]: unknown;
+}
 
-/** Marker 组件 options prop 类型 */
-export type MaptalksMarkerCombinedOptions = Omit<
-  Partial<UseMaptalksMarkerOptions>,
-  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
+/** Marker 常用选项（中文注释 + 原生字段补全，下同） */
+export interface MaptalksMarkerOptions extends MaptalksGeometryBaseOptions {}
+/** LineString 常用选项 */
+export interface MaptalksLineStringOptions extends MaptalksGeometryBaseOptions {}
+/** Polygon 常用选项 */
+export interface MaptalksPolygonOptions extends MaptalksGeometryBaseOptions {}
+/** MultiPoint 常用选项 */
+export interface MaptalksMultiPointOptions extends MaptalksGeometryBaseOptions {}
+/** MultiLineString 常用选项 */
+export interface MaptalksMultiLineStringOptions extends MaptalksGeometryBaseOptions {}
+/** MultiPolygon 常用选项 */
+export interface MaptalksMultiPolygonOptions extends MaptalksGeometryBaseOptions {}
+/** Circle 常用选项 */
+export interface MaptalksCircleOptions extends MaptalksGeometryBaseOptions {}
+/** Rectangle 常用选项 */
+export interface MaptalksRectangleOptions extends MaptalksGeometryBaseOptions {}
+/** Ellipse 常用选项 */
+export interface MaptalksEllipseOptions extends MaptalksGeometryBaseOptions {}
+/** Sector 常用选项 */
+export interface MaptalksSectorOptions extends MaptalksGeometryBaseOptions {}
+/** Label 常用选项 */
+export interface MaptalksLabelOptions extends MaptalksGeometryBaseOptions {
+  /** 文字专属样式（textSize / textFill / textWeight / textHaloRadius 等） */
+  textSymbol?: Record<string, unknown>;
+  /** 文字背景框样式（boxFill / boxOpacity / boxLineColor / boxLineWidth 等） */
+  boxStyle?: Record<string, unknown>;
+}
+/** TextBox 常用选项 */
+export interface MaptalksTextBoxOptions extends MaptalksGeometryBaseOptions {
+  /** 文字专属样式（textSize / textFill / textWeight / textHaloRadius 等） */
+  textSymbol?: Record<string, unknown>;
+  /** 文字背景框样式（boxFill / boxOpacity / boxLineColor / boxLineWidth 等） */
+  boxStyle?: Record<string, unknown>;
+}
 
+/** Marker 组件 options prop 类型——建模字段（中文注释）+ 原生字段（IDE 补全） */
+export type MaptalksMarkerCombinedOptions = Partial<MaptalksMarkerOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMarkerOptions>;
 /** LineString 组件 options prop 类型 */
-export type MaptalksLineStringCombinedOptions = Omit<
-  Partial<UseMaptalksLineStringOptions>,
-  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
+export type MaptalksLineStringCombinedOptions = Partial<MaptalksLineStringOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksLineStringOptions>;
 /** Polygon 组件 options prop 类型 */
-export type MaptalksPolygonCombinedOptions = Omit<
-  Partial<UseMaptalksPolygonOptions>,
-  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
+export type MaptalksPolygonCombinedOptions = Partial<MaptalksPolygonOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksPolygonOptions>;
 /** MultiPoint 组件 options prop 类型 */
-export type MaptalksMultiPointCombinedOptions = Omit<
-  Partial<UseMaptalksMultiPointOptions>,
-  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
+export type MaptalksMultiPointCombinedOptions = Partial<MaptalksMultiPointOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiPointOptions>;
 /** MultiLineString 组件 options prop 类型 */
-export type MaptalksMultiLineStringCombinedOptions = Omit<
-  Partial<UseMaptalksMultiLineStringOptions>,
-  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
+export type MaptalksMultiLineStringCombinedOptions = Partial<MaptalksMultiLineStringOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiLineStringOptions>;
 /** MultiPolygon 组件 options prop 类型 */
-export type MaptalksMultiPolygonCombinedOptions = Omit<
-  Partial<UseMaptalksMultiPolygonOptions>,
-  'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
-/** Circle 组件 options prop 类型——额外 Omit radius */
-export type MaptalksCircleCombinedOptions = Omit<
-  Partial<UseMaptalksCircleOptions>,
-  'coordinates' | 'radius' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
-/** Rectangle 组件 options prop 类型——额外 Omit width / height */
-export type MaptalksRectangleCombinedOptions = Omit<
-  Partial<UseMaptalksRectangleOptions>,
-  'coordinates' | 'width' | 'height' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
-/** Ellipse 组件 options prop 类型——额外 Omit width / height */
-export type MaptalksEllipseCombinedOptions = Omit<
-  Partial<UseMaptalksEllipseOptions>,
-  'coordinates' | 'width' | 'height' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
-/** Sector 组件 options prop 类型——额外 Omit radius / startAngle / endAngle */
-export type MaptalksSectorCombinedOptions = Omit<
-  Partial<UseMaptalksSectorOptions>,
-  'coordinates' | 'radius' | 'startAngle' | 'endAngle' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
-/** Label 组件 options prop 类型——额外 Omit content */
-export type MaptalksLabelCombinedOptions = Omit<
-  Partial<UseMaptalksLabelOptions>,
-  'content' | 'coordinates' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
-
-/** TextBox 组件 options prop 类型——额外 Omit content / width / height */
-export type MaptalksTextBoxCombinedOptions = Omit<
-  Partial<UseMaptalksTextBoxOptions>,
-  'content' | 'coordinates' | 'width' | 'height' | 'symbol' | 'properties' | 'id' | 'autoDispose' | 'events'
->;
+export type MaptalksMultiPolygonCombinedOptions = Partial<MaptalksMultiPolygonOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiPolygonOptions>;
+/** Circle 组件 options prop 类型 */
+export type MaptalksCircleCombinedOptions = Partial<MaptalksCircleOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksCircleOptions>;
+/** Rectangle 组件 options prop 类型 */
+export type MaptalksRectangleCombinedOptions = Partial<MaptalksRectangleOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksRectangleOptions>;
+/** Ellipse 组件 options prop 类型 */
+export type MaptalksEllipseCombinedOptions = Partial<MaptalksEllipseOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksEllipseOptions>;
+/** Sector 组件 options prop 类型 */
+export type MaptalksSectorCombinedOptions = Partial<MaptalksSectorOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksSectorOptions>;
+/** Label 组件 options prop 类型 */
+export type MaptalksLabelCombinedOptions = Partial<MaptalksLabelOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksLabelOptions>;
+/** TextBox 组件 options prop 类型 */
+export type MaptalksTextBoxCombinedOptions = Partial<MaptalksTextBoxOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksTextBoxOptions>;
 
 /**
  * 所有几何 symbol 的公共基类（原生 SymbolCommon 等价）。

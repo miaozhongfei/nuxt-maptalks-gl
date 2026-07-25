@@ -133,17 +133,17 @@ function openMK(label: string, coord: [number, number], color: string) {
 
 useMaptalksMarker(vec2, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 22, markerHeight: 22 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 22, markerHeight: 22 } },
   events: { click: () => openMK('甲', [121.47, 31.23], '#2563eb') },
 });
 useMaptalksMarker(vec2, {
   coordinates: [121.5, 31.24],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 22, markerHeight: 22 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 22, markerHeight: 22 } },
   events: { click: () => openMK('乙', [121.5, 31.24], '#dc2626') },
 });
 useMaptalksMarker(vec2, {
   coordinates: [121.51, 31.22],
-  symbol: { markerType: 'ellipse', markerFill: '#6b7280', markerWidth: 22, markerHeight: 22 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#6b7280', markerWidth: 22, markerHeight: 22 } },
   events: { click: () => { mk2Label.value = '—'; hide2(); } },
 });
 
@@ -190,7 +190,7 @@ useMaptalksEvents(map3, {
 
 const gA = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
 const miwA = useMaptalksMarkerInfoWindow(gA, { options: { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) } });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
@@ -199,7 +199,7 @@ useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
 
 const gB = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
 const miwB = useMaptalksMarkerInfoWindow(gB, { options: { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) } });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
@@ -208,7 +208,7 @@ useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
 
 const gC = useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
-  symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
 const miwC = useMaptalksMarkerInfoWindow(gC, { options: { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) } });
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {

@@ -29,7 +29,7 @@ const markers: { coord: [number, number]; color: string }[] = [
 markers.forEach((m) => {
   useMaptalksMarker(layer, {
     coordinates: m.coord,
-    symbol: { markerType: 'ellipse', markerFill: m.color, markerWidth: 14, markerHeight: 14 },
+    options: { symbol: { markerType: 'ellipse', markerFill: m.color, markerWidth: 14, markerHeight: 14 } },
   });
 });
 

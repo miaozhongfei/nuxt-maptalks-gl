@@ -12,7 +12,7 @@
           v-for="(pt, i) in pts"
           :key="i"
           :coordinates="pt"
-          :symbol="{ markerType: 'ellipse', markerFill: colors[i % colors.length], markerWidth: 14, markerHeight: 14 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: colors[i % colors.length], markerWidth: 14, markerHeight: 14 } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>

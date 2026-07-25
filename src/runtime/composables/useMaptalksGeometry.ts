@@ -116,6 +116,18 @@ function bindGeometryUpdates(
         if (p !== undefined) getGeo()?.setProperties(p);
       },
     ),
+    watch(
+      () => toValue(options.visible),
+      (v) => {
+        if (v !== undefined) {
+          const geo = getGeo();
+          if (geo) {
+            if (v) geo.show?.();
+            else geo.hide?.();
+          }
+        }
+      },
+    ),
   ];
   return () => {
     for (const stop of stops) stop();
@@ -150,6 +162,44 @@ function bindExtraProps(
   return () => {
     for (const stop of stops) stop();
   };
+}
+
+/**
+ * 监听 options 整体变化 → remove + recreate（对标 useMaptalksInfoWindow 的 options 重建机制）。
+ *
+ * @description 仅在 options.options 存在时生效；通过 JSON.stringify 深比较过滤引用变化但内容不变的情况，
+ * 避免父组件 re-render 导致内联对象字面量产生新引用 → 不必要的全量 remove + addGeometry。
+ * 内容确实变化时才重建几何。
+ * @param {() => MaptalksVectorLayer | null} getLayer - 取矢量图层
+ * @param {(mt: MaptalksGLNamespace) => MaptalksGeometry} factory - 几何工厂
+ * @param {UseMaptalksGeometryOptions} options - 响应式选项
+ * @param {GeometryState} state - 可变状态
+ * @returns {() => void} 停止 watcher
+ */
+function bindOptionsRebuild(
+  getLayer: () => MaptalksVectorLayer | null,
+  factory: (mt: MaptalksGLNamespace) => MaptalksGeometry,
+  options: UseMaptalksGeometryOptions,
+  state: GeometryState,
+): () => void {
+  if (!options.options) return () => {};
+  let prevJson: string | undefined;
+  return watch(
+    () => toValue(options.options),
+    (opts) => {
+      const json = JSON.stringify(opts);
+      if (json === prevJson) return;
+      prevJson = json;
+      const geo = state.geometry.value;
+      if (geo) {
+        for (const [name, handler] of state.boundEvents) geo.off(name, handler);
+        state.boundEvents = [];
+        geo.remove();
+        state.geometry.value = null;
+      }
+      void createGeometryInto(getLayer, factory, options.events, state);
+    },
+  );
 }
 
 /**
@@ -191,11 +241,13 @@ export function useMaptalksGeometry(
   );
   const stopUpdates = bindGeometryUpdates(() => state.geometry.value, options);
   const stopExtra = bindExtraProps(() => state.geometry.value, options.extraProps);
+  const stopOptions = bindOptionsRebuild(getLayer, factory, options, state);
 
   const remove = (): void => {
     stopGate();
     stopUpdates();
     stopExtra();
+    stopOptions();
     const geo = state.geometry.value;
     if (!geo) return;
     for (const [name, handler] of state.boundEvents) geo.off(name, handler);

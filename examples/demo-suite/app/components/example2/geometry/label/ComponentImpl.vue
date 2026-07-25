@@ -11,7 +11,7 @@
       <MaptalksLabel
         content="文字标签 Label"
         :coordinates="[121.5057, 31.2453]"
-        :symbol="{ textFill: '#dc2626', textSize: 16 }"
+        :options="{ symbol: { textFill: '#dc2626', textSize: 16 }, draggable: true }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

@@ -32,27 +32,27 @@ const { layer } = useMaptalksVectorLayer(map);
 // 点标记
 useMaptalksMarker(layer, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 // 折线
 useMaptalksLineString(layer, {
   coordinates: [[121.45, 31.22], [121.47, 31.235], [121.49, 31.22]],
-  symbol: { lineColor: '#dc2626', lineWidth: 3 },
+  options: { symbol: { lineColor: '#dc2626', lineWidth: 3 } },
 });
 // 多边形
 useMaptalksPolygon(layer, {
   coordinates: [[[121.44, 31.25], [121.46, 31.25], [121.46, 31.27], [121.44, 31.27], [121.44, 31.25]]],
-  symbol: { polygonFill: '#22c55e', polygonOpacity: 0.4, lineColor: '#16a34a', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#22c55e', polygonOpacity: 0.4, lineColor: '#16a34a', lineWidth: 2 } },
 });
 // 多点
 useMaptalksMultiPoint(layer, {
   coordinates: [[121.45, 31.21], [121.47, 31.21], [121.49, 31.21]],
-  symbol: { markerType: 'ellipse', markerFill: '#0ea5e9', markerWidth: 14, markerHeight: 14 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#0ea5e9', markerWidth: 14, markerHeight: 14 } },
 });
 // 多线
 useMaptalksMultiLineString(layer, {
   coordinates: [[[121.44, 31.28], [121.46, 31.29]], [[121.47, 31.28], [121.49, 31.29]]],
-  symbol: { lineColor: '#7c3aed', lineWidth: 3 },
+  options: { symbol: { lineColor: '#7c3aed', lineWidth: 3 } },
 });
 // 多面
 useMaptalksMultiPolygon(layer, {
@@ -60,27 +60,27 @@ useMaptalksMultiPolygon(layer, {
     [[[121.5, 31.22], [121.51, 31.22], [121.51, 31.23], [121.5, 31.23], [121.5, 31.22]]],
     [[[121.52, 31.22], [121.53, 31.22], [121.53, 31.23], [121.52, 31.23], [121.52, 31.22]]],
   ],
-  symbol: { polygonFill: '#14b8a6', polygonOpacity: 0.4, lineColor: '#0d9488', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#14b8a6', polygonOpacity: 0.4, lineColor: '#0d9488', lineWidth: 2 } },
 });
 // 圆
 useMaptalksCircle(layer, {
   coordinates: [121.46, 31.24],
   radius: 600,
-  symbol: { polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 } },
 });
 // 椭圆
 useMaptalksEllipse(layer, {
   coordinates: [121.5, 31.25],
   width: 1400,
   height: 700,
-  symbol: { polygonFill: '#a855f7', polygonOpacity: 0.3, lineColor: '#9333ea', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#a855f7', polygonOpacity: 0.3, lineColor: '#9333ea', lineWidth: 2 } },
 });
 // 矩形
 useMaptalksRectangle(layer, {
   coordinates: [121.43, 31.26],
   width: 1200,
   height: 800,
-  symbol: { polygonFill: '#f59e0b', polygonOpacity: 0.3, lineColor: '#d97706', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#f59e0b', polygonOpacity: 0.3, lineColor: '#d97706', lineWidth: 2 } },
 });
 // 扇形
 useMaptalksSector(layer, {
@@ -88,13 +88,13 @@ useMaptalksSector(layer, {
   radius: 900,
   startAngle: 0,
   endAngle: 90,
-  symbol: { polygonFill: '#ef4444', polygonOpacity: 0.35, lineColor: '#dc2626', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#ef4444', polygonOpacity: 0.35, lineColor: '#dc2626', lineWidth: 2 } },
 });
 // 文字标签
 useMaptalksLabel(layer, {
   content: '文字标签 Label',
   coordinates: [121.485, 31.245],
-  symbol: { textFill: '#111827', textSize: 15 },
+  options: { symbol: { textFill: '#111827', textSize: 15 } },
 });
 // 文本框
 useMaptalksTextBox(layer, {

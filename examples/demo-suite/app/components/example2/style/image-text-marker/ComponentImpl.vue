@@ -9,14 +9,16 @@
     <MaptalksVectorLayer>
       <MaptalksMarker
         :coordinates="[121.5057, 31.2453]"
-        :symbol="{
-          markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png',
-          markerWidth: 32,
-          markerHeight: 32,
-          textName: 'Label',
-          textFill: '#fff',
-          textSize: 12,
-          textDy: -20,
+        :options="{
+          symbol: {
+            markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png',
+            markerWidth: 32,
+            markerHeight: 32,
+            textName: 'Label',
+            textFill: '#fff',
+            textSize: 12,
+            textDy: -20,
+          },
         }"
       />
     </MaptalksVectorLayer>

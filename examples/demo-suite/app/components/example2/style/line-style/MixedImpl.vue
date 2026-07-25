@@ -15,6 +15,6 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksLineString(layer, {
   coordinates: [[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]],
-  symbol: { lineColor: '#2563eb', lineWidth: 4, lineDasharray: [10, 5], lineCap: 'round', lineJoin: 'round' },
+  options: { symbol: { lineColor: '#2563eb', lineWidth: 4, lineDasharray: [10, 5], lineCap: 'round', lineJoin: 'round' } },
 });
 </script>

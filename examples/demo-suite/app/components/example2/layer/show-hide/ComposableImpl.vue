@@ -24,7 +24,7 @@ const { layer } = useMaptalksVectorLayer(map);
 // 添加一个 Marker 以便观察图层显隐效果
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 
 const visible = ref(true);

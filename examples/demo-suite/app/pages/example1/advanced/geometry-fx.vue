@@ -34,7 +34,7 @@ useMaptalksTileLayer(map1, { source: 'osm' });
 const { layer: vec1 } = useMaptalksVectorLayer(map1);
 const { geometry: g1 } = useMaptalksMarker(vec1, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
 });
 function moveMarker() {
   const geo = toValue(g1) as { animate?: (opts: Record<string, unknown>, animOpts?: Record<string, unknown>, cb?: () => void) => void } | null;
@@ -48,7 +48,7 @@ useMaptalksTileLayer(map2, { source: 'osm' });
 const { layer: vec2 } = useMaptalksVectorLayer(map2);
 const { geometry: g2 } = useMaptalksMarker(vec2, {
   coordinates: [121.5, 31.24],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 } },
 });
 const colors = ['#dc2626', '#f59e0b', '#dc2626', '#2563eb', '#dc2626', '#16a34a'];
 let flashTimer: ReturnType<typeof setTimeout> | null = null;
@@ -72,7 +72,7 @@ useMaptalksTileLayer(map3, { source: 'osm' });
 const { layer: vec3 } = useMaptalksVectorLayer(map3);
 const { geometry: g3 } = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
-  symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 } },
 });
 let copyCount = 0;
 function copyMarker() {

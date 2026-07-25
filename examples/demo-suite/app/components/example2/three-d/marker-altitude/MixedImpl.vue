@@ -18,7 +18,6 @@ const { layer } = useMaptalksVectorLayer(map, { options: { enableAltitude: true,
 // 带 altitude 属性的 Marker：在 pitch > 0 时可看出高度
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  properties: { altitude: 500 },
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { properties: { altitude: 500 }, symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 </script>

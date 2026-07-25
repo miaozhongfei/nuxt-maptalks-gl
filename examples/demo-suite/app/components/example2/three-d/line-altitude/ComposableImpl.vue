@@ -15,7 +15,6 @@ const { layer } = useMaptalksVectorLayer(map, { options: { enableAltitude: true,
 // 带 altitude 属性的 LineString：在 pitch > 0 时悬浮在空中
 useMaptalksLineString(layer, {
   coordinates: [[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]],
-  properties: { altitude: 400 },
-  symbol: { lineColor: '#dc2626', lineWidth: 3 },
+  options: { properties: { altitude: 400 }, symbol: { lineColor: '#dc2626', lineWidth: 3 } },
 });
 </script>

@@ -30,8 +30,7 @@ const markers: { coord: [number, number]; kind: string; color: string }[] = [
 markers.forEach((m) => {
   useMaptalksMarker(layer, {
     coordinates: m.coord,
-    symbol: { markerType: 'ellipse', markerFill: m.color, markerWidth: 14, markerHeight: 14 },
-    properties: { kind: m.kind },
+    options: { symbol: { markerType: 'ellipse', markerFill: m.color, markerWidth: 14, markerHeight: 14 }, properties: { kind: m.kind } },
   });
 });
 

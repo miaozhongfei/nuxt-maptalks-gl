@@ -11,7 +11,7 @@
         v-for="(p, i) in points"
         :key="i"
         :coordinates="p.coords"
-        :symbol="p.hovered ? hoverSymbol : normalSymbol"
+        :options="{ symbol: p.hovered ? hoverSymbol : normalSymbol }"
         @mouseenter="onHover(i, true)"
         @mouseleave="onHover(i, false)"
       />

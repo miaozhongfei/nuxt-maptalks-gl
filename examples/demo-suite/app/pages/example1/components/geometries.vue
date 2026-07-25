@@ -20,24 +20,24 @@
           <!-- 点标记：@click 演示事件回传 -->
           <MaptalksMarker
             :coordinates="[121.47, 31.23]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 }"
+            :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
             @click="lastClick = 'Marker 被点击'"
           />
           <!-- 文字标签 -->
           <MaptalksLabel
             content="文字标签"
             :coordinates="[121.485, 31.238]"
-            :symbol="{ textFill: '#dc2626', textSize: 16 }"
+            :options="{ symbol: { textFill: '#dc2626', textSize: 16 } }"
           />
           <!-- 折线 -->
           <MaptalksLineString
             :coordinates="[[121.45, 31.22], [121.47, 31.235], [121.49, 31.22]]"
-            :symbol="{ lineColor: '#dc2626', lineWidth: 3 }"
+            :options="{ symbol: { lineColor: '#dc2626', lineWidth: 3 } }"
           />
           <!-- 多边形（首尾闭合的环） -->
           <MaptalksPolygon
             :coordinates="[[[121.44, 31.25], [121.46, 31.25], [121.46, 31.27], [121.44, 31.27], [121.44, 31.25]]]"
-            :symbol="{ polygonFill: '#22c55e', polygonOpacity: 0.4, lineColor: '#16a34a', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#22c55e', polygonOpacity: 0.4, lineColor: '#16a34a', lineWidth: 2 } }"
           />
         </MaptalksVectorLayer>
       </MaptalksMap>
@@ -61,21 +61,21 @@
           <MaptalksCircle
             :coordinates="[121.46, 31.24]"
             :radius="800"
-            :symbol="{ polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 } }"
           />
           <!-- 椭圆：中心 + 宽 + 高（米） -->
           <MaptalksEllipse
             :coordinates="[121.5, 31.25]"
             :width="1600"
             :height="800"
-            :symbol="{ polygonFill: '#a855f7', polygonOpacity: 0.3, lineColor: '#9333ea', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#a855f7', polygonOpacity: 0.3, lineColor: '#9333ea', lineWidth: 2 } }"
           />
           <!-- 矩形：左上角 + 宽 + 高（米） -->
           <MaptalksRectangle
             :coordinates="[121.44, 31.26]"
             :width="1500"
             :height="1000"
-            :symbol="{ polygonFill: '#f59e0b', polygonOpacity: 0.3, lineColor: '#d97706', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#f59e0b', polygonOpacity: 0.3, lineColor: '#d97706', lineWidth: 2 } }"
           />
           <!-- 扇形：中心 + 半径 + 起始角 + 结束角 -->
           <MaptalksSector
@@ -83,7 +83,7 @@
             :radius="1000"
             :start-angle="0"
             :end-angle="90"
-            :symbol="{ polygonFill: '#ef4444', polygonOpacity: 0.35, lineColor: '#dc2626', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#ef4444', polygonOpacity: 0.35, lineColor: '#dc2626', lineWidth: 2 } }"
           />
         </MaptalksVectorLayer>
       </MaptalksMap>
@@ -103,12 +103,12 @@
           <!-- 多点 -->
           <MaptalksMultiPoint
             :coordinates="[[121.45, 31.21], [121.47, 31.21], [121.49, 31.21]]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#0ea5e9', markerWidth: 14, markerHeight: 14 }"
+            :options="{ symbol: { markerType: 'ellipse', markerFill: '#0ea5e9', markerWidth: 14, markerHeight: 14 } }"
           />
           <!-- 多线 -->
           <MaptalksMultiLineString
             :coordinates="[[[121.44, 31.28], [121.46, 31.29]], [[121.47, 31.28], [121.49, 31.29]]]"
-            :symbol="{ lineColor: '#7c3aed', lineWidth: 3 }"
+            :options="{ symbol: { lineColor: '#7c3aed', lineWidth: 3 } }"
           />
           <!-- 多面 -->
           <MaptalksMultiPolygon
@@ -116,7 +116,7 @@
               [[[121.44, 31.22], [121.45, 31.22], [121.45, 31.23], [121.44, 31.23], [121.44, 31.22]]],
               [[[121.46, 31.22], [121.47, 31.22], [121.47, 31.23], [121.46, 31.23], [121.46, 31.22]]],
             ]"
-            :symbol="{ polygonFill: '#14b8a6', polygonOpacity: 0.4, lineColor: '#0d9488', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#14b8a6', polygonOpacity: 0.4, lineColor: '#0d9488', lineWidth: 2 } }"
           />
           <!-- 文本框：内容 + 坐标 + 宽 + 高（像素） -->
           <MaptalksTextBox

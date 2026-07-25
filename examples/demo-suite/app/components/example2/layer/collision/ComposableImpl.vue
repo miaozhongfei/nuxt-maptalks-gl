@@ -24,7 +24,7 @@ const colors = ['#2563eb', '#dc2626', '#16a34a'];
 colors.forEach((c) => {
   useMaptalksMarker(layer, {
     coordinates: [121.5057, 31.2453] as [number, number],
-    symbol: { markerType: 'ellipse', markerFill: c, markerWidth: 18, markerHeight: 18 },
+    options: { symbol: { markerType: 'ellipse', markerFill: c, markerWidth: 18, markerHeight: 18 } },
   });
 });
 </script>

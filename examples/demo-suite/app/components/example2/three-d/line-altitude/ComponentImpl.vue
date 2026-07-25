@@ -10,8 +10,7 @@
     <MaptalksVectorLayer :options="{ enableAltitude: true, altitudeProperty: 'altitude', drawAltitude: true }">
       <MaptalksLineString
         :coordinates="[[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]]"
-        :properties="{ altitude: 400 }"
-        :symbol="{ lineColor: '#dc2626', lineWidth: 3 }"
+        :options="{ properties: { altitude: 400 }, symbol: { lineColor: '#dc2626', lineWidth: 3 } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

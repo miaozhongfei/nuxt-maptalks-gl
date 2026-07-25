@@ -6,6 +6,7 @@ import { inject } from 'vue'
 import { useMaptalksSector } from '../composables/presets/useMaptalksSector'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
 import type { MaptalksSectorCombinedOptions } from '../types'
+
 const props = withDefaults(
   defineProps<{
     /** 扇形圆心坐标 */
@@ -16,16 +17,14 @@ const props = withDefaults(
     startAngle: number
     /** 结束角度（度） */
     endAngle: number
-    /** 渲染样式（详见 Symbol 类型定义） */
-    symbol?: Record<string, unknown>
-    /** 自定义属性 */
-    properties?: Record<string, unknown>
     /** 几何图形唯一标识 */
     id?: string
+    /** 是否可见 */
+    visible?: boolean
+    /** 透传给几何构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+    options?: MaptalksSectorCombinedOptions
     /** 组件销毁时自动移除几何图形，默认 true */
     autoDispose?: boolean
-    /** 透传给几何构造器的额外选项（含中文字段注释，详见 MaptalksSectorCombinedOptions） */
-    options?: MaptalksSectorCombinedOptions
   }>(),
   { autoDispose: true, options: undefined },
 )
@@ -40,13 +39,12 @@ const emit = defineEmits<{
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksSector 必须在 MaptalksVectorLayer 内使用')
 useMaptalksSector(layer, {
-  ...props.options,
   coordinates: () => props.coordinates,
   radius: () => props.radius,
   startAngle: () => props.startAngle,
   endAngle: () => props.endAngle,
-  symbol: () => props.symbol,
-  properties: () => props.properties,
+  options: () => props.options,
+  visible: () => props.visible,
   id: props.id,
   autoDispose: props.autoDispose,
   events: {

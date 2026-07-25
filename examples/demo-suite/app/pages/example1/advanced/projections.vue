@@ -56,7 +56,7 @@ useMaptalksLabel(projVec, {
     return `投影: ${proj.code.toUpperCase()}`;
   },
   coordinates: [121.4737, 31.2304],
-  symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 },
+  options: { symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 } },
 });
 
 // 卡片 3：自定义 projection 示例（默认 EPSG:3857，EPSG:4326 需要对应的瓦片源）
@@ -67,6 +67,6 @@ const { layer: projVec3 } = useMaptalksVectorLayer(map3);
 useMaptalksLabel(projVec3, {
   content: 'EPSG:3857（默认）',
   coordinates: [121.47, 31.23],
-  symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#dc2626', textHaloFill: '#fff', textHaloRadius: 2 },
+  options: { symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#dc2626', textHaloFill: '#fff', textHaloRadius: 2 } },
 });
 </script>

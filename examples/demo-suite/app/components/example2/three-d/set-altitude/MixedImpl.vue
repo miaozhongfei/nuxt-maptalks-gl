@@ -25,8 +25,7 @@ const { layer } = useMaptalksVectorLayer(map, { options: { enableAltitude: true,
 // 带 altitude 属性的 Marker
 const { geometry } = useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  properties: { altitude: 500 },
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { properties: { altitude: 500 }, symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 // 滑块变化时窄转型调用 setAltitude 动态更新 Marker 高度
 type HasSetAltitude = { setAltitude(altitude: number): void };

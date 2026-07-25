@@ -11,7 +11,7 @@
         v-for="(p, i) in points"
         :key="i"
         :coordinates="p.coords"
-        :symbol="p.highlighted ? highlightSymbol : normalSymbol"
+        :options="{ symbol: p.highlighted ? highlightSymbol : normalSymbol }"
         @click="onSelect(i)"
       />
     </MaptalksVectorLayer>

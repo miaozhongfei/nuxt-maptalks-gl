@@ -28,7 +28,7 @@ const pts = [
 pts.forEach((c, i) => {
   useMaptalksMarker(markerLayer, {
     coordinates: c as [number, number],
-    symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 12, markerHeight: 12 },
+    options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 12, markerHeight: 12 } },
     id: `mk${i}`,
   });
 });
@@ -41,7 +41,7 @@ const { geometry: polygon } = useMaptalksPolygon(maskLayer, {
     [121.5087, 31.2443],
     [121.5027, 31.2443],
   ] as [number, number][],
-  symbol: { lineWidth: 0, polygonFill: '#00000000' },
+  options: { symbol: { lineWidth: 0, polygonFill: '#00000000' } },
 });
 
 function applyMask() {

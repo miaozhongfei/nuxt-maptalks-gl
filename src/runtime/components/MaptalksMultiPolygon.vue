@@ -11,16 +11,14 @@ const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
     coordinates: MultiPolygonCoordinates
-    /** 渲染样式（详见 Symbol 类型定义） */
-    symbol?: Record<string, unknown>
-    /** 自定义属性 */
-    properties?: Record<string, unknown>
     /** 几何图形唯一标识 */
     id?: string
+    /** 是否可见 */
+    visible?: boolean
+    /** 透传给几何构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
+    options?: MaptalksMultiPolygonCombinedOptions
     /** 组件销毁时自动移除几何图形，默认 true */
     autoDispose?: boolean
-    /** 透传给几何构造器的额外选项（含中文字段注释，详见 MaptalksMultiPolygonCombinedOptions） */
-    options?: MaptalksMultiPolygonCombinedOptions
   }>(),
   { autoDispose: true, options: undefined },
 )
@@ -35,10 +33,9 @@ const emit = defineEmits<{
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksMultiPolygon 必须在 MaptalksVectorLayer 内使用')
 useMaptalksMultiPolygon(layer, {
-  ...props.options,
   coordinates: () => props.coordinates,
-  symbol: () => props.symbol,
-  properties: () => props.properties,
+  options: () => props.options,
+  visible: () => props.visible,
   id: props.id,
   autoDispose: props.autoDispose,
   events: {

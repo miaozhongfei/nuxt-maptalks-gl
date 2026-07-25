@@ -56,7 +56,7 @@ useMaptalksTileLayer(map2, { source: 'osm' });
 const { layer: editVec } = useMaptalksVectorLayer(map2);
 const { geometry: editGeo } = useMaptalksPolygon(editVec, {
   coordinates: [[121.47, 31.23], [121.49, 31.23], [121.49, 31.25], [121.47, 31.25]],
-  symbol: { lineWidth: 2, lineColor: '#2563eb', polygonFill: '#2563eb', polygonOpacity: 0.2 },
+  options: { symbol: { lineWidth: 2, lineColor: '#2563eb', polygonFill: '#2563eb', polygonOpacity: 0.2 } },
 });
 let editing = false;
 function toggleEdit() {

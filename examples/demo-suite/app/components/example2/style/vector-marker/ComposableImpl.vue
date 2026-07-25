@@ -13,6 +13,6 @@ useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'diamond', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 },
+  options: { symbol: { markerType: 'diamond', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
 });
 </script>

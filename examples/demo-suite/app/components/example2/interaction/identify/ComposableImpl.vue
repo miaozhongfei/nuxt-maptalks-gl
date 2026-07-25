@@ -22,9 +22,9 @@ const highlightSymbol = { markerType: 'ellipse', markerFill: '#22c55e', markerWi
 
 const geos: MaptalksGeometry[] = [];
 
-useMaptalksMarker(layer, { coordinates: [121.495, 31.248], symbol: normalSymbol });
-useMaptalksMarker(layer, { coordinates: [121.5057, 31.2453], symbol: normalSymbol });
-useMaptalksMarker(layer, { coordinates: [121.515, 31.242], symbol: normalSymbol });
+useMaptalksMarker(layer, { coordinates: [121.495, 31.248], options: { symbol: normalSymbol } });
+useMaptalksMarker(layer, { coordinates: [121.5057, 31.2453], options: { symbol: normalSymbol } });
+useMaptalksMarker(layer, { coordinates: [121.515, 31.242], options: { symbol: normalSymbol } });
 
 const highlighted = ref(-1);
 

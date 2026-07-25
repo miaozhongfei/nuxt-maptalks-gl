@@ -13,6 +13,6 @@ useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png', markerWidth: 28, markerHeight: 28 },
+  options: { symbol: { markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png', markerWidth: 28, markerHeight: 28 } },
 });
 </script>

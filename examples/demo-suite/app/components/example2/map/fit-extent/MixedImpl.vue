@@ -25,7 +25,7 @@ const { geometry } = useMaptalksPolygon(layer, {
   coordinates: [
     [[121.49, 31.24], [121.52, 31.24], [121.52, 31.255], [121.49, 31.255], [121.49, 31.24]],
   ],
-  symbol: { polygonFill: '#16a34a', polygonOpacity: 0.3, lineColor: '#15803d', lineWidth: 2 },
+  options: { symbol: { polygonFill: '#16a34a', polygonOpacity: 0.3, lineColor: '#15803d', lineWidth: 2 } },
 });
 const cam = useMaptalksCamera(map);
 function fit() {

@@ -13,7 +13,7 @@
         :coordinates="[121.5057, 31.2453]"
         :width="150"
         :height="44"
-        :symbol="{ textFill: '#dc2626', textSize: 16 }"
+        :options="{ symbol: { textFill: '#dc2626', textSize: 16 } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

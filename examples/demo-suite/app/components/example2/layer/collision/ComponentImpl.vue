@@ -11,15 +11,15 @@
       <MaptalksVectorLayer :options="{ collision: true }">
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
         />
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 18, markerHeight: 18 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 18, markerHeight: 18 } }"
         />
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :symbol="{ markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 18, markerHeight: 18 }"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 18, markerHeight: 18 } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>

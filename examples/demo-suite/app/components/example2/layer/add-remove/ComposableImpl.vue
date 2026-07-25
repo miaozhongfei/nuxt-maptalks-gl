@@ -33,7 +33,7 @@ function add() {
   const { layer, remove } = useMaptalksVectorLayer(map);
   useMaptalksMarker(layer, {
     coordinates: coords[idx % coords.length] as [number, number],
-    symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
+    options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 } },
   });
   handles.value.push({ remove });
   idx++;

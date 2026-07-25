@@ -132,7 +132,7 @@ useMaptalksTileLayer(mapC, { source: 'osm' });
 const { layer: vecLayer } = useMaptalksVectorLayer(mapC);
 useMaptalksMarker(vecLayer, {
   coordinates: center,
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 22, markerHeight: 22 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 22, markerHeight: 22 } },
 });
 
 const { toJSON } = useMaptalksSerialize(mapC);

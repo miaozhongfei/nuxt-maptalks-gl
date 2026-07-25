@@ -14,7 +14,6 @@ useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map, { options: { enableAltitude: true, altitudeProperty: 'altitude', drawAltitude: true } });
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  properties: { altitude: 500 },
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
+  options: { properties: { altitude: 500 }, symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 });
 </script>

@@ -17,6 +17,6 @@ const { layer } = useMaptalksVectorLayer(map);
 useMaptalksLabel(layer, {
   content: '文字标注',
   coordinates: [121.5057, 31.2453],
-  symbol: { textFill: '#dc2626', textSize: 18, textHaloFill: '#fff', textHaloRadius: 2 },
+  options: { symbol: { textFill: '#dc2626', textSize: 18, textHaloFill: '#fff', textHaloRadius: 2 } },
 });
 </script>

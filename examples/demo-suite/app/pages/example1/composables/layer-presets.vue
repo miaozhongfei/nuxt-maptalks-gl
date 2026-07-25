@@ -158,7 +158,7 @@ useMaptalksTileLayer(vecMap, { source: 'osm' });
 const { layer: vecLayer } = useMaptalksVectorLayer(vecMap);
 useMaptalksMarker(vecLayer, {
   coordinates: center,
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } },
 });
 
 // WMSLayer（定位到美国以显示 topp:states）

@@ -22,13 +22,13 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer: blueLayer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(blueLayer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28 } },
 });
 
 const { layer: redLayer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(redLayer, {
   coordinates: [121.5057, 31.2453],
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 } },
 });
 
 const blueCtl = useMaptalksLayerControl(blueLayer);

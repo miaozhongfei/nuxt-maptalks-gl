@@ -10,7 +10,7 @@
       <MaptalksLabel
         content="旋转文字"
         :coordinates="[121.5057, 31.2453]"
-        :symbol="{ textFill: '#2563eb', textSize: 18, textRotation: 45 }"
+        :options="{ symbol: { textFill: '#2563eb', textSize: 18, textRotation: 45 } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>
