@@ -9,7 +9,7 @@
     <MaptalksVectorLayer>
       <MaptalksMarker
         :coordinates="[121.5057, 31.2453]"
-        :options="{ symbol: { markerFile: '/images/meng.png', markerWidth: 28, markerHeight: 28 } }"
+        :options="{ symbol: { markerFile: '/images/meng.png', markerWidth: 29, markerHeight: 41 } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

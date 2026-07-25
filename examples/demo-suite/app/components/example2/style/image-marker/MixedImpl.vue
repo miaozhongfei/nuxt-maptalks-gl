@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <MaptalksMap
     ref="mapCmp"
     base-layer="osm"
@@ -15,6 +15,6 @@ const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  options: { symbol: { markerFile: '/images/meng.png', markerWidth: 28, markerHeight: 28 } },
+  options: { symbol: { markerFile: '/images/meng.png', markerWidth: 29, markerHeight: 41 } },
 });
 </script>
