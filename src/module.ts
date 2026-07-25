@@ -27,6 +27,7 @@ export type {
   ResolvedSource,
   MaptalksMap,
   MaptalksLayer,
+  MaptalksGeometry,
   MaptalksGLNamespace,
   MaptalksCoordinate,
   MaptalksViewLike,
