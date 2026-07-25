@@ -18,7 +18,7 @@ useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
   options: {
     symbol: {
-      markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png',
+      markerFile: '/images/meng.png',
       markerWidth: 32,
       markerHeight: 32,
       textName: 'Label',

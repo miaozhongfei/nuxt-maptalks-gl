@@ -13,10 +13,10 @@ useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksMarker(layer, {
   coordinates: [121.49, 31.24],
-  options: { symbol: { markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png', markerWidth: 28, markerHeight: 28 } },
+  options: { symbol: { markerFile: '/images/meng.png', markerWidth: 28, markerHeight: 28 } },
 });
 useMaptalksMarker(layer, {
   coordinates: [121.52, 31.25],
-  options: { symbol: { markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/plane.png', markerWidth: 28, markerHeight: 28 } },
+  options: { symbol: { markerFile: '/images/plane.png', markerWidth: 28, markerHeight: 28 } },
 });
 </script>

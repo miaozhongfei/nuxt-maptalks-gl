@@ -5,7 +5,7 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <p class="text-sm mt-2 text-muted">ImageLayer — 在地图上叠加 maptalks Logo 图片（逃生舱）</p>
+    <p class="text-sm mt-2 text-muted">ImageLayer 在地图上叠加 maptalks Logo 图片（逃生舱）</p>
   </div>
 </template>
 
@@ -18,7 +18,7 @@ useMaptalksTileLayer(map, { source: 'osm' });
 useMaptalksLayer(map, (mt) => {
   const il = new mt.ImageLayer('img', [
     {
-      url: 'https://cdn.maptalks.com/maptalks/img/logo-h.png',
+      url: '/images/logo-h.png',
       extent: [121.495, 31.235, 121.515, 31.255],
     },
   ], {

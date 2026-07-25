@@ -14,7 +14,7 @@ const { layer } = useMaptalksVectorLayer(map);
 // Marker 同时显示图片和文字标注（工厂模式——逃生舱口径）
 useMaptalksGeometry(layer, (mt) => new mt.Marker([121.5057, 31.2453], {
   symbol: {
-    markerFile: 'https://cdn.maptalks.com/maptalks/img/marker/meng.png',
+    markerFile: '/images/meng.png',
     markerWidth: 32,
     markerHeight: 32,
     textName: 'Label',

@@ -12,6 +12,6 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
 useMaptalksGeometry(layer, (mt) => new mt.Polygon([[[121.495, 31.238], [121.515, 31.238], [121.515, 31.252], [121.495, 31.252], [121.495, 31.238]]], {
-  symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, polygonPatternFile: 'https://cdn.maptalks.com/maptalks/img/pattern/arrow.png', lineColor: '#16a34a', lineWidth: 2 },
+  symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, polygonPatternFile: '/images/arrow.png', lineColor: '#16a34a', lineWidth: 2 },
 }));
 </script>
