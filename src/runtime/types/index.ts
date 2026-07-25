@@ -1662,10 +1662,10 @@ export interface MaptalksLabelOptions extends MaptalksGeometryBaseOptions {
 }
 /** TextBox 常用选项 */
 export interface MaptalksTextBoxOptions extends MaptalksGeometryBaseOptions {
-  /** 文字专属样式（textSize / textFill / textWeight / textHaloRadius 等） */
-  textSymbol?: Record<string, unknown>;
-  /** 文字背景框样式（boxFill / boxOpacity / boxLineColor / boxLineWidth 等） */
-  boxStyle?: Record<string, unknown>;
+  /** 文字样式（wrap / padding / verticalAlignment / horizontalAlignment / symbol 等，TextBox 构造函数专属） */
+  textStyle?: Record<string, unknown>;
+  /** 文字背景框样式（markerType / markerFill / markerLineColor 等，TextBox 构造函数专属） */
+  boxSymbol?: Record<string, unknown>;
 }
 
 /** Marker 组件 options prop 类型——建模字段（中文注释）+ 原生字段（IDE 补全） */

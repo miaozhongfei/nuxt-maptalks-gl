@@ -13,7 +13,33 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
 // 文本框 TextBox（工厂模式——逃生舱口径：直接 new 原生几何）
-useMaptalksGeometry(layer, (mt) => new mt.TextBox('文本框 TextBox', [121.5057, 31.2453], 150, 44, {
-  symbol: { textFill: '#dc2626', textSize: 16 },
-}));
+useMaptalksGeometry(
+  layer,
+  (mt) =>
+    new mt.TextBox('文本框 TextBox', [121.5057, 31.2453], 160, 44, {
+      draggable: true,
+      textStyle: {
+        wrap: true, // auto wrap text
+        padding: [12, 8], // padding of textbox
+        verticalAlignment: 'top',
+        horizontalAlignment: 'right',
+        symbol: {
+          textFaceName: 'monospace',
+          textFill: '#34495e',
+          textHaloFill: '#fff',
+          textHaloRadius: 4,
+          textSize: 18,
+          textWeight: 'bold',
+        },
+      },
+      boxSymbol: {
+        // box's symbol
+        markerType: 'square',
+        markerFill: 'rgb(135,196,240)',
+        markerFillOpacity: 0.9,
+        markerLineColor: '#34495e',
+        markerLineWidth: 1,
+      },
+    }),
+);
 </script>
