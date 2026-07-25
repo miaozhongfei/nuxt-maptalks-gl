@@ -10,20 +10,22 @@
 </template>
 
 <script setup lang="ts">
+import { tigerPath } from './tiger-path';
+
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
-// SVG 路径标注
+// SVG 路径标注：Raphael.js tiger
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
   options: { symbol: {
     markerType: 'path',
-    markerPath: 'M0 0 L12 0 L12 8 L8 8 L8 12 L4 8 L0 8 Z',
-    markerPathWidth: 20,
-    markerPathHeight: 20,
-    markerFill: '#2563eb',
-    markerLineColor: '#1e3a8a',
-    markerLineWidth: 1,
+    markerPath: tigerPath,
+    markerPathWidth: 540,
+    markerPathHeight: 580,
+    markerWidth: 400,
+    markerHeight: 400,
+    markerDy: 200,
   } },
 });
 </script>
