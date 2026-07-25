@@ -31,8 +31,7 @@ useMaptalksLayer(map, (mt) => {
   const m2 = new mt.Marker(TARGET, {
     symbol: { markerType: 'ellipse', markerFill: '#22c55e', markerWidth: 18, markerHeight: 18 },
   });
-  // 官网标准多点法：src + dst + line 一次性 addGeometry
-  (layer as unknown as { addGeometry: (...gs: unknown[]) => void }).addGeometry(m1, m2);
+  (layer as any).addGeometry(m1, m2);
   // ConnectorLine：直连线（始终显示）
   const line = new ConnectorLine(m1, m2, {
     showOn: 'always',
@@ -44,12 +43,10 @@ useMaptalksLayer(map, (mt) => {
     arcDegree: 60,
     symbol: { lineColor: '#7c3aed', lineWidth: 2 },
   });
-  // Hook layer.onAdd：等 layer 上 map 后再加连接线（getMap() 此时可用）
-  const origOnAdd = layer.onAdd.bind(layer);
-  layer.onAdd = function () {
-    origOnAdd();
-    (layer as unknown as { addGeometry: (...gs: unknown[]) => void }).addGeometry(line, arc);
-  };
+  // setTimeout 延迟：factory 返回 → m.addLayer(layer) 同步执行后，连接线 getMap() 可用
+  setTimeout(() => {
+    (layer as any).addGeometry(line, arc);
+  });
   return layer;
 });
 </script>
