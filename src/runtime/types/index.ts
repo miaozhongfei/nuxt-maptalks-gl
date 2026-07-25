@@ -1136,9 +1136,9 @@ export interface MaptalksVectorLayer extends MaptalksLayer {
 export interface UseMaptalksGeometryOptions {
   /** 响应式坐标（shallow watch，替换才更新） */
   coordinates?: MaybeRefOrGetter<unknown>;
-  /** 响应式 symbol（透传，含静态对象或 zoom-stops 数组） */
+  /** 响应式 symbol（透传，含静态对象、组合 symbol 数组、zoom-stops 数组） */
   symbol?: MaybeRefOrGetter<
-    Record<string, unknown> | Array<[number, Record<string, unknown>]> | undefined
+    Record<string, unknown> | Array<Record<string, unknown>> | Array<[number, Record<string, unknown>]> | undefined
   >;
   /** 响应式业务属性 */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
@@ -1582,8 +1582,8 @@ export interface UseMaptalksTextBoxOptions {
  * const opts: MaptalksMarkerOptions = { symbol: { markerType: 'ellipse' }, draggable: true };
  */
 export interface MaptalksGeometryBaseOptions {
-  /** 渲染样式（支持 zoom-stops 数组） */
-  symbol?: Record<string, unknown> | Array<[number, Record<string, unknown>]>;
+  /** 渲染样式（支持普通对象、组合 symbol 数组、zoom-stops 数组） */
+  symbol?: Record<string, unknown> | Array<Record<string, unknown>> | Array<[number, Record<string, unknown>]>;
   /** 自定义业务属性 */
   properties?: Record<string, unknown>;
   /** 是否可见 */
