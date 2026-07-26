@@ -82,11 +82,12 @@ function mountSlotContent() {
 watch(() => uiMarker.value, (v) => {
   if (!v) return;
   mountSlotContent();
-  // 组件初始化时 visible 可能已是 true，但 visible watch immediate 时 uiMarker 尚未创建
-  // 此处补检查，确保默认 visible 生效
   if (props.visible && props.coordinates) {
     v.setCoordinates(props.coordinates);
     skipNextUpdate = true; show();
+  } else if (!props.visible) {
+    // composable 无条件 show，此处按 visible 状态补 hide
+    v.hide();
   }
 }, { immediate: true })
 
