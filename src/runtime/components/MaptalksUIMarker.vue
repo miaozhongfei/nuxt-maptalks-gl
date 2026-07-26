@@ -78,8 +78,17 @@ function mountSlotContent() {
   uiMarker.value.setContent(mountEl);
 }
 
-// UIMarker 实例就绪后挂载 slot 内容
-watch(() => uiMarker.value, (v) => { if (v) mountSlotContent(); }, { immediate: true })
+// UIMarker 实例就绪后挂载 slot 内容并补初始 visible 状态
+watch(() => uiMarker.value, (v) => {
+  if (!v) return;
+  mountSlotContent();
+  // 组件初始化时 visible 可能已是 true，但 visible watch immediate 时 uiMarker 尚未创建
+  // 此处补检查，确保默认 visible 生效
+  if (props.visible && props.coordinates) {
+    v.setCoordinates(props.coordinates);
+    skipNextUpdate = true; show();
+  }
+}, { immediate: true })
 
 // 父组件更新时重新 mount（show() 触发的更新跳过）
 onUpdated(() => {

@@ -120,7 +120,6 @@ export function useMaptalksUIMarker(
       bindEvents(uim, events);
       uiMarker.value = uim;
       if (c !== undefined) uim.setContent(c as string | HTMLElement);
-      uim.show();
     } catch (cause) {
       logger.error('UIMarker 创建失败', toMaptalksError(cause, 'control-failed', 'UIMarker 创建失败'));
     } finally {

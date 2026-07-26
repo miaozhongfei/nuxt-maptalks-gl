@@ -27,6 +27,8 @@ const { uiMarker } = useMaptalksUIMarker(map, {
   }),
   events: { click: () => alert('UIMarker 被点击了！') },
 });
+// composable 不再自动 show，手动在实例就绪后显示
+watch(() => uiMarker.value, (v) => { if (v) v.show(); }, { immediate: true })
 function swapContent() {
   text.value = text.value === 'HTML Marker' ? '内容已替换！' : 'HTML Marker';
 }

@@ -18,12 +18,14 @@
       </MaptalksUIMarker>
       <MaptalksUIMarker
         :coordinates="[121.5257, 31.2453]"
+        :visible="show"
         :options="{ draggable: true, content: content }"
         :events="{ click: onClick }"
       >
       </MaptalksUIMarker>
     </MaptalksMap>
     <div class="mt-3 flex items-center gap-2">
+      <UButton size="sm" @click="show = !show">{{ show ? '隐藏' : '显示' }}marker</UButton>
       <UButton size="sm" @click="swapContent">替换内容</UButton>
       <span class="text-sm text-muted">当前内容: {{ text }}</span>
     </div>
@@ -31,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+const show = ref(false);
 const text = ref('HTML Marker');
 const content = ref(`
   <div style="font: 30px bold sans-serif; color: #34495e; text-shadow: 2px 0 #fff">
