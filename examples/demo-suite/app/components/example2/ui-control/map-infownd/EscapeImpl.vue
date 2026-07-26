@@ -9,12 +9,12 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-const visible = ref(false)
+const visible = ref(true)
 let iwRef: { show(c: unknown): void; hide(): void } | null = null
 watch(() => toValue(map), async (m) => {
   if (!m) return
   const mt = await import('maptalks-gl')
-  const iw = new mt.InfoWindow({ title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' })
+  const iw = new mt.ui.InfoWindow({ title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' })
   iw.addTo(m)
   iwRef = iw
 }, { immediate: true })

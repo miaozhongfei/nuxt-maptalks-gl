@@ -8,5 +8,5 @@
 </template>
 
 <script setup lang="ts">
-const show = ref(false)
+const show = ref(true)
 </script>
