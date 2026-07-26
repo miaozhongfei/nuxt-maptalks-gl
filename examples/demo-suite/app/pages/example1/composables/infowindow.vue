@@ -171,7 +171,7 @@ function mkContent(title: string, color: string, coord: [number, number]): strin
 function bindCloseBtn(miw: typeof miwA) {
   setTimeout(() => {
     const btn = document.querySelector('.mt-mk-iw-close') as HTMLElement | null;
-    if (btn) btn.addEventListener('click', () => { miw.close(); iw3Label.value = ''; curOpen = null; }, { once: true });
+    if (btn) btn.addEventListener('click', () => { miw.hide(); iw3Label.value = ''; curOpen = null; }, { once: true });
   }, 50);
 }
 
@@ -182,7 +182,7 @@ const autoClose = ref(true);
 useMaptalksEvents(map3, {
   click: () => {
     if (!autoClose.value || Date.now() - mkOpenTime < 250) return;
-    curOpen?.close();
+    curOpen?.hide();
     iw3Label.value = '';
     curOpen = null;
   },
@@ -221,11 +221,11 @@ function randomOpen() {
   mkOpenTime = Date.now();
   const all = [miwA, miwB, miwC]; const pick = all[Math.floor(Math.random() * 3)];
   curOpenIW = pick;
-  pick?.open();
+  pick?.show();
   if (pick === miwA) iw3Label.value = '东门店 A'; else if (pick === miwB) iw3Label.value = '西门店 B'; else iw3Label.value = '南门店 C';
 }
 function randomClose() {
-  curOpenIW?.close();
+  curOpenIW?.hide();
   iw3Label.value = '';
 }
 

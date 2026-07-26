@@ -51,27 +51,27 @@ export interface UseMaptalksMarkerInfoWindowOptions {
 
 /** useMaptalksMarkerInfoWindow 的返回值 */
 export interface UseMaptalksMarkerInfoWindowReturn {
-  /** 打开该 Marker 的信息框 */
-  open: () => void;
-  /** 关闭该 Marker 的信息框 */
-  close: () => void;
-  /** 移除该 Marker 的信息框配置并关闭 */
+  /** 显示该 Marker 的信息框 */
+  show: () => void;
+  /** 隐藏该 Marker 的信息框 */
+  hide: () => void;
+  /** 移除该 Marker 的信息框配置并隐藏 */
   remove: () => void;
 }
 
 /**
- * 标记级信息框：在给定 Marker 几何上注册 setInfoWindow，响应式纳管 content/title，返回 open/close。
+ * 标记级信息框：在给定 Marker 几何上注册 setInfoWindow，响应式纳管 content/title，返回 show/hide。
  *
  * @description 对应 maptalks 原生的 `marker.setInfoWindow()` + `openInfoWindow()` / `closeInfoWindow()`。
  * 与 useMaptalksInfoWindow（地图级）不同，此 composable 创建的信息框**只属于这一个 Marker**——点击 Marker
  * 自动弹出、点击别处自动关闭，不需手动操控坐标；内容/标题支持响应式更新。
  * @param {MaybeRefOrGetter<MaptalksGeometry | null>} geometry - useMaptalksMarker 返回的 geometry
  * @param {UseMaptalksMarkerInfoWindowOptions} [opts] - 信息框配置（options/events/autoDispose）
- * @returns {UseMaptalksMarkerInfoWindowReturn} `{ open, close, remove }`
+ * @returns {UseMaptalksMarkerInfoWindowReturn} `{ show, hide, remove }`
  *
  * @example
  * const { geometry } = useMaptalksMarker(layer, { coordinates: [113.27, 23.13] });
- * const { open } = useMaptalksMarkerInfoWindow(geometry, {
+ * const { show } = useMaptalksMarkerInfoWindow(geometry, {
  *   options: { title: '我的位置', custom: true, content: '<div>内容</div>' },
  * });
  */
@@ -136,13 +136,13 @@ export function useMaptalksMarkerInfoWindow(
   const hasSet = shallowRef(false);
   setupMarkerIW(geometry, opts, hasSet);
 
-  const open = (): void => {
+  const show = (): void => {
     (toValue(geometry) as NativeMarker | null)?.openInfoWindow();
-    events.open?.({} as never);
+    events.show?.({} as never);
   };
-  const close = (): void => {
+  const hide = (): void => {
     (toValue(geometry) as NativeMarker | null)?.closeInfoWindow();
-    events.close?.({} as never);
+    events.hide?.({} as never);
   };
   function remove(): void {
     const m = toValue(geometry) as NativeMarker | null;
@@ -150,5 +150,5 @@ export function useMaptalksMarkerInfoWindow(
   }
 
   if (opts.autoDispose ?? true) onScopeDispose(remove);
-  return { open, close, remove };
+  return { show, hide, remove };
 }

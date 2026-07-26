@@ -23,8 +23,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  open: []
-  close: []
+  show: []
+  hide: []
 }>()
 
 const slots = useSlots()
@@ -33,12 +33,12 @@ let slotApp: App | null = null
 const geometry = inject(MARKER_GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
 
-const { open, close } = useMaptalksMarkerInfoWindow(geometry, {
+const { show, hide } = useMaptalksMarkerInfoWindow(geometry, {
   options: () => props.options,
   events: {
     ...props.events,
-    open: () => emit('open'),
-    close: () => emit('close'),
+    show: () => emit('show'),
+    hide: () => emit('hide'),
   },
   autoDispose: props.autoDispose,
 })
@@ -60,5 +60,5 @@ watch(() => toValue(geometry), (g) => { if (g) mountSlotContent(); }, { immediat
 
 onBeforeUnmount(() => { if (slotApp) { slotApp.unmount(); slotApp = null; } })
 
-defineExpose({ open, close })
+defineExpose({ show, hide })
 </script>
