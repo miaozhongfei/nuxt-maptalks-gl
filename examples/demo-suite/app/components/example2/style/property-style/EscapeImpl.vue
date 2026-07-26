@@ -8,24 +8,15 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.245], zoom: 13 });
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-// A 类 Marker
-useMaptalksGeometry(layer, (mt) => new mt.Marker([121.49, 31.24], {
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
-  properties: { category: 'A' },
-}));
-// B 类 Marker
-useMaptalksGeometry(layer, (mt) => new mt.Marker([121.52, 31.25], {
-  symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 18, markerHeight: 18 },
-  properties: { category: 'B' },
-}));
-// 文字标签
-useMaptalksGeometry(layer, (mt) => new mt.Marker([121.49, 31.242], {
-  symbol: { textName: 'A 类', textFill: '#2563eb', textSize: 14 },
-}));
-useMaptalksGeometry(layer, (mt) => new mt.Marker([121.52, 31.252], {
-  symbol: { textName: 'B 类', textFill: '#dc2626', textSize: 14 },
-}));
+// markerFillOpacity: { property: 'heat', type: 'identity' } 按 properties.heat 值驱动不透明度（逃生舱）
+const sym = { markerType: 'ellipse', markerFill: 'rgb(216,115,149)', markerFillOpacity: { property: 'heat', type: 'identity' }, markerLineWidth: 0, markerLineOpacity: 1, markerWidth: 40, markerHeight: 40 };
+for (let i = 0; i < 10; i++) {
+  useMaptalksGeometry(layer, (mt) => new mt.Marker([121.4832 + i * 0.005, 31.2453], {
+    symbol: sym,
+    properties: { heat: 1 - i * 0.1 },
+  }));
+}
 </script>

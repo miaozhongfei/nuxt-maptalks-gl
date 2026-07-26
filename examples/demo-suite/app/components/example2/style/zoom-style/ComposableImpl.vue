@@ -20,6 +20,44 @@ const sym = computed(() => ({
 }));
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  options: { symbol: sym }
+  options: { symbol: sym },
+});
+
+useMaptalksMarker(layer, {
+  coordinates: [121.5557, 31.2453],
+  options: {
+    symbol: [
+      {
+        markerType: 'ellipse',
+        markerWidth: {
+          stops: [
+            [7, 5],
+            [14, 200],
+          ],
+        },
+        markerHeight: {
+          stops: [
+            [7, 5],
+            [14, 200],
+          ],
+        },
+        markerFill: '#18987f',
+        markerFillOpacity: 0.6,
+        markerLineColor: '#34495e',
+        markerLineWidth: 5,
+      },
+      {
+        textFaceName: 'sans-serif',
+        textName: 'MapTalks',
+        textFill: '#fff',
+        textSize: {
+          stops: [
+            [7, 2],
+            [14, 30],
+          ],
+        },
+      },
+    ],
+  },
 });
 </script>

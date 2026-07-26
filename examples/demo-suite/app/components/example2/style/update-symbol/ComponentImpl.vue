@@ -8,10 +8,7 @@
       style="height: 480px"
     >
       <MaptalksVectorLayer>
-        <MaptalksMarker
-          :coordinates="[121.5057, 31.2453]"
-          :options="{ symbol: symbol }"
-        />
+        <MaptalksMarker :coordinates="[121.5057, 31.2453]" :options="{ symbol: { ...sym } }" />
       </MaptalksVectorLayer>
     </MaptalksMap>
     <div class="mt-3 flex gap-2">
@@ -22,12 +19,14 @@
 </template>
 
 <script setup lang="ts">
-const symbol = ref({
+const sym = reactive({
   markerType: 'ellipse',
   markerFill: '#2563eb',
   markerWidth: 20,
   markerHeight: 20,
 });
-/** 替换整个 symbol 对象（浅比检测新引用） */
-function setColor(c: string) { symbol.value = { ...symbol.value, markerFill: c }; }
+
+function setColor(c: string) {
+  sym.markerFill = c;
+}
 </script>
