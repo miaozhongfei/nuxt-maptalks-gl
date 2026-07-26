@@ -72,7 +72,7 @@ function mountSlotContent() {
   slotApp = createApp({ render: () => h('div', null, slots.default?.()) });
   slotApp.mount(mountEl);
   delete mountEl.dataset.vApp;
-  uiMarker.value.setContent(mountEl.innerHTML);
+  uiMarker.value.setContent(mountEl);
 }
 
 // UIMarker 实例就绪后挂载 slot 内容

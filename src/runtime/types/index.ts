@@ -2089,8 +2089,8 @@ export interface MaptalksUIMarker {
   hide(): MaptalksUIMarker;
   /** 设置坐标 */
   setCoordinates(coord: unknown): MaptalksUIMarker;
-  /** 设置内容（HTML 字符串） */
-  setContent(content: string): MaptalksUIMarker;
+  /** 设置内容（HTML 字符串或 DOM 元素） */
+  setContent(content: string | HTMLElement): MaptalksUIMarker;
   /** 逃生舱口 */
   [key: string]: unknown;
 }

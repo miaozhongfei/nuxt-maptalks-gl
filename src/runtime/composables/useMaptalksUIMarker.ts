@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksMap, MaptalksUIMarker, MaptalksUIMarkerCombinedOptions } from '../types';
+import type { MaptalksEventHandler, MaptalksMap, MaptalksUIMarker, MaptalksUIMarkerCombinedOptions } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -21,6 +21,8 @@ const logger = createLogger('nuxt-maptalks-gl');
 export interface UseMaptalksUIMarkerOptions {
   /** 透传给 UIMarker 构造器的选项（含中文字段注释，详见 MaptalksUIMarkerOptions） */
   options?: MaybeRefOrGetter<MaptalksUIMarkerCombinedOptions | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;
 }
@@ -49,12 +51,28 @@ export interface UseMaptalksUIMarkerReturn {
 function removeUIM(
   uiMarker: ShallowRef<MaptalksUIMarker | null>,
   s1: () => void,
+  events: Record<string, MaptalksEventHandler>,
 ): void {
   s1();
   const uim = uiMarker.value;
   if (!uim) return;
+  unbindEvents(uim, events);
   try { uim.remove(); } catch { }
   uiMarker.value = null;
+}
+
+/** 批量绑定事件 */
+function bindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEventHandler>) {
+  for (const [event, handler] of Object.entries(events)) {
+    (uim as unknown as { on: (e: string, h: MaptalksEventHandler) => void }).on(event, handler);
+  }
+}
+
+/** 批量解绑事件 */
+function unbindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEventHandler>) {
+  for (const [event, handler] of Object.entries(events)) {
+    (uim as unknown as { off: (e: string, h: MaptalksEventHandler) => void }).off(event, handler);
+  }
 }
 
 /**
@@ -79,12 +97,13 @@ export function useMaptalksUIMarker(
 ): UseMaptalksUIMarkerReturn {
   const uiMarker = shallowRef<MaptalksUIMarker | null>(null);
   let creating = false;
+  const events = opts.events ?? {};
 
   async function reload() {
     const m = toValue(map);
     if (!m || creating) return;
     creating = true;
-    if (uiMarker.value) { uiMarker.value.remove(); uiMarker.value = null; }
+    if (uiMarker.value) { unbindEvents(uiMarker.value, events); uiMarker.value.remove(); uiMarker.value = null; }
     try {
       const mt = await loadMaptalks();
       const Ctor = mt.ui?.UIMarker;
@@ -96,6 +115,7 @@ export function useMaptalksUIMarker(
       delete rawOpts.coordinates;
       const uim = new Ctor(coord ?? [0, 0], rawOpts) as MaptalksUIMarker;
       uim.addTo(m);
+      bindEvents(uim, events);
       uim.show();
       uiMarker.value = uim;
     } catch (cause) {
@@ -111,7 +131,7 @@ export function useMaptalksUIMarker(
   function show(): void { uiMarker.value?.show(); }
   function hide(): void { uiMarker.value?.hide(); }
 
-  function remove(): void { removeUIM(uiMarker, stop); }
+  function remove(): void { removeUIM(uiMarker, stop, events); }
 
   if (opts.autoDispose !== false) onScopeDispose(remove);
   return { uiMarker, show, hide, remove };
