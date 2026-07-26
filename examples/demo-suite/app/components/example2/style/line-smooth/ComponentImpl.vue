@@ -7,14 +7,24 @@
     style="height: 480px"
   >
     <MaptalksVectorLayer>
-      <!-- 原始折线（红色对比） -->
-      <MaptalksLineString
-        :coordinates="[[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]]"
-        :options="{ symbol: { lineColor: '#f00', lineWidth: 3 } }"
+      <!-- Polygon 原始（红色对比） -->
+      <MaptalksPolygon
+        :coordinates="[[[121.475, 31.253], [121.47, 31.245], [121.478, 31.24], [121.485, 31.248], [121.475, 31.253]]]"
+        :options="{ symbol: { lineColor: '#f00', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: 10 } }"
       />
-      <!-- 同一坐标点 + smoothness: 0.5 平滑 -->
+      <!-- Polygon 平滑 -->
+      <MaptalksPolygon
+        :coordinates="[[[121.475, 31.253], [121.47, 31.245], [121.478, 31.24], [121.485, 31.248], [121.475, 31.253]]]"
+        :options="{ smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } }"
+      />
+      <!-- LineString 原始（红色对比） -->
       <MaptalksLineString
-        :coordinates="[[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]]"
+        :coordinates="[[121.49, 31.253], [121.485, 31.245], [121.493, 31.24], [121.50, 31.248]]"
+        :options="{ symbol: { lineColor: '#f00', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: 10 } }"
+      />
+      <!-- LineString 平滑 -->
+      <MaptalksLineString
+        :coordinates="[[121.49, 31.253], [121.485, 31.245], [121.493, 31.24], [121.50, 31.248]]"
         :options="{ smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } }"
       />
     </MaptalksVectorLayer>
