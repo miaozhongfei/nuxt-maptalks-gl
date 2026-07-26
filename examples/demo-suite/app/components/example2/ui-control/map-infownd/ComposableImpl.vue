@@ -9,8 +9,11 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-const { show } = useMaptalksInfoWindow(map, { options: { title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' } })
-const visible = ref(true)
-function toggle() { visible.value = !visible.value; if (visible.value) show([121.5057, 31.2453]); }
-onMounted(() => { show([121.5057, 31.2453]) })
+const { show, hide } = useMaptalksInfoWindow(map, { options: { title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' } })
+const visible = ref(false)
+function toggle() {
+  visible.value = !visible.value
+  if (visible.value) show([121.5057, 31.2453])
+  else hide()
+}
 </script>

@@ -9,13 +9,18 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-const visible = ref(true)
+const visible = ref(false)
+let iwRef: { show(c: unknown): void; hide(): void } | null = null
 watch(() => toValue(map), async (m) => {
   if (!m) return
   const mt = await import('maptalks-gl')
   const iw = new mt.InfoWindow({ title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' })
-  iw.addTo(m).show([121.5057, 31.2453])
-  // eslint-disable-next-line no-underscore-dangle
-  ;(m as any)._iw = iw
-})
+  iw.addTo(m)
+  iwRef = iw
+}, { immediate: true })
+function toggle() {
+  visible.value = !visible.value
+  if (visible.value) iwRef?.show([121.5057, 31.2453])
+  else iwRef?.hide()
+}
 </script>
