@@ -37,11 +37,14 @@ let slotApp: App | null = null
 
 // dequal 深比较防止内联字面量每次渲染触发 composable 重建
 const stableOpts = ref<MaptalksUIMarkerCombinedOptions | undefined>(undefined)
+let prevRaw: MaptalksUIMarkerCombinedOptions | undefined
 
 watch(
   () => props.options,
   (o) => {
-    if (dequal(o, stableOpts.value)) return;
+    // 用原始 options（无注入 coordinates）比较，避免每次重渲染都触发重建
+    if (dequal(o, prevRaw)) return;
+    prevRaw = o;
     if (!o) { stableOpts.value = undefined; return; }
     const filtered: Record<string, unknown> = { ...o }
     for (const k of Object.keys(filtered)) {
