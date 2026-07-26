@@ -8,5 +8,6 @@
 </template>
 
 <script setup lang="ts">
-const show = ref(true)
+const show = ref(false)
+onMounted(() => { show.value = true })
 </script>
