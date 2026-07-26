@@ -22,8 +22,8 @@ watch(() => toValue(map), async (m) => {
   if (!m) return
   const mt = await import('maptalks-gl')
   const iw = new mt.ui.InfoWindow({ title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' })
-  iw.on('showstart', () => { events.value.push(`showstart ${new Date().toLocaleTimeString()}`) })
-  iw.on('showend', () => { events.value.push(`showend ${new Date().toLocaleTimeString()}`) })
+  iw.on('showstart', () => { events.value.unshift(`showstart ${new Date().toLocaleTimeString()}`) })
+  iw.on('showend', () => { events.value.unshift(`showend ${new Date().toLocaleTimeString()}`) })
   iw.addTo(m).show([121.5057, 31.2453])
   iwRef = iw
 }, { immediate: true })

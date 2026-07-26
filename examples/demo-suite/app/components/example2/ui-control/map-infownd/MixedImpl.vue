@@ -17,7 +17,7 @@ const lastEvent = ref('就绪')
 const events = ref<string[]>([])
 const { show, hide } = useMaptalksInfoWindow(map, {
   options: { title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' },
-  events: { showstart: () => { events.value.push(`showstart ${new Date().toLocaleTimeString()}`) }, showend: () => { events.value.push(`showend ${new Date().toLocaleTimeString()}`) } },
+  events: { showstart: () => { events.value.unshift(`showstart ${new Date().toLocaleTimeString()}`) }, showend: () => { events.value.unshift(`showend ${new Date().toLocaleTimeString()}`) } },
 })
 const visible = ref(true)
 onMounted(() => { show([121.5057, 31.2453]) })

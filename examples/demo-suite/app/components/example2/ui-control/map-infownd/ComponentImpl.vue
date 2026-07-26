@@ -26,6 +26,6 @@
 <script setup lang="ts">
 const show = ref(true);
 const events = ref<string[]>([]);
-function onShowStart() { events.value.push(`showstart ${new Date().toLocaleTimeString()}`); }
-function onShowEnd() { events.value.push(`showend ${new Date().toLocaleTimeString()}`); }
+function onShowStart() { events.value.unshift(`showstart ${new Date().toLocaleTimeString()}`); }
+function onShowEnd() { events.value.unshift(`showend ${new Date().toLocaleTimeString()}`); }
 </script>
