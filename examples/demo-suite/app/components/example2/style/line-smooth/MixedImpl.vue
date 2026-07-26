@@ -10,17 +10,19 @@
 </template>
 
 <script setup lang="ts">
+const COORDS = [[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]] as Array<[number, number]>;
+
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
-// 原始折线（无平滑）
+// 原始折线（红色对比）
 useMaptalksLineString(layer, {
-  coordinates: [[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]],
+  coordinates: COORDS,
   options: { symbol: { lineColor: '#f00', lineWidth: 3 } },
 });
-// 曲线平滑（smoothness: 0.5）
+// 同一坐标点 + smoothness: 0.5 平滑
 useMaptalksLineString(layer, {
-  coordinates: [[121.48, 31.245], [121.49, 31.26], [121.505, 31.25], [121.52, 31.265], [121.535, 31.252]],
+  coordinates: COORDS,
   options: { smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } },
 });
 </script>

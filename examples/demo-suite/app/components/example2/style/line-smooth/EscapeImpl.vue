@@ -7,16 +7,18 @@
 </template>
 
 <script setup lang="ts">
+const COORDS = [[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]] as Array<[number, number]>;
+
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-// 原始折线（无平滑）
-useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]], {
+// 原始折线（红色对比）
+useMaptalksGeometry(layer, (mt) => new mt.LineString([...COORDS], {
   symbol: { lineColor: '#f00', lineWidth: 3 },
 }));
-// 曲线平滑（smoothness: 0.5）
-useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.48, 31.245], [121.49, 31.26], [121.505, 31.25], [121.52, 31.265], [121.535, 31.252]], {
+// 同一坐标点 + smoothness: 0.5 平滑
+useMaptalksGeometry(layer, (mt) => new mt.LineString([...COORDS], {
   smoothness: 0.5,
   symbol: { lineColor: '#34495e', lineWidth: 3 },
 }));
