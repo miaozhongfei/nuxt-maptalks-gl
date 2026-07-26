@@ -11,22 +11,12 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-// 沿线等间距放置 5 个 Marker，颜色从红过渡到蓝
-const positions: [number, number][] = [
-  [121.49, 31.235],
-  [121.4975, 31.24],
-  [121.5057, 31.2453],
-  [121.512, 31.249],
-  [121.52, 31.252],
-];
-const colors = ['#dc2626', '#f59e0b', '#eab308', '#84cc16', '#2563eb'];
-positions.forEach((pos, i) => {
-  useMaptalksGeometry(layer, (mt) => new mt.Marker(pos, {
-    symbol: { markerType: 'ellipse', markerFill: colors[i], markerWidth: 14, markerHeight: 14 },
+// markerFill: { type: 'color-interpolate' } 按 properties.value 插值颜色 green→yellow→red（逃生舱）
+const sym = { markerWidth: 10, markerHeight: 10, markerType: 'ellipse', markerFill: { type: 'color-interpolate', property: 'value', stops: [[0, 'green'], [50, 'yellow'], [360, 'red']] }, markerLineWidth: 0 };
+for (let i = 0; i < 28; i++) {
+  useMaptalksGeometry(layer, (mt) => new mt.Marker([121.49 + Math.random() * 0.04, 31.235 + Math.random() * 0.025], {
+    symbol: sym,
+    properties: { value: Math.floor(Math.random() * 360) },
   }));
-});
-// 同时画一条参考线
-useMaptalksGeometry(layer, (mt) => new mt.LineString(positions, {
-  symbol: { lineColor: '#6b7280', lineWidth: 1, lineDasharray: [4, 4] },
-}));
+}
 </script>
