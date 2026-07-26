@@ -11,9 +11,20 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]], {
-  symbol: { lineColor: '#dc2626', lineWidth: 3 },
-  arrowStyle: 'classic',
-  arrowPlacement: 'vertex-last',
-}));
+useMaptalksGeometry(
+  layer,
+  (mt) =>
+    new mt.LineString(
+      [
+        [121.49, 31.235],
+        [121.5057, 31.255],
+        [121.52, 31.245],
+      ],
+      {
+        arrowStyle: 'classic',
+        arrowPlacement: 'vertex-firstlast',
+        symbol: { lineColor: '#1bbc9b', lineWidth: 8 },
+      },
+    ),
+);
 </script>

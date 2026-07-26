@@ -11,8 +11,9 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-// 逃生舱：textName / textPlacement 位于 symbol 内（官方 API，非 _textOnLine 黑法）
-useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.49, 31.235], [121.515, 31.255], [121.53, 31.24], [121.5, 31.23], [121.49, 31.235]], {
-  symbol: { lineColor: '#1bbc9b', lineWidth: 8, textName: 'Lujiazui', textPlacement: 'line', textSize: 20, textDy: -20 },
-}));
+// textName / textPlacement 位于 symbol 内，与 lineColor / lineWidth 同级
+useMaptalksLineString(layer, {
+  coordinates: [[121.49, 31.235], [121.515, 31.255], [121.53, 31.24], [121.5, 31.23], [121.49, 31.235]],
+  options: { symbol: { lineColor: '#1bbc9b', lineWidth: 8, textName: 'Lujiazui', textPlacement: 'line', textSize: 20, textDy: -20 } },
+});
 </script>
