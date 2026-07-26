@@ -90,7 +90,8 @@ export function useMaptalksUIMarker(
       const Ctor = mt.ui?.UIMarker;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 ui.UIMarker');
-      const rawOpts = { ...toValue(opts.options) };
+      // content 兜底，避免构造器初始化失败
+      const rawOpts: Record<string, unknown> = { content: '', ...toValue(opts.options) };
       const coord = rawOpts.coordinates as [number, number] | undefined;
       delete rawOpts.coordinates;
       const uim = new Ctor(coord ?? [0, 0], rawOpts) as MaptalksUIMarker;
