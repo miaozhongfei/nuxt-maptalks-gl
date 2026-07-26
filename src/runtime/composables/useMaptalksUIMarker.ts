@@ -91,13 +91,10 @@ export function useMaptalksUIMarker(
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 ui.UIMarker');
       const rawOpts = { ...toValue(opts.options) };
-      delete rawOpts.content;
       const coord = rawOpts.coordinates as [number, number] | undefined;
       delete rawOpts.coordinates;
       const uim = new Ctor(coord ?? [0, 0], rawOpts) as MaptalksUIMarker;
       uim.addTo(m);
-      const c = toValue(opts.options)?.content;
-      if (c !== undefined) uim.setContent(c as string);
       uim.show();
       uiMarker.value = uim;
     } catch (cause) {
