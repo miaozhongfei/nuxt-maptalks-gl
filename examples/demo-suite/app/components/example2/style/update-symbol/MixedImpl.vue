@@ -27,6 +27,6 @@ const sym = reactive({
 });
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  options: { symbol: computed(() => ({ ...sym })) }
+  options: () => ({ symbol: { ...sym } })
 });
 </script>
