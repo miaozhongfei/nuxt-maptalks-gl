@@ -10,7 +10,6 @@ const mc = ref<{ map: any } | null>(null)
 const map = computed(() => mc.value?.map ?? null)
 const { show, hide } = useMaptalksInfoWindow(map, { options: { title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' } })
 const visible = ref(true)
-onMounted(() => { show([121.5057, 31.2453]) })
 function toggle() {
   visible.value = !visible.value
   if (visible.value) show([121.5057, 31.2453])
