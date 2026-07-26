@@ -2019,6 +2019,37 @@ export interface MaptalksInfoWindow {
 }
 
 /**
+ * UIMarker 常用选项（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
+ *
+ * @description 涵盖 maptalks ui.UIMarker 构造器的常用字段，并为每个字段提供中文说明。
+ * 未列出的原生字段通过 `[key: string]: unknown` 透传。
+ *
+ * @example
+ * const opts: MaptalksUIMarkerOptions = { content: '<div>HTML</div>', draggable: true };
+ */
+export interface MaptalksUIMarkerOptions {
+  /** HTML 内容字符串 */
+  content?: string | HTMLElement;
+  /** 是否可拖拽 */
+  draggable?: boolean;
+  /** 是否唯一（同时只显示一个） */
+  single?: boolean;
+  /** 逃生舱：透传给未建模的 maptalks 原始 UIMarker 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * UIMarker 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
+ *
+ * @description `Partial<MaptalksUIMarkerOptions> & Record<string, unknown>`，
+ * 用户获得完整 IDE 补全。
+ *
+ * @example
+ * const opts: MaptalksUIMarkerCombinedOptions = { content: '<div>HTML</div>', draggable: true };
+ */
+export type MaptalksUIMarkerCombinedOptions = Partial<MaptalksUIMarkerOptions> & Record<string, unknown>;
+
+/**
  * maptalks `ui.UIMarker` 实例的结构化建模。
  *
  * @description HTML 自定义标注，叠加在地图上的 HTML DOM 元素，支持拖拽。

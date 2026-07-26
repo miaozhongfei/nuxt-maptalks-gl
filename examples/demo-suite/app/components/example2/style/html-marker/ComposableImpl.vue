@@ -11,8 +11,10 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 useMaptalksTileLayer(map, { source: 'osm' });
 useMaptalksUIMarker(map, {
-  coordinates: [121.5057, 31.2453],
-  content: '<div style="font:30px bold sans-serif;color:#34495e;text-shadow:2px 0 #fff">HTML Marker</div>',
-  draggable: true,
+  options: {
+    coordinates: [121.5057, 31.2453],
+    content: '<div style="font:30px bold sans-serif;color:#34495e;text-shadow:2px 0 #fff">HTML Marker</div>',
+    draggable: true,
+  },
 });
 </script>
