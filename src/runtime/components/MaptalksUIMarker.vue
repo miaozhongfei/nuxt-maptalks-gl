@@ -12,7 +12,7 @@ import { dequal } from 'dequal'
 import { useMaptalksUIMarker } from '../composables/useMaptalksUIMarker'
 import type { UseMaptalksUIMarkerOptions } from '../composables/useMaptalksUIMarker'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksUIMarkerCombinedOptions } from '../types'
+import type { MaptalksEventHandler, MaptalksUIMarkerCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -22,6 +22,8 @@ const props = withDefaults(
     visible?: boolean
     /** 透传给 UIMarker 构造器的选项（含中文字段注释，详见 MaptalksUIMarkerOptions） */
     options?: MaptalksUIMarkerCombinedOptions
+    /** 事件名 → 处理器（自动 on/off） */
+    events?: Record<string, MaptalksEventHandler>
     /** 组件销毁时自动移除 UIMarker，默认 true */
     autoDispose?: boolean
   }>(),
@@ -59,6 +61,7 @@ watch(
 
 const uimOpts: UseMaptalksUIMarkerOptions = {
   options: () => stableOpts.value,
+  events: props.events,
   autoDispose: props.autoDispose,
 }
 
