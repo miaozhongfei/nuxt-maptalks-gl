@@ -30,11 +30,15 @@ watch(
     )
     uim.addTo(m)
     uiMarker = uim
-    // setTimeout needed because UIMarker DOM may not be immediately available
-    setTimeout(() => {
-      const container = uim.getDOM()?.querySelector('.d3-container') as HTMLElement | null
-      if (container) createD3Viz(container)
-    }, 100)
+    // requestAnimationFrame 确保 map 渲染循环就绪后获取 DOM
+    requestAnimationFrame(() => {
+      try {
+        const container = uim.getDOM()?.querySelector('.d3-container') as HTMLElement | null
+        if (container) createD3Viz(container)
+      } catch {
+        /* UIMarker 可能在切换 tab 时已被销毁 */
+      }
+    })
   },
 )
 
