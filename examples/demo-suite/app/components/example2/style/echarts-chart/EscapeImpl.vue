@@ -7,26 +7,58 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-// 内联 SVG 柱状图
-const svgBarChart = '<svg width="80" height="60">'
-  + '<rect x="5" y="20" width="15" height="35" fill="#2563eb"/>'
-  + '<rect x="25" y="10" width="15" height="45" fill="#dc2626"/>'
-  + '<rect x="45" y="30" width="15" height="25" fill="#f59e0b"/>'
-  + '</svg>';
-let uiMarker: { remove: () => void } | null = null;
-watch(() => toValue(map), (m) => {
-  if (!m) return;
-  import('maptalks-gl').then((mt) => {
-    uiMarker = new (mt as any).ui.UIMarker([121.5057, 31.2453], {
-      content: `<div style="text-align:center">${svgBarChart}<div style="font-size:11px;color:#374151;margin-top:2px">ECharts 风格柱状图</div></div>`,
-    });
-    uiMarker!.addTo(m);
-  });
-});
+import * as echarts from 'echarts'
+
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+
+let chartDispose: (() => void) | null = null
+let uiMarker: { remove: () => void } | null = null
+let mounted = true
+
+watch(
+  () => toValue(map),
+  async (m) => {
+    if (!m) return
+    const mt = await import('maptalks-gl')
+
+    const chartDom = document.createElement('div')
+    chartDom.style.cssText = 'width:650px;height:300px;'
+    const chart = echarts.init(chartDom)
+    chart.setOption({
+      title: { x: 'center' },
+      tooltip: { trigger: 'item', formatter: '{a} <br/>{b} : {c} ({d}%)' },
+      legend: { x: 'center', y: 'bottom', data: ['rose1', 'rose2', 'rose3', 'rose4', 'rose5', 'rose6', 'rose7', 'rose8'] },
+      toolbox: {
+        show: true,
+        feature: { mark: { show: true }, dataView: { show: true, readOnly: false }, magicType: { show: true, type: ['pie', 'funnel'] }, restore: { show: true }, saveAsImage: { show: true } },
+      },
+      calculable: true,
+      series: [{
+        name: 'Area mode', type: 'pie', radius: [30, 110], center: ['50%', '50%'], roseType: 'area',
+        data: [
+          { value: 10, name: 'rose1' }, { value: 5, name: 'rose2' }, { value: 15, name: 'rose3' }, { value: 25, name: 'rose4' },
+          { value: 20, name: 'rose5' }, { value: 35, name: 'rose6' }, { value: 30, name: 'rose7' }, { value: 40, name: 'rose8' },
+        ],
+      }],
+    })
+    chartDispose = () => chart.dispose()
+
+    const uim = new (mt as unknown as { ui: { UIMarker: new (c: [number, number], o: Record<string, unknown>) => { addTo: (m: unknown) => void; remove: () => void } } }).ui.UIMarker(
+      [121.5057, 31.2453],
+      { content: chartDom, draggable: true, single: false },
+    )
+    uim.addTo(m)
+    uiMarker = uim
+  },
+)
+
 onBeforeUnmount(() => {
-  uiMarker?.remove();
-});
+  mounted = false
+  try { uiMarker?.remove() } catch {
+    // map 已销毁时 remove 可能报错
+  }
+  chartDispose?.()
+})
 </script>
