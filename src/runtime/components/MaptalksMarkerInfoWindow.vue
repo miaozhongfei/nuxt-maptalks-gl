@@ -22,11 +22,6 @@ const props = withDefaults(
   { options: undefined, autoDispose: true },
 )
 
-const emit = defineEmits<{
-  show: []
-  hide: []
-}>()
-
 const slots = useSlots()
 let slotApp: App | null = null
 
@@ -35,11 +30,7 @@ if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow å¿…é
 
 const { show, hide } = useMaptalksMarkerInfoWindow(geometry, {
   options: () => props.options,
-  events: {
-    ...props.events,
-    show: () => emit('show'),
-    hide: () => emit('hide'),
-  },
+  events: props.events,
   autoDispose: props.autoDispose,
 })
 
