@@ -12,7 +12,7 @@ import { dequal } from 'dequal'
 import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
 import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksInfoWindowCombinedOptions } from '../types'
+import type { MaptalksEventHandler, MaptalksInfoWindowCombinedOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -22,6 +22,8 @@ const props = withDefaults(
     visible?: boolean
     /** 透传给 InfoWindow 构造器的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
     options?: MaptalksInfoWindowCombinedOptions
+    /** 事件名 → 处理器（自动 on/off） */
+    events?: Record<string, MaptalksEventHandler>
     /** 组件销毁时自动移除 InfoWindow，默认 true */
     autoDispose?: boolean
   }>(),
@@ -55,6 +57,7 @@ watch(
 
 const iwOpts: UseMaptalksInfoWindowOptions = {
   options: () => stableOpts.value,
+  events: props.events,
   autoDispose: props.autoDispose,
 }
 

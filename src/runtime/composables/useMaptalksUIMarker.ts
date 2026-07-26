@@ -64,14 +64,14 @@ function removeUIM(
 /** 批量绑定事件 */
 function bindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEventHandler>) {
   for (const [event, handler] of Object.entries(events)) {
-    (uim as unknown as { on: (e: string, h: MaptalksEventHandler) => void }).on(event, handler);
+    uim.on?.(event, handler);
   }
 }
 
 /** 批量解绑事件 */
 function unbindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEventHandler>) {
   for (const [event, handler] of Object.entries(events)) {
-    (uim as unknown as { off: (e: string, h: MaptalksEventHandler) => void }).off(event, handler);
+    uim.off?.(event, handler);
   }
 }
 

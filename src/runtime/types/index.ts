@@ -2091,6 +2091,10 @@ export interface MaptalksUIMarker {
   setCoordinates(coord: unknown): MaptalksUIMarker;
   /** 设置内容（HTML 字符串或 DOM 元素） */
   setContent(content: string | HTMLElement): MaptalksUIMarker;
+  /** 绑定事件 */
+  on?(eventTypes: string, handler: MaptalksEventHandler): MaptalksUIMarker;
+  /** 解绑事件 */
+  off?(eventTypes: string, handler: MaptalksEventHandler): MaptalksUIMarker;
   /** 逃生舱口 */
   [key: string]: unknown;
 }
