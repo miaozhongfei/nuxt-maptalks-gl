@@ -2019,21 +2019,58 @@ export interface MaptalksInfoWindow {
 }
 
 /**
+ * 从 maptalks-gl 推导的 UIMarker 原生构造选项类型。
+ *
+ * @description 手动建模原生 UIMarkerOptionsType（含 containerClass / eventsPropagation / draggable / single / content / altitude / minZoom / maxZoom 等），
+ * IDE 可提示所有字段并以 `[key: string]: unknown` 兜底未列字段。
+ */
+export interface MaptalksNativeUIMarkerOptions {
+  /** DOM 容器 CSS 类 */
+  containerClass?: string;
+  /** DOM 事件是否穿透到地图 */
+  eventsPropagation?: boolean;
+  /** 是否可拖拽 */
+  draggable?: boolean;
+  /** 是否唯一（同时只显示一个） */
+  single?: boolean;
+  /** HTML 内容 */
+  content?: string | HTMLElement;
+  /** 海拔高度 */
+  altitude?: number;
+  /** 最小显示缩放级别 */
+  minZoom?: number;
+  /** 最大显示缩放级别 */
+  maxZoom?: number;
+  /** 逃生舱：透传给未建模的 maptalks 原始 UIMarker 选项 */
+  [key: string]: unknown;
+}
+
+/**
  * UIMarker 常用选项（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
  *
  * @description 涵盖 maptalks ui.UIMarker 构造器的常用字段，并为每个字段提供中文说明。
- * 未列出的原生字段通过 `[key: string]: unknown` 透传。
+ * 未列出的原生字段通过 `MaptalksNativeUIMarkerOptions` 补齐 IDE 自动补全。
  *
  * @example
  * const opts: MaptalksUIMarkerOptions = { content: '<div>HTML</div>', draggable: true };
  */
 export interface MaptalksUIMarkerOptions {
-  /** HTML 内容字符串 */
+  /** HTML 内容字符串或 DOM 元素 */
   content?: string | HTMLElement;
   /** 是否可拖拽 */
   draggable?: boolean;
   /** 是否唯一（同时只显示一个） */
   single?: boolean;
+  /** 海拔高度 */
+  altitude?: number;
+  /** 最小显示缩放级别 */
+  minZoom?: number;
+  /** 最大显示缩放级别 */
+  maxZoom?: number;
+  /** DOM 容器 CSS 类 */
+  containerClass?: string;
+  /** DOM 事件是否穿透到地图 */
+  eventsPropagation?: boolean;
   /** 逃生舱：透传给未建模的 maptalks 原始 UIMarker 选项 */
   [key: string]: unknown;
 }
@@ -2041,13 +2078,14 @@ export interface MaptalksUIMarkerOptions {
 /**
  * UIMarker 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
  *
- * @description `Partial<MaptalksUIMarkerOptions> & Record<string, unknown>`，
- * 用户获得完整 IDE 补全。
+ * @description `Partial<MaptalksUIMarkerOptions> & Omit<Partial<MaptalksNativeUIMarkerOptions>, keyof MaptalksUIMarkerOptions>`，
+ * 参照 `MaptalksInfoWindowCombinedOptions` 模式，用户构建 `ref<MaptalksUIMarkerCombinedOptions>({})` 时获得完整 IDE 补全。
  *
  * @example
- * const opts: MaptalksUIMarkerCombinedOptions = { content: '<div>HTML</div>', draggable: true };
+ * const opts: MaptalksUIMarkerCombinedOptions = { content: '<div>HTML</div>', draggable: true, minZoom: 10 };
  */
-export type MaptalksUIMarkerCombinedOptions = Partial<MaptalksUIMarkerOptions> & Record<string, unknown>;
+export type MaptalksUIMarkerCombinedOptions = Partial<MaptalksUIMarkerOptions>
+  & Omit<Partial<MaptalksNativeUIMarkerOptions>, keyof MaptalksUIMarkerOptions>;
 
 /**
  * maptalks `ui.UIMarker` 实例的结构化建模。
