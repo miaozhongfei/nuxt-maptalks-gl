@@ -136,6 +136,9 @@ importers:
       echarts:
         specifier: ^6.1.0
         version: 6.1.0
+      highcharts:
+        specifier: ^13.0.0
+        version: 13.0.0
       mapbox-gl:
         specifier: ^3.7.0
         version: 3.25.0
@@ -4847,6 +4850,17 @@ packages:
 
   hey-listen@1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
+
+  highcharts@13.0.0:
+    resolution: {integrity: sha512-AoFXei9hSnVXo8X5PmXzSiNXwPMgA+NzyN35uRRy0N1XwbJbRI1laTCaaFci9QB9Wyv9ZFWlgF0xzgivavJpDA==}
+    peerDependencies:
+      jspdf: ^4.1.0
+      svg2pdf.js: ^2.7.0
+    peerDependenciesMeta:
+      jspdf:
+        optional: true
+      svg2pdf.js:
+        optional: true
 
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
@@ -12350,6 +12364,8 @@ snapshots:
       space-separated-tokens: 2.0.2
 
   hey-listen@1.0.8: {}
+
+  highcharts@13.0.0: {}
 
   hookable@5.5.3: {}
 
