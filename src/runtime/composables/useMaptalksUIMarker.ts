@@ -51,9 +51,10 @@ export interface UseMaptalksUIMarkerReturn {
 function removeUIM(
   uiMarker: ShallowRef<MaptalksUIMarker | null>,
   s1: () => void,
+  s2: () => void,
   events: Record<string, MaptalksEventHandler>,
 ): void {
-  s1();
+  s1(); s2();
   const uim = uiMarker.value;
   if (!uim) return;
   unbindEvents(uim, events);
@@ -79,8 +80,8 @@ function unbindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEven
  * HTML 自定义标注（UIMarker）。
  *
  * @description 在 map 就绪后创建 `mt.ui.UIMarker` 并 `addTo(map).show()`；
- * 响应式 `options` 变化时移除旧实例并重建（dequal 深比较）；
- * 作用域销毁时自动 `remove()`。
+ * 响应式 `options` 变化时移除旧实例并重建；`content` 变化时调用 `setContent`（不重建）；
+ * `events` 中的事件自动 on/off；作用域销毁时自动 `remove()`。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用
  * @param {UseMaptalksUIMarkerOptions} [opts] - UIMarker 选项与自动销毁控制
  * @returns {UseMaptalksUIMarkerReturn} `{ uiMarker, show, hide, remove }`
@@ -109,15 +110,17 @@ export function useMaptalksUIMarker(
       const Ctor = mt.ui?.UIMarker;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 ui.UIMarker');
-      // content 兜底，避免构造器初始化失败
+      // content: '' 兜底构造器用，避免 maptalks-gl 初始化报错
       const rawOpts: Record<string, unknown> = { content: '', ...toValue(opts.options) };
+      const c = toValue(opts.options)?.content;
       const coord = rawOpts.coordinates as [number, number] | undefined;
       delete rawOpts.coordinates;
       const uim = new Ctor(coord ?? [0, 0], rawOpts) as MaptalksUIMarker;
       uim.addTo(m);
       bindEvents(uim, events);
-      uim.show();
       uiMarker.value = uim;
+      if (c !== undefined) uim.setContent(c as string | HTMLElement);
+      uim.show();
     } catch (cause) {
       logger.error('UIMarker 创建失败', toMaptalksError(cause, 'control-failed', 'UIMarker 创建失败'));
     } finally {
@@ -126,12 +129,17 @@ export function useMaptalksUIMarker(
   }
 
   // map / options 变化 → 重建
-  const stop = watch([() => toValue(map), () => toValue(opts.options)], reload, { immediate: true });
+  const stop1 = watch([() => toValue(map), () => toValue(opts.options)], reload, { immediate: true });
+  // content 变化 → setContent（从 options.content 读取并 unwrap）
+  const stop2 = watch(
+    () => { const r = toValue(opts.options); return r ? toValue(r.content as MaybeRefOrGetter<string | HTMLElement | undefined> | undefined) : undefined; },
+    (c) => { if (uiMarker.value && c !== undefined) uiMarker.value.setContent(c as string | HTMLElement); },
+  );
 
   function show(): void { uiMarker.value?.show(); }
   function hide(): void { uiMarker.value?.hide(); }
 
-  function remove(): void { removeUIM(uiMarker, stop, events); }
+  function remove(): void { removeUIM(uiMarker, stop1, stop2, events); }
 
   if (opts.autoDispose !== false) onScopeDispose(remove);
   return { uiMarker, show, hide, remove };
