@@ -16,6 +16,7 @@ watch(() => toValue(map), async (m) => {
   const mt = await import('maptalks-gl')
   const iw = new mt.ui.InfoWindow({ title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' })
   iw.addTo(m).show([121.5057, 31.2453])
+  iw.on('click', () => alert('InfoWindow 被点击了！'))
   iwRef = iw
 }, { immediate: true })
 function toggle() {

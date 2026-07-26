@@ -9,7 +9,7 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-const { show, hide } = useMaptalksInfoWindow(map, { options: { title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' } })
+const { show, hide } = useMaptalksInfoWindow(map, { options: { title: '信息框', content: '<div style=padding:8px>Hello InfoWindow</div>' }, events: { click: () => alert('InfoWindow 被点击了！') } })
 const visible = ref(true)
 onMounted(() => { show([121.5057, 31.2453]) })
 function toggle() {
