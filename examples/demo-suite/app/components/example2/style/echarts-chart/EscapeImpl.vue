@@ -7,8 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import * as echarts from 'echarts'
-
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
@@ -21,7 +19,7 @@ watch(
   () => toValue(map),
   async (m) => {
     if (!m) return
-    const mt = await import('maptalks-gl')
+    const [mt, echarts] = await Promise.all([import('maptalks-gl'), import('echarts')])
 
     const chartDom = document.createElement('div')
     chartDom.style.cssText = 'width:650px;height:300px;'
