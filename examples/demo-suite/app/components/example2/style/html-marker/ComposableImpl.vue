@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="mb-3 flex items-center gap-2">
-      <UButton size="sm" @click="swapContent">替换内容</UButton>
-      <span class="text-sm text-muted">当前内容: {{ text }}</span>
-    </div>
     <div
       ref="el"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
+    <div class="mt-3 flex items-center gap-2">
+      <UButton size="sm" @click="swapContent">替换内容</UButton>
+      <span class="text-sm text-muted">当前内容: {{ text }}</span>
+    </div>
   </div>
 </template>
 

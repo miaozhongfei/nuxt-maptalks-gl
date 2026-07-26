@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="mb-3 flex items-center gap-2">
-      <UButton size="sm" @click="swapContent">替换内容</UButton>
-      <span class="text-sm text-muted">当前内容: {{ text }}</span>
-    </div>
     <MaptalksMap
       :center="[121.5057, 31.2453]"
       :zoom="14"
@@ -21,6 +17,10 @@
         </div>
       </MaptalksUIMarker>
     </MaptalksMap>
+    <div class="mt-3 flex items-center gap-2">
+      <UButton size="sm" @click="swapContent">替换内容</UButton>
+      <span class="text-sm text-muted">当前内容: {{ text }}</span>
+    </div>
   </div>
 </template>
 
