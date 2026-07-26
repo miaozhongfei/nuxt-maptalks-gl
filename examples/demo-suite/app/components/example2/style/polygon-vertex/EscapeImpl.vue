@@ -11,7 +11,22 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-useMaptalksGeometry(layer, (mt) => new mt.Polygon([[[121.495, 31.238], [121.515, 31.238], [121.515, 31.252], [121.495, 31.252], [121.495, 31.238]]], {
-  symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, lineColor: '#16a34a', lineWidth: 2, vertexMarker: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 8, markerHeight: 8 } },
+// markerPlacement: 'vertex' + textPlacement: 'vertex' 在每个端点展示椭圆 Marker 和文字（逃生舱）
+useMaptalksGeometry(layer, (mt) => new mt.Polygon([[[121.49, 31.253], [121.515, 31.253], [121.515, 31.238], [121.49, 31.238], [121.49, 31.253]]], {
+  symbol: {
+    lineColor: '#34495e',
+    lineWidth: 2,
+    polygonFill: 'rgb(135,196,240)',
+    polygonOpacity: 0.6,
+    markerType: 'ellipse',
+    markerFill: '#1bbc9b',
+    markerLineColor: '#000',
+    markerWidth: 30,
+    markerHeight: 30,
+    markerPlacement: 'vertex',
+    textName: 'A',
+    textPlacement: 'vertex',
+    textFill: '#fff',
+  },
 }));
 </script>
