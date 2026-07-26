@@ -16,6 +16,12 @@
           {{ text }}
         </div>
       </MaptalksUIMarker>
+      <MaptalksUIMarker
+        :coordinates="[121.5257, 31.2453]"
+        :options="{ draggable: true, content: content }"
+        :events="{ click: onClick }"
+      >
+      </MaptalksUIMarker>
     </MaptalksMap>
     <div class="mt-3 flex items-center gap-2">
       <UButton size="sm" @click="swapContent">替换内容</UButton>
@@ -26,10 +32,18 @@
 
 <script setup lang="ts">
 const text = ref('HTML Marker');
+const content = ref(`
+  <div style="font: 30px bold sans-serif; color: #34495e; text-shadow: 2px 0 #fff">
+    HTML Marker
+  </div>
+`);
 let swapped = false;
 function swapContent() {
   swapped = !swapped;
   text.value = swapped ? '内容已替换！' : 'HTML Marker';
+  content.value = swapped
+    ? `<div style="font: 30px bold sans-serif; color: #34495e; text-shadow: 2px 0 #fff">内容已替换！</div>`
+    : `<div style="font: 30px bold sans-serif; color: #34495e; text-shadow: 2px 0 #fff">HTML Marker</div>`;
 }
 function onClick() {
   alert('UIMarker 被点击了！');
