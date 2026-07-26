@@ -13,8 +13,14 @@
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
+// linear 渐变
 useMaptalksLineString(layer, {
-  coordinates: [[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]],
-  options: { symbol: { lineWidth: 8, lineGradientProperty: 'lineGradient' }, properties: { lineGradient: { type: 'linear', colorStops: [[0, '#dc2626'], [0.5, '#fbbf24'], [1, '#2563eb']] } } },
+  coordinates: [[121.49, 31.24], [121.5057, 31.2453], [121.52, 31.25]],
+  options: { symbol: { lineColor: { type: 'linear', colorStops: [[0, 'red'], [0.25, 'orange'], [0.5, 'green'], [0.75, 'aqua'], [1, 'white']] }, lineWidth: 10 } },
+});
+// radial 渐变
+useMaptalksLineString(layer, {
+  coordinates: [[121.49, 31.235], [121.5057, 31.24], [121.52, 31.245]],
+  options: { symbol: { lineColor: { type: 'radial', colorStops: [[0, 'red'], [0.33, 'orange'], [0.66, 'green'], [1, 'white']] }, lineWidth: 10 } },
 });
 </script>

@@ -11,8 +11,12 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 const { layer } = useMaptalksVectorLayer(map);
-useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]], {
-  symbol: { lineWidth: 8, lineGradientProperty: 'lineGradient' },
-  properties: { lineGradient: { type: 'linear', colorStops: [[0, '#dc2626'], [0.5, '#fbbf24'], [1, '#2563eb']] } },
+// linear 渐变（逃生舱）
+useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.49, 31.24], [121.5057, 31.2453], [121.52, 31.25]], {
+  symbol: { lineColor: { type: 'linear', colorStops: [[0, 'red'], [0.25, 'orange'], [0.5, 'green'], [0.75, 'aqua'], [1, 'white']] }, lineWidth: 10 },
+}));
+// radial 渐变（逃生舱）
+useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.49, 31.235], [121.5057, 31.24], [121.52, 31.245]], {
+  symbol: { lineColor: { type: 'radial', colorStops: [[0, 'red'], [0.33, 'orange'], [0.66, 'green'], [1, 'white']] }, lineWidth: 10 },
 }));
 </script>
