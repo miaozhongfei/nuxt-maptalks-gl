@@ -9,7 +9,7 @@
       style="height: 480px"
     />
     <div class="mt-3 flex gap-2">
-      <UButton size="sm" color="destructive" @click="sym.markerFill = '#dc2626'">切换红色</UButton>
+      <UButton size="sm" color="error" @click="sym.markerFill = '#dc2626'">切换红色</UButton>
       <UButton size="sm" color="primary" @click="sym.markerFill = '#2563eb'">切换蓝色</UButton>
     </div>
   </div>

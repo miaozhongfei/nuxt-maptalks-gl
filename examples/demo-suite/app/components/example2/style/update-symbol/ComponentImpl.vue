@@ -15,8 +15,8 @@
       </MaptalksVectorLayer>
     </MaptalksMap>
     <div class="mt-3 flex gap-2">
-      <UButton size="sm" color="destructive" @click="symbol.markerFill = '#dc2626'">切换红色</UButton>
-      <UButton size="sm" color="primary" @click="symbol.markerFill = '#2563eb'">切换蓝色</UButton>
+      <UButton size="sm" color="error" @click="setColor('#dc2626')">切换红色</UButton>
+      <UButton size="sm" color="primary" @click="setColor('#2563eb')">切换蓝色</UButton>
     </div>
   </div>
 </template>
@@ -28,4 +28,6 @@ const symbol = ref({
   markerWidth: 20,
   markerHeight: 20,
 });
+/** 替换整个 symbol 对象（浅比检测新引用） */
+function setColor(c: string) { symbol.value = { ...symbol.value, markerFill: c }; }
 </script>
