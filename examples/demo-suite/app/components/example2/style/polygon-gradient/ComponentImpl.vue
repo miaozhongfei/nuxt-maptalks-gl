@@ -7,9 +7,33 @@
     style="height: 480px"
   >
     <MaptalksVectorLayer>
-      <MaptalksPolygon
-        :coordinates="[[[121.495, 31.238], [121.515, 31.238], [121.515, 31.252], [121.495, 31.252], [121.495, 31.238]]]"
-        :options="{ symbol: { polygonFill: '#22c55e', polygonOpacity: 0.3, lineWidth: 2, polygonGradientProperty: 'gradient' }, properties: { gradient: { type: 'linear', colorStops: [[0, '#dc2626'], [0.5, '#fbbf24'], [1, '#2563eb']] } } }"
+      <!-- linear 渐变 -->
+      <MaptalksRectangle
+        :coordinates="[121.485, 31.255]"
+        :width="600"
+        :height="600"
+        :options="{ symbol: { polygonFill: { type: 'linear', colorStops: [[0, '#fff'], [0.5, '#fff27e'], [1, '#f87e4b']] }, polygonOpacity: 1, lineColor: '#fff' } }"
+      />
+      <!-- linear + places 渐变 -->
+      <MaptalksRectangle
+        :coordinates="[121.493, 31.255]"
+        :width="600"
+        :height="600"
+        :options="{ symbol: { polygonFill: { type: 'linear', places: [0, 0, 1, 1], colorStops: [[0, '#fff'], [0.5, '#fff27e'], [1, '#f87e4b']] }, polygonOpacity: 1, lineColor: '#fff' } }"
+      />
+      <!-- radial 渐变 -->
+      <MaptalksRectangle
+        :coordinates="[121.5057, 31.2453]"
+        :width="600"
+        :height="600"
+        :options="{ symbol: { polygonFill: { type: 'radial', colorStops: [[0, 'rgba(216,115,149,0)'], [0.5, 'rgba(216,115,149,1)'], [1, 'rgba(216,115,149,1)']] }, polygonOpacity: 1, lineWidth: 0 } }"
+      />
+      <!-- radial + places 渐变 -->
+      <MaptalksRectangle
+        :coordinates="[121.513, 31.2453]"
+        :width="600"
+        :height="600"
+        :options="{ symbol: { polygonFill: { type: 'radial', places: [0.5, 0.5, 1, 1, 1, 0.1], colorStops: [[0, '#1bbc9b'], [0.55, 'rgb(135,196,240)'], [1, '#34495e']] }, polygonOpacity: 1, lineColor: '#fff' } }"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="polygonGradientProperty 面渐变填充（对应官网 5.22）。"
+    description="polygonFill 渐变对象（linear / radial + places + colorStops），对应官网 5.22。"
     :tabs="tabs"
   />
 </template>
