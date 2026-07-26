@@ -600,7 +600,7 @@ export interface MaptalksGLNamespace {
   /** AreaTool 测量工具构造器 */
   AreaTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
   /** InfoWindow 弹出框构造器 */
-  ui?: { InfoWindow?: new (options?: Record<string, unknown>) => MaptalksInfoWindow };
+  ui?: { InfoWindow?: new (options?: Record<string, unknown>) => MaptalksInfoWindow; UIMarker?: new (coord: unknown, options?: Record<string, unknown>) => MaptalksUIMarker; };
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }
@@ -2015,6 +2015,32 @@ export interface MaptalksInfoWindow {
   /** 解绑事件 */
   off?(eventTypes: string, handler: MaptalksEventHandler): MaptalksInfoWindow;
   /** 逃生舱口：访问任意未建模的原生成员 */
+  [key: string]: unknown;
+}
+
+/**
+ * maptalks `ui.UIMarker` 实例的结构化建模。
+ *
+ * @description HTML 自定义标注，叠加在地图上的 HTML DOM 元素，支持拖拽。
+ *
+ * @example
+ * const uim: MaptalksUIMarker = useMaptalksUIMarker(map).uiMarker.value!;
+ * uim.show();
+ */
+export interface MaptalksUIMarker {
+  /** 挂载到地图 */
+  addTo(target: MaptalksMap | unknown): MaptalksUIMarker;
+  /** 从地图移除并销毁 */
+  remove(): void;
+  /** 显示标注 */
+  show(): MaptalksUIMarker;
+  /** 隐藏标注 */
+  hide(): MaptalksUIMarker;
+  /** 设置坐标 */
+  setCoordinates(coord: unknown): MaptalksUIMarker;
+  /** 设置内容（HTML 字符串） */
+  setContent(content: string): MaptalksUIMarker;
+  /** 逃生舱口 */
   [key: string]: unknown;
 }
 
