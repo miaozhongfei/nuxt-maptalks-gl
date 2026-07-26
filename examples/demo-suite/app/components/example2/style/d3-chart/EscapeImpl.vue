@@ -14,6 +14,7 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 let uiMarker: { remove: () => void; getDOM: () => HTMLElement } | null = null
+let mounted = true
 
 watch(
   () => toValue(map),
@@ -31,7 +32,8 @@ watch(
     uim.addTo(m)
     uiMarker = uim
     // requestAnimationFrame 确保 map 渲染循环就绪后获取 DOM
-    requestAnimationFrame(() => {
+    const rafId = requestAnimationFrame(() => {
+      if (!mounted || uiMarker !== uim) return
       try {
         const container = uim.getDOM()?.querySelector('.d3-container') as HTMLElement | null
         if (container) createD3Viz(container)
@@ -39,10 +41,14 @@ watch(
         /* UIMarker 可能在切换 tab 时已被销毁 */
       }
     })
+    onBeforeUnmount(() => { cancelAnimationFrame(rafId) })
   },
 )
 
 onBeforeUnmount(() => {
-  uiMarker?.remove()
+  mounted = false
+  try { uiMarker?.remove() } catch {
+    // map 已销毁时 remove 可能报错
+  }
 })
 </script>
