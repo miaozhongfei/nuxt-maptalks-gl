@@ -5,19 +5,28 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
+import { createD3Viz } from './createD3Viz'
 
-const svgPie = '<svg width="60" height="60">'
-  + '<circle r="25" cx="30" cy="30" fill="#2563eb"/>'
-  + '<path d="M30,30 L30,5 A25,25 0 0,1 50,18 Z" fill="#dc2626"/>'
-  + '</svg>';
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-useMaptalksUIMarker(map, {
+const { uiMarker } = useMaptalksUIMarker(map, {
   options: {
     coordinates: [121.5057, 31.2453],
-    content: `<div style="text-align:center">${svgPie}<div style="font-size:11px;color:#374151;margin-top:2px">D3 风格饼图</div></div>`,
+    content: '<div class="d3-container" style="width:600px;height:300px;background:#fff"></div>',
+    single: false,
+    draggable: false,
   },
-});
+})
+
+watch(
+  () => uiMarker.value,
+  (uim) => {
+    if (!uim) return
+    const container = uim.getDOM()?.querySelector('.d3-container') as HTMLElement | null
+    if (container) createD3Viz(container)
+  },
+  { immediate: true },
+)
 </script>
