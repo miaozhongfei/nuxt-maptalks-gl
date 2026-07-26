@@ -13,8 +13,14 @@
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 const { layer } = useMaptalksVectorLayer(map);
-useMaptalksGeometry(layer, (mt) => new mt.LineString([[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]], {
-  symbol: { lineColor: '#dc2626', lineWidth: 2 },
-  smoothness: 'high',
-}));
+// 原始折线（无平滑）
+useMaptalksLineString(layer, {
+  coordinates: [[121.48, 31.235], [121.49, 31.25], [121.505, 31.24], [121.52, 31.255], [121.535, 31.242]],
+  options: { symbol: { lineColor: '#f00', lineWidth: 3 } },
+});
+// 曲线平滑（smoothness: 0.5）
+useMaptalksLineString(layer, {
+  coordinates: [[121.48, 31.245], [121.49, 31.26], [121.505, 31.25], [121.52, 31.265], [121.535, 31.252]],
+  options: { smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } },
+});
 </script>
