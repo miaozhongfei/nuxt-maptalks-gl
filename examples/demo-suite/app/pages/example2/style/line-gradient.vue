@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="lineGradientProperty 按属性值驱动线渐变颜色（对应官网 5.15）。"
+    description="线颜色渐变填充 lineColor 支持 linear / radial 渐变对象（对应官网 5.15）。"
     :tabs="tabs"
   />
 </template>
