@@ -9,7 +9,7 @@ import type {
   MaptalksNativeWMSTileLayerOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksPresetBaseOptions,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -66,7 +66,7 @@ function buildWMSOptions(
  */
 export function useMaptalksWMSLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeWMSTileLayerOptions> } = {},
+  opts: UseMaptalksPresetBaseOptions & { options?: Partial<MaptalksNativeWMSTileLayerOptions> } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   wmsSeq += 1;

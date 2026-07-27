@@ -29,7 +29,7 @@ import { useMaptalksLayer } from '../useMaptalksLayer';
  *   options: { sceneConfig: { light: { ambient: '#fff' } } },
  * });
  */
-export interface UseMaptalksGroupGLLayerOptions {
+export interface UseMaptalksGroupGLLayerBaseOptions {
   /** 图层 id，缺省自动生成 */
   id?: string;
   /** 承载的子 GL 图层（已创建实例） */
@@ -41,6 +41,11 @@ export interface UseMaptalksGroupGLLayerOptions {
   /** 作用域销毁时是否自动移除图层，默认 `true` */
   autoDispose?: boolean;
 }
+
+/** useMaptalksGroupGLLayer 的 opts 参数 */
+export type UseMaptalksGroupGLLayerOptions = Omit<UseMaptalksGroupGLLayerBaseOptions, 'options'> & {
+  options?: MaptalksGroupGLLayerCombinedOptions | MaybeRefOrGetter<MaptalksGroupGLLayerCombinedOptions | undefined>;
+};
 
 /** 自动生成 id 的计数器 */
 let groupSeq = 0;
@@ -79,7 +84,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  */
 export function useMaptalksGroupGLLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: Omit<UseMaptalksGroupGLLayerOptions, 'options'> & { options?: MaptalksGroupGLLayerCombinedOptions | MaybeRefOrGetter<MaptalksGroupGLLayerCombinedOptions | undefined> } = {},
+  opts: UseMaptalksGroupGLLayerOptions = {},
 ): UseMaptalksLayerReturn {
   const publicConfig = useRuntimeConfig().public as unknown as {
     maptalksGl?: ResolvedModuleOptions;

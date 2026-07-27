@@ -9,7 +9,7 @@ import type {
   MaptalksGLTFLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksGLTFLayerOptions,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -53,7 +53,7 @@ function buildGltfOptions(
  */
 export function useMaptalksGLTFLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: Omit<UseMaptalksPresetOptions, 'options'> & { options?: MaptalksGLTFLayerCombinedOptions | MaybeRefOrGetter<MaptalksGLTFLayerCombinedOptions | undefined> } = {},
+  opts: UseMaptalksGLTFLayerOptions = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   gltfSeq += 1;

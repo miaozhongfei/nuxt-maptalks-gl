@@ -1298,18 +1298,33 @@ export interface UseMaptalksSourceReturn {
  * @example
  * useMaptalksTileLayer(map, { source: 'base', id: 'baseLayer' });
  */
-export interface UseMaptalksPresetOptions {
+export interface UseMaptalksPresetBaseOptions {
   /** 数据源：源名（字符串，按配置解析）或内联源对象 */
   source?: string | MaptalksSource;
   /** 图层 id，缺省自动生成 */
   id?: string;
-  /** 透传给图层构造器的额外选项 */
-  options?: Record<string, unknown>;
+  /** 透传给图层构造器的额外选项（预设覆写为具体 CombinedOptions + MaybeRefOrGetter） */
+  options?: unknown;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 `true` */
   autoDispose?: boolean;
 }
+
+/** useMaptalksTileLayer 的 opts 参数 */
+export type UseMaptalksTileLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+  options?: MaptalksTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksTileLayerCombinedOptions | undefined>;
+};
+
+/** useMaptalksVectorTileLayer 的 opts 参数 */
+export type UseMaptalksVectorTileLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+  options?: MaptalksVectorTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorTileLayerCombinedOptions | undefined>;
+};
+
+/** useMaptalksGLTFLayer 的 opts 参数 */
+export type UseMaptalksGLTFLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+  options?: MaptalksGLTFLayerCombinedOptions | MaybeRefOrGetter<MaptalksGLTFLayerCombinedOptions | undefined>;
+};
 
 /**
  * `useMaptalksInstance` 的返回（按名获取的响应式地图）。
@@ -1563,7 +1578,7 @@ export interface UseMaptalksGeometryReturn {
  * @example
  * useMaptalksVectorLayer(map, { id: 'geo' });
  */
-export interface UseMaptalksVectorLayerOptions {
+export interface UseMaptalksVectorLayerBaseOptions {
   /** 图层 id，缺省自动生成 */
   id?: string;
   /** 透传给 VectorLayer 构造器的选项 */
@@ -1573,6 +1588,11 @@ export interface UseMaptalksVectorLayerOptions {
   /** 作用域销毁时是否自动移除图层，默认 true */
   autoDispose?: boolean;
 }
+
+/** useMaptalksVectorLayer 的 opts 参数 */
+export type UseMaptalksVectorLayerOptions = Omit<UseMaptalksVectorLayerBaseOptions, 'options'> & {
+  options?: MaptalksVectorLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorLayerCombinedOptions | undefined>;
+};
 
 /**
  * 所有几何预设 Option 的共享基类。

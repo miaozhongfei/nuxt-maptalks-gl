@@ -9,7 +9,7 @@ import type {
   MaptalksVectorTileLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksVectorTileLayerOptions,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -54,7 +54,7 @@ function buildVectorOptions(
  */
 export function useMaptalksVectorTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: Omit<UseMaptalksPresetOptions, 'options'> & { options?: MaptalksVectorTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorTileLayerCombinedOptions | undefined> } = {},
+  opts: UseMaptalksVectorTileLayerOptions = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   vtSeq += 1;

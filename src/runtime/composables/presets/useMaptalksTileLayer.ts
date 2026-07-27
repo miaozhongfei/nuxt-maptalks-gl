@@ -9,7 +9,7 @@ import type {
   MaptalksTileLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksTileLayerOptions,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -54,7 +54,7 @@ function buildTileOptions(
  */
 export function useMaptalksTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: Omit<UseMaptalksPresetOptions, 'options'> & { options?: MaptalksTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksTileLayerCombinedOptions | undefined> } = {},
+  opts: UseMaptalksTileLayerOptions = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   tileSeq += 1;

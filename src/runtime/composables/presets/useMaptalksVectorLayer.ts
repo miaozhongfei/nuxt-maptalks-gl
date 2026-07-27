@@ -30,7 +30,7 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: Omit<UseMaptalksVectorLayerOptions, 'options'> & { options?: MaptalksVectorLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorLayerCombinedOptions | undefined> } = {},
+  opts: UseMaptalksVectorLayerOptions = {},
 ): UseMaptalksVectorLayerReturn {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;
