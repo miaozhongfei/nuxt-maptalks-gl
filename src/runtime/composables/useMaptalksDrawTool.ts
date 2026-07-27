@@ -1,4 +1,4 @@
-import { onScopeDispose, ref, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, ref, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
 import { loadMaptalks } from '../core/loader';
@@ -9,7 +9,7 @@ import { createLogger } from '../utils/logger';
 const logger = createLogger('nuxt-maptalks-gl');
 
 /** useMaptalksDrawTool 的可选项 */
-export interface UseMaptalksDrawToolOptions {
+export interface UseMaptalksDrawToolOpts {
   /** 初始绘制模式（如 'Point' / 'LineString' / 'Polygon'），默认 'Point' */
   mode?: string;
   /** 透传给 maptalks DrawTool 构造器的额外选项（如 symbol） */
@@ -136,7 +136,7 @@ function bindDrawTool(
  * 监听 `drawend` 把结果写入 `result`；作用域销毁时 disable + remove。初始不自动启用绘制。
  * 若当前 maptalks-gl 未导出 DrawTool，则告警并保持 tool 为 null。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksDrawToolOptions} [options] - 初始模式与 DrawTool 选项
+ * @param {UseMaptalksDrawToolOpts} [options] - 初始模式与 DrawTool 选项
  * @returns {UseMaptalksDrawToolReturn} `{ tool, enabled, mode, result, enable, disable, setMode }`
  *
  * @example
@@ -146,7 +146,7 @@ function bindDrawTool(
  */
 export function useMaptalksDrawTool(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  options: UseMaptalksDrawToolOptions = {},
+  options: UseMaptalksDrawToolOpts = {},
 ): UseMaptalksDrawToolReturn {
   const tool = shallowRef<MaptalksDrawTool | null>(null);
   const enabled = ref(false);

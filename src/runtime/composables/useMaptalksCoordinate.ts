@@ -1,4 +1,4 @@
-import type { MaptalksCoordinate, MaptalksMap } from '../types';
+﻿import type { MaptalksCoordinate, MaptalksMap } from '../types';
 
 /** 可插拔坐标转换函数签名 */
 export type MaptalksCoordinateTransform = (
@@ -8,7 +8,7 @@ export type MaptalksCoordinateTransform = (
 ) => MaptalksCoordinate;
 
 /** useMaptalksCoordinate 的可选项 */
-export interface UseMaptalksCoordinateOptions {
+export interface UseMaptalksCoordinateOpts {
   /** 自定义坐标系/投影转换函数（maptalks 未覆盖时由项目注入，如 proj4 包装） */
   transform?: MaptalksCoordinateTransform;
 }
@@ -42,7 +42,7 @@ function toCoordinate(map: MaptalksMap, point: { x: number; y: number }): unknow
  *
  * @description maptalks 自带的坐标系互转能力之外，跨 CRS/投影的转换由项目通过 `transform` 注入
  * （如包装 proj4）。容器像素与地理坐标互转直接委托地图原生方法。本助手无副作用、无需清理。
- * @param {UseMaptalksCoordinateOptions} [options] - 可选项，注入 `transform`
+ * @param {UseMaptalksCoordinateOpts} [options] - 可选项，注入 `transform`
  * @returns {UseMaptalksCoordinateReturn} `{ convert, toContainerPoint, toCoordinate }`
  *
  * @example
@@ -56,7 +56,7 @@ function toCoordinate(map: MaptalksMap, point: { x: number; y: number }): unknow
  * const wgs = convert({ x: 12961234, y: 4861234 }, 'EPSG:3857', 'EPSG:4326');
  */
 export function useMaptalksCoordinate(
-  options: UseMaptalksCoordinateOptions = {},
+  options: UseMaptalksCoordinateOpts = {},
 ): UseMaptalksCoordinateReturn {
   // 坐标系/投影互转：from===to 原样返回；否则依赖注入的 transform
   function convert(coord: MaptalksCoordinate, from: string, to: string): MaptalksCoordinate {

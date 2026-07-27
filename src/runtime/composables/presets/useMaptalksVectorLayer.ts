@@ -1,11 +1,11 @@
-import { toValue } from 'vue';
+﻿import { toValue } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
   MaptalksVectorLayer,
-  UseMaptalksVectorLayerOptions,
+  UseMaptalksVectorLayerOpts,
   UseMaptalksVectorLayerReturn,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
@@ -20,7 +20,7 @@ let vectorSeq = 0;
  * 返回类型窄化为 UseMaptalksVectorLayerReturn（含 addGeometry 等），下游 geometry preset 可直接消费。
  * 生命周期（addLayer / dispose）复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksVectorLayerOptions} [opts] - id / 选项 / 自动销毁
+ * @param {UseMaptalksVectorLayerOpts} [opts] - id / 选项 / 自动销毁
  * @returns {UseMaptalksVectorLayerReturn} `{ layer, update, remove }`
  *
  * @example
@@ -29,7 +29,7 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorLayerOptions = {},
+  opts: UseMaptalksVectorLayerOpts = {},
 ): UseMaptalksVectorLayerReturn {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;

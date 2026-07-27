@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 import { dequal } from 'dequal';
 
@@ -37,7 +37,7 @@ interface NativeMarker {
 }
 
 /** useMaptalksMarkerInfoWindow 的选项 */
-export interface UseMaptalksMarkerInfoWindowOptions {
+export interface UseMaptalksMarkerInfoWindowOpts {
   /** 透传给 marker.setInfoWindow() 的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
   options?: MaybeRefOrGetter<
     MaptalksInfoWindowOptions
@@ -66,7 +66,7 @@ export interface UseMaptalksMarkerInfoWindowReturn {
  * 与 useMaptalksInfoWindow（地图级）不同，此 composable 创建的信息框**只属于这一个 Marker**——点击 Marker
  * 自动弹出、点击别处自动关闭，不需手动操控坐标；内容/标题支持响应式更新。
  * @param {MaybeRefOrGetter<MaptalksGeometry | null>} geometry - useMaptalksMarker 返回的 geometry
- * @param {UseMaptalksMarkerInfoWindowOptions} [opts] - 信息框配置（options/events/autoDispose）
+ * @param {UseMaptalksMarkerInfoWindowOpts} [opts] - 信息框配置（options/events/autoDispose）
  * @returns {UseMaptalksMarkerInfoWindowReturn} `{ show, hide, remove }`
  *
  * @example
@@ -77,14 +77,14 @@ export interface UseMaptalksMarkerInfoWindowReturn {
  */
 
 /** 从选项构建原生 setInfoWindow 入参 */
-function buildMarkerIWOptions(opts: UseMaptalksMarkerInfoWindowOptions): MarkerInfoWindowOptions {
+function buildMarkerIWOptions(opts: UseMaptalksMarkerInfoWindowOpts): MarkerInfoWindowOptions {
   return { ...toValue(opts.options) } as MarkerInfoWindowOptions;
 }
 
 /** 设置 Marker 信息框的响应式 watch（几何就绪配置 + options 变化重建） */
 function setupMarkerIW(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
-  opts: UseMaptalksMarkerInfoWindowOptions,
+  opts: UseMaptalksMarkerInfoWindowOpts,
   hasSet: ShallowRef<boolean>,
 ): void {
   watch(
@@ -130,7 +130,7 @@ function setupMarkerIW(
 
 export function useMaptalksMarkerInfoWindow(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
-  opts: UseMaptalksMarkerInfoWindowOptions = {},
+  opts: UseMaptalksMarkerInfoWindowOpts = {},
 ): UseMaptalksMarkerInfoWindowReturn {
   const events = opts.events ?? {};
   const hasSet = shallowRef(false);

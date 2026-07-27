@@ -1,11 +1,11 @@
-import { toValue } from 'vue';
+﻿import { toValue } from 'vue';
 import { buildGeometryOptions } from '../../core/geometry-options';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksVectorLayer,
-  UseMaptalksEllipseOptions,
+  UseMaptalksEllipseOpts,
   UseMaptalksGeometryReturn,
 } from '../../types';
 import { useMaptalksGeometry } from '../useMaptalksGeometry';
@@ -17,7 +17,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  * symbol / properties 从 `options` 中提取并响应式绑定；其余原生字段经 `buildGeometryOptions` 一次性传入构造器。
  * Ellipse 构造器缺失抛 geometry-failed。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
- * @param {UseMaptalksEllipseOptions} opts - 中心坐标 + 宽高 + options（全部原生字段）+ visible + events + id + autoDispose
+ * @param {UseMaptalksEllipseOpts} opts - 中心坐标 + 宽高 + options（全部原生字段）+ visible + events + id + autoDispose
  * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
  *
  * @example
@@ -31,7 +31,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  */
 export function useMaptalksEllipse(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
-  opts: UseMaptalksEllipseOptions,
+  opts: UseMaptalksEllipseOpts,
 ): UseMaptalksGeometryReturn {
   return useMaptalksGeometry(
     layer,

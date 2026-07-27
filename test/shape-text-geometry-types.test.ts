@@ -1,9 +1,9 @@
-import { describe, expectTypeOf, it } from 'vitest';
+﻿import { describe, expectTypeOf, it } from 'vitest';
 
 import type {
-  UseMaptalksCircleOptions,
-  UseMaptalksLabelOptions,
-  UseMaptalksSectorOptions,
+  UseMaptalksCircleOpts,
+  UseMaptalksLabelOpts,
+  UseMaptalksSectorOpts,
 } from '../src/runtime/types';
 
 describe('形状与文本几何类型', () => {
@@ -12,8 +12,8 @@ describe('形状与文本几何类型', () => {
   });
 
   it('额外属性字段类型正确', () => {
-    expectTypeOf<UseMaptalksCircleOptions['radius']>().not.toBeUndefined();
-    expectTypeOf<UseMaptalksSectorOptions['startAngle']>().not.toBeUndefined();
-    expectTypeOf<UseMaptalksLabelOptions['content']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksCircleOpts['radius']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksSectorOpts['startAngle']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksLabelOpts['content']>().not.toBeUndefined();
   });
 });

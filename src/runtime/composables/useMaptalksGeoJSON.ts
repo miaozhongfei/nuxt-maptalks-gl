@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { toMaptalksError } from '../core/errors';
@@ -6,7 +6,7 @@ import type {
   GeoJSONData,
   MaptalksGeometry,
   MaptalksVectorLayer,
-  UseMaptalksGeoJSONOptions,
+  UseMaptalksGeoJSONOpts,
   UseMaptalksGeoJSONReturn,
 } from '../types';
 import { createLogger } from '../utils/logger';
@@ -81,7 +81,7 @@ function clearGeometries(state: GeoJSONState): void {
  * @description layer 就绪 + data 时加载几何并 addGeometry；data 替换时清空重建（shallow watch）；
  * 作用域销毁移除全部。GeoJSON 可能产生多个几何，故不复用 useMaptalksGeometry，自管几何数组。几何不入注册表。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
- * @param {UseMaptalksGeoJSONOptions} options - 响应式 data + 统一 symbol + 自动销毁
+ * @param {UseMaptalksGeoJSONOpts} options - 响应式 data + 统一 symbol + 自动销毁
  * @returns {UseMaptalksGeoJSONReturn} `{ geometries, remove }`
  *
  * @example
@@ -90,7 +90,7 @@ function clearGeometries(state: GeoJSONState): void {
  */
 export function useMaptalksGeoJSON(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
-  options: UseMaptalksGeoJSONOptions,
+  options: UseMaptalksGeoJSONOpts,
 ): UseMaptalksGeoJSONReturn {
   const state: GeoJSONState = { geometries: shallowRef<MaptalksGeometry[]>([]), seq: 0 };
   const getLayer = () => toValue(layer);

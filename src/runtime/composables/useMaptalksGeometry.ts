@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 import { dequal } from 'dequal';
 
@@ -9,7 +9,7 @@ import type {
   MaptalksGeometry,
   MaptalksGLNamespace,
   MaptalksVectorLayer,
-  UseMaptalksGeometryOptions,
+  UseMaptalksGeometryOpts,
   UseMaptalksGeometryReturn,
 } from '../types';
 import { createLogger } from '../utils/logger';
@@ -88,7 +88,7 @@ async function createGeometryInto(
  *
  * @description 仅在几何存在且值非 undefined 时调用 setCoordinates/setSymbol/setProperties。
  * @param {() => MaptalksGeometry | null} getGeo - 取当前几何
- * @param {UseMaptalksGeometryOptions} options - 响应式选项
+ * @param {UseMaptalksGeometryOpts} options - 响应式选项
  * @returns {() => void} 停止全部 watcher
  *
  * @example
@@ -96,7 +96,7 @@ async function createGeometryInto(
  */
 function bindGeometryUpdates(
   getGeo: () => MaptalksGeometry | null,
-  options: UseMaptalksGeometryOptions,
+  options: UseMaptalksGeometryOpts,
 ): () => void {
   const stops = [
     watch(
@@ -140,7 +140,7 @@ function bindGeometryUpdates(
  *
  * @description 形状/文本几何的 radius/width/height/angles/content 等经此响应式更新；几何存在且值非 undefined 才 apply。
  * @param {() => MaptalksGeometry | null} getGeo - 取当前几何
- * @param {UseMaptalksGeometryOptions['extraProps']} extraProps - 额外属性列表
+ * @param {UseMaptalksGeometryOpts['extraProps']} extraProps - 额外属性列表
  * @returns {() => void} 停止全部 watcher
  *
  * @example
@@ -148,7 +148,7 @@ function bindGeometryUpdates(
  */
 function bindExtraProps(
   getGeo: () => MaptalksGeometry | null,
-  extraProps: UseMaptalksGeometryOptions['extraProps'],
+  extraProps: UseMaptalksGeometryOpts['extraProps'],
 ): () => void {
   if (!extraProps || extraProps.length === 0) return () => {};
   const stops = extraProps.map((p) =>
@@ -173,14 +173,14 @@ function bindExtraProps(
  * 内容确实变化时才重建几何。
  * @param {() => MaptalksVectorLayer | null} getLayer - 取矢量图层
  * @param {(mt: MaptalksGLNamespace) => MaptalksGeometry} factory - 几何工厂
- * @param {UseMaptalksGeometryOptions} options - 响应式选项
+ * @param {UseMaptalksGeometryOpts} options - 响应式选项
  * @param {GeometryState} state - 可变状态
  * @returns {() => void} 停止 watcher
  */
 function bindOptionsRebuild(
   getLayer: () => MaptalksVectorLayer | null,
   factory: (mt: MaptalksGLNamespace) => MaptalksGeometry,
-  options: UseMaptalksGeometryOptions,
+  options: UseMaptalksGeometryOpts,
   state: GeometryState,
 ): () => void {
   if (!options.options) return () => {};
@@ -210,7 +210,7 @@ function bindOptionsRebuild(
  * 作用域销毁时 remove 几何并解绑。几何不入注册表。layer 为 null 时不创建。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
  * @param {(mt: MaptalksGLNamespace) => MaptalksGeometry} factory - 接收命名空间返回几何实例
- * @param {UseMaptalksGeometryOptions} [options] - 响应式坐标/symbol/properties + 事件 + 自动销毁
+ * @param {UseMaptalksGeometryOpts} [options] - 响应式坐标/symbol/properties + 事件 + 自动销毁
  * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
  *
  * @example
@@ -223,7 +223,7 @@ function bindOptionsRebuild(
 export function useMaptalksGeometry(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   factory: (mt: MaptalksGLNamespace) => MaptalksGeometry,
-  options: UseMaptalksGeometryOptions = {},
+  options: UseMaptalksGeometryOpts = {},
 ): UseMaptalksGeometryReturn {
   const state: GeometryState = {
     geometry: shallowRef<MaptalksGeometry | null>(null),

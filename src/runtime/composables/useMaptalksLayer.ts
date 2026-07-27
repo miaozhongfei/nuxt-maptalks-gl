@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { toMaptalksError } from '../core/errors';
@@ -8,7 +8,7 @@ import type {
   MaptalksGLNamespace,
   MaptalksLayer,
   MaptalksMap,
-  UseMaptalksLayerOptions,
+  UseMaptalksLayerOpts,
   UseMaptalksLayerReturn,
 } from '../types';
 import { createLogger } from '../utils/logger';
@@ -117,7 +117,7 @@ async function createLayerInto(
  * @description 地图就绪/门控开启后创建图层；响应式选项变化时重新应用；remove 时停止 watcher、移除并注销。
  * @param {() => MaptalksMap | null} getMap - 取当前地图实例
  * @param {(mt: MaptalksGLNamespace) => MaptalksLayer} factory - 图层工厂
- * @param {UseMaptalksLayerOptions} options - 响应式选项 / 创建门控
+ * @param {UseMaptalksLayerOpts} options - 响应式选项 / 创建门控
  * @returns {UseMaptalksLayerReturn} 图层句柄
  *
  * @example
@@ -126,7 +126,7 @@ async function createLayerInto(
 function bindLayer(
   getMap: () => MaptalksMap | null,
   factory: (mt: MaptalksGLNamespace) => MaptalksLayer,
-  options: UseMaptalksLayerOptions,
+  options: UseMaptalksLayerOpts,
 ): UseMaptalksLayerReturn {
   const state: LayerState = {
     layer: shallowRef<MaptalksLayer | null>(null),
@@ -198,7 +198,7 @@ function bindLayer(
  * removeLayer + dispose。factory 抛错被捕获并记录，不拖垮整张地图。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {(mt: MaptalksGLNamespace) => MaptalksLayer} factory - 接收已加载命名空间、返回图层实例
- * @param {UseMaptalksLayerOptions} [options] - 响应式选项 / 自动销毁 / 创建门控
+ * @param {UseMaptalksLayerOpts} [options] - 响应式选项 / 自动销毁 / 创建门控
  * @returns {UseMaptalksLayerReturn} `{ layer, update, remove }`
  *
  * @example
@@ -211,7 +211,7 @@ function bindLayer(
 export function useMaptalksLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   factory: (mt: MaptalksGLNamespace) => MaptalksLayer,
-  options: UseMaptalksLayerOptions = {},
+  options: UseMaptalksLayerOpts = {},
 ): UseMaptalksLayerReturn {
   const handle = bindLayer(() => toValue(map), factory, options);
   if (options.autoDispose ?? true) onScopeDispose(handle.remove);

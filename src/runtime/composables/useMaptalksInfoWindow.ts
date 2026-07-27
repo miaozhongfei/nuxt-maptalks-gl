@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
@@ -18,7 +18,7 @@ const logger = createLogger('nuxt-maptalks-gl');
  *   options: { title: '信息', content: '<div>动态内容</div>' },
  * });
  */
-export interface UseMaptalksInfoWindowOptions {
+export interface UseMaptalksInfoWindowOpts {
   /** 透传给 maptalks InfoWindow 构造器的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
   options?: MaybeRefOrGetter<
     MaptalksInfoWindowOptions
@@ -76,7 +76,7 @@ function unbindEvents(iw: MaptalksInfoWindow, events: Record<string, MaptalksEve
  * `setContent` / `setCoordinates`（不重建）；`events` 中的事件自动 on/off；
  * 作用域销毁时自动 `remove()`。InfoWindow 构造器缺失抛 `control-failed`。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksInfoWindowOptions} [opts] - InfoWindow 选项、内容、坐标、事件与自动销毁控制
+ * @param {UseMaptalksInfoWindowOpts} [opts] - InfoWindow 选项、内容、坐标、事件与自动销毁控制
  * @returns {UseMaptalksInfoWindowReturn} `{ infoWindow, show, hide, remove }`
  *
  * @example
@@ -109,7 +109,7 @@ function removeIW(
 }
 export function useMaptalksInfoWindow(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksInfoWindowOptions = {},
+  opts: UseMaptalksInfoWindowOpts = {},
 ): UseMaptalksInfoWindowReturn {
   const infoWindow = shallowRef<MaptalksInfoWindow | null>(null);
   let creating = false;

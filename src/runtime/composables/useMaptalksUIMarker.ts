@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
@@ -18,7 +18,7 @@ const logger = createLogger('nuxt-maptalks-gl');
  *   options: () => ({ content: '<div>HTML</div>', draggable: true, single: false }),
  * });
  */
-export interface UseMaptalksUIMarkerOptions {
+export interface UseMaptalksUIMarkerOpts {
   /** 透传给 UIMarker 构造器的选项（含中文字段注释，详见 MaptalksUIMarkerOptions） */
   options?: MaybeRefOrGetter<MaptalksUIMarkerOptions | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -83,7 +83,7 @@ function unbindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEven
  * 响应式 `options` 变化时移除旧实例并重建；`content` 变化时调用 `setContent`（不重建）；
  * `events` 中的事件自动 on/off；作用域销毁时自动 `remove()`。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用
- * @param {UseMaptalksUIMarkerOptions} [opts] - UIMarker 选项与自动销毁控制
+ * @param {UseMaptalksUIMarkerOpts} [opts] - UIMarker 选项与自动销毁控制
  * @returns {UseMaptalksUIMarkerReturn} `{ uiMarker, show, hide, remove }`
  *
  * @example
@@ -94,7 +94,7 @@ function unbindEvents(uim: MaptalksUIMarker, events: Record<string, MaptalksEven
  */
 export function useMaptalksUIMarker(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksUIMarkerOptions = {},
+  opts: UseMaptalksUIMarkerOpts = {},
 ): UseMaptalksUIMarkerReturn {
   const uiMarker = shallowRef<MaptalksUIMarker | null>(null);
   let creating = false;

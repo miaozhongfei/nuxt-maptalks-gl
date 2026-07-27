@@ -1,4 +1,4 @@
-import { toValue } from 'vue';
+﻿import { toValue } from 'vue';
 import { buildGeometryOptions } from '../../core/geometry-options';
 import type { MaybeRefOrGetter } from 'vue';
 
@@ -6,7 +6,7 @@ import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
-  UseMaptalksLabelOptions,
+  UseMaptalksLabelOpts,
 } from '../../types';
 import { useMaptalksGeometry } from '../useMaptalksGeometry';
 
@@ -17,7 +17,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  * symbol / properties 从 `options` 中提取并响应式绑定；其余原生字段（textSymbol / draggable 等）经 `buildGeometryOptions` 一次性传入构造器。
  * Label 构造器缺失抛 geometry-failed。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
- * @param {UseMaptalksLabelOptions} opts - 文本内容 + 锚点坐标 + options（全部原生字段）+ visible + events + id + autoDispose
+ * @param {UseMaptalksLabelOpts} opts - 文本内容 + 锚点坐标 + options（全部原生字段）+ visible + events + id + autoDispose
  * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
  *
  * @example
@@ -30,7 +30,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  */
 export function useMaptalksLabel(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
-  opts: UseMaptalksLabelOptions,
+  opts: UseMaptalksLabelOpts,
 ): UseMaptalksGeometryReturn {
   return useMaptalksGeometry(
     layer,

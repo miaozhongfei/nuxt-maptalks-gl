@@ -1,8 +1,8 @@
-import { describe, expectTypeOf, it } from 'vitest';
+﻿import { describe, expectTypeOf, it } from 'vitest';
 
 import type {
   UseMaptalksGeometryReturn,
-  UseMaptalksMarkerOptions,
+  UseMaptalksMarkerOpts,
 } from '../src/runtime/types';
 
 describe('几何类型建模', () => {
@@ -17,7 +17,7 @@ describe('几何类型建模', () => {
   });
 
   it('几何预设选项与返回类型可用', () => {
-    expectTypeOf<UseMaptalksMarkerOptions['coordinates']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksMarkerOpts['coordinates']>().not.toBeUndefined();
     expectTypeOf<UseMaptalksGeometryReturn['remove']>().toBeFunction();
   });
 });

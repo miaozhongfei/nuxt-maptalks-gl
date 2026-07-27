@@ -1,4 +1,4 @@
-/* oxlint-disable max-lines */
+﻿/* oxlint-disable max-lines */
 
 /**
  * 所有 composable 的 Options / Return 类型。
@@ -59,7 +59,7 @@ import type {
  * @example
  * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10, minZoom: 3 });
  */
-export interface UseMaptalksOptions extends MaptalksMapSpecOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapSpecOptions> {
+export interface UseMaptalksOpts extends MaptalksMapSpecOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapSpecOptions> {
   /** 命名实例：传入后登记进 MapRegistry，可经 useMaptalksInstance 按名获取 */
   name?: string;
   /** 初始化失败回调（与 error ref 同时触发） */
@@ -93,7 +93,7 @@ export interface UseMaptalksReturn {
  * @example
  * useMaptalksLayer(map, factory, { options: computed(() => ({ opacity })), autoDispose: true });
  */
-export interface UseMaptalksLayerOptions {
+export interface UseMaptalksLayerOpts {
   /** 响应式图层选项，变化时按图层能力（setStyle/config/setOptions）应用 */
   options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -159,7 +159,7 @@ export interface UseMaptalksVectorLayerReturn {
  * @example
  * useMaptalksLayerControl(layer, { visible: () => show.value, opacity: () => alpha.value });
  */
-export interface UseMaptalksLayerControlOptions {
+export interface UseMaptalksLayerControlOpts {
   /** 响应式可见性：true → show，false → hide */
   visible?: MaybeRefOrGetter<boolean>;
   /** 响应式不透明度（0–1），变化时调用图层 setOpacity */
@@ -283,7 +283,7 @@ export interface UseMaptalksSourceReturn {
  * @example
  * useMaptalksTileLayer(map, { source: 'base', id: 'baseLayer' });
  */
-export interface UseMaptalksPresetBaseOptions {
+export interface UseMaptalksPresetBaseOpts {
   /** 数据源：源名（字符串，按配置解析）或内联源对象 */
   source?: string | MaptalksSource;
   /** 图层 id，缺省自动生成 */
@@ -297,22 +297,22 @@ export interface UseMaptalksPresetBaseOptions {
 }
 
 /** useMaptalksTileLayer 的 opts 参数 */
-export type UseMaptalksTileLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+export type UseMaptalksTileLayerOpts = Omit<UseMaptalksPresetBaseOpts, 'options'> & {
   options?: MaptalksTileLayerOptions | MaybeRefOrGetter<MaptalksTileLayerOptions | undefined>;
 };
 
 /** useMaptalksVectorTileLayer 的 opts 参数 */
-export type UseMaptalksVectorTileLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+export type UseMaptalksVectorTileLayerOpts = Omit<UseMaptalksPresetBaseOpts, 'options'> & {
   options?: MaptalksVectorTileLayerOptions | MaybeRefOrGetter<MaptalksVectorTileLayerOptions | undefined>;
 };
 
 /** useMaptalksGLTFLayer 的 opts 参数 */
-export type UseMaptalksGLTFLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+export type UseMaptalksGLTFLayerOpts = Omit<UseMaptalksPresetBaseOpts, 'options'> & {
   options?: MaptalksGLTFLayerOptions | MaybeRefOrGetter<MaptalksGLTFLayerOptions | undefined>;
 };
 
 /** useMaptalksWMSLayer 的 opts 参数 */
-export type UseMaptalksWMSLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+export type UseMaptalksWMSLayerOpts = Omit<UseMaptalksPresetBaseOpts, 'options'> & {
   options?: MaptalksWMSLayerOptions | MaybeRefOrGetter<MaptalksWMSLayerOptions | undefined>;
 };
 
@@ -336,7 +336,7 @@ export type MaptalksInstanceRef = ComputedRef<MaptalksMap | null>;
  * @example
  * const png = toDataURL({ mimeType: 'image/png' });
  */
-export interface UseMaptalksExportOptions {
+export interface UseMaptalksExportOpts {
   /** 图片 MIME，如 'image/png' / 'image/jpeg' */
   mimeType?: string;
   /** 质量（0–1，jpeg/webp 有效） */
@@ -355,11 +355,11 @@ export interface UseMaptalksExportOptions {
  */
 export interface UseMaptalksExportReturn {
   /** 导出为 dataURL（map 为 null 返回 null） */
-  toDataURL: (options?: UseMaptalksExportOptions) => string | null;
+  toDataURL: (options?: UseMaptalksExportOpts) => string | null;
   /** 导出为 Blob（map 为 null resolve null；失败 reject 并经 logger 记录） */
-  toBlob: (options?: UseMaptalksExportOptions) => Promise<Blob | null>;
+  toBlob: (options?: UseMaptalksExportOpts) => Promise<Blob | null>;
   /** 触发浏览器下载（map 为 null no-op） */
-  download: (filename: string, options?: UseMaptalksExportOptions) => void;
+  download: (filename: string, options?: UseMaptalksExportOpts) => void;
 }
 
 // ───────────────────────────────── useMaptalksSync ─────────────────────────────────
@@ -382,7 +382,7 @@ export type MaptalksSyncField = 'center' | 'zoom' | 'pitch' | 'bearing';
  * @example
  * useMaptalksSync(['left', 'right'], { mode: 'master-slave', master: 'left' });
  */
-export interface UseMaptalksSyncOptions {
+export interface UseMaptalksSyncOpts {
   /** 同步模型，默认 'mutual' */
   mode?: 'mutual' | 'master-slave';
   /** 主从模式的主图（实例或注册表名），mode='master-slave' 时必填 */
@@ -420,7 +420,7 @@ export interface UseMaptalksSyncReturn {
  * @example
  * useMaptalksGeometry(layer, factory, { coordinates: () => coords.value, events: { click } });
  */
-export interface UseMaptalksGeometryOptions {
+export interface UseMaptalksGeometryOpts {
   /** 响应式坐标（shallow watch，替换才更新） */
   coordinates?: MaybeRefOrGetter<unknown>;
   /** 响应式 symbol（透传，含静态对象、组合 symbol 数组、zoom-stops 数组） */
@@ -500,7 +500,7 @@ export interface UseMaptalksGeometryReturn {
  * @example
  * useMaptalksVectorLayer(map, { id: 'geo' });
  */
-export interface UseMaptalksVectorLayerBaseOptions {
+export interface UseMaptalksVectorLayerBaseOpts {
   /** 图层 id，缺省自动生成 */
   id?: string;
   /** 透传给 VectorLayer 构造器的选项 */
@@ -512,7 +512,7 @@ export interface UseMaptalksVectorLayerBaseOptions {
 }
 
 /** useMaptalksVectorLayer 的 opts 参数 */
-export type UseMaptalksVectorLayerOptions = Omit<UseMaptalksVectorLayerBaseOptions, 'options'> & {
+export type UseMaptalksVectorLayerOpts = Omit<UseMaptalksVectorLayerBaseOpts, 'options'> & {
   options?: MaptalksVectorLayerOptions | MaybeRefOrGetter<MaptalksVectorLayerOptions | undefined>;
 };
 
@@ -546,7 +546,7 @@ export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryO
  * @example
  * useMaptalksMarker(layer, { coordinates: () => pos.value, options: { symbol: { markerType: 'ellipse' }, draggable: true } });
  */
-export interface UseMaptalksMarkerOptions {
+export interface UseMaptalksMarkerOpts {
   /** 响应式 Marker 坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 透传给 Marker 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -569,7 +569,7 @@ export interface UseMaptalksMarkerOptions {
  * @example
  * useMaptalksLineString(layer, { coordinates: () => path.value, options: { symbol: { lineColor: '#ff0000' } } });
  */
-export interface UseMaptalksLineStringOptions {
+export interface UseMaptalksLineStringOpts {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<Array<[number, number]>>;
   /** 透传给 LineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -592,7 +592,7 @@ export interface UseMaptalksLineStringOptions {
  * @example
  * useMaptalksPolygon(layer, { coordinates: () => rings.value, options: { symbol: { polygonFill: '#00ff00' } } });
  */
-export interface UseMaptalksPolygonOptions {
+export interface UseMaptalksPolygonOpts {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
   /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -610,7 +610,7 @@ export interface UseMaptalksPolygonOptions {
 /**
  * MultiPoint 预设可选项。
  */
-export interface UseMaptalksMultiPointOptions {
+export interface UseMaptalksMultiPointOpts {
   /** 响应式 MultiPoint 坐标 */
   coordinates: MaybeRefOrGetter<Array<[number, number]>>;
   /** 透传给 MultiPoint 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -628,7 +628,7 @@ export interface UseMaptalksMultiPointOptions {
 /**
  * MultiLineString 预设可选项。
  */
-export interface UseMaptalksMultiLineStringOptions {
+export interface UseMaptalksMultiLineStringOpts {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
   /** 透传给 MultiLineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -646,7 +646,7 @@ export interface UseMaptalksMultiLineStringOptions {
 /**
  * MultiPolygon 预设可选项。
  */
-export interface UseMaptalksMultiPolygonOptions {
+export interface UseMaptalksMultiPolygonOpts {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<Array<Array<Array<[number, number]>>>>;
   /** 透传给 MultiPolygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
@@ -681,7 +681,7 @@ export type GeoJSONData = Record<string, unknown>;
  * @example
  * useMaptalksGeoJSON(layer, { data: () => geojson.value, symbol: { markerType: 'ellipse' } });
  */
-export interface UseMaptalksGeoJSONOptions {
+export interface UseMaptalksGeoJSONOpts {
   /** 响应式 GeoJSON 数据 */
   data: MaybeRefOrGetter<GeoJSONData>;
   /** 统一应用到所有几何的 symbol（可选）；仅在 data 重建时应用，独立改 symbol 不重新应用 */
@@ -715,7 +715,7 @@ export interface UseMaptalksGeoJSONReturn {
  * @example
  * useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value, options: { symbol: { polygonFill: '#00ff00' } } });
  */
-export interface UseMaptalksCircleOptions {
+export interface UseMaptalksCircleOpts {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式半径（米） */
@@ -740,7 +740,7 @@ export interface UseMaptalksCircleOptions {
  * @example
  * useMaptalksRectangle(layer, { coordinates: () => topLeft.value, width: () => w.value, height: () => h.value, options: { draggable: true } });
  */
-export interface UseMaptalksRectangleOptions {
+export interface UseMaptalksRectangleOpts {
   /** 响应式坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式宽度（米） */
@@ -767,7 +767,7 @@ export interface UseMaptalksRectangleOptions {
  * @example
  * useMaptalksEllipse(layer, { coordinates: () => center.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksEllipseOptions {
+export interface UseMaptalksEllipseOpts {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式宽度（米） */
@@ -794,7 +794,7 @@ export interface UseMaptalksEllipseOptions {
  * @example
  * useMaptalksSector(layer, { coordinates: () => center.value, radius: () => r.value, startAngle: () => 0, endAngle: () => 90 });
  */
-export interface UseMaptalksSectorOptions {
+export interface UseMaptalksSectorOpts {
   /** 响应式中心坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 响应式半径（米） */
@@ -830,7 +830,7 @@ export interface UseMaptalksSectorOptions {
  *   options: { symbol: { textSize: 16 }, draggable: true },
  * });
  */
-export interface UseMaptalksLabelOptions {
+export interface UseMaptalksLabelOpts {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
   /** 响应式坐标 */
@@ -855,7 +855,7 @@ export interface UseMaptalksLabelOptions {
  * @example
  * useMaptalksTextBox(layer, { content: () => text.value, coordinates: () => anchor.value, width: () => w.value, height: () => h.value });
  */
-export interface UseMaptalksTextBoxOptions {
+export interface UseMaptalksTextBoxOpts {
   /** 响应式文本内容 */
   content: MaybeRefOrGetter<string>;
   /** 响应式坐标 */
@@ -887,7 +887,7 @@ export interface UseMaptalksTextBoxOptions {
  * @example
  * useMaptalksDistanceTool(map, { options: { language: 'zh' }, events: { measure: onMeasure } });
  */
-export interface UseMaptalksToolOptions<TNative = Record<string, unknown>> {
+export interface UseMaptalksToolOpts<TNative = Record<string, unknown>> {
   /** 透传给工具构造器的选项 */
   options?: MaybeRefOrGetter<(Partial<TNative> & Record<string, unknown>) | undefined>;
   /** 事件名 → 处理器（自动 on/off） */

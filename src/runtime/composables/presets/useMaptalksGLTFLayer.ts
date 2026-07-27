@@ -1,4 +1,4 @@
-import { computed, toValue } from 'vue';
+﻿import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -8,7 +8,7 @@ import type {
   MaptalksMap,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksGLTFLayerOptions,
+  UseMaptalksGLTFLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -42,7 +42,7 @@ function buildGltfOptions(
  * @description 创建 GLTFLayer 容器图层；可选地经命名/内联源注入 url 与选项。具体 GLTF 模型标记
  * 通过返回的 `layer.value` 原生 API 添加。传入 `source` 时等待源解析完成再创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksPresetOptions} [opts] - 数据源 / id / 额外选项 / 自动销毁
+ * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
  * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
@@ -52,7 +52,7 @@ function buildGltfOptions(
  */
 export function useMaptalksGLTFLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksGLTFLayerOptions = {},
+  opts: UseMaptalksGLTFLayerOpts = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   gltfSeq += 1;

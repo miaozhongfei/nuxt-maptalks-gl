@@ -1,4 +1,4 @@
-import { computed, toValue } from 'vue';
+﻿import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -8,7 +8,7 @@ import type {
   MaptalksMap,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksVectorTileLayerOptions,
+  UseMaptalksVectorTileLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -41,7 +41,7 @@ function buildVectorOptions(
  * @description 与 TileLayer 预设同构，面向矢量切片服务（pbf/mvt），可通过 `options.style` 传入样式。
  * 传入 `source` 时等待源解析完成再创建；否则按 `options` 直接创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksPresetOptions} [opts] - 数据源 / id / 额外选项（含 style）/ 自动销毁
+ * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项（含 style）/ 自动销毁
  * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
@@ -53,7 +53,7 @@ function buildVectorOptions(
  */
 export function useMaptalksVectorTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorTileLayerOptions = {},
+  opts: UseMaptalksVectorTileLayerOpts = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   vtSeq += 1;

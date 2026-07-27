@@ -1,4 +1,4 @@
-import { toValue } from 'vue';
+﻿import { toValue } from 'vue';
 import { buildGeometryOptions } from '../../core/geometry-options';
 import type { MaybeRefOrGetter } from 'vue';
 
@@ -6,7 +6,7 @@ import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
-  UseMaptalksTextBoxOptions,
+  UseMaptalksTextBoxOpts,
 } from '../../types';
 import { useMaptalksGeometry } from '../useMaptalksGeometry';
 
@@ -16,7 +16,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  * symbol / properties 从 `options` 中提取并响应式绑定；其余原生字段经 `buildGeometryOptions` 一次性传入构造器。
  * TextBox 构造器缺失抛 geometry-failed。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
- * @param {UseMaptalksTextBoxOptions} opts - 文本 + 锚点 + 宽高 + options（全部原生字段）+ visible + events + id + autoDispose
+ * @param {UseMaptalksTextBoxOpts} opts - 文本 + 锚点 + 宽高 + options（全部原生字段）+ visible + events + id + autoDispose
  * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
  * @example
  * const { layer } = useMaptalksVectorLayer(map);
@@ -30,7 +30,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  */
 export function useMaptalksTextBox(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
-  opts: UseMaptalksTextBoxOptions,
+  opts: UseMaptalksTextBoxOpts,
 ): UseMaptalksGeometryReturn {
   return useMaptalksGeometry(layer, (mt) => {
       const Ctor = mt.TextBox;

@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+﻿import { computed } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { useRuntimeConfig } from '#imports';
@@ -29,7 +29,7 @@ import { useMaptalksLayer } from '../useMaptalksLayer';
  *   options: { sceneConfig: { light: { ambient: '#fff' } } },
  * });
  */
-export interface UseMaptalksGroupGLLayerBaseOptions {
+export interface UseMaptalksGroupGLLayerBaseOpts {
   /** 图层 id，缺省自动生成 */
   id?: string;
   /** 承载的子 GL 图层（已创建实例） */
@@ -43,7 +43,7 @@ export interface UseMaptalksGroupGLLayerBaseOptions {
 }
 
 /** useMaptalksGroupGLLayer 的 opts 参数 */
-export type UseMaptalksGroupGLLayerOptions = Omit<UseMaptalksGroupGLLayerBaseOptions, 'options'> & {
+export type UseMaptalksGroupGLLayerOpts = Omit<UseMaptalksGroupGLLayerBaseOpts, 'options'> & {
   options?: MaptalksGroupGLLayerOptions | MaybeRefOrGetter<MaptalksGroupGLLayerOptions | undefined>;
 };
 
@@ -74,7 +74,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  * @description 从模块默认项读取 lighting / postProcess 组装 sceneConfig，与用户 `options` 合并后创建
  * GroupGLLayer。子图层经 `options.layers` 传入。不依赖数据源，地图就绪即创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksGroupGLLayerOptions} [opts] - 子图层 / id / 额外选项 / 自动销毁
+ * @param {UseMaptalksGroupGLLayerOpts} [opts] - 子图层 / id / 额外选项 / 自动销毁
  * @returns {UseMaptalksLayerReturn} 图层句柄
  *
  * @example
@@ -84,7 +84,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  */
 export function useMaptalksGroupGLLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksGroupGLLayerOptions = {},
+  opts: UseMaptalksGroupGLLayerOpts = {},
 ): UseMaptalksLayerReturn {
   const publicConfig = useRuntimeConfig().public as unknown as {
     maptalksGl?: ResolvedModuleOptions;

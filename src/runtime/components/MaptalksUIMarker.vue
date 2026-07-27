@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div style="display: none">
     <slot />
   </div>
@@ -10,7 +10,7 @@ import type { App } from 'vue'
 import { dequal } from 'dequal'
 
 import { useMaptalksUIMarker } from '../composables/useMaptalksUIMarker'
-import type { UseMaptalksUIMarkerOptions } from '../composables/useMaptalksUIMarker'
+import type { UseMaptalksUIMarkerOpts } from '../composables/useMaptalksUIMarker'
 import { MAP_KEY } from '../core/map-context'
 import type { MaptalksEventHandler, MaptalksUIMarkerOptions } from '../types'
 
@@ -59,7 +59,7 @@ watch(
   { immediate: true },
 )
 
-const uimOpts: UseMaptalksUIMarkerOptions = {
+const uimOpts: UseMaptalksUIMarkerOpts = {
   options: () => stableOpts.value,
   events: props.events,
   autoDispose: props.autoDispose,

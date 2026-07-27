@@ -1,4 +1,4 @@
-import { nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
+﻿import { nextTick, onScopeDispose, ref, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../core/errors';
@@ -6,7 +6,7 @@ import { mapRegistry } from '../core/registry';
 import type {
   MaptalksMap,
   MaptalksSyncField,
-  UseMaptalksSyncOptions,
+  UseMaptalksSyncOpts,
   UseMaptalksSyncReturn,
 } from '../types';
 
@@ -220,7 +220,7 @@ function bindSync(
  * mutual：任一地图变更驱动其余；master-slave：仅主图变更驱动从图。默认即启用，作用域销毁自动解绑。
  * 通过内部 watch 监听地图实例就绪：配合 useMaptalks 的异步创建，地图就绪后会自动（重）绑定。
  * @param {Array<MaybeRefOrGetter<MaptalksMap | null> | string>} maps - 地图实例引用或注册表名数组
- * @param {UseMaptalksSyncOptions} [options] - 同步模型 / 主图 / 维度 / 事件
+ * @param {UseMaptalksSyncOpts} [options] - 同步模型 / 主图 / 维度 / 事件
  * @returns {UseMaptalksSyncReturn} `{ enable, disable, isEnabled }`
  *
  * @example
@@ -229,7 +229,7 @@ function bindSync(
  */
 export function useMaptalksSync(
   maps: Array<MaybeRefOrGetter<MaptalksMap | null> | string>,
-  options: UseMaptalksSyncOptions = {},
+  options: UseMaptalksSyncOpts = {},
 ): UseMaptalksSyncReturn {
   const mode = options.mode ?? 'mutual';
   const fields = options.fields ?? DEFAULT_FIELDS;

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div style="display: none">
     <slot />
   </div>
@@ -10,7 +10,7 @@ import type { App } from 'vue'
 import { dequal } from 'dequal'
 
 import { useMaptalksInfoWindow } from '../composables/useMaptalksInfoWindow'
-import type { UseMaptalksInfoWindowOptions } from '../composables/useMaptalksInfoWindow'
+import type { UseMaptalksInfoWindowOpts } from '../composables/useMaptalksInfoWindow'
 import { MAP_KEY } from '../core/map-context'
 import type { MaptalksEventHandler, MaptalksInfoWindowOptions } from '../types'
 
@@ -55,7 +55,7 @@ watch(
   { immediate: true },
 )
 
-const iwOpts: UseMaptalksInfoWindowOptions = {
+const iwOpts: UseMaptalksInfoWindowOpts = {
   options: () => stableOpts.value,
   events: props.events,
   autoDispose: props.autoDispose,

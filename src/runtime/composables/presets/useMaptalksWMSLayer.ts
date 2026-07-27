@@ -1,4 +1,4 @@
-import { computed, toValue } from 'vue';
+﻿import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -8,7 +8,7 @@ import type {
   MaptalksMap,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksWMSLayerOptions,
+  UseMaptalksWMSLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -48,7 +48,7 @@ function buildWMSOptions(
  * WMS 业务参数（layers/styles/format/transparent/version/crs 等）经 `options` 透传。传入 `source`
  * 时图层创建等待源解析完成；否则按 `options` 直接创建。构造器缺失（WMSTileLayer/WMSLayer 均无）抛 `layer-failed`。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksPresetOptions} [opts] - 数据源 / id / 额外选项 / 自动销毁
+ * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
  * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
@@ -65,7 +65,7 @@ function buildWMSOptions(
  */
 export function useMaptalksWMSLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksWMSLayerOptions = {},
+  opts: UseMaptalksWMSLayerOpts = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   wmsSeq += 1;

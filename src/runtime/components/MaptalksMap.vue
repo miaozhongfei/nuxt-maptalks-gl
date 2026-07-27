@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div ref="el" style="height: 100%; width: 100%"><slot /></div>
 </template>
 
@@ -7,7 +7,7 @@ import { provide, ref, shallowRef, watch } from 'vue'
 import { useMaptalks } from '../composables/useMaptalks'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, UseMaptalksOptions } from '../types'
+import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, UseMaptalksOpts } from '../types'
 
 const props = withDefaults(defineProps<{
   center?: [number, number]; zoom?: number
@@ -22,8 +22,8 @@ const emit = defineEmits<{ ready: [map: MaptalksMap]; error: [err: MaptalksError
 
 const el = ref<HTMLElement | null>(null)
 
-function buildOpts(): UseMaptalksOptions {
-  const o: UseMaptalksOptions = { name: props.name, ...props.options }
+function buildOpts(): UseMaptalksOpts {
+  const o: UseMaptalksOpts = { name: props.name, ...props.options }
   if (props.baseLayer !== undefined) o.baseLayer = props.baseLayer;
   if (props.center !== undefined) o.center = props.center
   if (props.zoom !== undefined) o.zoom = props.zoom

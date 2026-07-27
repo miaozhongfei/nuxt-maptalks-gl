@@ -1,10 +1,10 @@
-import { describe, expectTypeOf, it } from 'vitest';
+﻿import { describe, expectTypeOf, it } from 'vitest';
 
 import type {
   MaptalksMapOptions,
   UseMaptalksExportReturn,
-  UseMaptalksSyncOptions,
-  UseMaptalksOptions,
+  UseMaptalksSyncOpts,
+  UseMaptalksOpts,
 } from '../src/runtime/types';
 
 describe('地图构造选项类型化', () => {
@@ -16,13 +16,13 @@ describe('地图构造选项类型化', () => {
     expectTypeOf<MaptalksMapOptions['seamlessZoom']>().toEqualTypeOf<boolean | undefined>();
   });
 
-  it('UseMaptalksOptions 继承构造选项并加上 name/onError', () => {
-    expectTypeOf<UseMaptalksOptions['name']>().toEqualTypeOf<string | undefined>();
-    expectTypeOf<UseMaptalksOptions['minZoom']>().toEqualTypeOf<number | undefined>();
+  it('UseMaptalksOpts 继承构造选项并加上 name/onError', () => {
+    expectTypeOf<UseMaptalksOpts['name']>().toEqualTypeOf<string | undefined>();
+    expectTypeOf<UseMaptalksOpts['minZoom']>().toEqualTypeOf<number | undefined>();
   });
 
   it('导出与同步选项类型可用', () => {
-    expectTypeOf<UseMaptalksSyncOptions['mode']>().toEqualTypeOf<
+    expectTypeOf<UseMaptalksSyncOpts['mode']>().toEqualTypeOf<
       'mutual' | 'master-slave' | undefined
     >();
     expectTypeOf<UseMaptalksExportReturn['toDataURL']>().toBeFunction();
