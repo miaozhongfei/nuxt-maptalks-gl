@@ -25,5 +25,8 @@
 const vec = ref<{ layer: ReturnType<typeof useMaptalksVectorLayer>['layer'] } | null>(null)
 const op = ref(1)
 
-watch(op, (v) => { vec.value?.layer.value?.setOpacity?.(v) }, { immediate: true })
+watch([op, () => vec.value?.layer?.value], ([v, l]) => {
+  if (!l) return
+  l.setOpacity?.(v)
+}, { immediate: true })
 </script>
