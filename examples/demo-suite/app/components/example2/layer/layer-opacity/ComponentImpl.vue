@@ -7,7 +7,7 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     >
-      <MaptalksVectorLayer ref="vec">
+      <MaptalksVectorLayer :options="layerOpts">
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
           :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
@@ -22,11 +22,6 @@
 </template>
 
 <script setup lang="ts">
-const vec = ref<{ layer: ReturnType<typeof useMaptalksVectorLayer>['layer'] } | null>(null)
 const op = ref(1)
-
-watch([op, () => vec.value?.layer?.value], ([v, l]) => {
-  if (!l) return
-  l.setOpacity?.(v)
-}, { immediate: true })
+const layerOpts = computed(() => ({ opacity: op.value }))
 </script>
