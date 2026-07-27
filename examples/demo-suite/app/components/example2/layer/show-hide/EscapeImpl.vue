@@ -2,11 +2,9 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <div class="flex items-center gap-2 mt-3">
-      <UButtonGroup size="xs">
-        <UButton size="xs" color="red" variant="soft" @click="hideLayer">隐藏</UButton>
-        <UButton size="xs" color="green" variant="soft" @click="showLayer">显示</UButton>
-        <UButton size="xs" color="primary" variant="soft" @click="toggle">切换</UButton>
-      </UButtonGroup>
+      <UButton size="xs" color="error" variant="solid" @click="hideLayer">隐藏</UButton>
+      <UButton size="xs" color="success" variant="solid" @click="showLayer">显示</UButton>
+      <UButton size="xs" color="primary" variant="solid" @click="toggle">切换</UButton>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
   </div>
