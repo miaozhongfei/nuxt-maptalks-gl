@@ -15,7 +15,7 @@
  * <!-- 程序式添加模型：gltfLayer.value.layer.value?.addGeometry?.(new mt.GLTFMarker(...)) -->
  * ```
  */
-import { inject, watch } from 'vue'
+import { computed, inject, toRef, watch } from 'vue'
 
 import { useMaptalksGLTFLayer } from '../composables/presets/useMaptalksGLTFLayer'
 import { MAP_KEY } from '../core/map-context'
@@ -44,7 +44,7 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksGLTFLayer 必须在 Maptal
 const { layer, show, hide } = useMaptalksGLTFLayer(map, {
   source: props.source,
   id: props.id,
-  options: props.options,
+  options: computed(() => props.options) as unknown as typeof props.options,
   autoDispose: props.autoDispose,
   events: props.events,
 })

@@ -14,7 +14,7 @@
  * <MaptalksTileLayer :options="{ urlTemplate: 'https://.../{z}/{x}/{y}.png' }" />
  * ```
  */
-import { inject, watch } from 'vue'
+import { computed, inject, toRef, watch } from 'vue'
 
 import { useMaptalksTileLayer } from '../composables/presets/useMaptalksTileLayer'
 import { MAP_KEY } from '../core/map-context'
@@ -43,7 +43,7 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksTileLayer 必须在 Maptal
 const { layer, show, hide } = useMaptalksTileLayer(map, {
   source: props.source,
   id: props.id,
-  options: props.options,
+  options: computed(() => props.options) as unknown as typeof props.options,
   autoDispose: props.autoDispose,
   events: props.events,
 })

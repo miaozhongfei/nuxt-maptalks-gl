@@ -13,7 +13,7 @@
  * <MaptalksVectorTileLayer source="baseVT" :options="{ style: { background: { color: '#fff' } } }" />
  * ```
  */
-import { inject, watch } from 'vue'
+import { computed, inject, toRef, watch } from 'vue'
 
 import { useMaptalksVectorTileLayer } from '../composables/presets/useMaptalksVectorTileLayer'
 import { MAP_KEY } from '../core/map-context'
@@ -42,7 +42,7 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksVectorTileLayer 必须在 
 const { layer, show, hide } = useMaptalksVectorTileLayer(map, {
   source: props.source,
   id: props.id,
-  options: props.options,
+  options: computed(() => props.options) as unknown as typeof props.options,
   autoDispose: props.autoDispose,
   events: props.events,
 })
