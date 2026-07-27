@@ -1329,6 +1329,11 @@ export type UseMaptalksGLTFLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'op
   options?: MaptalksGLTFLayerCombinedOptions | MaybeRefOrGetter<MaptalksGLTFLayerCombinedOptions | undefined>;
 };
 
+/** useMaptalksWMSLayer 的 opts 参数 */
+export type UseMaptalksWMSLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
+  options?: Partial<MaptalksNativeWMSTileLayerOptions> | MaybeRefOrGetter<Partial<MaptalksNativeWMSTileLayerOptions> | undefined>;
+};
+
 /**
  * `useMaptalksInstance` 的返回（按名获取的响应式地图）。
  *

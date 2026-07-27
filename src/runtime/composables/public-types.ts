@@ -88,6 +88,7 @@ export type {
   UseMaptalksVectorLayerOptions,
   UseMaptalksVectorTileLayerOptions,
   UseMaptalksViewFollowOptions,
+  UseMaptalksWMSLayerOptions,
 
   // ── Composable Returns ──
   UseMaptalksAnimateShowOptions,

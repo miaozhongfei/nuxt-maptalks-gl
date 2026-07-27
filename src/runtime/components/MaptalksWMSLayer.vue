@@ -18,7 +18,7 @@
  * />
  * ```
  */
-import { inject, watch } from 'vue'
+import { computed, inject, watch } from 'vue'
 
 import { useMaptalksWMSLayer } from '../composables/presets/useMaptalksWMSLayer'
 import { MAP_KEY } from '../core/map-context'
@@ -47,7 +47,7 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksWMSLayer 必须在 Maptalk
 const { layer, show, hide } = useMaptalksWMSLayer(map, {
   source: props.source,
   id: props.id,
-  options: props.options,
+  options: computed(() => props.options),
   autoDispose: props.autoDispose,
   events: props.events,
 })

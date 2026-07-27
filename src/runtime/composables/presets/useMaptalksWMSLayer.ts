@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -6,10 +6,9 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeWMSTileLayerOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetBaseOptions,
+  UseMaptalksWMSLayerOptions,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -66,14 +65,14 @@ function buildWMSOptions(
  */
 export function useMaptalksWMSLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetBaseOptions & { options?: Partial<MaptalksNativeWMSTileLayerOptions> } = {},
+  opts: UseMaptalksWMSLayerOptions = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   wmsSeq += 1;
   const id = opts.id ?? `maptalks-wms-${wmsSeq}`;
   // 传入命名/内联源时，等待解析完成再创建；否则立即按选项创建
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildWMSOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildWMSOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,
