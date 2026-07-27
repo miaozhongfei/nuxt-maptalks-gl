@@ -350,7 +350,7 @@ export interface MaptalksWMSLayerOptions {
  *
  * @description `Partial<MaptalksWMSLayerOptions> & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerOptions>`。
  */
-export type MaptalksWMSTileLayerCombinedOptions = Partial<MaptalksWMSLayerOptions>
+export type MaptalksWMSLayerCombinedOptions = Partial<MaptalksWMSLayerOptions>
   & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerOptions>;
 
 /**
@@ -1372,7 +1372,7 @@ export type UseMaptalksGLTFLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'op
 
 /** useMaptalksWMSLayer 的 opts 参数 */
 export type UseMaptalksWMSLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
-  options?: MaptalksWMSTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksWMSTileLayerCombinedOptions | undefined>;
+  options?: MaptalksWMSLayerCombinedOptions | MaybeRefOrGetter<MaptalksWMSLayerCombinedOptions | undefined>;
 };
 
 /**

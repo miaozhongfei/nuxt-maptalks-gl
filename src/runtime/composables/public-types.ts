@@ -44,7 +44,7 @@ export type {
   MaptalksUIMarkerCombinedOptions,
   MaptalksVectorLayerCombinedOptions,
   MaptalksVectorTileLayerCombinedOptions,
-  MaptalksWMSTileLayerCombinedOptions,
+  MaptalksWMSLayerCombinedOptions,
 
   // ── Component Exposed ──
   MaptalksGLTFLayerExposed,

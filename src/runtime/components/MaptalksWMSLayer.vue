@@ -22,7 +22,7 @@ import { computed, inject, watch } from 'vue'
 
 import { useMaptalksWMSLayer } from '../composables/presets/useMaptalksWMSLayer'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksWMSTileLayerCombinedOptions, MaptalksSource } from '../types'
+import type { MaptalksEventHandler, MaptalksWMSLayerCombinedOptions, MaptalksSource } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -31,7 +31,7 @@ const props = withDefaults(
     /** 图层 id，缺省自动生成 */
     id?: string
     /** 透传给 WMSTileLayer 构造器的选项（含 WMS 业务参数：layers / format / transparent / version / crs 等） */
-    options?: MaptalksWMSTileLayerCombinedOptions
+    options?: MaptalksWMSLayerCombinedOptions
     /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
     /** 是否可见，默认 true */
