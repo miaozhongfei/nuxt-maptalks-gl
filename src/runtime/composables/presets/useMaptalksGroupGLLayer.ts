@@ -15,7 +15,20 @@ import type {
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
-/** useMaptalksGroupGLLayer 的可选项 */
+/**
+ * useMaptalksGroupGLLayer 的可选项。
+ *
+ * @description 承载子 GL 图层列表、图层 id、透传选项、事件绑定与自动销毁配置。
+ * 子图层经 `layers` 传入（已创建实例），模块从 runtimeConfig 读取默认 sceneConfig（lighting / postProcess）
+ * 并合并到构造选项；用户 `options` 优先级最高。
+ *
+ * @example
+ * const vt = useMaptalksVectorTileLayer(map, { source: 'baseVT' });
+ * const group = useMaptalksGroupGLLayer(map, {
+ *   layers: [vt.layer.value ?? undefined].filter(Boolean) as MaptalksLayer[],
+ *   options: { sceneConfig: { light: { ambient: '#fff' } } },
+ * });
+ */
 export interface UseMaptalksGroupGLLayerOptions {
   /** 图层 id，缺省自动生成 */
   id?: string;

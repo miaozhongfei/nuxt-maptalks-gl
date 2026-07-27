@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 const vec = ref<{ show: () => void; hide: () => void } | null>(null);
-const visible = ref(false);
+const visible = ref(true);
 
 function toggle() {
   visible.value = !visible.value;

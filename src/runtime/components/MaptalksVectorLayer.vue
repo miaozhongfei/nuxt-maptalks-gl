@@ -1,6 +1,23 @@
 <template><slot /></template>
 
 <script setup lang="ts">
+/**
+ * 矢量图层组件（VectorLayer，承载几何图形）。
+ *
+ * @description 对 `useMaptalksVectorLayer` 的声明式封装。创建 VectorLayer 并纳管生命周期，
+ * 通过 provide/inject 向子几何组件（MaptalksMarker / LineString / Polygon 等）传递图层引用。
+ * 支持 `:visible` 声明式显隐、`:events` 原生事件绑定、`defineExpose({ layer, show, hide })` 程序式控制。
+ * 必须在 MaptalksMap 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksMap :center="[121,31]" :zoom="13" base-layer="osm">
+ *   <MaptalksVectorLayer id="myLayer" :visible="showGeo" :events="{ click: onLayerClick }">
+ *     <MaptalksMarker :coordinates="[121,31]" />
+ *   </MaptalksVectorLayer>
+ * </MaptalksMap>
+ * ```
+ */
 import { inject, provide, watch } from 'vue'
 import type { ShallowRef } from 'vue'
 
