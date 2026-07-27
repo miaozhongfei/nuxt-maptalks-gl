@@ -27,10 +27,15 @@ import type { MaptalksEventHandler, MaptalksVectorLayerCombinedOptions, Maptalks
 
 const props = withDefaults(
   defineProps<{
+    /** 图层 id，缺省自动生成 */
     id?: string
+    /** 透传给 VectorLayer 构造器的选项 */
     options?: MaptalksVectorLayerCombinedOptions
+    /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
+    /** 是否可见，默认 true */
     visible?: boolean
+    /** 事件名 → 处理器（自动 on/off） */
     events?: Record<string, MaptalksEventHandler>
   }>(),
   { options: () => ({}), autoDispose: true, visible: true },

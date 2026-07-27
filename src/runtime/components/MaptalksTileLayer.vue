@@ -22,11 +22,17 @@ import type { MaptalksEventHandler, MaptalksTileLayerCombinedOptions, MaptalksSo
 
 const props = withDefaults(
   defineProps<{
+    /** 数据源：源名（字符串，按配置解析）或内联源对象 */
     source?: string | MaptalksSource
+    /** 图层 id，缺省自动生成 */
     id?: string
+    /** 透传给 TileLayer 构造器的选项 */
     options?: MaptalksTileLayerCombinedOptions
+    /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
+    /** 是否可见，默认 true */
     visible?: boolean
+    /** 事件名 → 处理器（自动 on/off） */
     events?: Record<string, MaptalksEventHandler>
   }>(),
   { options: () => ({}), autoDispose: true, visible: true },
