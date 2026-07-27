@@ -1,7 +1,7 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
       :zoom="13"
@@ -16,14 +16,15 @@
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const { layer } = useMaptalksVectorLayer(map);
+const mc = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null)
+const map = computed(() => mc.value?.map ?? null)
+
+const { layer } = useMaptalksVectorLayer(map)
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
   options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
-});
+})
 
-const op = ref(1);
-const ctl = useMaptalksLayerControl(layer, { opacity: op });
+const op = ref(1)
+watch(op, (v) => { layer.value?.setOpacity?.(v) }, { immediate: true })
 </script>
