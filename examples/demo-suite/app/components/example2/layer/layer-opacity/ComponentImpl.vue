@@ -10,7 +10,14 @@
       <MaptalksVectorLayer ref="vec" :options="layerOpts">
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
+          :options="{
+            symbol: {
+              markerType: 'ellipse',
+              markerFill: '#2563eb',
+              markerWidth: 18,
+              markerHeight: 18,
+            },
+          }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
@@ -18,12 +25,19 @@
       <span class="text-sm w-28 shrink-0">透明度 {{ op.toFixed(2) }}</span>
       <USlider v-model="op" :min="0" :max="1" :step="0.05" />
     </div>
-    <UButton size="xs" color="primary" variant="soft" class="mt-2" @click="vec?.layer?.value?.setOpacity?.(0.5)">设置透明度 0.5（defineExpose 直调）</UButton>
+    <UButton
+      size="xs"
+      color="primary"
+      variant="soft"
+      class="mt-2"
+      @click="vec?.layer?.setOpacity?.(0.5)"
+      >设置透明度 0.5（defineExpose 直调）</UButton
+    >
   </div>
 </template>
 
 <script setup lang="ts">
-const vec = ref<{ layer: ReturnType<typeof useMaptalksVectorLayer>['layer'] } | null>(null)
-const op = ref(1)
-const layerOpts = computed(() => ({ opacity: op.value }))
+const vec = ref<MaptalksVectorLayerExposed | null>(null)
+const op = ref(1);
+const layerOpts = computed(() => ({ opacity: op.value }));
 </script>
