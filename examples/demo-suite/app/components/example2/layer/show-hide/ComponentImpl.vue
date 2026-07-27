@@ -16,9 +16,9 @@
     </MaptalksMap>
     <div class="flex items-center gap-2 mt-3">
       <UButtonGroup size="xs">
-        <UButton color="red" @click="vec?.hide()">隐藏</UButton>
-        <UButton color="green" @click="vec?.show()">显示</UButton>
-        <UButton color="primary" @click="toggle">切换</UButton>
+        <UButton size="xs" color="red" variant="soft" @click="vec?.hide()">隐藏</UButton>
+        <UButton size="xs" color="green" variant="soft" @click="vec?.show()">显示</UButton>
+        <UButton size="xs" color="primary" variant="soft" @click="toggle">切换</UButton>
       </UButtonGroup>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
