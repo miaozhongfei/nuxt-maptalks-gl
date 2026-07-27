@@ -40,6 +40,10 @@ function applyLayerOptions(
   options: Record<string, unknown> | undefined,
 ): void {
   if (!options) return;
+  // opacity / visible 需直接调用 setOpacity / show / hide，config 不会触发渲染器更新
+  if ('opacity' in options && typeof layer.setOpacity === 'function') {
+    layer.setOpacity(options.opacity as number);
+  }
   if (typeof layer.config === 'function') {
     layer.config(options);
     return;
