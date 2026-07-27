@@ -8,12 +8,12 @@ import type { App } from 'vue'
 
 import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
 import { MARKER_GEOMETRY_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksInfoWindowCombinedOptions } from '../types'
+import type { MaptalksEventHandler, MaptalksInfoWindowOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
     /** 透传给 marker.setInfoWindow() 的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
-    options?: MaptalksInfoWindowCombinedOptions
+    options?: MaptalksInfoWindowOptions
     /** 事件名 → 处理器（自动 on/off，与 @open / @close 共存） */
     events?: Record<string, MaptalksEventHandler>
     /** 组件销毁时自动移除，默认 true */

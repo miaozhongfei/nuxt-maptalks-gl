@@ -12,7 +12,7 @@ import { dequal } from 'dequal'
 import { useMaptalksUIMarker } from '../composables/useMaptalksUIMarker'
 import type { UseMaptalksUIMarkerOptions } from '../composables/useMaptalksUIMarker'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksUIMarkerCombinedOptions } from '../types'
+import type { MaptalksEventHandler, MaptalksUIMarkerOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -21,7 +21,7 @@ const props = withDefaults(
     /** 是否可见，默认 true */
     visible?: boolean
     /** 透传给 UIMarker 构造器的选项（含中文字段注释，详见 MaptalksUIMarkerOptions） */
-    options?: MaptalksUIMarkerCombinedOptions
+    options?: MaptalksUIMarkerOptions
     /** 事件名 → 处理器（自动 on/off） */
     events?: Record<string, MaptalksEventHandler>
     /** 组件销毁时自动移除 UIMarker，默认 true */
@@ -38,8 +38,8 @@ let skipNextUpdate = false
 let slotApp: App | null = null
 
 // dequal 深比较防止内联字面量每次渲染触发 composable 重建
-const stableOpts = ref<MaptalksUIMarkerCombinedOptions | undefined>(undefined)
-let prevRaw: MaptalksUIMarkerCombinedOptions | undefined
+const stableOpts = ref<MaptalksUIMarkerOptions | undefined>(undefined)
+let prevRaw: MaptalksUIMarkerOptions | undefined
 
 watch(
   () => props.options,
@@ -54,7 +54,7 @@ watch(
     }
     // 将 coordinates 注入 options 供 composable 取用
     filtered.coordinates = props.coordinates;
-    stableOpts.value = filtered as MaptalksUIMarkerCombinedOptions
+    stableOpts.value = filtered as MaptalksUIMarkerOptions
   },
   { immediate: true },
 )

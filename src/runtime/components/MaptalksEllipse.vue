@@ -5,7 +5,7 @@ import { inject } from 'vue'
 
 import { useMaptalksEllipse } from '../composables/presets/useMaptalksEllipse'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksEllipseCombinedOptions } from '../types'
+import type { MaptalksEllipseOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -20,7 +20,7 @@ const props = withDefaults(
     /** 是否可见 */
     visible?: boolean
     /** 透传给几何构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-    options?: MaptalksEllipseCombinedOptions
+    options?: MaptalksEllipseOptions
     /** 组件销毁时自动移除几何图形，默认 true */
     autoDispose?: boolean
   }>(),

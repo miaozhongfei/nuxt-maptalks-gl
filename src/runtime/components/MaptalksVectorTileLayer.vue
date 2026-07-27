@@ -17,7 +17,7 @@ import { computed, inject, watch } from 'vue'
 
 import { useMaptalksVectorTileLayer } from '../composables/presets/useMaptalksVectorTileLayer'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksVectorTileLayerCombinedOptions, MaptalksSource } from '../types'
+import type { MaptalksEventHandler, MaptalksVectorTileLayerOptions, MaptalksSource } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -26,7 +26,7 @@ const props = withDefaults(
     /** 图层 id，缺省自动生成 */
     id?: string
     /** 透传给 VectorTileLayer 构造器的选项（含 style） */
-    options?: MaptalksVectorTileLayerCombinedOptions
+    options?: MaptalksVectorTileLayerOptions
     /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
     /** 是否可见，默认 true */

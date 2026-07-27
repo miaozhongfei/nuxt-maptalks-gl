@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksEventHandler, MaptalksInfoWindow, MaptalksInfoWindowCombinedOptions, MaptalksMap } from '../types';
+import type { MaptalksEventHandler, MaptalksInfoWindow, MaptalksInfoWindowOptions, MaptalksMap } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -21,7 +21,7 @@ const logger = createLogger('nuxt-maptalks-gl');
 export interface UseMaptalksInfoWindowOptions {
   /** 透传给 maptalks InfoWindow 构造器的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
   options?: MaybeRefOrGetter<
-    MaptalksInfoWindowCombinedOptions
+    MaptalksInfoWindowOptions
     | undefined
   >;
   /** 事件名 → 处理器（自动 on/off） */

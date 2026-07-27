@@ -5,10 +5,10 @@ import { inject } from 'vue'
 
 import { useMaptalksAreaTool } from '../composables/useMaptalksAreaTool'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksAreaToolCombinedOptions } from '../types'
+import type { MaptalksAreaToolOptions } from '../types'
 
 const props = defineProps<{
-  options?: MaptalksAreaToolCombinedOptions
+  options?: MaptalksAreaToolOptions
   events?: Record<string, (event: unknown) => void>
 }>()
 

@@ -17,7 +17,7 @@ import { computed, inject, watch } from 'vue'
 
 import { useMaptalksGroupGLLayer } from '../composables/presets/useMaptalksGroupGLLayer'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksLayer, MaptalksGroupGLLayerCombinedOptions } from '../types'
+import type { MaptalksEventHandler, MaptalksLayer, MaptalksGroupGLLayerOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -26,7 +26,7 @@ const props = withDefaults(
     /** 承载的子 GL 图层（已创建实例） */
     layers?: MaptalksLayer[]
     /** 透传给 GroupGLLayer 构造器的额外选项（优先级高于默认 sceneConfig） */
-    options?: MaptalksGroupGLLayerCombinedOptions
+    options?: MaptalksGroupGLLayerOptions
     /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
     /** 是否可见，默认 true */

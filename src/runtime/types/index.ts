@@ -26,15 +26,15 @@ import type { MaptalksError, MaptalksErrorCode } from '../core/errors';
 export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMapClass>[1]
 
 /**
- * Map 构造选项的组合类型：建模字段（MaptalksMapOptions）+ 原生字段（MaptalksNativeMapOptions）。
+ * Map 构造选项的组合类型：建模字段（MaptalksMapSpecOptions）+ 原生字段（MaptalksNativeMapOptions）。
  *
- * @description `Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>`，
- * 用户构建 `ref<MaptalksMapCombinedOptions>({})` 时获得完整 IDE 补全。
+ * @description `Partial<MaptalksMapSpecOptions> & Partial<MaptalksNativeMapOptions>`，
+ * 用户构建 `ref<MaptalksMapOptions>({})` 时获得完整 IDE 补全。
  *
  * @example
- * const opts: MaptalksMapCombinedOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3 };
+ * const opts: MaptalksMapOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3 };
  */
-export type MaptalksMapCombinedOptions = Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>
+export type MaptalksMapOptions = Partial<MaptalksMapSpecOptions> & Partial<MaptalksNativeMapOptions>
 
 /**
  * maptalks-gl 原生 InfoWindow 构造选项类型（推导自安装版本）。
@@ -59,9 +59,9 @@ export type MaptalksNativeMarkerInfoWindowOptions = ConstructorParameters<typeof
  * 并为每个字段提供中文说明。未列出的原生字段通过 `[key: string]: unknown` 透传。
  *
  * @example
- * const iwOpts: MaptalksInfoWindowOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
+ * const iwOpts: MaptalksInfoWindowSpecOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
  */
-export interface MaptalksInfoWindowOptions {
+export interface MaptalksInfoWindowSpecOptions {
   /** 信息框标题，可用空字符串隐藏内置标题栏 */
   title?: string | HTMLElement;
   /** 弹出框内容（HTML 字符串或 DOM 元素），支持响应式 getter */
@@ -89,19 +89,19 @@ export interface MaptalksInfoWindowOptions {
 }
 
 /** marker.setInfoWindow() 的选项，与 InfoWindow 构造器选项完全一致 */
-export type MaptalksMarkerInfoWindowOptions = MaptalksInfoWindowOptions;
+export type MaptalksMarkerInfoWindowOptions = MaptalksInfoWindowSpecOptions;
 
 /**
  * InfoWindow 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
  *
- * @description `Partial<MaptalksInfoWindowOptions> & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowOptions>`，
- * 用户构建 `ref<MaptalksInfoWindowCombinedOptions>({})` 时获得完整 IDE 补全。
+ * @description `Partial<MaptalksInfoWindowSpecOptions> & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowSpecOptions>`，
+ * 用户构建 `ref<MaptalksInfoWindowSpecOptions>({})` 时获得完整 IDE 补全。
  *
  * @example
- * const opts: MaptalksInfoWindowCombinedOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
+ * const opts: MaptalksInfoWindowOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
  */
-export type MaptalksInfoWindowCombinedOptions = Partial<MaptalksInfoWindowOptions>
-  & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowOptions>;
+export type MaptalksInfoWindowOptions = Partial<MaptalksInfoWindowSpecOptions>
+  & Omit<Partial<MaptalksNativeInfoWindowOptions>, keyof MaptalksInfoWindowSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 TileLayer 构造选项类型。
@@ -116,9 +116,9 @@ export type MaptalksNativeTileLayerOptions = ConstructorParameters<typeof TileLa
  * @description 涵盖 TileLayer 最常用字段并提供中文说明。未列出的原生字段通过 `[key: string]: unknown` 透传。
  *
  * @example
- * const opts: MaptalksTileLayerOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png', opacity: 0.8 };
+ * const opts: MaptalksTileLayerSpecOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png', opacity: 0.8 };
  */
-export interface MaptalksTileLayerOptions {
+export interface MaptalksTileLayerSpecOptions {
   /** 瓦片 URL 模板（含 {x}/{y}/{z} 占位符） */
   urlTemplate?: string | ((...args: unknown[]) => string);
   /** 子域名数组（用于加速瓦片加载，如 ['a','b','c']） */
@@ -166,13 +166,13 @@ export interface MaptalksTileLayerOptions {
 /**
  * TileLayer 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
  *
- * @description `Partial<MaptalksTileLayerOptions> & Omit<Partial<MaptalksNativeTileLayerOptions>, keyof MaptalksTileLayerOptions>`。
+ * @description `Partial<MaptalksTileLayerSpecOptions> & Omit<Partial<MaptalksNativeTileLayerOptions>, keyof MaptalksTileLayerSpecOptions>`。
  *
  * @example
- * const opts: MaptalksTileLayerCombinedOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png' };
+ * const opts: MaptalksTileLayerOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png' };
  */
-export type MaptalksTileLayerCombinedOptions = Partial<MaptalksTileLayerOptions>
-  & Omit<Partial<MaptalksNativeTileLayerOptions>, keyof MaptalksTileLayerOptions>;
+export type MaptalksTileLayerOptions = Partial<MaptalksTileLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeTileLayerOptions>, keyof MaptalksTileLayerSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 VectorTileLayer 构造选项类型。
@@ -187,9 +187,9 @@ export type MaptalksNativeVectorTileLayerOptions = ConstructorParameters<typeof 
  * @description 涵盖 VectorTileLayer 的常用字段。style 经 `options.style` 传入。
  *
  * @example
- * const opts: MaptalksVectorTileLayerOptions = { urlTemplate: 'https://...', style: { background: { color: '#fff' } } };
+ * const opts: MaptalksVectorTileLayerSpecOptions = { urlTemplate: 'https://...', style: { background: { color: '#fff' } } };
  */
-export interface MaptalksVectorTileLayerOptions {
+export interface MaptalksVectorTileLayerSpecOptions {
   /** 矢量瓦片 URL 模板 */
   urlTemplate?: string;
   /** MapLibre 风格规范对象（控制矢量切片的渲染方式） */
@@ -241,13 +241,13 @@ export interface MaptalksVectorTileLayerOptions {
 /**
  * VectorTileLayer 构造选项的组合类型。
  *
- * @description `Partial<MaptalksVectorTileLayerOptions> & Omit<Partial<MaptalksNativeVectorTileLayerOptions>, keyof MaptalksVectorTileLayerOptions>`。
+ * @description `Partial<MaptalksVectorTileLayerSpecOptions> & Omit<Partial<MaptalksNativeVectorTileLayerOptions>, keyof MaptalksVectorTileLayerSpecOptions>`。
  *
  * @example
- * const opts: MaptalksVectorTileLayerCombinedOptions = { style: 'https://.../style.json' };
+ * const opts: MaptalksVectorTileLayerOptions = { style: 'https://.../style.json' };
  */
-export type MaptalksVectorTileLayerCombinedOptions = Partial<MaptalksVectorTileLayerOptions>
-  & Omit<Partial<MaptalksNativeVectorTileLayerOptions>, keyof MaptalksVectorTileLayerOptions>;
+export type MaptalksVectorTileLayerOptions = Partial<MaptalksVectorTileLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeVectorTileLayerOptions>, keyof MaptalksVectorTileLayerSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 GLTFLayer 构造选项类型。
@@ -262,9 +262,9 @@ export type MaptalksNativeGLTFLayerOptions = ConstructorParameters<typeof GLTFLa
  * @description GLTFLayer 是 GLTF 模型标记容器图层，实际模型经原生 API 添加。这里建模容器常用字段。
  *
  * @example
- * const opts: MaptalksGLTFLayerOptions = { url: 'https://.../model.gltf', zIndex: 10 };
+ * const opts: MaptalksGLTFLayerSpecOptions = { url: 'https://.../model.gltf', zIndex: 10 };
  */
-export interface MaptalksGLTFLayerOptions {
+export interface MaptalksGLTFLayerSpecOptions {
   /** GLTF 模型资源的 base URL */
   url?: string;
   /** 图层层级 */
@@ -300,10 +300,10 @@ export interface MaptalksGLTFLayerOptions {
 /**
  * GLTFLayer 构造选项的组合类型。
  *
- * @description `Partial<MaptalksGLTFLayerOptions> & Omit<Partial<MaptalksNativeGLTFLayerOptions>, keyof MaptalksGLTFLayerOptions>`。
+ * @description `Partial<MaptalksGLTFLayerSpecOptions> & Omit<Partial<MaptalksNativeGLTFLayerOptions>, keyof MaptalksGLTFLayerSpecOptions>`。
  */
-export type MaptalksGLTFLayerCombinedOptions = Partial<MaptalksGLTFLayerOptions>
-  & Omit<Partial<MaptalksNativeGLTFLayerOptions>, keyof MaptalksGLTFLayerOptions>;
+export type MaptalksGLTFLayerOptions = Partial<MaptalksGLTFLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeGLTFLayerOptions>, keyof MaptalksGLTFLayerSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 WMSTileLayer 构造选项类型。
@@ -318,9 +318,9 @@ export type MaptalksNativeWMSTileLayerOptions = ConstructorParameters<typeof WMS
  * @description WMSTileLayer 继承 TileLayer，额外支持 WMS 业务参数。
  *
  * @example
- * const opts: MaptalksWMSLayerOptions = { layers: 'topp:states', format: 'image/png', transparent: true };
+ * const opts: MaptalksWMSLayerSpecOptions = { layers: 'topp:states', format: 'image/png', transparent: true };
  */
-export interface MaptalksWMSLayerOptions {
+export interface MaptalksWMSLayerSpecOptions {
   /** WMS 图层名（逗号分隔多个图层） */
   layers?: string;
   /** WMS 图层样式名 */
@@ -348,10 +348,10 @@ export interface MaptalksWMSLayerOptions {
 /**
  * WMSLayer 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
  *
- * @description `Partial<MaptalksWMSLayerOptions> & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerOptions>`。
+ * @description `Partial<MaptalksWMSLayerSpecOptions> & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerSpecOptions>`。
  */
-export type MaptalksWMSLayerCombinedOptions = Partial<MaptalksWMSLayerOptions>
-  & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerOptions>;
+export type MaptalksWMSLayerOptions = Partial<MaptalksWMSLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 GroupGLLayer 构造选项类型。
@@ -366,9 +366,9 @@ export type MaptalksNativeGroupGLLayerOptions = ConstructorParameters<typeof Gro
  * @description GroupGLLayer 承载子 GL 图层，sceneConfig 控制光照与后处理。
  *
  * @example
- * const opts: MaptalksGroupGLLayerOptions = { sceneConfig: { light: { ambient: '#fff' } }, zIndex: 5 };
+ * const opts: MaptalksGroupGLLayerSpecOptions = { sceneConfig: { light: { ambient: '#fff' } }, zIndex: 5 };
  */
-export interface MaptalksGroupGLLayerOptions {
+export interface MaptalksGroupGLLayerSpecOptions {
   /** 场景配置（含 light 光照 / postProcess 后处理 / shadow 阴影 / weather 天气 / environment 环境光） */
   sceneConfig?: Record<string, unknown>;
   /** 图层层级 */
@@ -398,10 +398,10 @@ export interface MaptalksGroupGLLayerOptions {
 /**
  * GroupGLLayer 构造选项的组合类型。
  *
- * @description `Partial<MaptalksGroupGLLayerOptions> & Omit<Partial<MaptalksNativeGroupGLLayerOptions>, keyof MaptalksGroupGLLayerOptions>`。
+ * @description `Partial<MaptalksGroupGLLayerSpecOptions> & Omit<Partial<MaptalksNativeGroupGLLayerOptions>, keyof MaptalksGroupGLLayerSpecOptions>`。
  */
-export type MaptalksGroupGLLayerCombinedOptions = Partial<MaptalksGroupGLLayerOptions>
-  & Omit<Partial<MaptalksNativeGroupGLLayerOptions>, keyof MaptalksGroupGLLayerOptions>;
+export type MaptalksGroupGLLayerOptions = Partial<MaptalksGroupGLLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeGroupGLLayerOptions>, keyof MaptalksGroupGLLayerSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 VectorLayer 构造选项类型。
@@ -416,9 +416,9 @@ export type MaptalksNativeVectorLayerOptions = ConstructorParameters<typeof Vect
  * @description VectorLayer 是矢量图形容器图层，承载 Marker/LineString/Polygon 等几何图形。
  *
  * @example
- * const opts: MaptalksVectorLayerOptions = { zIndex: 3, opacity: 0.9 };
+ * const opts: MaptalksVectorLayerSpecOptions = { zIndex: 3, opacity: 0.9 };
  */
-export interface MaptalksVectorLayerOptions {
+export interface MaptalksVectorLayerSpecOptions {
   /** 图层层级 */
   zIndex?: number;
   /** 图层不透明度 */
@@ -466,10 +466,10 @@ export interface MaptalksVectorLayerOptions {
 /**
  * VectorLayer 构造选项的组合类型。
  *
- * @description `Partial<MaptalksVectorLayerOptions> & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerOptions>`。
+ * @description `Partial<MaptalksVectorLayerSpecOptions> & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>`。
  */
-export type MaptalksVectorLayerCombinedOptions = Partial<MaptalksVectorLayerOptions>
-  & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerOptions>;
+export type MaptalksVectorLayerOptions = Partial<MaptalksVectorLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>;
 
 /**
  * 从 maptalks-gl 推导的 DrawTool 构造选项类型。
@@ -491,9 +491,9 @@ export type MaptalksNativeDistanceToolOptions = ConstructorParameters<typeof Dis
  * @description `Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>`。
  *
  * @example
- * const opts: MaptalksDistanceToolCombinedOptions = { symbol: { lineColor: '#ff0000' } };
+ * const opts: MaptalksDistanceToolOptions = { symbol: { lineColor: '#ff0000' } };
  */
-export type MaptalksDistanceToolCombinedOptions = Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>
+export type MaptalksDistanceToolOptions = Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>
 
 /**
  * 从 maptalks-gl 推导的 AreaTool 构造选项类型。
@@ -508,9 +508,9 @@ export type MaptalksNativeAreaToolOptions = ConstructorParameters<typeof AreaToo
  * @description `Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>`。
  *
  * @example
- * const opts: MaptalksAreaToolCombinedOptions = { symbol: { polygonFill: '#00ff00' } };
+ * const opts: MaptalksAreaToolOptions = { symbol: { polygonFill: '#00ff00' } };
  */
-export type MaptalksAreaToolCombinedOptions = Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>
+export type MaptalksAreaToolOptions = Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>
 
 /**
  * 从用户安装的 maptalks-gl 版本推导的几何构造选项类型。
@@ -548,9 +548,9 @@ export interface MaptalksCoordinate {
  * 每项均可选；未建模字段经 `[key: string]: unknown` 透传。
  *
  * @example
- * const opts: MaptalksMapOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3, dragPitch: true };
+ * const opts: MaptalksMapSpecOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3, dragPitch: true };
  */
-export interface MaptalksMapOptions {
+export interface MaptalksMapSpecOptions {
   /** 地图中心，支持坐标对象或 [lng, lat] 数组 */
   /** 地图中心 */
   center?: [number, number];
@@ -1021,7 +1021,7 @@ export interface ResolvedModuleOptions {
  * @example
  * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10, minZoom: 3 });
  */
-export interface UseMaptalksOptions extends MaptalksMapOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapOptions> {
+export interface UseMaptalksOptions extends MaptalksMapSpecOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapSpecOptions> {
   /** 命名实例：传入后登记进 MapRegistry，可经 useMaptalksInstance 按名获取 */
   name?: string;
   /** 初始化失败回调（与 error ref 同时触发） */
@@ -1357,22 +1357,22 @@ export interface UseMaptalksPresetBaseOptions {
 
 /** useMaptalksTileLayer 的 opts 参数 */
 export type UseMaptalksTileLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
-  options?: MaptalksTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksTileLayerCombinedOptions | undefined>;
+  options?: MaptalksTileLayerOptions | MaybeRefOrGetter<MaptalksTileLayerOptions | undefined>;
 };
 
 /** useMaptalksVectorTileLayer 的 opts 参数 */
 export type UseMaptalksVectorTileLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
-  options?: MaptalksVectorTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorTileLayerCombinedOptions | undefined>;
+  options?: MaptalksVectorTileLayerOptions | MaybeRefOrGetter<MaptalksVectorTileLayerOptions | undefined>;
 };
 
 /** useMaptalksGLTFLayer 的 opts 参数 */
 export type UseMaptalksGLTFLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
-  options?: MaptalksGLTFLayerCombinedOptions | MaybeRefOrGetter<MaptalksGLTFLayerCombinedOptions | undefined>;
+  options?: MaptalksGLTFLayerOptions | MaybeRefOrGetter<MaptalksGLTFLayerOptions | undefined>;
 };
 
 /** useMaptalksWMSLayer 的 opts 参数 */
 export type UseMaptalksWMSLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
-  options?: MaptalksWMSLayerCombinedOptions | MaybeRefOrGetter<MaptalksWMSLayerCombinedOptions | undefined>;
+  options?: MaptalksWMSLayerOptions | MaybeRefOrGetter<MaptalksWMSLayerOptions | undefined>;
 };
 
 /**
@@ -1631,7 +1631,7 @@ export interface UseMaptalksVectorLayerBaseOptions {
   /** 图层 id，缺省自动生成 */
   id?: string;
   /** 透传给 VectorLayer 构造器的选项 */
-  options?: MaptalksVectorLayerCombinedOptions;
+  options?: MaptalksVectorLayerOptions;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 true */
@@ -1640,7 +1640,7 @@ export interface UseMaptalksVectorLayerBaseOptions {
 
 /** useMaptalksVectorLayer 的 opts 参数 */
 export type UseMaptalksVectorLayerOptions = Omit<UseMaptalksVectorLayerBaseOptions, 'options'> & {
-  options?: MaptalksVectorLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorLayerCombinedOptions | undefined>;
+  options?: MaptalksVectorLayerOptions | MaybeRefOrGetter<MaptalksVectorLayerOptions | undefined>;
 };
 
 /**
@@ -1662,7 +1662,7 @@ export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryO
 }
 
 /**
- * Marker 预设可选项（对标 useMaptalksInfoWindowOptions 的 options-based 模式）。
+ * Marker 预设可选项（对标 useMaptalksInfoWindowSpecOptions 的 options-based 模式）。
  *
  * @description 坐标保留在顶层；其余全部原生字段经 options 透传（含 symbol / properties / draggable 等）。
  *
@@ -1673,7 +1673,7 @@ export interface UseMaptalksMarkerOptions {
   /** 响应式 Marker 坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 透传给 Marker 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksMarkerCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksMarkerOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1696,7 +1696,7 @@ export interface UseMaptalksLineStringOptions {
   /** 响应式 LineString 坐标 */
   coordinates: MaybeRefOrGetter<Array<[number, number]>>;
   /** 透传给 LineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksLineStringCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksLineStringOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1719,7 +1719,7 @@ export interface UseMaptalksPolygonOptions {
   /** 响应式 Polygon 坐标 */
   coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
   /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksPolygonCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksPolygonOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1737,7 +1737,7 @@ export interface UseMaptalksMultiPointOptions {
   /** 响应式 MultiPoint 坐标 */
   coordinates: MaybeRefOrGetter<Array<[number, number]>>;
   /** 透传给 MultiPoint 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksMultiPointCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksMultiPointOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1755,7 +1755,7 @@ export interface UseMaptalksMultiLineStringOptions {
   /** 响应式 MultiLineString 坐标 */
   coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
   /** 透传给 MultiLineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksMultiLineStringCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksMultiLineStringOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1773,7 +1773,7 @@ export interface UseMaptalksMultiPolygonOptions {
   /** 响应式 MultiPolygon 坐标 */
   coordinates: MaybeRefOrGetter<Array<Array<Array<[number, number]>>>>;
   /** 透传给 MultiPolygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksMultiPolygonCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksMultiPolygonOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1840,7 +1840,7 @@ export interface UseMaptalksCircleOptions {
   /** 响应式半径（米） */
   radius: MaybeRefOrGetter<number>;
   /** 透传给 Circle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksCircleCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksCircleOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1867,7 +1867,7 @@ export interface UseMaptalksRectangleOptions {
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
   /** 透传给 Rectangle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksRectangleCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksRectangleOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1894,7 +1894,7 @@ export interface UseMaptalksEllipseOptions {
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
   /** 透传给 Ellipse 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksEllipseCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksEllipseOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1923,7 +1923,7 @@ export interface UseMaptalksSectorOptions {
   /** 响应式结束角（度） */
   endAngle: MaybeRefOrGetter<number>;
   /** 透传给 Sector 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksSectorCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksSectorOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1937,10 +1937,10 @@ export interface UseMaptalksSectorOptions {
 /**
 
 /**
- * `useMaptalksLabel` 的可选项（对标 useMaptalksInfoWindowOptions 的 options-based 模式）。
+ * `useMaptalksLabel` 的可选项（对标 useMaptalksInfoWindowSpecOptions 的 options-based 模式）。
  *
  * @description 必需字段（content / coordinates）在顶层；其余全部原生字段经 `options` 字段透传，
- * IDE 通过 `MaptalksLabelCombinedOptions` 获得 symbol / properties / textSymbol / draggable 等完整补全。
+ * IDE 通过 `MaptalksLabelOptions` 获得 symbol / properties / textSymbol / draggable 等完整补全。
  *
  * @example
  * useMaptalksLabel(layer, {
@@ -1955,7 +1955,7 @@ export interface UseMaptalksLabelOptions {
   /** 响应式坐标 */
   coordinates: MaybeRefOrGetter<[number, number]>;
   /** 透传给 Label 构造器的完整选项（symbol / properties / textSymbol / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksLabelCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksLabelOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -1984,7 +1984,7 @@ export interface UseMaptalksTextBoxOptions {
   /** 响应式高度（米） */
   height: MaybeRefOrGetter<number>;
   /** 透传给 TextBox 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-  options?: MaybeRefOrGetter<MaptalksTextBoxCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksTextBoxOptions | undefined>;
   /** 几何 id */
   id?: string;
   /** 响应式可见性 */
@@ -2002,9 +2002,9 @@ export interface UseMaptalksTextBoxOptions {
  * 未列出的原生字段经 `MaptalksNativeGeometryOptions` 补齐 IDE 自动补全。
  *
  * @example
- * const opts: MaptalksMarkerOptions = { symbol: { markerType: 'ellipse' }, draggable: true };
+ * const opts: MaptalksMarkerSpecOptions = { symbol: { markerType: 'ellipse' }, draggable: true };
  */
-export interface MaptalksGeometryBaseOptions {
+export interface MaptalksGeometryBaseSpecOptions {
   /** 渲染样式（支持普通对象、组合 symbol 数组、zoom-stops 数组） */
   symbol?: Record<string, unknown> | Array<Record<string, unknown>> | Array<[number, Record<string, unknown>]>;
   /** 自定义业务属性 */
@@ -2040,34 +2040,34 @@ export interface MaptalksGeometryBaseOptions {
 }
 
 /** Marker 常用选项（中文注释 + 原生字段补全，下同） */
-export interface MaptalksMarkerOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksMarkerSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** LineString 常用选项 */
-export interface MaptalksLineStringOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksLineStringSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** Polygon 常用选项 */
-export interface MaptalksPolygonOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksPolygonSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** MultiPoint 常用选项 */
-export interface MaptalksMultiPointOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksMultiPointSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** MultiLineString 常用选项 */
-export interface MaptalksMultiLineStringOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksMultiLineStringSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** MultiPolygon 常用选项 */
-export interface MaptalksMultiPolygonOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksMultiPolygonSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** Circle 常用选项 */
-export interface MaptalksCircleOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksCircleSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** Rectangle 常用选项 */
-export interface MaptalksRectangleOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksRectangleSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** Ellipse 常用选项 */
-export interface MaptalksEllipseOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksEllipseSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** Sector 常用选项 */
-export interface MaptalksSectorOptions extends MaptalksGeometryBaseOptions {}
+export interface MaptalksSectorSpecOptions extends MaptalksGeometryBaseSpecOptions {}
 /** Label 常用选项 */
-export interface MaptalksLabelOptions extends MaptalksGeometryBaseOptions {
+export interface MaptalksLabelSpecOptions extends MaptalksGeometryBaseSpecOptions {
   /** 文字专属样式（textSize / textFill / textWeight / textHaloRadius 等） */
   textSymbol?: Record<string, unknown>;
   /** 文字背景框样式（boxFill / boxOpacity / boxLineColor / boxLineWidth 等） */
   boxStyle?: Record<string, unknown>;
 }
 /** TextBox 常用选项 */
-export interface MaptalksTextBoxOptions extends MaptalksGeometryBaseOptions {
+export interface MaptalksTextBoxSpecOptions extends MaptalksGeometryBaseSpecOptions {
   /** 文字样式（wrap / padding / verticalAlignment / horizontalAlignment / symbol 等，TextBox 构造函数专属） */
   textStyle?: Record<string, unknown>;
   /** 文字背景框样式（markerType / markerFill / markerLineColor 等，TextBox 构造函数专属） */
@@ -2075,41 +2075,41 @@ export interface MaptalksTextBoxOptions extends MaptalksGeometryBaseOptions {
 }
 
 /** Marker 组件 options prop 类型——建模字段（中文注释）+ 原生字段（IDE 补全） */
-export type MaptalksMarkerCombinedOptions = Partial<MaptalksMarkerOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMarkerOptions>;
+export type MaptalksMarkerOptions = Partial<MaptalksMarkerSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMarkerSpecOptions>;
 /** LineString 组件 options prop 类型 */
-export type MaptalksLineStringCombinedOptions = Partial<MaptalksLineStringOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksLineStringOptions>;
+export type MaptalksLineStringOptions = Partial<MaptalksLineStringSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksLineStringSpecOptions>;
 /** Polygon 组件 options prop 类型 */
-export type MaptalksPolygonCombinedOptions = Partial<MaptalksPolygonOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksPolygonOptions>;
+export type MaptalksPolygonOptions = Partial<MaptalksPolygonSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksPolygonSpecOptions>;
 /** MultiPoint 组件 options prop 类型 */
-export type MaptalksMultiPointCombinedOptions = Partial<MaptalksMultiPointOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiPointOptions>;
+export type MaptalksMultiPointOptions = Partial<MaptalksMultiPointSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiPointSpecOptions>;
 /** MultiLineString 组件 options prop 类型 */
-export type MaptalksMultiLineStringCombinedOptions = Partial<MaptalksMultiLineStringOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiLineStringOptions>;
+export type MaptalksMultiLineStringOptions = Partial<MaptalksMultiLineStringSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiLineStringSpecOptions>;
 /** MultiPolygon 组件 options prop 类型 */
-export type MaptalksMultiPolygonCombinedOptions = Partial<MaptalksMultiPolygonOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiPolygonOptions>;
+export type MaptalksMultiPolygonOptions = Partial<MaptalksMultiPolygonSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksMultiPolygonSpecOptions>;
 /** Circle 组件 options prop 类型 */
-export type MaptalksCircleCombinedOptions = Partial<MaptalksCircleOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksCircleOptions>;
+export type MaptalksCircleOptions = Partial<MaptalksCircleSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksCircleSpecOptions>;
 /** Rectangle 组件 options prop 类型 */
-export type MaptalksRectangleCombinedOptions = Partial<MaptalksRectangleOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksRectangleOptions>;
+export type MaptalksRectangleOptions = Partial<MaptalksRectangleSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksRectangleSpecOptions>;
 /** Ellipse 组件 options prop 类型 */
-export type MaptalksEllipseCombinedOptions = Partial<MaptalksEllipseOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksEllipseOptions>;
+export type MaptalksEllipseOptions = Partial<MaptalksEllipseSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksEllipseSpecOptions>;
 /** Sector 组件 options prop 类型 */
-export type MaptalksSectorCombinedOptions = Partial<MaptalksSectorOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksSectorOptions>;
+export type MaptalksSectorOptions = Partial<MaptalksSectorSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksSectorSpecOptions>;
 /** Label 组件 options prop 类型 */
-export type MaptalksLabelCombinedOptions = Partial<MaptalksLabelOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksLabelOptions>;
+export type MaptalksLabelOptions = Partial<MaptalksLabelSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksLabelSpecOptions>;
 /** TextBox 组件 options prop 类型 */
-export type MaptalksTextBoxCombinedOptions = Partial<MaptalksTextBoxOptions>
-  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksTextBoxOptions>;
+export type MaptalksTextBoxOptions = Partial<MaptalksTextBoxSpecOptions>
+  & Omit<Partial<MaptalksNativeGeometryOptions>, keyof MaptalksTextBoxSpecOptions>;
 
 /**
  * 所有几何 symbol 的公共基类（原生 SymbolCommon 等价）。
@@ -2457,9 +2457,9 @@ export type MaptalksNativeUIMarkerOptions = ConstructorParameters<typeof ui.UIMa
  * 未列出的原生字段通过 `MaptalksNativeUIMarkerOptions` 补齐 IDE 自动补全。
  *
  * @example
- * const opts: MaptalksUIMarkerOptions = { content: '<div>HTML</div>', draggable: true };
+ * const opts: MaptalksUIMarkerSpecOptions = { content: '<div>HTML</div>', draggable: true };
  */
-export interface MaptalksUIMarkerOptions {
+export interface MaptalksUIMarkerSpecOptions {
   /** HTML 内容字符串或 DOM 元素 */
   content?: string | HTMLElement;
   /** 是否可拖拽 */
@@ -2483,14 +2483,14 @@ export interface MaptalksUIMarkerOptions {
 /**
  * UIMarker 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
  *
- * @description `Partial<MaptalksUIMarkerOptions> & Omit<Partial<MaptalksNativeUIMarkerOptions>, keyof MaptalksUIMarkerOptions>`，
- * 参照 `MaptalksInfoWindowCombinedOptions` 模式，用户构建 `ref<MaptalksUIMarkerCombinedOptions>({})` 时获得完整 IDE 补全。
+ * @description `Partial<MaptalksUIMarkerSpecOptions> & Omit<Partial<MaptalksNativeUIMarkerOptions>, keyof MaptalksUIMarkerSpecOptions>`，
+ * 参照 `MaptalksInfoWindowOptions` 模式，用户构建 `ref<MaptalksUIMarkerOptions>({})` 时获得完整 IDE 补全。
  *
  * @example
- * const opts: MaptalksUIMarkerCombinedOptions = { content: '<div>HTML</div>', draggable: true, minZoom: 10 };
+ * const opts: MaptalksUIMarkerOptions = { content: '<div>HTML</div>', draggable: true, minZoom: 10 };
  */
-export type MaptalksUIMarkerCombinedOptions = Partial<MaptalksUIMarkerOptions>
-  & Omit<Partial<MaptalksNativeUIMarkerOptions>, keyof MaptalksUIMarkerOptions>;
+export type MaptalksUIMarkerOptions = Partial<MaptalksUIMarkerSpecOptions>
+  & Omit<Partial<MaptalksNativeUIMarkerOptions>, keyof MaptalksUIMarkerSpecOptions>;
 
 /**
  * maptalks `ui.UIMarker` 实例的结构化建模。

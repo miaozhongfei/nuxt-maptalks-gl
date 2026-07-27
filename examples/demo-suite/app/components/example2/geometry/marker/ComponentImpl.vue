@@ -8,10 +8,17 @@
   >
     <MaptalksVectorLayer>
       <!-- 陆家嘴点标注 -->
-      <MaptalksMarker
-        :coordinates="[121.5057, 31.2453]"
-        :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
-      />
+      <MaptalksMarker :coordinates="[121.5057, 31.2453]" :options="markerOptions" />
     </MaptalksVectorLayer>
   </MaptalksMap>
 </template>
+<script setup lang="ts">
+const markerOptions: MaptalksMarkerOptions = {
+  symbol: {
+    markerType: 'ellipse',
+    markerFill: '#2563eb',
+    markerWidth: 18,
+    markerHeight: 18,
+  },
+};
+</script>

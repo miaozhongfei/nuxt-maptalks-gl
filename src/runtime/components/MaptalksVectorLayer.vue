@@ -23,14 +23,14 @@ import type { ShallowRef } from 'vue'
 
 import { useMaptalksVectorLayer } from '../composables/presets/useMaptalksVectorLayer'
 import { GEOMETRY_LAYER_KEY, MAP_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksVectorLayerCombinedOptions, MaptalksVectorLayer } from '../types'
+import type { MaptalksEventHandler, MaptalksVectorLayerOptions, MaptalksVectorLayer } from '../types'
 
 const props = withDefaults(
   defineProps<{
     /** 图层 id，缺省自动生成 */
     id?: string
     /** 透传给 VectorLayer 构造器的选项 */
-    options?: MaptalksVectorLayerCombinedOptions
+    options?: MaptalksVectorLayerOptions
     /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
     /** 是否可见，默认 true */

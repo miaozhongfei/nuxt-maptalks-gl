@@ -5,10 +5,10 @@ import { inject } from 'vue'
 
 import { useMaptalksDistanceTool } from '../composables/useMaptalksDistanceTool'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksDistanceToolCombinedOptions } from '../types'
+import type { MaptalksDistanceToolOptions } from '../types'
 
 const props = defineProps<{
-  options?: MaptalksDistanceToolCombinedOptions
+  options?: MaptalksDistanceToolOptions
   events?: Record<string, (event: unknown) => void>
 }>()
 

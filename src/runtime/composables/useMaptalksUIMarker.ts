@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksEventHandler, MaptalksMap, MaptalksUIMarker, MaptalksUIMarkerCombinedOptions } from '../types';
+import type { MaptalksEventHandler, MaptalksMap, MaptalksUIMarker, MaptalksUIMarkerOptions } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -20,7 +20,7 @@ const logger = createLogger('nuxt-maptalks-gl');
  */
 export interface UseMaptalksUIMarkerOptions {
   /** 透传给 UIMarker 构造器的选项（含中文字段注释，详见 MaptalksUIMarkerOptions） */
-  options?: MaybeRefOrGetter<MaptalksUIMarkerCombinedOptions | undefined>;
+  options?: MaybeRefOrGetter<MaptalksUIMarkerOptions | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 true */

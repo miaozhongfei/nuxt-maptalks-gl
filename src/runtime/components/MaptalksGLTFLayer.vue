@@ -19,7 +19,7 @@ import { computed, inject, watch } from 'vue'
 
 import { useMaptalksGLTFLayer } from '../composables/presets/useMaptalksGLTFLayer'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksEventHandler, MaptalksGLTFLayerCombinedOptions, MaptalksSource } from '../types'
+import type { MaptalksEventHandler, MaptalksGLTFLayerOptions, MaptalksSource } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -28,7 +28,7 @@ const props = withDefaults(
     /** 图层 id，缺省自动生成 */
     id?: string
     /** 透传给 GLTFLayer 构造器的选项 */
-    options?: MaptalksGLTFLayerCombinedOptions
+    options?: MaptalksGLTFLayerOptions
     /** 组件销毁时自动移除图层，默认 true */
     autoDispose?: boolean
     /** 是否可见，默认 true */

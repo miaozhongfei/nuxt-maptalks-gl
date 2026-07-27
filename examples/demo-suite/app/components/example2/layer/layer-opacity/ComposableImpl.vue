@@ -21,7 +21,7 @@ const op = ref(1);
 const layerOpts = computed(() => ({ opacity: op.value }));
 
 const { layer } = useMaptalksVectorLayer(map, {
-  options: layerOpts as unknown as MaptalksVectorLayerCombinedOptions,
+  options: layerOpts as unknown as MaptalksVectorLayerOptions,
 });
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],

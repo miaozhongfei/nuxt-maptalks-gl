@@ -9,7 +9,7 @@ import type {
   MaptalksEventHandler,
   MaptalksLayer,
   MaptalksMap,
-  MaptalksGroupGLLayerCombinedOptions,
+  MaptalksGroupGLLayerOptions,
   ResolvedModuleOptions,
   UseMaptalksLayerReturn,
 } from '../../types';
@@ -44,7 +44,7 @@ export interface UseMaptalksGroupGLLayerBaseOptions {
 
 /** useMaptalksGroupGLLayer 的 opts 参数 */
 export type UseMaptalksGroupGLLayerOptions = Omit<UseMaptalksGroupGLLayerBaseOptions, 'options'> & {
-  options?: MaptalksGroupGLLayerCombinedOptions | MaybeRefOrGetter<MaptalksGroupGLLayerCombinedOptions | undefined>;
+  options?: MaptalksGroupGLLayerOptions | MaybeRefOrGetter<MaptalksGroupGLLayerOptions | undefined>;
 };
 
 /** 自动生成 id 的计数器 */
