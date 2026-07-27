@@ -781,6 +781,8 @@ export interface UseMaptalksReturn {
 export interface UseMaptalksLayerOptions {
   /** 响应式图层选项，变化时按图层能力（setStyle/config/setOptions）应用 */
   options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 `true` */
   autoDispose?: boolean;
   /** 创建门控：为 false 时延迟创建（预设用于等待 source 解析），默认 `true` */
@@ -963,6 +965,8 @@ export interface UseMaptalksPresetOptions {
   id?: string;
   /** 透传给图层构造器的额外选项 */
   options?: Record<string, unknown>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 `true` */
   autoDispose?: boolean;
 }
@@ -1224,6 +1228,8 @@ export interface UseMaptalksVectorLayerOptions {
   id?: string;
   /** 透传给 VectorLayer 构造器的选项 */
   options?: Record<string, unknown>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 true */
   autoDispose?: boolean;
 }

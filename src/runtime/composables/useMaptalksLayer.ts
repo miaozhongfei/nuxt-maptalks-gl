@@ -143,6 +143,20 @@ function bindLayer(
     },
     { immediate: true },
   );
+    const events = options.events ?? {};
+    // 图层创建/销毁时自动 bind/unbind 事件
+    let boundEvents = false;
+    const stopEvents = watch(
+      () => state.layer.value,
+      (l) => {
+        if (l && !boundEvents && events) {
+          const lu = l as unknown as Record<string, unknown>;
+          for (const [event, handler] of Object.entries(events)) (lu.on as (e: string, h: (...args: unknown[]) => void) => void)(event, handler);
+          boundEvents = true;
+        }
+      },
+      { immediate: true },
+    );
   const stopOptions = watch(
     getOptions,
     (opts) => {
@@ -155,10 +169,17 @@ function bindLayer(
   };
   const remove = () => {
     stopGate();
+    stopEvents();
     stopOptions();
     if (!state.layer.value) return;
     const m = getMap();
     if (m) m.removeLayer(state.layer.value);
+      // unbind events before remove
+      if (boundEvents && events) {
+        const lu = state.layer.value as unknown as Record<string, unknown>;
+        for (const [event, handler] of Object.entries(events)) (lu.off as (e: string, h: (...args: unknown[]) => void) => void)(event, handler);
+        boundEvents = false;
+      }
     state.layer.value.remove();
     if (state.regId !== null) {
       layerRegistry.unregister(state.regId);

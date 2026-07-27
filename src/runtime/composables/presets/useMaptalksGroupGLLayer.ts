@@ -6,6 +6,7 @@ import { useRuntimeConfig } from '#imports';
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksDefaults,
+  MaptalksEventHandler,
   MaptalksLayer,
   MaptalksMap,
   MaptalksNativeGroupGLLayerOptions,
@@ -22,6 +23,8 @@ export interface UseMaptalksGroupGLLayerOptions {
   layers?: MaptalksLayer[];
   /** 透传给 GroupGLLayer 构造器的额外选项（优先级高于默认 sceneConfig） */
   options?: Record<string, unknown>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 `true` */
   autoDispose?: boolean;
 }
