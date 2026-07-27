@@ -313,6 +313,47 @@ export type MaptalksGLTFLayerCombinedOptions = Partial<MaptalksGLTFLayerOptions>
 export type MaptalksNativeWMSTileLayerOptions = ConstructorParameters<typeof WMSTileLayer>[1]
 
 /**
+ * WMSLayer 构造选项的建模接口（带中文注释）。
+ *
+ * @description WMSTileLayer 继承 TileLayer，额外支持 WMS 业务参数。
+ *
+ * @example
+ * const opts: MaptalksWMSLayerOptions = { layers: 'topp:states', format: 'image/png', transparent: true };
+ */
+export interface MaptalksWMSLayerOptions {
+  /** WMS 图层名（逗号分隔多个图层） */
+  layers?: string;
+  /** WMS 图层样式名 */
+  styles?: string;
+  /** 图片格式（如 image/png、image/jpeg） */
+  format?: string;
+  /** 是否透明背景 */
+  transparent?: boolean;
+  /** WMS 版本（如 1.3.0） */
+  version?: string;
+  /** 坐标参考系（如 EPSG:3857） */
+  crs?: string;
+  /** 坐标参考系别名 */
+  srs?: string;
+  /** 请求范围（minx,miny,maxx,maxy） */
+  bbox?: string | [number, number, number, number];
+  /** 图片宽度（像素） */
+  width?: number;
+  /** 图片高度（像素） */
+  height?: number;
+  /** 逃生舱 */
+  [key: string]: unknown;
+}
+
+/**
+ * WMSLayer 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
+ *
+ * @description `Partial<MaptalksWMSLayerOptions> & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerOptions>`。
+ */
+export type MaptalksWMSTileLayerCombinedOptions = Partial<MaptalksWMSLayerOptions>
+  & Omit<Partial<MaptalksNativeWMSTileLayerOptions>, keyof MaptalksWMSLayerOptions>;
+
+/**
  * 从 maptalks-gl 推导的 GroupGLLayer 构造选项类型。
  *
  * @description `ConstructorParameters<typeof GroupGLLayer>[2]`（第三个参数）。
@@ -1331,7 +1372,7 @@ export type UseMaptalksGLTFLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'op
 
 /** useMaptalksWMSLayer 的 opts 参数 */
 export type UseMaptalksWMSLayerOptions = Omit<UseMaptalksPresetBaseOptions, 'options'> & {
-  options?: Partial<MaptalksNativeWMSTileLayerOptions> | MaybeRefOrGetter<Partial<MaptalksNativeWMSTileLayerOptions> | undefined>;
+  options?: MaptalksWMSTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksWMSTileLayerCombinedOptions | undefined>;
 };
 
 /**
