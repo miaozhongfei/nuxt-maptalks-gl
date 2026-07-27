@@ -73,5 +73,10 @@ export function useMaptalksGLTFLayer(
     { options: layerOptions, enabled, autoDispose: opts.autoDispose },
   );
 
-  return { ...handle, error };
+  return {
+    ...handle,
+    error,
+    show: () => handle.layer.value?.show?.(),
+    hide: () => handle.layer.value?.hide?.(),
+  };
 }

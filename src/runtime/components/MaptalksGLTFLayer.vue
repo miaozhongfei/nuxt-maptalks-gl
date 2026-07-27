@@ -19,10 +19,12 @@ const props = withDefaults(
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksGLTFLayer 必须在 MaptalksMap 内使用')
-useMaptalksGLTFLayer(map, {
+const { show, hide } = useMaptalksGLTFLayer(map, {
   source: props.source,
   id: props.id,
   options: props.options,
   autoDispose: props.autoDispose,
 });
+
+defineExpose({ show, hide })
 </script>

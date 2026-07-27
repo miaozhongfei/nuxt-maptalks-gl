@@ -10,7 +10,9 @@
     />
     <div class="flex items-center gap-2 mt-3">
       <UButton size="xs" color="primary" @click="add">添加 Marker 图层</UButton>
-      <UButton size="xs" color="red" @click="removeAll" :disabled="handles.length === 0">移除全部</UButton>
+      <UButton size="xs" color="primary" @click="removeAll" :disabled="handles.length === 0"
+        >移除全部</UButton
+      >
       <UBadge color="primary" variant="subtle">图层数 {{ handles.length }}</UBadge>
     </div>
   </div>
@@ -33,7 +35,9 @@ function add() {
   const { layer, remove } = useMaptalksVectorLayer(map);
   useMaptalksMarker(layer, {
     coordinates: coords[idx % coords.length] as [number, number],
-    options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 } },
+    options: {
+      symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
+    },
   });
   handles.value.push({ remove });
   idx++;

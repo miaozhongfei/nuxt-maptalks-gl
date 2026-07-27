@@ -19,7 +19,7 @@ const props = withDefaults(
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksVectorLayer 必须在 MaptalksMap 内使用')
-const { layer } = useMaptalksVectorLayer(map, {
+const { layer, show, hide } = useMaptalksVectorLayer(map, {
   id: props.id,
   options: props.options,
   autoDispose: props.autoDispose,
@@ -28,4 +28,6 @@ const { layer } = useMaptalksVectorLayer(map, {
 // 把 VectorLayer 引用 provide 给子几何组件
 // useMaptalksVectorLayer 返回 ShallowRef<MaptalksLayer | null>，但此处实例确为 VectorLayer
 provide(GEOMETRY_LAYER_KEY, layer as ShallowRef<MaptalksVectorLayer | null>)
+
+defineExpose({ show, hide })
 </script>

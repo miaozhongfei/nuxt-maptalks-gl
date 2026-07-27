@@ -80,7 +80,7 @@ export function useMaptalksGroupGLLayer(
     return { ...base, ...opts.options };
   });
 
-  return useMaptalksLayer(
+  const handle = useMaptalksLayer(
     map,
     (mt) => {
       const Ctor = mt.GroupGLLayer;
@@ -91,4 +91,9 @@ export function useMaptalksGroupGLLayer(
     },
     { options: groupOptions, enabled: true, autoDispose: opts.autoDispose },
   );
+  return {
+    ...handle,
+    show: () => handle.layer.value?.show?.(),
+    hide: () => handle.layer.value?.hide?.(),
+  };
 }

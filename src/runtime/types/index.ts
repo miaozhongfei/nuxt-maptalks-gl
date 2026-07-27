@@ -798,6 +798,10 @@ export interface UseMaptalksLayerOptions {
 export interface UseMaptalksLayerReturn {
   /** 图层实例（创建前为 null） */
   layer: ShallowRef<MaptalksLayer | null>;
+  /** 显示图层 */
+  show: () => void;
+  /** 隐藏图层 */
+  hide: () => void;
   /** 命令式应用一组图层选项 */
   update: (options: Record<string, unknown>) => void;
   /** 命令式移除并销毁图层 */
@@ -817,6 +821,10 @@ export interface UseMaptalksLayerReturn {
 export interface UseMaptalksVectorLayerReturn {
   /** VectorLayer 实例（创建前为 null） */
   layer: ShallowRef<MaptalksVectorLayer | null>;
+  /** 显示图层 */
+  show: () => void;
+  /** 隐藏图层 */
+  hide: () => void;
   /** 命令式应用一组图层选项 */
   update: (options: Record<string, unknown>) => void;
   /** 命令式移除并销毁图层 */

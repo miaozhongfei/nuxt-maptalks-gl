@@ -45,6 +45,8 @@ export function useMaptalksVectorLayer(
   );
   return {
     layer: result.layer as ShallowRef<MaptalksVectorLayer | null>,
+    show: () => result.layer.value?.show?.(),
+    hide: () => result.layer.value?.hide?.(),
     update: result.update,
     remove: result.remove,
   };

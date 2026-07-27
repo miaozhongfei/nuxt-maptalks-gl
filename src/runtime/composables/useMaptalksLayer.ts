@@ -166,7 +166,7 @@ function bindLayer(
     }
     state.layer.value = null;
   };
-  return { layer: state.layer, update, remove };
+  return { layer: state.layer, show: () => state.layer.value?.show?.(), hide: () => state.layer.value?.hide?.(), update, remove };
 }
 
 /**

@@ -19,10 +19,12 @@ const props = withDefaults(
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksTileLayer 必须在 MaptalksMap 内使用')
-useMaptalksTileLayer(map, {
+const { show, hide } = useMaptalksTileLayer(map, {
   source: props.source,
   id: props.id,
   options: props.options,
   autoDispose: props.autoDispose,
 });
+
+defineExpose({ show, hide })
 </script>
