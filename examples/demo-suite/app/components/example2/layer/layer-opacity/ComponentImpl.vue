@@ -18,7 +18,7 @@
       <span class="text-sm w-28 shrink-0">透明度 {{ op.toFixed(2) }}</span>
       <USlider v-model="op" :min="0" :max="1" :step="0.05" />
     </div>
-    <UButton size="xs" color="primary" variant="soft" class="mt-2" @click="vec?.layer.value?.setOpacity?.(0.5)">设置透明度 0.5（defineExpose 直调）</UButton>
+    <UButton size="xs" color="primary" variant="soft" class="mt-2" @click="vec?.layer?.value?.setOpacity?.(0.5)">设置透明度 0.5（defineExpose 直调）</UButton>
   </div>
 </template>
 
