@@ -1142,6 +1142,9 @@ export type MaptalksGroupGLLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
 /** MaptalksGLTFLayer 组件 defineExpose 暴露 */
 export type MaptalksGLTFLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
 
+/** MaptalksWMSLayer 组件 defineExpose 暴露 */
+export type MaptalksWMSLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
+
 /**
  * MaptalksInfoWindow 组件 defineExpose 暴露的类型。
  *

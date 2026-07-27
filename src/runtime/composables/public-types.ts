@@ -56,6 +56,7 @@ export type {
   MaptalksUIMarkerExposed,
   MaptalksVectorLayerExposed,
   MaptalksVectorTileLayerExposed,
+  MaptalksWMSLayerExposed,
 
   // ── Composable Options ──
   UseMaptalksCircleOptions,
