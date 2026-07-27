@@ -111,15 +111,42 @@ export type MaptalksInfoWindowCombinedOptions = Partial<MaptalksInfoWindowOption
 export type MaptalksNativeTileLayerOptions = ConstructorParameters<typeof TileLayer>[1]
 
 /**
- * TileLayer 构造选项的用户输入类型。
+ * TileLayer 构造选项的建模接口（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
  *
- * @description `Partial<MaptalksNativeTileLayerOptions> & Record<string, unknown>`，
- * 允许用户传任意额外字段（透传给 maptalks 原生构造器）。
+ * @description 涵盖 TileLayer 最常用字段并提供中文说明。未列出的原生字段通过 `[key: string]: unknown` 透传。
+ *
+ * @example
+ * const opts: MaptalksTileLayerOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png', opacity: 0.8 };
+ */
+export interface MaptalksTileLayerOptions {
+  /** 瓦片 URL 模板（含 {x}/{y}/{z} 占位符） */
+  urlTemplate?: string;
+  /** 子域名数组（用于加速瓦片加载） */
+  subdomains?: string[] | number[];
+  /** 图层不透明度（0=全透明，1=不透明） */
+  opacity?: number;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** 图层层级（数值越大越靠前） */
+  zIndex?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 逃生舱：透传给未建模的 maptalks 原始 TileLayer 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * TileLayer 构造选项的组合类型：建模字段（中文注释）+ 原生字段（IDE 补全）。
+ *
+ * @description `Partial<MaptalksTileLayerOptions> & Omit<Partial<MaptalksNativeTileLayerOptions>, keyof MaptalksTileLayerOptions>`。
  *
  * @example
  * const opts: MaptalksTileLayerCombinedOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png' };
  */
-export type MaptalksTileLayerCombinedOptions = Partial<MaptalksNativeTileLayerOptions> & Record<string, unknown>
+export type MaptalksTileLayerCombinedOptions = Partial<MaptalksTileLayerOptions>
+  & Omit<Partial<MaptalksNativeTileLayerOptions>, keyof MaptalksTileLayerOptions>;
 
 /**
  * 从 maptalks-gl 推导的 VectorTileLayer 构造选项类型。
@@ -129,14 +156,38 @@ export type MaptalksTileLayerCombinedOptions = Partial<MaptalksNativeTileLayerOp
 export type MaptalksNativeVectorTileLayerOptions = ConstructorParameters<typeof VectorTileLayer>[1]
 
 /**
- * VectorTileLayer 构造选项的用户输入类型。
+ * VectorTileLayer 构造选项的建模接口（带中文注释）。
  *
- * @description `Partial<MaptalksNativeVectorTileLayerOptions> & Record<string, unknown>`。
+ * @description 涵盖 VectorTileLayer 的常用字段。style 经 `options.style` 传入。
+ *
+ * @example
+ * const opts: MaptalksVectorTileLayerOptions = { urlTemplate: 'https://...', style: { background: { color: '#fff' } } };
+ */
+export interface MaptalksVectorTileLayerOptions {
+  /** 矢量瓦片 URL 模板 */
+  urlTemplate?: string;
+  /** MapLibre 风格规范对象（控制矢量切片的渲染方式） */
+  style?: Record<string, unknown> | string;
+  /** 图层不透明度 */
+  opacity?: number;
+  /** 图层层级 */
+  zIndex?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 逃生舱 */
+  [key: string]: unknown;
+}
+
+/**
+ * VectorTileLayer 构造选项的组合类型。
+ *
+ * @description `Partial<MaptalksVectorTileLayerOptions> & Omit<Partial<MaptalksNativeVectorTileLayerOptions>, keyof MaptalksVectorTileLayerOptions>`。
  *
  * @example
  * const opts: MaptalksVectorTileLayerCombinedOptions = { style: 'https://.../style.json' };
  */
-export type MaptalksVectorTileLayerCombinedOptions = Partial<MaptalksNativeVectorTileLayerOptions> & Record<string, unknown>
+export type MaptalksVectorTileLayerCombinedOptions = Partial<MaptalksVectorTileLayerOptions>
+  & Omit<Partial<MaptalksNativeVectorTileLayerOptions>, keyof MaptalksVectorTileLayerOptions>;
 
 /**
  * 从 maptalks-gl 推导的 GLTFLayer 构造选项类型。
@@ -146,14 +197,33 @@ export type MaptalksVectorTileLayerCombinedOptions = Partial<MaptalksNativeVecto
 export type MaptalksNativeGLTFLayerOptions = ConstructorParameters<typeof GLTFLayer>[1]
 
 /**
- * GLTFLayer 构造选项的用户输入类型。
+ * GLTFLayer 构造选项的建模接口（带中文注释）。
  *
- * @description `Partial<MaptalksNativeGLTFLayerOptions> & Record<string, unknown>`。
+ * @description GLTFLayer 是 GLTF 模型标记容器图层，实际模型经原生 API 添加。这里建模容器常用字段。
  *
  * @example
- * const opts: MaptalksGLTFLayerCombinedOptions = { url: 'https://.../model.gltf' };
+ * const opts: MaptalksGLTFLayerOptions = { url: 'https://.../model.gltf', zIndex: 10 };
  */
-export type MaptalksGLTFLayerCombinedOptions = Partial<MaptalksNativeGLTFLayerOptions> & Record<string, unknown>
+export interface MaptalksGLTFLayerOptions {
+  /** GLTF 模型资源的 base URL */
+  url?: string;
+  /** 图层层级 */
+  zIndex?: number;
+  /** 图层不透明度 */
+  opacity?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 逃生舱 */
+  [key: string]: unknown;
+}
+
+/**
+ * GLTFLayer 构造选项的组合类型。
+ *
+ * @description `Partial<MaptalksGLTFLayerOptions> & Omit<Partial<MaptalksNativeGLTFLayerOptions>, keyof MaptalksGLTFLayerOptions>`。
+ */
+export type MaptalksGLTFLayerCombinedOptions = Partial<MaptalksGLTFLayerOptions>
+  & Omit<Partial<MaptalksNativeGLTFLayerOptions>, keyof MaptalksGLTFLayerOptions>;
 
 /**
  * 从 maptalks-gl 推导的 WMSTileLayer 构造选项类型。
@@ -170,14 +240,33 @@ export type MaptalksNativeWMSTileLayerOptions = ConstructorParameters<typeof WMS
 export type MaptalksNativeGroupGLLayerOptions = ConstructorParameters<typeof GroupGLLayer>[2]
 
 /**
- * GroupGLLayer 构造选项的用户输入类型。
+ * GroupGLLayer 构造选项的建模接口（带中文注释）。
  *
- * @description `Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>`。
+ * @description GroupGLLayer 承载子 GL 图层，sceneConfig 控制光照与后处理。
  *
  * @example
- * const opts: MaptalksGroupGLLayerCombinedOptions = { lighting: { ambient: '#fff' } };
+ * const opts: MaptalksGroupGLLayerOptions = { sceneConfig: { light: { ambient: '#fff' } }, zIndex: 5 };
  */
-export type MaptalksGroupGLLayerCombinedOptions = Partial<MaptalksNativeGroupGLLayerOptions> & Record<string, unknown>
+export interface MaptalksGroupGLLayerOptions {
+  /** 场景配置（含 light 光照 / postProcess 后处理） */
+  sceneConfig?: Record<string, unknown>;
+  /** 图层层级 */
+  zIndex?: number;
+  /** 图层不透明度 */
+  opacity?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 逃生舱 */
+  [key: string]: unknown;
+}
+
+/**
+ * GroupGLLayer 构造选项的组合类型。
+ *
+ * @description `Partial<MaptalksGroupGLLayerOptions> & Omit<Partial<MaptalksNativeGroupGLLayerOptions>, keyof MaptalksGroupGLLayerOptions>`。
+ */
+export type MaptalksGroupGLLayerCombinedOptions = Partial<MaptalksGroupGLLayerOptions>
+  & Omit<Partial<MaptalksNativeGroupGLLayerOptions>, keyof MaptalksGroupGLLayerOptions>;
 
 /**
  * 从 maptalks-gl 推导的 VectorLayer 构造选项类型。
@@ -187,14 +276,31 @@ export type MaptalksGroupGLLayerCombinedOptions = Partial<MaptalksNativeGroupGLL
 export type MaptalksNativeVectorLayerOptions = ConstructorParameters<typeof VectorLayer>[2]
 
 /**
- * VectorLayer 构造选项的用户输入类型。
+ * VectorLayer 构造选项的建模接口（带中文注释）。
  *
- * @description `Partial<MaptalksNativeVectorLayerOptions> & Record<string, unknown>`。
+ * @description VectorLayer 是矢量图形容器图层，承载 Marker/LineString/Polygon 等几何图形。
  *
  * @example
- * const opts: MaptalksVectorLayerCombinedOptions = { enableSimplify: false };
+ * const opts: MaptalksVectorLayerOptions = { zIndex: 3, opacity: 0.9 };
  */
-export type MaptalksVectorLayerCombinedOptions = Partial<MaptalksNativeVectorLayerOptions> & Record<string, unknown>
+export interface MaptalksVectorLayerOptions {
+  /** 图层层级 */
+  zIndex?: number;
+  /** 图层不透明度 */
+  opacity?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 逃生舱 */
+  [key: string]: unknown;
+}
+
+/**
+ * VectorLayer 构造选项的组合类型。
+ *
+ * @description `Partial<MaptalksVectorLayerOptions> & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerOptions>`。
+ */
+export type MaptalksVectorLayerCombinedOptions = Partial<MaptalksVectorLayerOptions>
+  & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerOptions>;
 
 /**
  * 从 maptalks-gl 推导的 DrawTool 构造选项类型。
@@ -1227,7 +1333,7 @@ export interface UseMaptalksVectorLayerOptions {
   /** 图层 id，缺省自动生成 */
   id?: string;
   /** 透传给 VectorLayer 构造器的选项 */
-  options?: Record<string, unknown>;
+  options?: MaptalksVectorLayerCombinedOptions;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 true */

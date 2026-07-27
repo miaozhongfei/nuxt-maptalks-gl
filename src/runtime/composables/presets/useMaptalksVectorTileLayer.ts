@@ -6,7 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeVectorTileLayerOptions,
+  MaptalksVectorTileLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksPresetOptions,
@@ -54,7 +54,7 @@ function buildVectorOptions(
  */
 export function useMaptalksVectorTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeVectorTileLayerOptions> } = {},
+  opts: UseMaptalksPresetOptions & { options?: MaptalksVectorTileLayerCombinedOptions } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   vtSeq += 1;

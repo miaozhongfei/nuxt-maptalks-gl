@@ -9,7 +9,7 @@ import type {
   MaptalksEventHandler,
   MaptalksLayer,
   MaptalksMap,
-  MaptalksNativeGroupGLLayerOptions,
+  MaptalksGroupGLLayerCombinedOptions,
   ResolvedModuleOptions,
   UseMaptalksLayerReturn,
 } from '../../types';
@@ -79,7 +79,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  */
 export function useMaptalksGroupGLLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksGroupGLLayerOptions & { options?: Partial<MaptalksNativeGroupGLLayerOptions> } = {},
+  opts: UseMaptalksGroupGLLayerOptions & { options?: MaptalksGroupGLLayerCombinedOptions } = {},
 ): UseMaptalksLayerReturn {
   const publicConfig = useRuntimeConfig().public as unknown as {
     maptalksGl?: ResolvedModuleOptions;

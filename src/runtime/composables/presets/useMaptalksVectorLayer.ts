@@ -4,6 +4,7 @@ import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
   MaptalksVectorLayer,
+  MaptalksVectorLayerCombinedOptions,
   UseMaptalksVectorLayerOptions,
   UseMaptalksVectorLayerReturn,
 } from '../../types';
@@ -28,7 +29,7 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorLayerOptions & { options?: Record<string, unknown> } = {},
+  opts: UseMaptalksVectorLayerOptions & { options?: MaptalksVectorLayerCombinedOptions } = {},
 ): UseMaptalksVectorLayerReturn {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;

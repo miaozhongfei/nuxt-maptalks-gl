@@ -6,7 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeGLTFLayerOptions,
+  MaptalksGLTFLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksPresetOptions,
@@ -53,7 +53,7 @@ function buildGltfOptions(
  */
 export function useMaptalksGLTFLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeGLTFLayerOptions> } = {},
+  opts: UseMaptalksPresetOptions & { options?: MaptalksGLTFLayerCombinedOptions } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   gltfSeq += 1;

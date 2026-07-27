@@ -6,7 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeTileLayerOptions,
+  MaptalksTileLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksPresetOptions,
@@ -54,7 +54,7 @@ function buildTileOptions(
  */
 export function useMaptalksTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeTileLayerOptions> } = {},
+  opts: UseMaptalksPresetOptions & { options?: MaptalksTileLayerCombinedOptions } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   tileSeq += 1;
