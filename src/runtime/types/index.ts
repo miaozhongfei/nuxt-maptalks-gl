@@ -120,8 +120,8 @@ export type MaptalksNativeTileLayerOptions = ConstructorParameters<typeof TileLa
  */
 export interface MaptalksTileLayerOptions {
   /** 瓦片 URL 模板（含 {x}/{y}/{z} 占位符） */
-  urlTemplate?: string;
-  /** 子域名数组（用于加速瓦片加载） */
+  urlTemplate?: string | ((...args: unknown[]) => string);
+  /** 子域名数组（用于加速瓦片加载，如 ['a','b','c']） */
   subdomains?: string[] | number[];
   /** 图层不透明度（0=全透明，1=不透明） */
   opacity?: number;
@@ -133,6 +133,32 @@ export interface MaptalksTileLayerOptions {
   zIndex?: number;
   /** 是否可见 */
   visible?: boolean;
+  /** 瓦片像素尺寸（默认 256，可传 [w,h]） */
+  tileSize?: number | [number, number];
+  /** 图层可用最大瓦片级别（超过后放大渲染已有瓦片） */
+  maxAvailableZoom?: number;
+  /** 瓦片加载的跨域属性（如 'anonymous'） */
+  crossOrigin?: string;
+  /** 瓦片加载出错时显示的替代图片 URL */
+  errorUrl?: string;
+  /** 认证 token（自动附加到瓦片请求） */
+  token?: string;
+  /** 自定义 fetch 选项（headers / credentials 等） */
+  fetchOptions?: Record<string, unknown>;
+  /** 瓦片淡入动画开关（默认 true） */
+  fadeAnimation?: boolean;
+  /** 自定义 URL 模板标签（如 {key: value} 替换 {key} 占位符） */
+  customTags?: Record<string, unknown>;
+  /** 平移出世界边界时是否重复渲染瓦片 */
+  repeatWorld?: boolean;
+  /** 缩放级别偏移，用于调整瓦片 URL 计算 */
+  zoomOffset?: number;
+  /** 底层版权信息文本 */
+  attribution?: string;
+  /** 是否启用几何事件 */
+  geometryEvents?: boolean;
+  /** 指定渲染器类型（'canvas'/'gl'/'dom'，null=自动） */
+  renderer?: string | null;
   /** 逃生舱：透传给未建模的 maptalks 原始 TileLayer 选项 */
   [key: string]: unknown;
 }
@@ -174,6 +200,40 @@ export interface MaptalksVectorTileLayerOptions {
   zIndex?: number;
   /** 是否可见 */
   visible?: boolean;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** 瓦片像素尺寸 */
+  tileSize?: number | [number, number];
+  /** 图层可用最大瓦片级别 */
+  maxAvailableZoom?: number;
+  /** 瓦片淡入动画开关 */
+  fadeAnimation?: boolean;
+  /** 文本标注碰撞检测开关 */
+  collision?: boolean;
+  /** 是否启用要素拾取（点选） */
+  picking?: boolean;
+  /** 是否启用抗锯齿 */
+  antialias?: boolean;
+  /** 样式缩放系数（如 2 用于高清屏） */
+  styleScale?: number;
+  /** 图标最大像素尺寸 */
+  maxIconSize?: number;
+  /** 要素 ID 对应的属性名 */
+  featureIdProperty?: string;
+  /** 海拔高度对应的属性名 */
+  altitudeProperty?: string;
+  /** 是否启用三维海拔渲染 */
+  enableAltitude?: boolean;
+  /** 图标加载失败时的替代 URL */
+  iconErrorUrl?: string;
+  /** 认证 token */
+  token?: string;
+  /** 自定义 fetch 选项 */
+  fetchOptions?: Record<string, unknown>;
+  /** 底层版权信息 */
+  attribution?: string;
   /** 逃生舱 */
   [key: string]: unknown;
 }
@@ -213,6 +273,26 @@ export interface MaptalksGLTFLayerOptions {
   opacity?: number;
   /** 是否可见 */
   visible?: boolean;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** 图层级样式（应用于所有模型） */
+  style?: Record<string, unknown>;
+  /** 是否启用几何事件（click / hover 等） */
+  geometryEvents?: boolean;
+  /** 几何事件命中容差（像素） */
+  geometryEventTolerance?: number;
+  /** CSS 鼠标指针样式（如 'pointer'） */
+  cursor?: string;
+  /** 固定海拔高度（米） */
+  altitude?: number;
+  /** 是否启用三维海拔 */
+  enableAltitude?: boolean;
+  /** 指定渲染器类型 */
+  renderer?: string | null;
+  /** 底层版权信息 */
+  attribution?: string;
   /** 逃生舱 */
   [key: string]: unknown;
 }
@@ -248,7 +328,7 @@ export type MaptalksNativeGroupGLLayerOptions = ConstructorParameters<typeof Gro
  * const opts: MaptalksGroupGLLayerOptions = { sceneConfig: { light: { ambient: '#fff' } }, zIndex: 5 };
  */
 export interface MaptalksGroupGLLayerOptions {
-  /** 场景配置（含 light 光照 / postProcess 后处理） */
+  /** 场景配置（含 light 光照 / postProcess 后处理 / shadow 阴影 / weather 天气 / environment 环境光） */
   sceneConfig?: Record<string, unknown>;
   /** 图层层级 */
   zIndex?: number;
@@ -256,6 +336,20 @@ export interface MaptalksGroupGLLayerOptions {
   opacity?: number;
   /** 是否可见 */
   visible?: boolean;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** 是否启用抗锯齿 */
+  antialias?: boolean;
+  /** MSAA 采样数（抗锯齿质量，如 4） */
+  multiSamples?: number;
+  /** 是否启用几何事件 */
+  geometryEvents?: boolean;
+  /** 地形配置（含 type / urlTemplate / tileSystem / shader 等） */
+  terrain?: Record<string, unknown>;
+  /** 底层版权信息 */
+  attribution?: string;
   /** 逃生舱 */
   [key: string]: unknown;
 }
@@ -290,6 +384,40 @@ export interface MaptalksVectorLayerOptions {
   opacity?: number;
   /** 是否可见 */
   visible?: boolean;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** CSS 鼠标指针样式（如 'pointer' / 'crosshair'） */
+  cursor?: string;
+  /** 默认图标尺寸 [width, height] */
+  defaultIconSize?: [number, number];
+  /** 是否启用几何简化（大数据量时提升性能） */
+  enableSimplify?: boolean;
+  /** 是否启用三维海拔 */
+  enableAltitude?: boolean;
+  /** 图层固定海拔高度（米） */
+  altitude?: number;
+  /** 海拔高度对应的属性名 */
+  altitudeProperty?: string;
+  /** 是否绘制连接线（地面到图形） */
+  drawAltitude?: boolean;
+  /** 是否启用几何事件（click / hover 等） */
+  geometryEvents?: boolean;
+  /** 几何事件命中容差（像素） */
+  geometryEventTolerance?: number;
+  /** 图层级样式（支持 filter 规则数组） */
+  style?: Record<string, unknown> | Array<unknown>;
+  /** 碰撞检测缓冲区大小（像素） */
+  collisionBufferSize?: number;
+  /** 是否启用渐进式渲染（分帧渲染大批量图形） */
+  progressiveRender?: boolean;
+  /** 每帧渐进渲染的图形数量 */
+  progressiveRenderCount?: number;
+  /** 底层版权信息 */
+  attribution?: string;
+  /** 指定渲染器类型 */
+  renderer?: string | null;
   /** 逃生舱 */
   [key: string]: unknown;
 }
