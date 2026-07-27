@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -53,13 +53,13 @@ function buildGltfOptions(
  */
 export function useMaptalksGLTFLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: MaptalksGLTFLayerCombinedOptions } = {},
+  opts: Omit<UseMaptalksPresetOptions, 'options'> & { options?: MaptalksGLTFLayerCombinedOptions | MaybeRefOrGetter<MaptalksGLTFLayerCombinedOptions | undefined> } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   gltfSeq += 1;
   const id = opts.id ?? `maptalks-gltf-${gltfSeq}`;
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildGltfOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildGltfOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,

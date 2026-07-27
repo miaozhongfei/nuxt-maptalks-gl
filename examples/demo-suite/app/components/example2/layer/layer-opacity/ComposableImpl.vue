@@ -16,7 +16,7 @@ useMaptalksTileLayer(map, { source: 'osm' })
 const op = ref(1)
 const layerOpts = computed(() => ({ opacity: op.value }))
 
-const { layer } = useMaptalksVectorLayer(map, { options: layerOpts as unknown as MaptalksVectorLayerCombinedOptions })
+const { layer } = useMaptalksVectorLayer(map, { options: layerOpts })
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
   options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },

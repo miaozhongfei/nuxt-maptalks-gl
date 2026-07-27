@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -54,14 +54,14 @@ function buildTileOptions(
  */
 export function useMaptalksTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: MaptalksTileLayerCombinedOptions } = {},
+  opts: Omit<UseMaptalksPresetOptions, 'options'> & { options?: MaptalksTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksTileLayerCombinedOptions | undefined> } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   tileSeq += 1;
   const id = opts.id ?? `maptalks-tile-${tileSeq}`;
   // 传入命名/内联源时，等待解析完成再创建；否则立即按选项创建
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildTileOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildTileOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,

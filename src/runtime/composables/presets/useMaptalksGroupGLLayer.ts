@@ -79,7 +79,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  */
 export function useMaptalksGroupGLLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksGroupGLLayerOptions & { options?: MaptalksGroupGLLayerCombinedOptions } = {},
+  opts: Omit<UseMaptalksGroupGLLayerOptions, 'options'> & { options?: MaptalksGroupGLLayerCombinedOptions | MaybeRefOrGetter<MaptalksGroupGLLayerCombinedOptions | undefined> } = {},
 ): UseMaptalksLayerReturn {
   const publicConfig = useRuntimeConfig().public as unknown as {
     maptalksGl?: ResolvedModuleOptions;

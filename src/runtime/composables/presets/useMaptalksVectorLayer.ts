@@ -1,3 +1,4 @@
+import { toValue } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -29,7 +30,7 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorLayerOptions & { options?: MaptalksVectorLayerCombinedOptions } = {},
+  opts: Omit<UseMaptalksVectorLayerOptions, 'options'> & { options?: MaptalksVectorLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorLayerCombinedOptions | undefined> } = {},
 ): UseMaptalksVectorLayerReturn {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;
@@ -40,7 +41,7 @@ export function useMaptalksVectorLayer(
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('layer-failed', '当前 maptalks-gl 未导出 VectorLayer');
       }
-      return new Ctor(id, opts.options);
+      return new Ctor(id, toValue(opts.options));
     },
     { options: opts.options, autoDispose: opts.autoDispose },
   );

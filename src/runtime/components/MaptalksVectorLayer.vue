@@ -18,7 +18,7 @@
  * </MaptalksMap>
  * ```
  */
-import { computed, inject, provide, toRef, watch } from 'vue'
+import { computed, inject, provide, watch } from 'vue'
 import type { ShallowRef } from 'vue'
 
 import { useMaptalksVectorLayer } from '../composables/presets/useMaptalksVectorLayer'
@@ -45,7 +45,7 @@ const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksVectorLayer 必须在 MaptalksMap 内使用')
 const { layer, show, hide } = useMaptalksVectorLayer(map, {
   id: props.id,
-  options: computed(() => props.options) as unknown as typeof props.options,
+  options: computed(() => props.options),
   autoDispose: props.autoDispose,
   events: props.events,
 })

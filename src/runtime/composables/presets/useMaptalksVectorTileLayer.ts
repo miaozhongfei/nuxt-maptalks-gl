@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -54,13 +54,13 @@ function buildVectorOptions(
  */
 export function useMaptalksVectorTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: MaptalksVectorTileLayerCombinedOptions } = {},
+  opts: Omit<UseMaptalksPresetOptions, 'options'> & { options?: MaptalksVectorTileLayerCombinedOptions | MaybeRefOrGetter<MaptalksVectorTileLayerCombinedOptions | undefined> } = {},
 ): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   vtSeq += 1;
   const id = opts.id ?? `maptalks-vt-${vtSeq}`;
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildVectorOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildVectorOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,

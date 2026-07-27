@@ -13,7 +13,7 @@
  * <MaptalksGroupGLLayer :layers="[vtLayer]" :options="{ sceneConfig: { light: { ambient: '#fff' } } }" />
  * ```
  */
-import { computed, inject, toRef, watch } from 'vue'
+import { computed, inject, watch } from 'vue'
 
 import { useMaptalksGroupGLLayer } from '../composables/presets/useMaptalksGroupGLLayer'
 import { MAP_KEY } from '../core/map-context'
@@ -42,7 +42,7 @@ if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksGroupGLLayer 必须在 Map
 const { layer, show, hide } = useMaptalksGroupGLLayer(map, {
   id: props.id,
   layers: props.layers,
-  options: computed(() => props.options) as unknown as typeof props.options,
+  options: computed(() => props.options),
   autoDispose: props.autoDispose,
   events: props.events,
 })
