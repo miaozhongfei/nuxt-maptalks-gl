@@ -18,10 +18,11 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 
 const op = ref(1);
+
 const layerOpts = computed(() => ({ opacity: op.value }));
 
 const { layer } = useMaptalksVectorLayer(map, {
-  options: layerOpts as unknown as MaptalksVectorLayerOptions,
+  options: layerOpts,
 });
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
