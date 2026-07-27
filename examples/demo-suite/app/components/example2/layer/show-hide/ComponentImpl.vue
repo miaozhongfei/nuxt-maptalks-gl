@@ -15,8 +15,8 @@
       </MaptalksVectorLayer>
     </MaptalksMap>
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="error" variant="solid" @click="vec?.hide()">隐藏</UButton>
-      <UButton size="xs" color="success" variant="solid" @click="vec?.show()">显示</UButton>
+      <UButton size="xs" color="error" variant="solid" @click="doHide">隐藏</UButton>
+      <UButton size="xs" color="success" variant="solid" @click="doShow">显示</UButton>
       <UButton size="xs" color="primary" variant="solid" @click="toggle">切换</UButton>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
@@ -32,4 +32,6 @@ function toggle() {
   if (visible.value) vec.value?.show()
   else vec.value?.hide()
 }
+function doHide() { visible.value = false; vec.value?.hide() }
+function doShow() { visible.value = true; vec.value?.show() }
 </script>

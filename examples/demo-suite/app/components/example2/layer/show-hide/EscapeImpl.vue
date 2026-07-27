@@ -2,8 +2,8 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="error" variant="solid" @click="hideLayer">隐藏</UButton>
-      <UButton size="xs" color="success" variant="solid" @click="showLayer">显示</UButton>
+      <UButton size="xs" color="error" variant="solid" @click="doHide">隐藏</UButton>
+      <UButton size="xs" color="success" variant="solid" @click="doShow">显示</UButton>
       <UButton size="xs" color="primary" variant="solid" @click="toggle">切换</UButton>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
@@ -34,6 +34,8 @@ watch(
 function showLayer() { visible.value = true; layerRef?.show?.() }
 function hideLayer() { visible.value = false; layerRef?.hide?.() }
 function toggle() { visible.value = !visible.value; if (visible.value) showLayer(); else hideLayer() }
+function doHide() { visible.value = false; hideLayer() }
+function doShow() { visible.value = true; showLayer() }
 
 onBeforeUnmount(() => { layerRef = null })
 </script>
