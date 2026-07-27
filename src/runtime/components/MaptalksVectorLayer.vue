@@ -32,7 +32,7 @@ const { layer, show, hide } = useMaptalksVectorLayer(map, {
 // useMaptalksVectorLayer 返回 ShallowRef<MaptalksLayer | null>，但此处实例确为 VectorLayer
 provide(GEOMETRY_LAYER_KEY, layer as ShallowRef<MaptalksVectorLayer | null>)
 
-watch(() => props.visible, (v) => { if (v) show(); else hide() }, { immediate: true })
+watch([() => props.visible, layer], ([v, l]) => { if (!l) return; if (v) show(); else hide() }, { immediate: true })
 
 defineExpose({ layer, show, hide })
 </script>

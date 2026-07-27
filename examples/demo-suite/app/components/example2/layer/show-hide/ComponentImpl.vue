@@ -10,7 +10,14 @@
       <MaptalksVectorLayer ref="vec" :visible="visible">
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
+          :options="{
+            symbol: {
+              markerType: 'ellipse',
+              markerFill: '#2563eb',
+              markerWidth: 18,
+              markerHeight: 18,
+            },
+          }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
@@ -24,14 +31,20 @@
 </template>
 
 <script setup lang="ts">
-const vec = ref<{ show: () => void; hide: () => void } | null>(null)
-const visible = ref(true)
+const vec = ref<{ show: () => void; hide: () => void } | null>(null);
+const visible = ref(false);
 
 function toggle() {
-  visible.value = !visible.value
-  if (visible.value) vec.value?.show()
-  else vec.value?.hide()
+  visible.value = !visible.value;
+  if (visible.value) vec.value?.show();
+  else vec.value?.hide();
 }
-function doHide() { visible.value = false; vec.value?.hide() }
-function doShow() { visible.value = true; vec.value?.show() }
+function doHide() {
+  visible.value = false;
+  vec.value?.hide();
+}
+function doShow() {
+  visible.value = true;
+  vec.value?.show();
+}
 </script>

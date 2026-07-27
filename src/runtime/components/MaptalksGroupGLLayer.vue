@@ -29,7 +29,7 @@ const { layer, show, hide } = useMaptalksGroupGLLayer(map, {
   events: props.events,
 })
 
-watch(() => props.visible, (v) => { if (v) show(); else hide() }, { immediate: true })
+watch([() => props.visible, layer], ([v, l]) => { if (!l) return; if (v) show(); else hide() }, { immediate: true })
 
 defineExpose({ layer, show, hide })
 </script>
