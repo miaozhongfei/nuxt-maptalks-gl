@@ -5,7 +5,6 @@ import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
   MaptalksVectorLayer,
-  MaptalksVectorLayerCombinedOptions,
   UseMaptalksVectorLayerOptions,
   UseMaptalksVectorLayerReturn,
 } from '../../types';

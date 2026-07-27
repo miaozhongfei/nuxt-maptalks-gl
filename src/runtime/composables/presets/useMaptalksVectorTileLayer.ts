@@ -6,7 +6,6 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksVectorTileLayerCombinedOptions,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksVectorTileLayerOptions,
