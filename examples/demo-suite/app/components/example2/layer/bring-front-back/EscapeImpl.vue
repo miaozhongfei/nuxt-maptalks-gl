@@ -13,8 +13,8 @@ const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-let blueRef: { bringToFront?: () => unknown } | null = null
-let redRef: { bringToBack?: () => unknown } | null = null
+let blueRef: Record<string, unknown> | null = null
+let redRef: Record<string, unknown> | null = null
 
 watch(
   () => toValue(map),
