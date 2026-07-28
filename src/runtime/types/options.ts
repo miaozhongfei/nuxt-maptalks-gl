@@ -7,6 +7,9 @@
  * （Spec + Omit<Native, keyof Spec>），为用户提供完整 IDE 补全。
  */
 
+/** @see https://github.com/sindresorhus/type-fest/blob/main/source/simplify.d.ts */
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
+
 import type { MaptalksLayer } from './structural';
 
 import type {
@@ -479,8 +482,8 @@ export interface MaptalksVectorLayerSpecOptions {
  *
  * @description `Partial<MaptalksVectorLayerSpecOptions> & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>`。
  */
-export type MaptalksVectorLayerOptions = Partial<MaptalksVectorLayerSpecOptions>
-  & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>;
+export type MaptalksVectorLayerOptions = Prettify<Partial<MaptalksVectorLayerSpecOptions>
+  & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>>;
 
 // ───────────────────────────────── Tool Options ─────────────────────────────────
 
