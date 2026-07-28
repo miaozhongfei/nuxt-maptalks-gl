@@ -1,69 +1,14 @@
 /* oxlint-disable max-lines */
 
 /**
- * 模块建模的 Spec + Combined Options 类型。
+ * 模块 Options 类型（全部手写展平 interface，IDE 可补全全部字段）。
  *
- * @description 每个图层/几何类型有 Spec 接口（带中文注释的常用字段建模）和手写展平的 Combined Options 接口
- * （Spec + Native 字段平铺），为用户提供完整 IDE 补全。
+ * @description 每个图层/几何类型有手写展平的 Options 接口（含所有原生字段 + 中文注释）。
  */
 
 import type { MaptalksLayer } from './structural';
 
 // ───────────────────────────────── Map ─────────────────────────────────
-
-/**
- * maptalks `Map` 构造选项的手写强类型建模（高频字段）。
- *
- * @description 手写常用构造字段并保留索引签名兜底，不依赖 maptalks-gl 类型。
- * 每项均可选；未建模字段经 `[key: string]: unknown` 透传。
- *
- * @example
- * const opts: MaptalksMapSpecOptions = { center: [113.27, 23.13], zoom: 10, minZoom: 3, dragPitch: true };
- */
-export interface MaptalksMapSpecOptions {
-  /** 地图中心 */
-  center?: [number, number];
-  /** 缩放级别 */
-  zoom?: number;
-  /** 俯仰角（度），通常 0–80 */
-  pitch?: number;
-  /** 方位角（度） */
-  bearing?: number;
-  /** 最小缩放级别（限制缩放） */
-  minZoom?: number;
-  /** 最大缩放级别（限制缩放） */
-  maxZoom?: number;
-  /** 最大可视范围 Extent（限制范围），形状由 maptalks 决定，兜底建模 */
-  maxExtent?: unknown;
-  /** 是否允许拖拽平移，默认 true */
-  draggable?: boolean;
-  /** 是否允许拖拽平移（panning 维度） */
-  dragPan?: boolean;
-  /** 是否允许拖拽旋转方位 */
-  dragRotate?: boolean;
-  /** 是否允许拖拽改变俯仰 */
-  dragPitch?: boolean;
-  /** 是否允许缩放，默认 true */
-  zoomable?: boolean;
-  /** 细微缩放（Fractional Zoom） */
-  seamlessZoom?: boolean;
-  /** 缩放是否以容器中心为锚点 */
-  zoomInCenter?: boolean;
-  /** 空间参考系（含自定义 resolutions / LOD） */
-  spatialReference?: Record<string, unknown>;
-  /** 底图图层。MaptalksLayer 对象直传原生构造器；字符串/配置对象由模块自动 new TileLayer 到最底层 */
-  baseLayer?: MaptalksLayer | string | {
-    source?: string;
-    urlTemplate?: string;
-    subdomains?: string[];
-    attribution?: string;
-    options?: Record<string, unknown>;
-  };
-  /** 初始图层数组 */
-  layers?: MaptalksLayer[];
-  /** 逃生舱口：透传任意未建模的 maptalks Map 选项（保留） */
-  [key: string]: unknown;
-}
 
 /**
  * Map 构造选项（手写展平，IDE 可补全全部原生字段）。

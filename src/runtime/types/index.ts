@@ -39,7 +39,6 @@ export type {
   MaptalksLabelOptions,
   MaptalksLineStringOptions,
   MaptalksMapOptions,
-  MaptalksMapSpecOptions,
   MaptalksMarkerOptions,
   MaptalksMultiLineStringOptions,
   MaptalksMultiPointOptions,
