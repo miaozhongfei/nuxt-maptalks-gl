@@ -3,6 +3,18 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 地图根组件——所有地图功能的起点。
+ *
+ * @description 对 `useMaptalks` 的声明式封装。在页面上渲染地图容器 div，创建 maptalks 地图实例并纳管生命周期。
+ * 通过 provide/inject 将地图实例传递给所有子组件；支持声明式中心点、缩放、旋转等 prop 与运行时同步。
+ * emit `ready`（地图就绪）和 `error`（加载失败）；expose `map` / `isReady` / `error` 供 template ref 访问。
+ *
+ * @example
+ * ```vue
+ * <MaptalksMap ref="mapRef" name="main" :center="[121,31]" :zoom="13" base-layer="osm" @ready="onReady" />
+ * ```
+ */
 import { provide, ref, shallowRef, watch } from 'vue'
 import { useMaptalks } from '../composables/useMaptalks'
 import type { MaptalksError } from '../core/errors'
@@ -10,11 +22,31 @@ import { MAP_KEY } from '../core/map-context'
 import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, UseMaptalksOpts } from '../types'
 
 const props = withDefaults(defineProps<{
-  center?: [number, number]; zoom?: number
-  pitch?: number; bearing?: number
-  minZoom?: number; maxZoom?: number
-  draggable?: boolean; dragPitch?: boolean; dragRotate?: boolean; zoomable?: boolean
-  name?: string; options?: MaptalksMapOptions
+  /** 地图中心点 [经度, 纬度] */
+  center?: [number, number]
+  /** 缩放级别 */
+  zoom?: number
+  /** 俯仰角（度，0=正视） */
+  pitch?: number
+  /** 旋转角（度，正北为 0） */
+  bearing?: number
+  /** 最小缩放级别 */
+  minZoom?: number
+  /** 最大缩放级别 */
+  maxZoom?: number
+  /** 是否允许拖拽平移 */
+  draggable?: boolean
+  /** 是否允许拖拽修改俯仰角 */
+  dragPitch?: boolean
+  /** 是否允许拖拽修改旋转角 */
+  dragRotate?: boolean
+  /** 是否允许缩放 */
+  zoomable?: boolean
+  /** 地图实例名（多地图场景），默认 'default' */
+  name?: string
+  /** 透传给 maptalks Map 构造器的额外选项 */
+  options?: MaptalksMapOptions
+  /** 底图：源名（字符串）或内联源对象 */
   baseLayer?: string | { source?: string; options?: Record<string, unknown> }
 }>(), { options: () => ({}) })
 
@@ -37,6 +69,7 @@ function buildOpts(): UseMaptalksOpts {
 const { map, isReady, error } = useMaptalks(el, buildOpts())
 
 provide(MAP_KEY, map)
+/** 暴露 map 实例与状态，供 template ref 访问 */
 defineExpose({ map, isReady, error })
 
 watch(isReady, (v) => { if (v && map.value) emit('ready', map.value) })

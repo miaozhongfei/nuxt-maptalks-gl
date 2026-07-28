@@ -36,7 +36,18 @@ interface NativeMarker {
   off(event: string, handler: MaptalksEventHandler): void;
 }
 
-/** useMaptalksMarkerInfoWindow 的选项 */
+/**
+ * useMaptalksMarkerInfoWindow 的选项。
+ *
+ * @description 配置 Marker 级信息框：透传给 marker.setInfoWindow() 的选项（title / content / custom 等）、
+ * 事件绑定（open / close）、自动销毁开关。与 useMaptalksInfoWindow（地图级）不同，此信息框只属于单个 Marker。
+ *
+ * @example
+ * const opts: UseMaptalksMarkerInfoWindowOpts = {
+ *   options: { title: '站点', custom: true, content: '<div>详情</div>', autoOpenOn: 'click' },
+ *   events: { open: () => console.log('opened'), close: () => console.log('closed') },
+ * };
+ */
 export interface UseMaptalksMarkerInfoWindowOpts {
   /** 透传给 marker.setInfoWindow() 的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
   options?: MaybeRefOrGetter<
@@ -49,7 +60,15 @@ export interface UseMaptalksMarkerInfoWindowOpts {
   autoDispose?: boolean;
 }
 
-/** useMaptalksMarkerInfoWindow 的返回值 */
+/**
+ * useMaptalksMarkerInfoWindow 的返回值。
+ *
+ * @description 提供 Marker 级信息框的三项控制：`show`（弹出）、`hide`（关闭）、`remove`（移除配置并关闭）。
+ *
+ * @example
+ * const { show, hide, remove } = useMaptalksMarkerInfoWindow(geometry, { options: { title: '站点' } });
+ * show(); // 弹出该 Marker 的信息框
+ */
 export interface UseMaptalksMarkerInfoWindowReturn {
   /** 显示该 Marker 的信息框 */
   show: () => void;

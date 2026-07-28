@@ -5,6 +5,20 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 地图级信息窗组件（InfoWindow）。
+ *
+ * @description 对 `useMaptalksInfoWindow` 的声明式封装。在指定坐标弹出地图信息窗，
+ * 通过 `<slot />` 传入 Vue 组件内容（自动 createApp mount 保留响应式）。支持响应式坐标/显隐/options、事件绑定、
+ * `defineExpose({ infoWindow, show, hide })` 程序式控制。必须在 MaptalksMap 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksInfoWindow :coordinates="[121,31]" :visible="showPopup" :options="{ title: '标题', custom: true }">
+ *   <div class="content"><h3>Slot 内容</h3><p>支持 Vue 响应式</p></div>
+ * </MaptalksInfoWindow>
+ * ```
+ */
 import { createApp, h, inject, onBeforeUnmount, onUpdated, ref, watch } from 'vue'
 import type { App } from 'vue'
 import { dequal } from 'dequal'
@@ -105,5 +119,6 @@ watch(
 
 onBeforeUnmount(() => { if (slotApp) { slotApp.unmount(); slotApp = null; } })
 
+/** 暴露 InfoWindow 原生实例与 show/hide 方法，供 template ref 访问 */
 defineExpose({ infoWindow, show, hide })
 </script>

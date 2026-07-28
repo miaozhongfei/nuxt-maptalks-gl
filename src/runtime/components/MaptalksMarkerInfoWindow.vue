@@ -3,6 +3,23 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 标记级信息窗组件（MarkerInfoWindow，内联于 Marker 几何的弹窗）。
+ *
+ * @description 对 `useMaptalksMarkerInfoWindow` 的声明式封装。在父级 MaptalksMarker 上注册 setInfoWindow，
+ * 通过 `<slot />` 传入 Vue 组件内容（自动 createApp mount 保留响应式）。标记级信息窗只属于该 Marker——
+ * 点击自动弹出、点击别处自动关闭。支持响应式 options、事件绑定、`defineExpose({ show, hide })` 程序式控制。
+ * 必须在 MaptalksMarker 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksMarker :coordinates="[121,31]">
+ *   <MaptalksMarkerInfoWindow :options="{ title: '站点', custom: true }">
+ *     <div class="iw-content"><strong>站点详情</strong></div>
+ *   </MaptalksMarkerInfoWindow>
+ * </MaptalksMarker>
+ * ```
+ */
 import { createApp, h, inject, onBeforeUnmount, toValue, useSlots, watch } from 'vue'
 import type { App } from 'vue'
 
@@ -51,5 +68,6 @@ watch(() => toValue(geometry), (g) => { if (g) mountSlotContent(); }, { immediat
 
 onBeforeUnmount(() => { if (slotApp) { slotApp.unmount(); slotApp = null; } })
 
+/** 暴露 show/hide 方法，供 template ref 访问 */
 defineExpose({ show, hide })
 </script>

@@ -1,6 +1,20 @@
 <template><!-- maptalks polygon · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 多边形几何组件（Polygon）。
+ *
+ * @description 对 `useMaptalksPolygon` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Polygon，
+ * 支持响应式坐标（嵌套数组，含孔洞支持）、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksPolygon :coordinates="[[[121,31],[122,31],[122,32],[121,32]]]" :options="{ symbol: { polygonFill: '#0f0' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksPolygon } from '../composables/presets/useMaptalksPolygon'

@@ -50,5 +50,6 @@ const { layer, show, hide } = useMaptalksTileLayer(map, {
 
 watch([() => props.visible, layer], ([v, l]) => { if (!l) return; if (v) show(); else hide() }, { immediate: true })
 
+/** 暴露 layer 实例与 show/hide 方法，供 template ref 访问 */
 defineExpose({ layer, show, hide })
 </script>

@@ -1,6 +1,20 @@
 ﻿<template><!-- maptalks label · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 文本标注几何组件（Label）。
+ *
+ * @description 对 `useMaptalksLabel` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Label，
+ * 在指定坐标显示文本。支持响应式文本内容/坐标、textSymbol 样式（字号/颜色/对齐等）、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksLabel content="广州市" :coordinates="[113.27,23.13]" :options="{ textSymbol: { textSize: 16, textFill: '#333' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksLabel } from '../composables/presets/useMaptalksLabel'

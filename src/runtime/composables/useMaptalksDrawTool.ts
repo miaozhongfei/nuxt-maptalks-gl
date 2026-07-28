@@ -8,7 +8,14 @@ import { createLogger } from '../utils/logger';
 /** 日志实例（单例） */
 const logger = createLogger('nuxt-maptalks-gl');
 
-/** useMaptalksDrawTool 的可选项 */
+/**
+ * useMaptalksDrawTool 的可选项。
+ *
+ * @description 配置绘制工具的行为：初始绘制模式（Point / LineString / Polygon）和透传给 DrawTool 构造器的额外选项（如 symbol 样式）。
+ *
+ * @example
+ * const opts: UseMaptalksDrawToolOpts = { mode: 'Polygon', options: { symbol: { lineColor: '#f00' } } };
+ */
 export interface UseMaptalksDrawToolOpts {
   /** 初始绘制模式（如 'Point' / 'LineString' / 'Polygon'），默认 'Point' */
   mode?: string;
@@ -16,7 +23,16 @@ export interface UseMaptalksDrawToolOpts {
   options?: Record<string, unknown>;
 }
 
-/** useMaptalksDrawTool 的返回 */
+/**
+ * useMaptalksDrawTool 的返回值。
+ *
+ * @description 提供绘制工具的完整生命周期 API：`tool`（实例引用）、`enabled`/`mode`（双向 ref）、
+ * `result`（绘制结果）、`enable`/`disable`/`setMode` 方法。作用域销毁时自动 dispose。
+ *
+ * @example
+ * const { enabled, mode, result, enable, setMode } = useMaptalksDrawTool(map, { mode: 'Polygon' });
+ * setMode('LineString'); enable(); // 切换到线段绘制并启用
+ */
 export interface UseMaptalksDrawToolReturn {
   /** DrawTool 实例（创建前为 null） */
   tool: ShallowRef<MaptalksDrawTool | null>;

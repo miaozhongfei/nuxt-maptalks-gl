@@ -1,6 +1,20 @@
 ﻿<template><!-- maptalks rectangle · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 矩形几何组件（Rectangle）。
+ *
+ * @description 对 `useMaptalksRectangle` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Rectangle，
+ * 以左上角坐标 + 宽高（米）定义。支持响应式坐标/宽高、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksRectangle :coordinates="[121,31]" :width="1000" :height="500" :options="{ symbol: { lineColor: '#f00' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksRectangle } from '../composables/presets/useMaptalksRectangle'

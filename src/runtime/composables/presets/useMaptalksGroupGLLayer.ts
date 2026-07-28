@@ -42,7 +42,18 @@ export interface UseMaptalksGroupGLLayerBaseOpts {
   autoDispose?: boolean;
 }
 
-/** useMaptalksGroupGLLayer 的 opts 参数 */
+/**
+ * useMaptalksGroupGLLayer 的 opts 参数。
+ *
+ * @description 对 UseMaptalksGroupGLLayerBaseOpts 的 options 字段做类型收窄：支持
+ * `MaptalksGroupGLLayerOptions` 或响应式 getter。用于 `useMaptalksGroupGLLayer` 的入参类型。
+ *
+ * @example
+ * const opts: UseMaptalksGroupGLLayerOpts = {
+ *   layers: [vtLayer],
+ *   options: { sceneConfig: { light: { ambient: '#fff' } } },
+ * };
+ */
 export type UseMaptalksGroupGLLayerOpts = Omit<UseMaptalksGroupGLLayerBaseOpts, 'options'> & {
   options?: MaptalksGroupGLLayerOptions | MaybeRefOrGetter<MaptalksGroupGLLayerOptions | undefined>;
 };

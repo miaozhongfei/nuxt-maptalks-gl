@@ -1,6 +1,20 @@
 ﻿<template><!-- maptalks textbox · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 文本框几何组件（TextBox）。
+ *
+ * @description 对 `useMaptalksTextBox` 的声明式封装。在父级 MaptalksVectorLayer 内创建 TextBox，
+ * 在指定坐标 + 宽高范围内显示自动换行文本。支持响应式文本内容/坐标/宽高、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksTextBox content="详细介绍文本" :coordinates="[121,31]" :width="200" :height="80" :options="{ symbol: { textSize: 12 } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksTextBox } from '../composables/presets/useMaptalksTextBox'

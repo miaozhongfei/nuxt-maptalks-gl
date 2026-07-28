@@ -5,6 +5,20 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * UI 标记组件（UIMarker）。
+ *
+ * @description 对 `useMaptalksUIMarker` 的声明式封装。在指定坐标叠加 DOM 元素到地图上，
+ * 通过 `<slot />` 传入 Vue 组件内容（自动 createApp mount 保留响应式）。支持响应式坐标/显隐/options、事件绑定、
+ * `defineExpose({ uiMarker, show, hide })` 程序式控制。必须在 MaptalksMap 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksUIMarker :coordinates="[121,31]" :options="{ dy: -20 }">
+ *   <div class="marker-popup"><span>自定义标记</span></div>
+ * </MaptalksUIMarker>
+ * ```
+ */
 import { createApp, h, inject, onBeforeUnmount, onUpdated, ref, watch } from 'vue'
 import type { App } from 'vue'
 import { dequal } from 'dequal'
@@ -116,5 +130,6 @@ watch(
 
 onBeforeUnmount(() => { if (slotApp) { slotApp.unmount(); slotApp = null; } })
 
+/** 暴露 UIMarker 原生实例与 show/hide 方法，供 template ref 访问 */
 defineExpose({ uiMarker, show, hide })
 </script>

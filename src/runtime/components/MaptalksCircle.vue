@@ -1,6 +1,20 @@
 ﻿<template><!-- maptalks circle · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 圆形几何组件（Circle）。
+ *
+ * @description 对 `useMaptalksCircle` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Circle，
+ * 以中心点和半径（米）定义。支持响应式坐标/半径、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksCircle :coordinates="[121,31]" :radius="500" :options="{ symbol: { lineColor: '#f00', polygonFill: '#f008' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksCircle } from '../composables/presets/useMaptalksCircle'

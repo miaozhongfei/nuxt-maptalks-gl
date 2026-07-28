@@ -4,6 +4,11 @@
  *
  * @description 此文件由 addImportsDir 扫描，类型自动纳入全局补全。
  * 新增 public 类型只需在 `../types/index.ts` 定义后在此补一行。
+ *
+ * @example
+ * // 在 Vue SFC 中直接使用类型（无需手动 import）
+ * const opts: UseMaptalksOpts = { center: [121, 31], zoom: 13 };
+ * const mapRef: Ref<MaptalksMapExposed | null> = ref(null);
  */
 export type {
   // ── 核心结构 ──

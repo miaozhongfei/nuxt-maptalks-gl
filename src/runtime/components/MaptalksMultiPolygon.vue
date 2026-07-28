@@ -1,6 +1,20 @@
 <template><!-- maptalks multipolygon · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 多多边形几何组件（MultiPolygon）。
+ *
+ * @description 对 `useMaptalksMultiPolygon` 的声明式封装。在父级 MaptalksVectorLayer 内创建 MultiPolygon，
+ * 一次性渲染多个不重叠的多边形区域。支持嵌套坐标数组、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksMultiPolygon :coordinates="[[[[121,31],[122,31],[122,32]]],[[[120,30],[121,30],[121,31]]]]" :options="{ symbol: { polygonFill: '#0f0' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksMultiPolygon } from '../composables/presets/useMaptalksMultiPolygon'

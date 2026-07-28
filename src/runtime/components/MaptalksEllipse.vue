@@ -1,6 +1,20 @@
 ﻿<template><!-- maptalks ellipse · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 椭圆几何组件（Ellipse）。
+ *
+ * @description 对 `useMaptalksEllipse` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Ellipse，
+ * 以中心点 + 宽高（米）定义。支持响应式坐标/宽高、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksEllipse :coordinates="[121,31]" :width="800" :height="400" :options="{ symbol: { lineColor: '#f0f' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksEllipse } from '../composables/presets/useMaptalksEllipse'

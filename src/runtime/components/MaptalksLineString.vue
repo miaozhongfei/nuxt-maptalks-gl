@@ -1,6 +1,20 @@
 <template><!-- maptalks linestring · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 折线几何组件（LineString）。
+ *
+ * @description 对 `useMaptalksLineString` 的声明式封装。在父级 MaptalksVectorLayer 内创建 LineString，
+ * 支持响应式坐标数组、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksLineString :coordinates="[[121,31],[121.5,31.5]]" :options="{ symbol: { lineColor: '#00f' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksLineString } from '../composables/presets/useMaptalksLineString'

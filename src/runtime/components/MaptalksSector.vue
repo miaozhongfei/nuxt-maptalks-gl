@@ -1,6 +1,20 @@
 ﻿<template><!-- maptalks sector · 纯逻辑组件 --></template>
 
 <script setup lang="ts">
+/**
+ * 扇形几何组件（Sector）。
+ *
+ * @description 对 `useMaptalksSector` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Sector，
+ * 以中心点 + 半径 + 起止角度（度）定义。支持响应式坐标/半径/角度、symbol 样式、显隐控制与事件绑定。纯逻辑组件，不渲染 DOM。
+ * 必须在 MaptalksVectorLayer 内使用。
+ *
+ * @example
+ * ```vue
+ * <MaptalksVectorLayer>
+ *   <MaptalksSector :coordinates="[121,31]" :radius="1000" :start-angle="0" :end-angle="90" :options="{ symbol: { polygonFill: '#0f08' } }" @click="onClick" />
+ * </MaptalksVectorLayer>
+ * ```
+ */
 import { inject } from 'vue'
 
 import { useMaptalksSector } from '../composables/presets/useMaptalksSector'
