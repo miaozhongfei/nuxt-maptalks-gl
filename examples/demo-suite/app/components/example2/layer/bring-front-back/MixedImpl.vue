@@ -9,8 +9,8 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="blue" variant="soft" @click="blueLayer.value?.bringToFront?.()">蓝层置顶</UButton>
-      <UButton size="xs" color="red" variant="soft" @click="redLayer.value?.bringToBack?.()">红层置底</UButton>
+      <UButton size="xs" color="primary" variant="soft" @click="bringBlueFront">蓝层置顶</UButton>
+      <UButton size="xs" color="error" variant="soft" @click="bringRedFront">红层置顶</UButton>
     </div>
   </div>
 </template>
@@ -30,4 +30,7 @@ useMaptalksPolygon(redLayer, {
   coordinates: [[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]],
   options: { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.6, lineColor: '#b91c1c', lineWidth: 2 } },
 })
+
+function bringBlueFront() { blueLayer.value?.bringToFront?.() }
+function bringRedFront() { redLayer.value?.bringToFront?.() }
 </script>

@@ -21,8 +21,8 @@
       </MaptalksVectorLayer>
     </MaptalksMap>
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="blue" variant="soft" @click="blueRef?.layer?.bringToFront?.()">蓝层置顶</UButton>
-      <UButton size="xs" color="red" variant="soft" @click="redRef?.layer?.bringToBack?.()">红层置底</UButton>
+      <UButton size="xs" color="primary" variant="soft" @click="blueRef?.layer?.bringToFront?.()">蓝层置顶</UButton>
+      <UButton size="xs" color="error" variant="soft" @click="redRef?.layer?.bringToFront?.()">红层置顶</UButton>
     </div>
   </div>
 </template>

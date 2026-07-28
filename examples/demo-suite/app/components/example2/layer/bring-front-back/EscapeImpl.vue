@@ -2,8 +2,8 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="blue" variant="soft" @click="blueRef?.bringToFront?.()">蓝层置顶</UButton>
-      <UButton size="xs" color="red" variant="soft" @click="redRef?.bringToBack?.()">红层置底</UButton>
+      <UButton size="xs" color="primary" variant="soft" @click="blueRef?.bringToFront?.()">蓝层置顶</UButton>
+      <UButton size="xs" color="error" variant="soft" @click="redRef?.bringToFront?.()">红层置顶</UButton>
     </div>
   </div>
 </template>
