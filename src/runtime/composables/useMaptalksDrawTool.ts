@@ -2,7 +2,7 @@
 import type { MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksDrawTool, MaptalksMap, MaptalksNativeDrawToolOptions } from '../types';
+import type { MaptalksDrawTool, MaptalksMap } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例（单例） */
@@ -13,7 +13,7 @@ export interface UseMaptalksDrawToolOpts {
   /** 初始绘制模式（如 'Point' / 'LineString' / 'Polygon'），默认 'Point' */
   mode?: string;
   /** 透传给 maptalks DrawTool 构造器的额外选项（如 symbol） */
-  options?: Partial<MaptalksNativeDrawToolOptions>;
+  options?: Record<string, unknown>;
 }
 
 /** useMaptalksDrawTool 的返回 */

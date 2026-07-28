@@ -1,6 +1,6 @@
 ﻿import type { MaybeRefOrGetter } from 'vue';
 
-import type { MaptalksMap, MaptalksNativeDistanceToolOptions, UseMaptalksToolOpts, UseMaptalksToolReturn } from '../types';
+import type { MaptalksMap, UseMaptalksToolOpts, UseMaptalksToolReturn } from '../types';
 import { createToolResult } from '../core/tool-factory';
 
 /**
@@ -21,7 +21,7 @@ import { createToolResult } from '../core/tool-factory';
  */
 export function useMaptalksDistanceTool(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  toolOptions: UseMaptalksToolOpts<MaptalksNativeDistanceToolOptions> = {},
+  toolOptions: UseMaptalksToolOpts = {},
 ): UseMaptalksToolReturn {
   return createToolResult('DistanceTool', map, toolOptions);
 }

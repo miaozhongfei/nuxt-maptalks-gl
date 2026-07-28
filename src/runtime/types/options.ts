@@ -7,12 +7,8 @@
  * （Spec + Native 字段平铺），为用户提供完整 IDE 补全。
  */
 
+import type { Map as _MaptalksMapClass } from 'maptalks-gl';
 import type { MaptalksLayer } from './structural';
-
-import type {
-  MaptalksNativeAreaToolOptions,
-  MaptalksNativeDistanceToolOptions,
-} from './native';
 
 // ───────────────────────────────── Map ─────────────────────────────────
 
@@ -264,46 +260,15 @@ export interface MaptalksMapOptions {
   [key: string]: unknown;
 }
 
-// ───────────────────────────────── InfoWindow ─────────────────────────────────
-
 /**
- * InfoWindow 常用选项（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
+ * 从用户安装的 maptalks-gl 版本推导的 Map 构造选项类型（全部 76 字段）。
  *
- * @description 涵盖 maptalks InfoWindow 构造器 / marker.setInfoWindow() 的常用字段，
- * 并为每个字段提供中文说明。未列出的原生字段通过 `[key: string]: unknown` 透传。
- *
- * @example
- * const iwOpts: MaptalksInfoWindowSpecOptions = { title: '标题', content: '<div>内容</div>', animation: 'scale' };
+ * @description 用 `ConstructorParameters<typeof Map>[1]` 提取构造函数第二个参数的类型，
+ * 与安装的 maptalks-gl 版本保持同步，IDE 可提示所有选项字段。
  */
-export interface MaptalksInfoWindowSpecOptions {
-  /** 信息框标题，可用空字符串隐藏内置标题栏 */
-  title?: string | HTMLElement;
-  /** 弹出框内容（HTML 字符串或 DOM 元素），支持响应式 getter */
-  content?: string | HTMLElement;
-  /** 宽度（像素）。原生类型为 string，此处统一为 number */
-  width?: number;
-  /** 高度（像素） */
-  height?: number;
-  /** 自定义模板（禁用 maptalks 内置 chrome） */
-  custom?: boolean;
-  /** 自动移动地图使信息框可见 */
-  autoPan?: boolean;
-  /** 是否唯一（同时只显示一个） */
-  single?: boolean;
-  /** 动画类型（如 'scale'） */
-  animation?: string;
-  /** 水平偏移（像素） */
-  dx?: number;
-  /** 垂直偏移（像素） */
-  dy?: number;
-  /** 自动弹出事件（null 禁用弹出，默认 'click'） */
-  autoOpenOn?: string | null;
-  /** 逃生舱：透传给未建模的 maptalks 原始 InfoWindow 选项 */
-  [key: string]: unknown;
-}
+export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMapClass>[1]
 
-/** marker.setInfoWindow() 的选项，与 InfoWindow 构造器选项完全一致 */
-export type MaptalksMarkerInfoWindowOptions = MaptalksInfoWindowSpecOptions;
+// ───────────────────────────────── InfoWindow ─────────────────────────────────
 
 /**
  * InfoWindow 构造选项（手写展平，IDE 可补全全部原生字段）。
@@ -385,59 +350,6 @@ export interface MaptalksInfoWindowOptions {
 }
 
 // ───────────────────────────────── TileLayer ─────────────────────────────────
-
-/**
- * TileLayer 构造选项的建模接口（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
- *
- * @description 涵盖 TileLayer 最常用字段并提供中文说明。未列出的原生字段通过 `[key: string]: unknown` 透传。
- *
- * @example
- * const opts: MaptalksTileLayerSpecOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png', opacity: 0.8 };
- */
-export interface MaptalksTileLayerSpecOptions {
-  /** 瓦片 URL 模板（含 {x}/{y}/{z} 占位符） */
-  urlTemplate?: string | ((...args: unknown[]) => string);
-  /** 子域名数组（用于加速瓦片加载，如 ['a','b','c']） */
-  subdomains?: string[] | number[];
-  /** 图层不透明度（0=全透明，1=不透明） */
-  opacity?: number;
-  /** 可见的最小缩放级别 */
-  minZoom?: number;
-  /** 可见的最大缩放级别 */
-  maxZoom?: number;
-  /** 图层层级（数值越大越靠前） */
-  zIndex?: number;
-  /** 是否可见 */
-  visible?: boolean;
-  /** 瓦片像素尺寸（默认 256，可传 [w,h]） */
-  tileSize?: number | [number, number];
-  /** 图层可用最大瓦片级别（超过后放大渲染已有瓦片） */
-  maxAvailableZoom?: number;
-  /** 瓦片加载的跨域属性（如 'anonymous'） */
-  crossOrigin?: string;
-  /** 瓦片加载出错时显示的替代图片 URL */
-  errorUrl?: string;
-  /** 认证 token（自动附加到瓦片请求） */
-  token?: string;
-  /** 自定义 fetch 选项（headers / credentials 等） */
-  fetchOptions?: Record<string, unknown>;
-  /** 瓦片淡入动画开关（默认 true） */
-  fadeAnimation?: boolean;
-  /** 自定义 URL 模板标签（如 {key: value} 替换 {key} 占位符） */
-  customTags?: Record<string, unknown>;
-  /** 平移出世界边界时是否重复渲染瓦片 */
-  repeatWorld?: boolean;
-  /** 缩放级别偏移，用于调整瓦片 URL 计算 */
-  zoomOffset?: number;
-  /** 底层版权信息文本 */
-  attribution?: string;
-  /** 是否启用几何事件 */
-  geometryEvents?: boolean;
-  /** 指定渲染器类型（'canvas'/'gl'/'dom'，null=自动） */
-  renderer?: string | null;
-  /** 逃生舱：透传给未建模的 maptalks 原始 TileLayer 选项 */
-  [key: string]: unknown;
-}
 
 /**
  * TileLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
@@ -571,63 +483,6 @@ export interface MaptalksTileLayerOptions {
 }
 
 // ───────────────────────────────── VectorTileLayer ─────────────────────────────────
-
-/**
- * VectorTileLayer 构造选项的建模接口（带中文注释）。
- *
- * @description 涵盖 VectorTileLayer 的常用字段。style 经 `options.style` 传入。
- *
- * @example
- * const opts: MaptalksVectorTileLayerSpecOptions = { urlTemplate: 'https://...', style: { background: { color: '#fff' } } };
- */
-export interface MaptalksVectorTileLayerSpecOptions {
-  /** 矢量瓦片 URL 模板 */
-  urlTemplate?: string;
-  /** MapLibre 风格规范对象（控制矢量切片的渲染方式） */
-  style?: Record<string, unknown> | string;
-  /** 图层不透明度 */
-  opacity?: number;
-  /** 图层层级 */
-  zIndex?: number;
-  /** 是否可见 */
-  visible?: boolean;
-  /** 可见的最小缩放级别 */
-  minZoom?: number;
-  /** 可见的最大缩放级别 */
-  maxZoom?: number;
-  /** 瓦片像素尺寸 */
-  tileSize?: number | [number, number];
-  /** 图层可用最大瓦片级别 */
-  maxAvailableZoom?: number;
-  /** 瓦片淡入动画开关 */
-  fadeAnimation?: boolean;
-  /** 文本标注碰撞检测开关 */
-  collision?: boolean;
-  /** 是否启用要素拾取（点选） */
-  picking?: boolean;
-  /** 是否启用抗锯齿 */
-  antialias?: boolean;
-  /** 样式缩放系数（如 2 用于高清屏） */
-  styleScale?: number;
-  /** 图标最大像素尺寸 */
-  maxIconSize?: number;
-  /** 要素 ID 对应的属性名 */
-  featureIdProperty?: string;
-  /** 海拔高度对应的属性名 */
-  altitudeProperty?: string;
-  /** 是否启用三维海拔渲染 */
-  enableAltitude?: boolean;
-  /** 图标加载失败时的替代 URL */
-  iconErrorUrl?: string;
-  /** 认证 token */
-  token?: string;
-  /** 自定义 fetch 选项 */
-  fetchOptions?: Record<string, unknown>;
-  /** 底层版权信息 */
-  attribution?: string;
-  /** 逃生舱 */
-  [key: string]: unknown;
-}
 
 /**
  * VectorTileLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
@@ -823,47 +678,6 @@ export interface MaptalksVectorTileLayerOptions {
 // ───────────────────────────────── GLTFLayer ─────────────────────────────────
 
 /**
- * GLTFLayer 构造选项的建模接口（带中文注释）。
- *
- * @description GLTFLayer 是 GLTF 模型标记容器图层，实际模型经原生 API 添加。这里建模容器常用字段。
- *
- * @example
- * const opts: MaptalksGLTFLayerSpecOptions = { url: 'https://.../model.gltf', zIndex: 10 };
- */
-export interface MaptalksGLTFLayerSpecOptions {
-  /** GLTF 模型资源的 base URL */
-  url?: string;
-  /** 图层层级 */
-  zIndex?: number;
-  /** 图层不透明度 */
-  opacity?: number;
-  /** 是否可见 */
-  visible?: boolean;
-  /** 可见的最小缩放级别 */
-  minZoom?: number;
-  /** 可见的最大缩放级别 */
-  maxZoom?: number;
-  /** 图层级样式（应用于所有模型） */
-  style?: Record<string, unknown>;
-  /** 是否启用几何事件（click / hover 等） */
-  geometryEvents?: boolean;
-  /** 几何事件命中容差（像素） */
-  geometryEventTolerance?: number;
-  /** CSS 鼠标指针样式（如 'pointer'） */
-  cursor?: string;
-  /** 固定海拔高度（米） */
-  altitude?: number;
-  /** 是否启用三维海拔 */
-  enableAltitude?: boolean;
-  /** 指定渲染器类型 */
-  renderer?: string | null;
-  /** 底层版权信息 */
-  attribution?: string;
-  /** 逃生舱 */
-  [key: string]: unknown;
-}
-
-/**
  * GLTFLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
  *
  * @description 将 Spec 字段（中文注释）+ Native 字段平铺合并为单一 interface。
@@ -905,39 +719,6 @@ export interface MaptalksGLTFLayerOptions {
 }
 
 // ───────────────────────────────── WMSLayer ─────────────────────────────────
-
-/**
- * WMSLayer 构造选项的建模接口（带中文注释）。
- *
- * @description WMSTileLayer 继承 TileLayer，额外支持 WMS 业务参数。
- *
- * @example
- * const opts: MaptalksWMSLayerSpecOptions = { layers: 'topp:states', format: 'image/png', transparent: true };
- */
-export interface MaptalksWMSLayerSpecOptions {
-  /** WMS 图层名（逗号分隔多个图层） */
-  layers?: string;
-  /** WMS 图层样式名 */
-  styles?: string;
-  /** 图片格式（如 image/png、image/jpeg） */
-  format?: string;
-  /** 是否透明背景 */
-  transparent?: boolean;
-  /** WMS 版本（如 1.3.0） */
-  version?: string;
-  /** 坐标参考系（如 EPSG:3857） */
-  crs?: string;
-  /** 坐标参考系别名 */
-  srs?: string;
-  /** 请求范围（minx,miny,maxx,maxy） */
-  bbox?: string | [number, number, number, number];
-  /** 图片宽度（像素） */
-  width?: number;
-  /** 图片高度（像素） */
-  height?: number;
-  /** 逃生舱 */
-  [key: string]: unknown;
-}
 
 /**
  * WMSLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
@@ -1100,41 +881,6 @@ export interface MaptalksWMSLayerOptions {
 // ───────────────────────────────── GroupGLLayer ─────────────────────────────────
 
 /**
- * GroupGLLayer 构造选项的建模接口（带中文注释）。
- *
- * @description GroupGLLayer 承载子 GL 图层，sceneConfig 控制光照与后处理。
- *
- * @example
- * const opts: MaptalksGroupGLLayerSpecOptions = { sceneConfig: { light: { ambient: '#fff' } }, zIndex: 5 };
- */
-export interface MaptalksGroupGLLayerSpecOptions {
-  /** 场景配置（含 light 光照 / postProcess 后处理 / shadow 阴影 / weather 天气 / environment 环境光） */
-  sceneConfig?: Record<string, unknown>;
-  /** 图层层级 */
-  zIndex?: number;
-  /** 图层不透明度 */
-  opacity?: number;
-  /** 是否可见 */
-  visible?: boolean;
-  /** 可见的最小缩放级别 */
-  minZoom?: number;
-  /** 可见的最大缩放级别 */
-  maxZoom?: number;
-  /** 是否启用抗锯齿 */
-  antialias?: boolean;
-  /** MSAA 采样数（抗锯齿质量，如 4） */
-  multiSamples?: number;
-  /** 是否启用几何事件 */
-  geometryEvents?: boolean;
-  /** 地形配置（含 type / urlTemplate / tileSystem / shader 等） */
-  terrain?: Record<string, unknown>;
-  /** 底层版权信息 */
-  attribution?: string;
-  /** 逃生舱 */
-  [key: string]: unknown;
-}
-
-/**
  * GroupGLLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
  *
  * @description 将 Spec 字段（中文注释）+ Native 字段平铺合并为单一 interface。
@@ -1190,59 +936,6 @@ export interface MaptalksGroupGLLayerOptions {
 }
 
 // ───────────────────────────────── VectorLayer ─────────────────────────────────
-
-/**
- * VectorLayer 构造选项的建模接口（带中文注释）。
- *
- * @description VectorLayer 是矢量图形容器图层，承载 Marker/LineString/Polygon 等几何图形。
- *
- * @example
- * const opts: MaptalksVectorLayerSpecOptions = { zIndex: 3, opacity: 0.9 };
- */
-export interface MaptalksVectorLayerSpecOptions {
-  /** 图层层级 */
-  zIndex?: number;
-  /** 图层不透明度 */
-  opacity?: number;
-  /** 是否可见 */
-  visible?: boolean;
-  /** 可见的最小缩放级别 */
-  minZoom?: number;
-  /** 可见的最大缩放级别 */
-  maxZoom?: number;
-  /** CSS 鼠标指针样式（如 'pointer' / 'crosshair'） */
-  cursor?: string;
-  /** 默认图标尺寸 [width, height] */
-  defaultIconSize?: [number, number];
-  /** 是否启用几何简化（大数据量时提升性能） */
-  enableSimplify?: boolean;
-  /** 是否启用三维海拔 */
-  enableAltitude?: boolean;
-  /** 图层固定海拔高度（米） */
-  altitude?: number;
-  /** 海拔高度对应的属性名 */
-  altitudeProperty?: string;
-  /** 是否绘制连接线（地面到图形） */
-  drawAltitude?: boolean;
-  /** 是否启用几何事件（click / hover 等） */
-  geometryEvents?: boolean;
-  /** 几何事件命中容差（像素） */
-  geometryEventTolerance?: number;
-  /** 图层级样式（支持 filter 规则数组） */
-  style?: Record<string, unknown> | Array<unknown>;
-  /** 碰撞检测缓冲区大小（像素） */
-  collisionBufferSize?: number;
-  /** 是否启用渐进式渲染（分帧渲染大批量图形） */
-  progressiveRender?: boolean;
-  /** 每帧渐进渲染的图形数量 */
-  progressiveRenderCount?: number;
-  /** 底层版权信息 */
-  attribution?: string;
-  /** 指定渲染器类型 */
-  renderer?: string | null;
-  /** 逃生舱 */
-  [key: string]: unknown;
-}
 
 /**
  * VectorLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
@@ -1346,22 +1039,22 @@ export interface MaptalksVectorLayerOptions {
 /**
  * DistanceTool 构造选项的用户输入类型。
  *
- * @description `Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>`。
+ * @description `Record<string, unknown>`。
  *
  * @example
  * const opts: MaptalksDistanceToolOptions = { symbol: { lineColor: '#ff0000' } };
  */
-export type MaptalksDistanceToolOptions = Partial<MaptalksNativeDistanceToolOptions> & Record<string, unknown>
+export type MaptalksDistanceToolOptions = Record<string, unknown>
 
 /**
  * AreaTool 构造选项的用户输入类型。
  *
- * @description `Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>`。
+ * @description `Record<string, unknown>`。
  *
  * @example
  * const opts: MaptalksAreaToolOptions = { symbol: { polygonFill: '#00ff00' } };
  */
-export type MaptalksAreaToolOptions = Partial<MaptalksNativeAreaToolOptions> & Record<string, unknown>
+export type MaptalksAreaToolOptions = Record<string, unknown>
 
 // ───────────────────────────────── Geometry ─────────────────────────────────
 
@@ -1534,36 +1227,6 @@ export interface MaptalksTextBoxOptions extends MaptalksGeometryBaseOptions {
 }
 
 // ───────────────────────────────── UIMarker ─────────────────────────────────
-
-/**
- * UIMarker 常用选项（带中文注释，遵循 AGENTS.md 强制类型提示规则）。
- *
- * @description 涵盖 maptalks ui.UIMarker 构造器的常用字段，并为每个字段提供中文说明。
- * 未列出的原生字段通过 `MaptalksUIMarkerOptions` 补齐 IDE 自动补全。
- *
- * @example
- * const opts: MaptalksUIMarkerSpecOptions = { content: '<div>HTML</div>', draggable: true };
- */
-export interface MaptalksUIMarkerSpecOptions {
-  /** HTML 内容字符串或 DOM 元素 */
-  content?: string | HTMLElement;
-  /** 是否可拖拽 */
-  draggable?: boolean;
-  /** 是否唯一（同时只显示一个） */
-  single?: boolean;
-  /** 海拔高度 */
-  altitude?: number;
-  /** 最小显示缩放级别 */
-  minZoom?: number;
-  /** 最大显示缩放级别 */
-  maxZoom?: number;
-  /** DOM 容器 CSS 类 */
-  containerClass?: string;
-  /** DOM 事件是否穿透到地图 */
-  eventsPropagation?: boolean;
-  /** 逃生舱：透传给未建模的 maptalks 原始 UIMarker 选项 */
-  [key: string]: unknown;
-}
 
 /**
  * UIMarker 构造选项（手写展平，IDE 可补全全部原生字段）。

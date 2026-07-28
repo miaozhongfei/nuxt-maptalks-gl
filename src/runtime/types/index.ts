@@ -6,21 +6,8 @@
  */
 
 export type {
-  MaptalksNativeAreaToolOptions,
-  MaptalksNativeDistanceToolOptions,
-  MaptalksNativeDrawToolOptions,
-  MaptalksNativeGeometryOptions,
-  MaptalksNativeGLTFLayerOptions,
-  MaptalksNativeGroupGLLayerOptions,
-  MaptalksNativeInfoWindowOptions,
   MaptalksNativeMapOptions,
-  MaptalksNativeMarkerInfoWindowOptions,
-  MaptalksNativeTileLayerOptions,
-  MaptalksNativeUIMarkerOptions,
-  MaptalksNativeVectorLayerOptions,
-  MaptalksNativeVectorTileLayerOptions,
-  MaptalksNativeWMSTileLayerOptions,
-} from './native';
+} from './options';
 
 export type {
   LineSymbol,
@@ -54,18 +41,14 @@ export type {
   MaptalksGeometryBaseOptions,
   MaptalksGeometryBaseSpecOptions,
   MaptalksGLTFLayerOptions,
-  MaptalksGLTFLayerSpecOptions,
   MaptalksGroupGLLayerOptions,
-  MaptalksGroupGLLayerSpecOptions,
   MaptalksInfoWindowOptions,
-  MaptalksInfoWindowSpecOptions,
   MaptalksLabelOptions,
   MaptalksLabelSpecOptions,
   MaptalksLineStringOptions,
   MaptalksLineStringSpecOptions,
   MaptalksMapOptions,
   MaptalksMapSpecOptions,
-  MaptalksMarkerInfoWindowOptions,
   MaptalksMarkerOptions,
   MaptalksMarkerSpecOptions,
   MaptalksMultiLineStringOptions,
@@ -83,15 +66,10 @@ export type {
   MaptalksTextBoxOptions,
   MaptalksTextBoxSpecOptions,
   MaptalksTileLayerOptions,
-  MaptalksTileLayerSpecOptions,
   MaptalksUIMarkerOptions,
-  MaptalksUIMarkerSpecOptions,
   MaptalksVectorLayerOptions,
-  MaptalksVectorLayerSpecOptions,
   MaptalksVectorTileLayerOptions,
-  MaptalksVectorTileLayerSpecOptions,
   MaptalksWMSLayerOptions,
-  MaptalksWMSLayerSpecOptions,
 } from './options';
 
 export type {

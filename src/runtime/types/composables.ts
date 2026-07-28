@@ -9,9 +9,8 @@
 import type { ComputedRef, MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
 import type {
-  MaptalksNativeGeometryOptions,
   MaptalksNativeMapOptions,
-} from './native';
+} from './options';
 import type {
   MaptalksCircleOptions,
   MaptalksEllipseOptions,
@@ -521,11 +520,10 @@ export type UseMaptalksVectorLayerOpts = Omit<UseMaptalksVectorLayerBaseOpts, 'o
 /**
  * 所有几何预设 Option 的共享基类。
  *
- * @description 继承原生全部几何构造选项（从安装的 maptalks-gl 版本自动推导）+ 模块通用字段。
- * 每个具体的预设类型（Marker / LineString / Circle / Label 等）独立 extends 本接口，
- * 不存在跨几何类型的继承链条——原生几何之间也没有这样的继承关系。
+ * @description 几何预设共享字段（properties / events / id / autoDispose），
+ * 各预设接口独立 extends 本接口。
  */
-export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryOptions>, 'id' | 'symbol' | 'properties'> {
+export interface GeometryPresetBase {
   /** 响应式 properties */
   properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 事件名 → 处理器 */
@@ -534,6 +532,8 @@ export interface GeometryPresetBase extends Omit<Partial<MaptalksNativeGeometryO
   id?: string;
   /** 自动销毁，默认 true */
   autoDispose?: boolean;
+  /** 透传原生几何选项 */
+  [key: string]: unknown;
 }
 
 // ───────────────────────────────── Geometry Preset Options (Marker, LineString, ...) ─────────────────────────────────

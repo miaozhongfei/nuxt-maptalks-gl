@@ -104,6 +104,5 @@ export type {
   UseMaptalksVectorLayerReturn,
 
   // test
-  MaptalksNativeVectorLayerOptions,
   MaptalksNativeMapOptions,
 } from '../types';
