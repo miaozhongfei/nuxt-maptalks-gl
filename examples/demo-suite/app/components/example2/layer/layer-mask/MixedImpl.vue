@@ -1,51 +1,56 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
-      :zoom="13"
+      :zoom="14"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <UButton size="xs" class="mt-3" @click="applyMask">应用遮罩（仅遮罩多边形内可见）</UButton>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
+const randomPts = Array.from({ length: 100 }, () => [
+  121.4757 + Math.random() * 0.06,
+  31.2153 + Math.random() * 0.06,
+] as [number, number])
 
-const { layer: markerLayer } = useMaptalksVectorLayer(map);
-const pts = [
-  [121.4997, 31.2493],
-  [121.5057, 31.2513],
-  [121.5117, 31.2493],
-  [121.5097, 31.2461],
-  [121.5037, 31.2449],
-  [121.4987, 31.2465],
-];
-pts.forEach((c, i) => {
-  useMaptalksMarker(markerLayer, {
-    coordinates: c as [number, number],
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => mc.value?.map ?? null)
+
+const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'vector' })
+randomPts.forEach((c, i) => {
+  useMaptalksMarker(vectorLayer, {
+    coordinates: c,
     options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 12, markerHeight: 12 } },
     id: `mk${i}`,
-  });
-});
+  })
+})
 
-const { layer: maskLayer } = useMaptalksVectorLayer(map);
-const { geometry: polygon } = useMaptalksPolygon(maskLayer, {
-  coordinates: [
-    [121.5027, 31.2483],
-    [121.5087, 31.2483],
-    [121.5087, 31.2443],
-    [121.5027, 31.2443],
-  ] as [number, number][],
-  options: { symbol: { lineWidth: 0, polygonFill: '#00000000' } },
-});
+let maskMarker: any = null
 
-function applyMask() {
-  (toValue(markerLayer) as unknown as { setMask?: (g: unknown) => void } | null)
-    ?.setMask?.(toValue(polygon));
-}
+watch(
+  () => toValue(map),
+  async (mv) => {
+    if (!mv) return
+    const m = mv as any
+    if (m._maskBound) return
+    m._maskBound = true
+    const mt = await import('maptalks-gl')
+    m.on('mousemove', (e: any) => {
+      if (!maskMarker) {
+        maskMarker = new mt.Marker(e.coordinate, {
+          symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
+        })
+        ;(toValue(vectorLayer) as any)?.setMask?.(maskMarker)
+      } else {
+        maskMarker.setCoordinates(e.coordinate)
+      }
+    })
+  },
+)
+
+onBeforeUnmount(() => { maskMarker = null })
 </script>
