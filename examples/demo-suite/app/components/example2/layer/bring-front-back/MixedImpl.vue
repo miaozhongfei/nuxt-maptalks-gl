@@ -22,13 +22,13 @@ const map = computed(() => mc.value?.map ?? null)
 const { layer: blueLayer } = useMaptalksVectorLayer(map)
 useMaptalksPolygon(blueLayer, {
   coordinates: [[[121.495, 31.252], [121.51, 31.252], [121.51, 31.238], [121.495, 31.238]]],
-  options: { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.6, lineColor: '#1d4ed8', lineWidth: 2 } },
+  options: { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.8, lineColor: '#1d4ed8', lineWidth: 2 } },
 })
 
 const { layer: redLayer } = useMaptalksVectorLayer(map)
 useMaptalksPolygon(redLayer, {
   coordinates: [[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]],
-  options: { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.6, lineColor: '#b91c1c', lineWidth: 2 } },
+  options: { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.8, lineColor: '#b91c1c', lineWidth: 2 } },
 })
 
 function bringBlueFront() { blueLayer.value?.bringToFront?.() }

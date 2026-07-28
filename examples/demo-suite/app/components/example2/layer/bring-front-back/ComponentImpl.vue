@@ -10,13 +10,13 @@
       <MaptalksVectorLayer ref="blueRef">
         <MaptalksPolygon
           :coordinates="blueCoords"
-          :options="{ symbol: { polygonFill: '#2563eb', polygonOpacity: 0.6, lineColor: '#1d4ed8', lineWidth: 2 } }"
+          :options="{ symbol: { polygonFill: '#2563eb', polygonOpacity: 0.8, lineColor: '#1d4ed8', lineWidth: 2 } }"
         />
       </MaptalksVectorLayer>
       <MaptalksVectorLayer ref="redRef">
         <MaptalksPolygon
           :coordinates="redCoords"
-          :options="{ symbol: { polygonFill: '#dc2626', polygonOpacity: 0.6, lineColor: '#b91c1c', lineWidth: 2 } }"
+          :options="{ symbol: { polygonFill: '#dc2626', polygonOpacity: 0.8, lineColor: '#b91c1c', lineWidth: 2 } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
