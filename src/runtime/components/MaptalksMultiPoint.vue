@@ -24,7 +24,7 @@ import type { MaptalksMultiPointOptions } from '../types'
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: Array<[number, number]>
+    coordinates: number[][]
     /** 几何图形唯一标识 */
     id?: string
     /** 是否可见 */

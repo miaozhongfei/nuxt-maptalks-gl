@@ -24,7 +24,7 @@ import type { MaptalksMultiLineStringOptions } from '../types'
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: Array<Array<[number, number]>>
+    coordinates: number[][][]
     /** 几何图形唯一标识 */
     id?: string
     /** 是否可见 */

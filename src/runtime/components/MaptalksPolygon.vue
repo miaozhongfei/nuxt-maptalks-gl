@@ -15,37 +15,37 @@
  * </MaptalksVectorLayer>
  * ```
  */
-import { inject } from 'vue'
+import { inject } from 'vue';
 
-import { useMaptalksPolygon } from '../composables/presets/useMaptalksPolygon'
-import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksPolygonOptions } from '../types'
+import { useMaptalksPolygon } from '../composables/presets/useMaptalksPolygon';
+import { GEOMETRY_LAYER_KEY } from '../core/map-context';
+import type { MaptalksPolygonOptions } from '../types';
 
 const props = withDefaults(
   defineProps<{
     /** 几何图形坐标 */
-    coordinates: Array<Array<[number, number]>>
+    coordinates: number[][][];
     /** 几何图形唯一标识 */
-    id?: string
+    id?: string;
     /** 是否可见 */
-    visible?: boolean
+    visible?: boolean;
     /** 透传给几何构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
-    options?: MaptalksPolygonOptions
+    options?: MaptalksPolygonOptions;
     /** 组件销毁时自动移除几何图形，默认 true */
-    autoDispose?: boolean
+    autoDispose?: boolean;
   }>(),
   { autoDispose: true, options: undefined },
-)
+);
 
 const emit = defineEmits<{
-  click: [e: unknown]
-  dblclick: [e: unknown]
-  mouseenter: [e: unknown]
-  mouseout: [e: unknown]
-}>()
+  click: [e: unknown];
+  dblclick: [e: unknown];
+  mouseenter: [e: unknown];
+  mouseout: [e: unknown];
+}>();
 
-const layer = inject(GEOMETRY_LAYER_KEY)
-if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksPolygon 必须在 MaptalksVectorLayer 内使用')
+const layer = inject(GEOMETRY_LAYER_KEY);
+if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksPolygon 必须在 MaptalksVectorLayer 内使用');
 const { geometry, show, hide, remove } = useMaptalksPolygon(layer, {
   coordinates: () => props.coordinates,
   options: () => props.options,
@@ -59,5 +59,5 @@ const { geometry, show, hide, remove } = useMaptalksPolygon(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 });
-defineExpose({ geometry, show, hide, remove })
+defineExpose({ geometry, show, hide, remove });
 </script>

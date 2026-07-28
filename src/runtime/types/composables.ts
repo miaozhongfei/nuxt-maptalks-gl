@@ -574,7 +574,7 @@ export interface UseMaptalksMarkerOpts {
  */
 export interface UseMaptalksLineStringOpts {
   /** 响应式 LineString 坐标 */
-  coordinates: MaybeRefOrGetter<Array<[number, number]>>;
+  coordinates: MaybeRefOrGetter<number[][]>;
   /** 透传给 LineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksLineStringOptions | undefined>;
   /** 几何 id */
@@ -597,7 +597,7 @@ export interface UseMaptalksLineStringOpts {
  */
 export interface UseMaptalksPolygonOpts {
   /** 响应式 Polygon 坐标 */
-  coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
+  coordinates: MaybeRefOrGetter<number[][][]>;
   /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksPolygonOptions | undefined>;
   /** 几何 id */
@@ -615,7 +615,7 @@ export interface UseMaptalksPolygonOpts {
  */
 export interface UseMaptalksMultiPointOpts {
   /** 响应式 MultiPoint 坐标 */
-  coordinates: MaybeRefOrGetter<Array<[number, number]>>;
+  coordinates: MaybeRefOrGetter<number[][]>;
   /** 透传给 MultiPoint 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiPointOptions | undefined>;
   /** 几何 id */
@@ -633,7 +633,7 @@ export interface UseMaptalksMultiPointOpts {
  */
 export interface UseMaptalksMultiLineStringOpts {
   /** 响应式 MultiLineString 坐标 */
-  coordinates: MaybeRefOrGetter<Array<Array<[number, number]>>>;
+  coordinates: MaybeRefOrGetter<number[][][]>;
   /** 透传给 MultiLineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiLineStringOptions | undefined>;
   /** 几何 id */
@@ -651,7 +651,7 @@ export interface UseMaptalksMultiLineStringOpts {
  */
 export interface UseMaptalksMultiPolygonOpts {
   /** 响应式 MultiPolygon 坐标 */
-  coordinates: MaybeRefOrGetter<Array<Array<Array<[number, number]>>>>;
+  coordinates: MaybeRefOrGetter<number[][][][]>;
   /** 透传给 MultiPolygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiPolygonOptions | undefined>;
   /** 几何 id */
