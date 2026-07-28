@@ -35,9 +35,10 @@ const props = withDefaults(
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksGeoJSON 必须在 MaptalksVectorLayer 内使用')
-useMaptalksGeoJSON(layer, {
+const { geometries, remove } = useMaptalksGeoJSON(layer, {
   data: () => props.data,
   symbol: () => props.symbol,
   autoDispose: props.autoDispose,
 });
+defineExpose({ geometries, remove })
 </script>

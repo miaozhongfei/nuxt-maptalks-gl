@@ -22,5 +22,6 @@ const props = defineProps<{ options?: Record<string, unknown> }>()
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksScaleControl 必须在 MaptalksMap 内使用')
-useMaptalksScale(map, () => props.options)
+const { control, remove } = useMaptalksScale(map, () => props.options)
+defineExpose({ control, remove })
 </script>

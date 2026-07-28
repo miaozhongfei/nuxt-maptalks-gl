@@ -208,10 +208,10 @@ function bindOptionsRebuild(
  * @description 图层就绪后 `loadMaptalks` → `factory(mt)` 创建几何并 `layer.addGeometry`；
  * 响应式 coordinates/symbol/properties 变化时写回（shallow watch）；events 自动 on/off；
  * 作用域销毁时 remove 几何并解绑。几何不入注册表。layer 为 null 时不创建。
- * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
  * @param {(mt: MaptalksGLNamespace) => MaptalksGeometry} factory - 接收命名空间返回几何实例
  * @param {UseMaptalksGeometryOpts} [options] - 响应式坐标/symbol/properties + 事件 + 自动销毁
- * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
+ * @returns {UseMaptalksGeometryReturn<T>} `{ geometry, show, hide, remove }`
+ * @template T - 几何具体类型，默认 MaptalksGeometry
  *
  * @example
  * const { layer } = useMaptalksVectorLayer(map);
@@ -220,11 +220,11 @@ function bindOptionsRebuild(
  *   events: { click: () => console.warn('hit') },
  * });
  */
-export function useMaptalksGeometry(
+export function useMaptalksGeometry<T extends MaptalksGeometry = MaptalksGeometry>(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   factory: (mt: MaptalksGLNamespace) => MaptalksGeometry,
   options: UseMaptalksGeometryOpts = {},
-): UseMaptalksGeometryReturn {
+): UseMaptalksGeometryReturn<T> {
   const state: GeometryState = {
     geometry: shallowRef<MaptalksGeometry | null>(null),
     creating: false,
@@ -256,6 +256,9 @@ export function useMaptalksGeometry(
     state.geometry.value = null;
   };
 
+  const show = (): void => { state.geometry.value?.show?.(); };
+  const hide = (): void => { state.geometry.value?.hide?.(); };
+
   if (options.autoDispose ?? true) onScopeDispose(remove);
-  return { geometry: state.geometry, remove };
+  return { geometry: state.geometry as ShallowRef<T | null>, show, hide, remove };
 }

@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksCircleGeometry,
   MaptalksVectorLayer,
   UseMaptalksCircleOpts,
   UseMaptalksGeometryReturn,
@@ -31,8 +32,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksCircle(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksCircleOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksCircleGeometry> {
+  return useMaptalksGeometry<MaptalksCircleGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Circle;

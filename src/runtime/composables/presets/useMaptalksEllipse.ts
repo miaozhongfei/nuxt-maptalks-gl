@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksEllipseGeometry,
   MaptalksVectorLayer,
   UseMaptalksEllipseOpts,
   UseMaptalksGeometryReturn,
@@ -32,8 +33,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksEllipse(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksEllipseOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksEllipseGeometry> {
+  return useMaptalksGeometry<MaptalksEllipseGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Ellipse;

@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksTextBoxGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksTextBoxOpts,
@@ -31,8 +32,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksTextBox(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksTextBoxOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(layer, (mt) => {
+): UseMaptalksGeometryReturn<MaptalksTextBoxGeometry> {
+  return useMaptalksGeometry<MaptalksTextBoxGeometry>(layer, (mt) => {
       const Ctor = mt.TextBox;
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 TextBox');

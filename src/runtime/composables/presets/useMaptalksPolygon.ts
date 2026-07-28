@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksPolygonGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksPolygonOpts,
@@ -30,8 +31,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksPolygon(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksPolygonOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksPolygonGeometry> {
+  return useMaptalksGeometry<MaptalksPolygonGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Polygon;

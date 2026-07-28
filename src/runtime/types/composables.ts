@@ -474,14 +474,20 @@ export interface UseMaptalksGeometryOpts {
 /**
  * `useMaptalksGeometry` 及各几何预设的返回。
  *
- * @description 暴露响应式几何实例与命令式移除。
+ * @description 暴露响应式几何实例与命令式显隐/移除。泛型参数支持几何窄类型。
  *
  * @example
  * const { geometry, remove } = useMaptalksMarker(layer, { coordinates: [0, 0] });
+ *
+ * @template T - 几何具体类型，默认 MaptalksGeometry
  */
-export interface UseMaptalksGeometryReturn {
+export interface UseMaptalksGeometryReturn<T extends MaptalksGeometry = MaptalksGeometry> {
   /** 几何实例（创建前为 null） */
-  geometry: ShallowRef<MaptalksGeometry | null>;
+  geometry: ShallowRef<T | null>;
+  /** 显示几何 */
+  show: () => void;
+  /** 隐藏几何 */
+  hide: () => void;
   /** 命令式移除并销毁几何 */
   remove: () => void;
 }

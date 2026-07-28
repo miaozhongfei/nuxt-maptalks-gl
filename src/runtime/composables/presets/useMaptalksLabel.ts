@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksLabelGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksLabelOpts,
@@ -31,8 +32,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksLabel(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksLabelOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksLabelGeometry> {
+  return useMaptalksGeometry<MaptalksLabelGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Label;

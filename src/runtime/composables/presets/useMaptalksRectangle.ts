@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksRectangleGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksRectangleOpts,
@@ -32,8 +33,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksRectangle(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksRectangleOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksRectangleGeometry> {
+  return useMaptalksGeometry<MaptalksRectangleGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Rectangle;

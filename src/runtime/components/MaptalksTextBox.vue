@@ -52,7 +52,7 @@ const emit = defineEmits<{
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksTextBox 必须在 MaptalksVectorLayer 内使用')
-useMaptalksTextBox(layer, {
+const { geometry, show, hide, remove } = useMaptalksTextBox(layer, {
   content: () => props.content,
   coordinates: () => props.coordinates,
   width: () => props.width,
@@ -68,4 +68,5 @@ useMaptalksTextBox(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 });
+defineExpose({ geometry, show, hide, remove })
 </script>

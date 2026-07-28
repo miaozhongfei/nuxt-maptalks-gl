@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksMarkerGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksMarkerOpts,
@@ -30,8 +31,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksMarker(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksMarkerOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksMarkerGeometry> {
+  return useMaptalksGeometry<MaptalksMarkerGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Marker;

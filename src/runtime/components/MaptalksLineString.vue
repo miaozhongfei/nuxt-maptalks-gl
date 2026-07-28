@@ -46,7 +46,7 @@ const emit = defineEmits<{
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksLineString 必须在 MaptalksVectorLayer 内使用')
-useMaptalksLineString(layer, {
+const { geometry, show, hide, remove } = useMaptalksLineString(layer, {
   coordinates: () => props.coordinates,
   options: () => props.options,
   visible: () => props.visible,
@@ -59,4 +59,5 @@ useMaptalksLineString(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 });
+defineExpose({ geometry, show, hide, remove })
 </script>

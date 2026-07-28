@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksSectorGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksSectorOpts,
@@ -31,8 +32,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksSector(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksSectorOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(layer, (mt) => {
+): UseMaptalksGeometryReturn<MaptalksSectorGeometry> {
+  return useMaptalksGeometry<MaptalksSectorGeometry>(layer, (mt) => {
       const Ctor = mt.Sector;
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 Sector');

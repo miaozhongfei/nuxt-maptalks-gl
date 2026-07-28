@@ -46,5 +46,6 @@ allEvents['click'] = (e: unknown) => {
   emit('click', e)
 }
 
-useMaptalksDistanceTool(map, { options: () => props.options, events: allEvents })
+const { tool, remove } = useMaptalksDistanceTool(map, { options: () => props.options, events: allEvents })
+defineExpose({ tool, remove })
 </script>

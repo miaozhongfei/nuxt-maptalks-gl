@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksMultiPointGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksMultiPointOpts,
@@ -30,8 +31,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksMultiPoint(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksMultiPointOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksMultiPointGeometry> {
+  return useMaptalksGeometry<MaptalksMultiPointGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.MultiPoint;

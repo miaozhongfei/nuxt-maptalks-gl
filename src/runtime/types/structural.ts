@@ -696,3 +696,207 @@ export interface TextSymbol extends SymbolBase {
  * const stops: Stops<MarkerSymbol> = [[10, { markerType: 'pin' }], [14, { markerType: 'ellipse' }]];
  */
 export type Stops<T> = Array<[number, T]>;
+
+// ───────────────────────────────── Geometry Struct ─────────────────────────────────
+
+/**
+ * Marker 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 Marker 独有方法 getOutline，坐标方法使用具体签名覆盖基类泛型。
+ *
+ * @example
+ * const marker: MaptalksMarkerGeometry = geo as MaptalksMarkerGeometry;
+ * const outline = marker.getOutline();
+ */
+export interface MaptalksMarkerGeometry extends MaptalksGeometry {
+  /** 读取 Marker 外轮廓线性坐标 */
+  getOutline(): unknown;
+}
+
+/**
+ * Label 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 Label 独有方法：框样式（getBoxStyle/setBoxStyle）与文字符号（getTextSymbol/setTextSymbol）。
+ *
+ * @example
+ * const label: MaptalksLabelGeometry = geo as MaptalksLabelGeometry;
+ * label.setBoxStyle({ padding: 8 });
+ */
+export interface MaptalksLabelGeometry extends MaptalksGeometry {
+  /** 读取 Label 框样式 */
+  getBoxStyle(): Record<string, unknown>;
+  /** 设置 Label 框样式 */
+  setBoxStyle(style: Record<string, unknown>): this;
+  /** 读取 Label 文字符号 */
+  getTextSymbol(): Record<string, unknown>;
+  /** 设置 Label 文字符号 */
+  setTextSymbol(symbol: Record<string, unknown>): this;
+}
+
+/**
+ * TextBox 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 TextBox 独有方法：宽高（getWidth/setWidth/getHeight/setHeight）、框符号（getBoxSymbol/setBoxSymbol）与文字样式（getTextStyle/setTextStyle）。
+ *
+ * @example
+ * const box: MaptalksTextBoxGeometry = geo as MaptalksTextBoxGeometry;
+ * box.setWidth(200);
+ */
+export interface MaptalksTextBoxGeometry extends MaptalksGeometry {
+  /** 读取 TextBox 宽度 */
+  getWidth(): number;
+  /** 设置 TextBox 宽度 */
+  setWidth(width: number): this;
+  /** 读取 TextBox 高度 */
+  getHeight(): number;
+  /** 设置 TextBox 高度 */
+  setHeight(height: number): this;
+  /** 读取 TextBox 框符号 */
+  getBoxSymbol(): Record<string, unknown>;
+  /** 设置 TextBox 框符号 */
+  setBoxSymbol(symbol: Record<string, unknown>): this;
+  /** 读取 TextBox 文字样式 */
+  getTextStyle(): Record<string, unknown>;
+  /** 设置 TextBox 文字样式 */
+  setTextStyle(style: Record<string, unknown>): this;
+}
+
+/**
+ * LineString 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 覆盖基类的坐标读写方法为具体坐标类型（点序列）。
+ *
+ * @example
+ * const line: MaptalksLineStringGeometry = geo as MaptalksLineStringGeometry;
+ * const coords = line.getCoordinates();
+ */
+export interface MaptalksLineStringGeometry extends MaptalksGeometry {
+  /** 读取 LineString 坐标（点序列） */
+  getCoordinates(): unknown[];
+  /** 设置 LineString 坐标 */
+  setCoordinates(coordinates: Array<[number, number]>): this;
+}
+
+/**
+ * Polygon 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 Polygon 独有方法：外壳（getShell）、孔洞（getHoles/hasHoles），坐标方法覆盖为环数组。
+ *
+ * @example
+ * const poly: MaptalksPolygonGeometry = geo as MaptalksPolygonGeometry;
+ * const shell = poly.getShell();
+ */
+export interface MaptalksPolygonGeometry extends MaptalksGeometry {
+  /** 读取 Polygon 外壳坐标环 */
+  getShell(): unknown[];
+  /** 读取 Polygon 孔洞坐标环 */
+  getHoles(): unknown[][];
+  /** 判断是否有孔洞 */
+  hasHoles(): boolean;
+  /** 读取 Polygon 坐标（外环 + 内环） */
+  getCoordinates(): unknown[][];
+  /** 设置 Polygon 坐标 */
+  setCoordinates(coordinates: Array<Array<[number, number]>>): this;
+}
+
+/**
+ * Circle 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 Circle 独有的半径读写方法（getRadius/setRadius），坐标方法使用具体签名。
+ *
+ * @example
+ * const circle: MaptalksCircleGeometry = geo as MaptalksCircleGeometry;
+ * circle.setRadius(500);
+ */
+export interface MaptalksCircleGeometry extends MaptalksGeometry {
+  /** 读取 Circle 半径 */
+  getRadius(): number;
+  /** 设置 Circle 半径 */
+  setRadius(radius: number): this;
+  /** 读取 Circle 中心坐标 */
+  getCoordinates(): { x: number; y: number; [key: string]: unknown };
+  /** 设置 Circle 中心坐标 */
+  setCoordinates(coordinates: [number, number] | { x: number; y: number }): this;
+}
+
+/**
+ * Sector 几何窄类型（extends MaptalksCircleGeometry）。
+ *
+ * @description 继承 CircleGeometry，追加起止角读写方法。
+ *
+ * @example
+ * const sector: MaptalksSectorGeometry = geo as MaptalksSectorGeometry;
+ * sector.setStartAngle(0);
+ */
+export interface MaptalksSectorGeometry extends MaptalksCircleGeometry {
+  /** 读取扇形起始角（度） */
+  getStartAngle(): number;
+  /** 设置扇形起始角（度） */
+  setStartAngle(angle: number): this;
+  /** 读取扇形结束角（度） */
+  getEndAngle(): number;
+  /** 设置扇形结束角（度） */
+  setEndAngle(angle: number): this;
+}
+
+/**
+ * Rectangle 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 Rectangle 独有的宽高方法，坐标使用具体签名。
+ *
+ * @example
+ * const rect: MaptalksRectangleGeometry = geo as MaptalksRectangleGeometry;
+ * rect.setWidth(1000);
+ */
+export interface MaptalksRectangleGeometry extends MaptalksGeometry {
+  /** 读取 Rectangle 宽度 */
+  getWidth(): number;
+  /** 设置 Rectangle 宽度 */
+  setWidth(width: number): this;
+  /** 读取 Rectangle 高度 */
+  getHeight(): number;
+  /** 设置 Rectangle 高度 */
+  setHeight(height: number): this;
+  /** 读取 Rectangle 坐标 */
+  getCoordinates(): { x: number; y: number; [key: string]: unknown };
+  /** 设置 Rectangle 坐标 */
+  setCoordinates(coordinates: [number, number] | { x: number; y: number }): this;
+}
+
+/**
+ * Ellipse 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 Ellipse 独有的宽高方法，坐标使用具体签名。
+ *
+ * @example
+ * const ell: MaptalksEllipseGeometry = geo as MaptalksEllipseGeometry;
+ * ell.setWidth(800);
+ */
+export interface MaptalksEllipseGeometry extends MaptalksGeometry {
+  /** 读取 Ellipse 宽度 */
+  getWidth(): number;
+  /** 设置 Ellipse 宽度 */
+  setWidth(width: number): this;
+  /** 读取 Ellipse 高度 */
+  getHeight(): number;
+  /** 设置 Ellipse 高度 */
+  setHeight(height: number): this;
+  /** 读取 Ellipse 中心坐标 */
+  getCoordinates(): { x: number; y: number; [key: string]: unknown };
+  /** 设置 Ellipse 中心坐标 */
+  setCoordinates(coordinates: [number, number] | { x: number; y: number }): this;
+}
+
+/**
+ * MultiPoint 几何窄类型（extends MaptalksGeometry）。
+ *
+ * @description 追加 MultiPoint 独有的最近点查找方法。
+ *
+ * @example
+ * const mp: MaptalksMultiPointGeometry = geo as MaptalksMultiPointGeometry;
+ * const closest = mp.findClosest({ x: 121, y: 31 });
+ */
+export interface MaptalksMultiPointGeometry extends MaptalksGeometry {
+  /** 查找距指定坐标最近的点 */
+  findClosest(coordinate: unknown): unknown;
+}

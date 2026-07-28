@@ -3,9 +3,22 @@
  */
 
 import type {
+  MaptalksCircleGeometry,
+  MaptalksControl,
+  MaptalksEllipseGeometry,
+  MaptalksGeometry,
   MaptalksInfoWindow,
+  MaptalksLabelGeometry,
   MaptalksLayer,
+  MaptalksLineStringGeometry,
   MaptalksMap,
+  MaptalksMapTool,
+  MaptalksMarkerGeometry,
+  MaptalksMultiPointGeometry,
+  MaptalksPolygonGeometry,
+  MaptalksRectangleGeometry,
+  MaptalksSectorGeometry,
+  MaptalksTextBoxGeometry,
   MaptalksUIMarker,
   MaptalksVectorLayer,
 } from './structural';
@@ -117,4 +130,98 @@ export interface MaptalksMapExposed {
   isReady: boolean;
   /** 创建阶段的错误信息，无错误时为 null */
   error: string | null;
+}
+
+// ───────────────────────────────── Geometry Exposed ─────────────────────────────────
+
+/**
+ * 几何组件 defineExpose 暴露的泛型基类。
+ *
+ * @description `defineExpose` 自动解包 ref，故 `geometry` 为 `T | null`（非 ShallowRef）。
+ * 12 个几何组件共享此模型。
+ *
+ * @example
+ * const markerRef = ref<MaptalksMarkerExposed | null>(null)
+ * markerRef.value?.geometry?.setSymbol({ markerType: 'ellipse' })
+ *
+ * @template T - 几何具体类型，默认 MaptalksGeometry
+ */
+export interface MaptalksGeometryExposed<T extends MaptalksGeometry = MaptalksGeometry> {
+  /** 几何原生实例（defineExpose 自动解包 ShallowRef），创建前为 null */
+  geometry: T | null;
+  /** 显示几何 */
+  show: () => void;
+  /** 隐藏几何 */
+  hide: () => void;
+  /** 移除并销毁几何 */
+  remove: () => void;
+}
+
+/** MaptalksMarker 组件 defineExpose 暴露 */
+export type MaptalksMarkerExposed = MaptalksGeometryExposed<MaptalksMarkerGeometry>;
+/** MaptalksLabel 组件 defineExpose 暴露 */
+export type MaptalksLabelExposed = MaptalksGeometryExposed<MaptalksLabelGeometry>;
+/** MaptalksTextBox 组件 defineExpose 暴露 */
+export type MaptalksTextBoxExposed = MaptalksGeometryExposed<MaptalksTextBoxGeometry>;
+/** MaptalksLineString 组件 defineExpose 暴露 */
+export type MaptalksLineStringExposed = MaptalksGeometryExposed<MaptalksLineStringGeometry>;
+/** MaptalksPolygon 组件 defineExpose 暴露 */
+export type MaptalksPolygonExposed = MaptalksGeometryExposed<MaptalksPolygonGeometry>;
+/** MaptalksCircle 组件 defineExpose 暴露 */
+export type MaptalksCircleExposed = MaptalksGeometryExposed<MaptalksCircleGeometry>;
+/** MaptalksSector 组件 defineExpose 暴露 */
+export type MaptalksSectorExposed = MaptalksGeometryExposed<MaptalksSectorGeometry>;
+/** MaptalksRectangle 组件 defineExpose 暴露 */
+export type MaptalksRectangleExposed = MaptalksGeometryExposed<MaptalksRectangleGeometry>;
+/** MaptalksEllipse 组件 defineExpose 暴露 */
+export type MaptalksEllipseExposed = MaptalksGeometryExposed<MaptalksEllipseGeometry>;
+/** MaptalksMultiPoint 组件 defineExpose 暴露 */
+export type MaptalksMultiPointExposed = MaptalksGeometryExposed<MaptalksMultiPointGeometry>;
+/** MaptalksMultiLineString 组件 defineExpose 暴露 */
+export type MaptalksMultiLineStringExposed = MaptalksGeometryExposed<MaptalksGeometry>;
+/** MaptalksMultiPolygon 组件 defineExpose 暴露 */
+export type MaptalksMultiPolygonExposed = MaptalksGeometryExposed<MaptalksGeometry>;
+
+// ───────────────────────────────── Control / Tool / GeoJSON Exposed ─────────────────────────────────
+
+/**
+ * 控件组件 defineExpose 暴露的类型。
+ *
+ * @example
+ * const zoomRef = ref<MaptalksControlExposed | null>(null)
+ * zoomRef.value?.remove()
+ */
+export interface MaptalksControlExposed {
+  /** 控件原生实例（defineExpose 自动解包 ShallowRef） */
+  control: MaptalksControl | null;
+  /** 移除并销毁控件 */
+  remove: () => void;
+}
+
+/**
+ * 工具组件 defineExpose 暴露的类型。
+ *
+ * @example
+ * const toolRef = ref<MaptalksToolExposed | null>(null)
+ * toolRef.value?.tool?.enable()
+ */
+export interface MaptalksToolExposed {
+  /** 工具原生实例（defineExpose 自动解包 ShallowRef） */
+  tool: MaptalksMapTool | null;
+  /** 移除并销毁工具 */
+  remove: () => void;
+}
+
+/**
+ * GeoJSON 组件 defineExpose 暴露的类型。
+ *
+ * @example
+ * const gjRef = ref<MaptalksGeoJSONExposed | null>(null)
+ * console.log(gjRef.value?.geometries?.length)
+ */
+export interface MaptalksGeoJSONExposed {
+  /** 已创建的几何数组（defineExpose 自动解包 ShallowRef） */
+  geometries: MaptalksGeometry[] | null;
+  /** 移除全部几何 */
+  remove: () => void;
 }

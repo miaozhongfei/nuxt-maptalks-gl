@@ -47,7 +47,7 @@ const emit = defineEmits<{
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksMarker 必须在 MaptalksVectorLayer 内使用')
-const { geometry } = useMaptalksMarker(layer, {
+const { geometry, show, hide, remove } = useMaptalksMarker(layer, {
   coordinates: () => props.coordinates,
   options: () => props.options,
   visible: () => props.visible,
@@ -62,4 +62,5 @@ const { geometry } = useMaptalksMarker(layer, {
 })
 // 向子组件（如 MaptalksMarkerInfoWindow）提供 geometry 引用
 provide(MARKER_GEOMETRY_KEY, geometry)
+defineExpose({ geometry, show, hide, remove })
 </script>

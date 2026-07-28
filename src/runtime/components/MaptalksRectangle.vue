@@ -50,7 +50,7 @@ const emit = defineEmits<{
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksRectangle 必须在 MaptalksVectorLayer 内使用')
-useMaptalksRectangle(layer, {
+const { geometry, show, hide, remove } = useMaptalksRectangle(layer, {
   coordinates: () => props.coordinates,
   width: () => props.width,
   height: () => props.height,
@@ -65,4 +65,5 @@ useMaptalksRectangle(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 });
+defineExpose({ geometry, show, hide, remove })
 </script>

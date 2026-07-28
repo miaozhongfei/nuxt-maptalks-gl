@@ -49,7 +49,7 @@ const emit = defineEmits<{
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksLabel 必须在 MaptalksVectorLayer 内使用')
 
-useMaptalksLabel(layer, {
+const { geometry, show, hide, remove } = useMaptalksLabel(layer, {
   content: () => props.content,
   coordinates: () => props.coordinates,
   options: () => props.options,
@@ -63,4 +63,5 @@ useMaptalksLabel(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 });
+defineExpose({ geometry, show, hide, remove })
 </script>

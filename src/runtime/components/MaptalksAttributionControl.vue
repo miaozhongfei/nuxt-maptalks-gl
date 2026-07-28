@@ -22,5 +22,6 @@ const props = defineProps<{ options?: Record<string, unknown> }>()
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksAttributionControl 必须在 MaptalksMap 内使用')
-useMaptalksAttribution(map, () => props.options)
+const { control, remove } = useMaptalksAttribution(map, () => props.options)
+defineExpose({ control, remove })
 </script>

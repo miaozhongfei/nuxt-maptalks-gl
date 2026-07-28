@@ -52,7 +52,7 @@ const emit = defineEmits<{
 
 const layer = inject(GEOMETRY_LAYER_KEY)
 if (!layer) throw new Error('[nuxt-maptalks-gl] MaptalksSector 必须在 MaptalksVectorLayer 内使用')
-useMaptalksSector(layer, {
+const { geometry, show, hide, remove } = useMaptalksSector(layer, {
   coordinates: () => props.coordinates,
   radius: () => props.radius,
   startAngle: () => props.startAngle,
@@ -68,4 +68,5 @@ useMaptalksSector(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 });
+defineExpose({ geometry, show, hide, remove })
 </script>
