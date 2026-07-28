@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="globalCompositeOperation: 'xor' 图层混合模式（对应官网 6.7）。"
+    description="globalCompositeOperation: 'difference' 层内标记混合模式（对应官网 6.7）。"
     :tabs="tabs"
   />
 </template>

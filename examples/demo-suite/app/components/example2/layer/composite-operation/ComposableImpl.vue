@@ -1,32 +1,29 @@
 <template>
   <div>
-    <div
-      ref="el"
-      class="relative rounded border border-default overflow-hidden"
-      style="height: 480px"
-    />
-    <p class="text-sm mt-2 text-muted">globalCompositeOperation: 'xor' — 重叠区域反色</p>
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-// 底层蓝色矢量图层（正常叠加）
-const { layer: bottomLayer } = useMaptalksVectorLayer(map);
-useMaptalksMarker(bottomLayer, {
-  coordinates: [121.5057, 31.2453],
-  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 30, markerHeight: 30 } },
-});
+const { layer } = useMaptalksVectorLayer(map, {
+  options: { globalCompositeOperation: 'difference' },
+})
 
-// 上层红色矢量图层（xor 混合模式，重叠区反色）
-const { layer: topLayer } = useMaptalksVectorLayer(map, {
-  options: { globalCompositeOperation: 'xor' as CanvasRenderingContext2D['globalCompositeOperation'] },
-});
-useMaptalksMarker(topLayer, {
-  coordinates: [121.5055, 31.2451],
-  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 30, markerHeight: 30 } },
-});
+const colors = ['#f00', '#0f0', '#00f']
+Array.from({ length: 50 }, () => {
+  const x = 121.5057 + (Math.random() - 0.5) * 0.055 * 0.5
+  const y = 31.2453 + (Math.random() - 0.5) * 0.03 * 0.5
+  return [x, y] as [number, number]
+}).forEach((c) => {
+  useMaptalksMarker(layer, {
+    coordinates: c,
+    options: {
+      symbol: { markerType: 'ellipse', markerFill: colors[Math.floor(Math.random() * 3)], markerFillOpacity: 1, markerLineWidth: 1, markerLineColor: colors[Math.floor(Math.random() * 3)], markerWidth: 70, markerHeight: 70 },
+    },
+  })
+})
 </script>
