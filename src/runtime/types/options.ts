@@ -7,9 +7,6 @@
  * （Spec + Omit<Native, keyof Spec>），为用户提供完整 IDE 补全。
  */
 
-/** @see https://github.com/sindresorhus/type-fest/blob/main/source/simplify.d.ts */
-type Prettify<T> = { [K in keyof T]: T[K] } & {};
-
 import type { MaptalksLayer } from './structural';
 
 import type {
@@ -22,7 +19,6 @@ import type {
   MaptalksNativeMapOptions,
   MaptalksNativeTileLayerOptions,
   MaptalksNativeUIMarkerOptions,
-  MaptalksNativeVectorLayerOptions,
   MaptalksNativeVectorTileLayerOptions,
   MaptalksNativeWMSTileLayerOptions,
 } from './native';
@@ -478,12 +474,106 @@ export interface MaptalksVectorLayerSpecOptions {
 }
 
 /**
- * VectorLayer 构造选项的组合类型。
+ * VectorLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
  *
- * @description `Partial<MaptalksVectorLayerSpecOptions> & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>`。
+ * @description 将 Spec 字段（中文注释）+ Native 字段平铺合并为单一 interface。
+ * maptalks-gl 版本升级时需同步新增原生字段。
+ *
+ * @example
+ * const opts: MaptalksVectorLayerOptions = { zIndex: 3, opacity: 0.9 };
  */
-export type MaptalksVectorLayerOptions = Prettify<Partial<MaptalksVectorLayerSpecOptions>
-  & Omit<Partial<MaptalksNativeVectorLayerOptions>, keyof MaptalksVectorLayerSpecOptions>>;
+export interface MaptalksVectorLayerOptions {
+  // ── Spec 字段（中文注释）──
+  /** 图层层级 */
+  zIndex?: number;
+  /** 图层不透明度 */
+  opacity?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** CSS 鼠标指针样式（如 'pointer' / 'crosshair'） */
+  cursor?: string;
+  /** 默认图标尺寸 [width, height] */
+  defaultIconSize?: [number, number];
+  /** 是否启用几何简化（大数据量时提升性能） */
+  enableSimplify?: boolean;
+  /** 是否启用三维海拔 */
+  enableAltitude?: boolean;
+  /** 图层固定海拔高度（米） */
+  altitude?: number;
+  /** 海拔高度对应的属性名 */
+  altitudeProperty?: string;
+  /** 是否绘制连接线（地面到图形） */
+  drawAltitude?: boolean;
+  /** 是否启用几何事件（click / hover 等） */
+  geometryEvents?: boolean;
+  /** 几何事件命中容差（像素） */
+  geometryEventTolerance?: number;
+  /** 图层级样式（支持 filter 规则数组） */
+  style?: Record<string, unknown> | Array<unknown>;
+  /** 碰撞检测缓冲区大小（像素） */
+  collisionBufferSize?: number;
+  /** 是否启用渐进式渲染（分帧渲染大批量图形） */
+  progressiveRender?: boolean;
+  /** 每帧渐进渲染的图形数量 */
+  progressiveRenderCount?: number;
+  /** 底层版权信息 */
+  attribution?: string;
+  /** 渲染器类型（'canvas' / 'gl' / 'gpu' / 'dom' / null） */
+  renderer?: string | null;
+
+  // ── 原生 Base Layer 字段 ──
+  /** Canvas 合成模式（globalCompositeOperation） */
+  globalCompositeOperation?: string;
+  /** 调试轮廓颜色（内部使用） */
+  debugOutline?: string;
+  /** CSS 滤镜（应用于图层） */
+  cssFilter?: string;
+  /** 拖拽平移时强制重渲染（性能调优） */
+  forceRenderOnMoving?: boolean;
+  /** 缩放时强制重渲染（性能调优） */
+  forceRenderOnZooming?: boolean;
+  /** 旋转时强制重渲染（性能调优） */
+  forceRenderOnRotating?: boolean;
+  /** 碰撞检测开关 */
+  collision?: boolean;
+  /** 碰撞检测范围（'layer' / 'map'） */
+  collisionScope?: string;
+  /** 启用指针命中检测 */
+  hitDetect?: boolean;
+  /** 自定义 Canvas 元素（高级用法） */
+  canvas?: HTMLCanvasElement;
+  /** 遮罩几何图形（内部，使用 setMask 代替） */
+  mask?: unknown;
+  /** 立即绘制（内部） */
+  drawImmediate?: boolean;
+  /** 按遮罩裁剪（内部） */
+  maskClip?: boolean;
+
+  // ── 原生 VectorLayer 字段 ──
+  /** 调试渲染信息 */
+  debug?: boolean;
+  /** 缓存矢量渲染在 Canvas 上 */
+  cacheVectorOnCanvas?: boolean;
+  /** 缓存 SVG 图标在 Canvas 上 */
+  cacheSvgOnCanvas?: boolean;
+  /** 按相机距离排序几何（3D 场景） */
+  sortByDistanceToCamera?: boolean;
+  /** 圆整点坐标 */
+  roundPoint?: boolean;
+  /** BBox 裁剪缓冲区大小（像素） */
+  clipBBoxBufferSize?: number;
+  /** 碰撞检测更新延迟（毫秒） */
+  collisionDelay?: number;
+  /** 渐进渲染调试 */
+  progressiveRenderDebug?: boolean;
+
+  /** 逃生舱：透传任意未建模的原始 VectorLayer 选项 */
+  [key: string]: unknown;
+}
 
 // ───────────────────────────────── Tool Options ─────────────────────────────────
 
