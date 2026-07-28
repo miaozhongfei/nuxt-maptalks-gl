@@ -51,6 +51,7 @@ export type {
   MaptalksDistanceToolOptions,
   MaptalksEllipseOptions,
   MaptalksEllipseSpecOptions,
+  MaptalksGeometryBaseOptions,
   MaptalksGeometryBaseSpecOptions,
   MaptalksGLTFLayerOptions,
   MaptalksGLTFLayerSpecOptions,
