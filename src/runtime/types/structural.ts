@@ -71,6 +71,8 @@ export interface MaptalksMap {
   addLayer(layer: MaptalksLayer): MaptalksMap;
   /** 移除图层（按实例或 id） */
   removeLayer(layer: MaptalksLayer | string): MaptalksMap;
+  /** 按指定 ID 顺序重排图层（数组从左到右 = 从底到顶） */
+  sortLayers(layerIds: string[]): MaptalksMap;
   /** 读取当前中心坐标 */
   getCenter(): MaptalksCoordinate;
   /** 设置中心坐标 */
