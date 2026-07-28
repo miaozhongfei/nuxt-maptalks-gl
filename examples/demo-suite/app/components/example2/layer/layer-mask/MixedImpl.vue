@@ -30,23 +30,24 @@ randomPts.forEach((c, i) => {
 })
 
 let maskMarker: any = null
+let maskBound = false
 
 watch(
   () => toValue(map),
   async (mv) => {
     if (!mv) return
     const m = mv as any
-    if (m._maskBound) return
-    m._maskBound = true
+    if (maskBound) return
+    maskBound = true
     const mt = await import('maptalks-gl')
     m.on('mousemove', (e: any) => {
-      if (!maskMarker) {
+      if (maskMarker) {
+        maskMarker.setCoordinates(e.coordinate)
+      } else {
         maskMarker = new mt.Marker(e.coordinate, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
         ;(toValue(vectorLayer) as any)?.setMask?.(maskMarker)
-      } else {
-        maskMarker.setCoordinates(e.coordinate)
       }
     })
   },

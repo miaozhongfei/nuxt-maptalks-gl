@@ -11,14 +11,15 @@ useMaptalksTileLayer(map, { source: 'osm' })
 
 let m: any = null
 let maskMarker: any = null
+let maskBound = false
 
 watch(
   () => toValue(map),
   async (mv) => {
     if (!mv) return
     m = mv as any
-    if (m._maskBound) return
-    m._maskBound = true
+    if (maskBound) return
+    maskBound = true
     const mt = await import('maptalks-gl')
     const extent = m.getExtent()
     const min = extent.getMin()
@@ -31,13 +32,13 @@ watch(
     const layer = new mt.VectorLayer('vector', markers)
     layer.addTo(m)
     m.on('mousemove', (e: any) => {
-      if (!maskMarker) {
+      if (maskMarker) {
+        maskMarker.setCoordinates(e.coordinate)
+      } else {
         maskMarker = new mt.Marker(e.coordinate, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
         layer.setMask(maskMarker)
-      } else {
-        maskMarker.setCoordinates(e.coordinate)
       }
     })
   },

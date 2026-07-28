@@ -24,29 +24,31 @@
 const mc = ref<MaptalksMapExposed | null>(null)
 const vlRef = ref<any>(null)
 let maskMarker: any = null
+let maskBound = false
 
 const randomPts = Array.from({ length: 100 }, () => [
   121.4757 + Math.random() * 0.06,
   31.2153 + Math.random() * 0.06,
 ] as [number, number])
 
-onMounted(async () => {
+onMounted(() => {
   watch(
     () => mc.value?.map,
     (mv) => {
       if (!mv) return
       const m = mv as any
-      if (m._maskBound) return
-      m._maskBound = true
-      m.on('mousemove', async (e: any) => {
-        if (!maskMarker) {
-          const mt = await import('maptalks-gl')
-          maskMarker = new mt.Marker(e.coordinate, {
-            symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
-          })
-          ;(vlRef.value?.layer as any)?.setMask?.(maskMarker)
-        } else {
+      if (maskBound) return
+      maskBound = true
+      m.on('mousemove', (e: any) => {
+        if (maskMarker) {
           maskMarker.setCoordinates(e.coordinate)
+        } else {
+          import('maptalks-gl').then((mt) => {
+            maskMarker = new mt.Marker(e.coordinate, {
+              symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
+            })
+            ;(vlRef.value?.layer as any)?.setMask?.(maskMarker)
+          })
         }
       })
     },
