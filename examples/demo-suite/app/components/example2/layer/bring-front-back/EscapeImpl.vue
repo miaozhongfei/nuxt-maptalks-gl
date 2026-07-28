@@ -13,9 +13,7 @@ const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let blueLayer: any = null
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let redLayer: any = null
 
 function blueToFront() { blueLayer?.bringToFront?.() }
@@ -32,9 +30,7 @@ watch(
     const redPoly = new mt.Polygon([[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]], { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.8, lineColor: '#b91c1c', lineWidth: 2 } })
     bluePoly.addTo(blueLayer)
     redPoly.addTo(redLayer)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blueLayer.addTo(m as any)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     redLayer.addTo(m as any)
   },
 )
