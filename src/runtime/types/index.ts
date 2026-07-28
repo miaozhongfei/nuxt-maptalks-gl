@@ -6,10 +6,6 @@
  */
 
 export type {
-  MaptalksNativeMapOptions,
-} from './options';
-
-export type {
   LineSymbol,
   MaptalksControl,
   MaptalksCoordinate,

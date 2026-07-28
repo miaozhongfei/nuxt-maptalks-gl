@@ -102,7 +102,4 @@ export type {
   UseMaptalksSyncReturn,
   UseMaptalksToolReturn,
   UseMaptalksVectorLayerReturn,
-
-  // test
-  MaptalksNativeMapOptions,
 } from '../types';

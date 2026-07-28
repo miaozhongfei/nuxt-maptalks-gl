@@ -7,7 +7,6 @@
  * （Spec + Native 字段平铺），为用户提供完整 IDE 补全。
  */
 
-import type { Map as _MaptalksMapClass } from 'maptalks-gl';
 import type { MaptalksLayer } from './structural';
 
 // ───────────────────────────────── Map ─────────────────────────────────
@@ -259,14 +258,6 @@ export interface MaptalksMapOptions {
   /** 逃生舱：透传任意未建模的原始 Map 选项 */
   [key: string]: unknown;
 }
-
-/**
- * 从用户安装的 maptalks-gl 版本推导的 Map 构造选项类型（全部 76 字段）。
- *
- * @description 用 `ConstructorParameters<typeof Map>[1]` 提取构造函数第二个参数的类型，
- * 与安装的 maptalks-gl 版本保持同步，IDE 可提示所有选项字段。
- */
-export type MaptalksNativeMapOptions = ConstructorParameters<typeof _MaptalksMapClass>[1]
 
 // ───────────────────────────────── InfoWindow ─────────────────────────────────
 

@@ -9,9 +9,6 @@
 import type { ComputedRef, MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
 import type {
-  MaptalksNativeMapOptions,
-} from './options';
-import type {
   MaptalksCircleOptions,
   MaptalksEllipseOptions,
   MaptalksGLTFLayerOptions,
@@ -58,7 +55,7 @@ import type {
  * @example
  * useMaptalks(target, { name: 'main', center: [113.27, 23.13], zoom: 10, minZoom: 3 });
  */
-export interface UseMaptalksOpts extends MaptalksMapSpecOptions, Omit<Partial<MaptalksNativeMapOptions>, keyof MaptalksMapSpecOptions> {
+export interface UseMaptalksOpts extends MaptalksMapSpecOptions {
   /** 命名实例：传入后登记进 MapRegistry，可经 useMaptalksInstance 按名获取 */
   name?: string;
   /** 初始化失败回调（与 error ref 同时触发） */

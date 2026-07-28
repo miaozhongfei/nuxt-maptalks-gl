@@ -19,12 +19,6 @@ useMaptalksTileLayer(map, { source: 'osm' });
 
 const op = ref(1);
 
-const o: MaptalksNativeVectorLayerOptions = {};
-const t: MaptalksVectorLayerOptions = {};
-
-// const q1: MaptalksNativeMapOptions = {maxZoom:20,devicePixelRatio :1};
-// const q2: UseMaptalksOpts = {center:[121.5057, 31.2453], zoom:13, maxZoom:20,devicePixelRatio :1};
-
 const layerOpts = computed(() => ({ opacity: op.value }) as MaptalksVectorLayerOptions);
 
 const { layer } = useMaptalksVectorLayer(map, {
