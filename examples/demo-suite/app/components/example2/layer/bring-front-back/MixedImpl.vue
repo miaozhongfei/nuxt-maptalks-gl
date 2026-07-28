@@ -1,7 +1,7 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
       :zoom="13"
@@ -9,28 +9,25 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="blue" @click="blueCtl.bringToFront()">蓝层置顶</UButton>
-      <UButton size="xs" color="red" @click="redCtl.bringToBack()">红层置底</UButton>
+      <UButton size="xs" color="blue" variant="soft" @click="blueLayer.value?.bringToFront?.()">蓝层置顶</UButton>
+      <UButton size="xs" color="red" variant="soft" @click="redLayer.value?.bringToBack?.()">红层置底</UButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => mc.value?.map ?? null)
 
-const { layer: blueLayer } = useMaptalksVectorLayer(map);
-useMaptalksMarker(blueLayer, {
-  coordinates: [121.5057, 31.2453],
-  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28 } },
-});
+const { layer: blueLayer } = useMaptalksVectorLayer(map)
+useMaptalksPolygon(blueLayer, {
+  coordinates: [[[121.495, 31.252], [121.51, 31.252], [121.51, 31.238], [121.495, 31.238]]],
+  options: { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.6, lineColor: '#1d4ed8', lineWidth: 2 } },
+})
 
-const { layer: redLayer } = useMaptalksVectorLayer(map);
-useMaptalksMarker(redLayer, {
-  coordinates: [121.5057, 31.2453],
-  options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 } },
-});
-
-const blueCtl = useMaptalksLayerControl(blueLayer);
-const redCtl = useMaptalksLayerControl(redLayer);
+const { layer: redLayer } = useMaptalksVectorLayer(map)
+useMaptalksPolygon(redLayer, {
+  coordinates: [[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]],
+  options: { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.6, lineColor: '#b91c1c', lineWidth: 2 } },
+})
 </script>
