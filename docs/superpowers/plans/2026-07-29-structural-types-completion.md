@@ -431,11 +431,33 @@ export interface MaptalksVectorLayer extends MaptalksLayer {
 }
 ```
 
-- [ ] **Step 4: 新建 9 个 Layer 子类接口**
+- [ ] **Step 4: 新建 9 个 Layer 子类接口 + 2 个 Geometry 子接口**
 
-在 `MaptalksVectorLayer` 之后、`MaptalksDrawTool` 之前插入以下接口块：
+在 `MaptalksVectorLayer` 之后、`MaptalksDrawTool` 之前插入以下接口块（9 个 Layer 子类 + 2 个 Geometry 子类）：
 
 ```ts
+// ───────────────────────────────── Geometry Narrow Struct (supplement) ─────────────────────────────────
+
+/**
+ * MultiLineString 几何窄类型（extends MaptalksGeometry）。
+ */
+export interface MaptalksMultiLineStringGeometry extends MaptalksGeometry {
+  /** 读取 MultiLineString 坐标 */
+  getCoordinates(): unknown[][][];
+  /** 设置 MultiLineString 坐标 */
+  setCoordinates(coordinates: unknown[][][]): this;
+}
+
+/**
+ * MultiPolygon 几何窄类型（extends MaptalksGeometry）。
+ */
+export interface MaptalksMultiPolygonGeometry extends MaptalksGeometry {
+  /** 读取 MultiPolygon 坐标 */
+  getCoordinates(): unknown[][][][];
+  /** 设置 MultiPolygon 坐标 */
+  setCoordinates(coordinates: unknown[][][][]): this;
+}
+
 // ───────────────────────────────── Layer Subclass Struct ─────────────────────────────────
 
 /**
@@ -770,8 +792,8 @@ export interface MaptalksUIMarker {
 | `Label?:` | `MaptalksLabelGeometry` |
 | `TextBox?:` | `MaptalksTextBoxGeometry` |
 | `MultiPoint?:` | `MaptalksMultiPointGeometry` |
-| `MultiLineString?:` | `MaptalksGeometry`（保持，无窄化接口） |
-| `MultiPolygon?:` | `MaptalksGeometry`（保持，无窄化接口） |
+| `MultiLineString?:` | `MaptalksMultiLineStringGeometry` |
+| `MultiPolygon?:` | `MaptalksMultiPolygonGeometry` |
 | `VectorLayer?:` | 保持 `MaptalksVectorLayer`（已窄化） |
 | `TileLayer` | `MaptalksTileLayer` |
 | `VectorTileLayer?:` | `MaptalksVectorTileLayer` |

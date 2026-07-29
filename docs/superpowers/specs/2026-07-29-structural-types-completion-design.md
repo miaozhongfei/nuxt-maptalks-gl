@@ -304,8 +304,8 @@ Mixin 方法（Eventable 的 `once`/`listens`/`fire`、Menuable 的 `setMenu`/`g
 | `Label?` | `MaptalksGeometry` | `MaptalksLabelGeometry` |
 | `TextBox?` | `MaptalksGeometry` | `MaptalksTextBoxGeometry` |
 | `MultiPoint?` | `MaptalksGeometry` | `MaptalksMultiPointGeometry` |
-| `MultiLineString?` | `MaptalksGeometry` | `MaptalksGeometry`（无窄化接口） |
-| `MultiPolygon?` | `MaptalksGeometry` | `MaptalksGeometry`（无窄化接口） |
+| `MultiLineString?` | `MaptalksGeometry` | `MaptalksMultiLineStringGeometry` |
+| `MultiPolygon?` | `MaptalksGeometry` | `MaptalksMultiPolygonGeometry` |
 | `VectorLayer?` | `MaptalksVectorLayer` | 不变（已窄化） |
 | `TileLayer` | `MaptalksLayer` | `MaptalksTileLayer` |
 | `VectorTileLayer?` | `MaptalksLayer` | `MaptalksVectorTileLayer` |
