@@ -1,19 +1,26 @@
 <template>
   <div>
-    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <MaptalksMap
+      ref="mc"
+      base-layer="osm"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
     <p class="text-xs mt-2 text-muted">不推荐使用 CanvasTileLayer，优先使用标准 TileLayer</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
+const mc = ref<MaptalksMapExposed | null>(null)
+let bound = false
 
 watch(
-  () => toValue(map),
+  () => mc.value?.map,
   async (mv) => {
-    if (!mv) return
+    if (!mv || bound) return
+    bound = true
     const mt = await import('maptalks-gl')
     const ctl = new mt.CanvasTileLayer('ct')
     ;(ctl as unknown as { drawTile: (canvas: HTMLCanvasElement, ctx: { x: number; y: number; z: number }, onComplete: (err: null) => void) => void }).drawTile = (
