@@ -43,7 +43,7 @@ export function useMaptalksSector(
         toValue(opts.radius),
         toValue(opts.startAngle),
         toValue(opts.endAngle),
-        buildGeometryOptions({ ...toValue(opts.options) }),
+        buildGeometryOptions({ id: opts.id, ...toValue(opts.options) }),
       );
     },
     {

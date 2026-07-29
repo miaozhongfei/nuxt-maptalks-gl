@@ -43,7 +43,7 @@ export function useMaptalksLabel(
       return new Ctor(
         toValue(opts.content),
         toValue(opts.coordinates),
-        buildGeometryOptions({ ...toValue(opts.options) }),
+        buildGeometryOptions({ id: opts.id, ...toValue(opts.options) }),
       );
     },
     {

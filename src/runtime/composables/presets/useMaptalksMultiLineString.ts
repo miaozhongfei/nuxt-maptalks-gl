@@ -38,7 +38,7 @@ export function useMaptalksMultiLineString(
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 MultiLineString');
       }
-      return new Ctor(toValue(opts.coordinates), buildGeometryOptions({ ...toValue(opts.options) }));
+      return new Ctor(toValue(opts.coordinates), buildGeometryOptions({ id: opts.id, ...toValue(opts.options) }));
 
     },
     {

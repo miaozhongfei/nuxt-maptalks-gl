@@ -43,7 +43,7 @@ export function useMaptalksTextBox(
         toValue(opts.coordinates),
         toValue(opts.width),
         toValue(opts.height),
-        buildGeometryOptions({ ...toValue(opts.options) }),
+        buildGeometryOptions({ id: opts.id, ...toValue(opts.options) }),
       );
     },
     {
