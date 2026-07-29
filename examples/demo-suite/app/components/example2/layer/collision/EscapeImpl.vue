@@ -9,6 +9,7 @@
 </template>
 
 <script setup lang="ts">
+import { ShallowRef } from 'vue'
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 8 })
 useMaptalksTileLayer(map, { source: 'osm' })
