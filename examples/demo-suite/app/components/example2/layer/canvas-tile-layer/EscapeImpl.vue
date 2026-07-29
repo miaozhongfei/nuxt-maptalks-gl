@@ -15,7 +15,7 @@ watch(
   async (mv) => {
     if (!mv) return
     const mt = await import('maptalks-gl')
-    const ctl = new mt.CanvasTileLayer('ct')
+    const ctl = new mt.CanvasTileLayer('ct', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png' })
     ;(ctl as unknown as { drawTile: (canvas: HTMLCanvasElement, ctx: { x: number; y: number; z: number }, onComplete: (err: null) => void) => void }).drawTile = (
       canvas: HTMLCanvasElement,
       tileContext: { x: number; y: number; z: number },

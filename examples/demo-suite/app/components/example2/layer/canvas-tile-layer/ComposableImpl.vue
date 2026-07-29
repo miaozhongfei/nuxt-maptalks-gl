@@ -11,7 +11,7 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 useMaptalksLayer(map, (mt) => {
-  const ctl = new mt.CanvasTileLayer('ct')
+  const ctl = new mt.CanvasTileLayer('ct', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png' })
   ;(ctl as unknown as { drawTile: (canvas: HTMLCanvasElement, ctx: { x: number; y: number; z: number }, onComplete: (err: null) => void) => void }).drawTile = (
     canvas: HTMLCanvasElement,
     tileContext: { x: number; y: number; z: number },
