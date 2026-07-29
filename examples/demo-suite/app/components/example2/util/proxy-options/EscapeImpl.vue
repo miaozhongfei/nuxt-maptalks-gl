@@ -25,10 +25,10 @@ useMaptalksTileLayer(map, { source: 'osm' });
 const currentZoom = ref(13);
 
 function setZoom(z: number) {
-  const m = toValue(map);
-  if (!m) return;
-  // runtime config update 只影响 view 行为，不更新 options 快照；逃生舱直调不写 ref
-  (m as unknown as { config: (o: Record<string, unknown>) => void }).config({ zoom: z });
-  currentZoom.value = z;
+  const m = toValue(map)
+  if (!m) return
+  // 逃生舱直调 map.config() 运行时热更新 zoom（不更新模块 options 快照）
+  m.config({ zoom: z })
+  currentZoom.value = z
 }
 </script>
