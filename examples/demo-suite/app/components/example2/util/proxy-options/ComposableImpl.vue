@@ -19,8 +19,8 @@ const currentZoom = ref(13)
 function setZoom(z: number) {
   const m = toValue(map)
   if (!m) return
-  // composable 返回的 map ref 直调 config() 运行时热更新
-  m.config({ zoom: z })
+  // composable 返回的 map ref 直调 setZoom() 运行时热更新
+  m.setZoom(z)
   currentZoom.value = z
 }
 </script>

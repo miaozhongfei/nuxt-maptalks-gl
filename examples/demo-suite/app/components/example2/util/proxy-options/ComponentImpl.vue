@@ -23,8 +23,8 @@ const currentZoom = ref(13)
 function setZoom(z: number) {
   const m = mc.value?.map
   if (!m) return
-  // 组件通过 template ref 获取 map 实例，再直调 config() 运行时热更新
-  m.config({ zoom: z })
+  // 组件通过 template ref 获取 map 实例，再直调 setZoom() 运行时热更新
+  m.setZoom(z)
   currentZoom.value = z
 }
 </script>

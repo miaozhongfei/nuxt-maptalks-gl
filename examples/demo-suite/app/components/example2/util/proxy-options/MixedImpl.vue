@@ -25,8 +25,8 @@ const currentZoom = ref(13)
 function setZoom(z: number) {
   const m = toValue(map)
   if (!m) return
-  // 通过 computed 桥接的 map 实例直调 config() 运行时热更新
-  m.config({ zoom: z })
+  // 通过 computed 桥接的 map 实例直调 setZoom() 运行时热更新
+  m.setZoom(z)
   currentZoom.value = z
 }
 </script>

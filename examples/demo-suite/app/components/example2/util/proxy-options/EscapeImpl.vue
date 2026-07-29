@@ -27,8 +27,8 @@ const currentZoom = ref(13);
 function setZoom(z: number) {
   const m = toValue(map)
   if (!m) return
-  // 逃生舱直调 map.config() 运行时热更新 zoom（不更新模块 options 快照）
-  m.config({ zoom: z })
+  // 逃生舱直调 setZoom() 运行时热更新 view（config() 只改内部快照，不触发相机变化）
+  m.setZoom(z)
   currentZoom.value = z
 }
 </script>
