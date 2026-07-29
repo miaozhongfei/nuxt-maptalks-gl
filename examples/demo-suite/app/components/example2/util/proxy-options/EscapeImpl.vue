@@ -1,34 +1,60 @@
 <template>
   <div>
-    <div
-      ref="el"
-      class="relative rounded border border-default overflow-hidden"
-      style="height: 480px"
-    />
-    <div class="flex items-center gap-3 mt-3 flex-wrap">
-      <UButton size="sm" variant="outline" @click="setZoom(12)">
-        设为 zoom=12
-      </UButton>
-      <UButton size="sm" variant="outline" @click="setZoom(15)">
-        设为 zoom=15
-      </UButton>
-      <UBadge variant="subtle">当前 zoom={{ currentZoom }}</UBadge>
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <div class="flex items-center gap-4 mt-3 flex-wrap">
+      <label class="flex items-center gap-2 text-sm">
+        <input type="checkbox" @change="toggleCross" />
+        十字准星 (centerCross)
+      </label>
+      <label class="flex items-center gap-2 text-sm">
+        <input type="range" min="0" max="1" step="0.1" :value="opacity" @input="setOpacity" />
+        底图透明度 {{ opacity }}
+      </label>
+      <label class="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked @change="toggleVisible" />
+        图层可见
+      </label>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+// 底图瓦片层——稍后用其 options.opacity 演示 Proxy 更新
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const currentZoom = ref(13);
+// 矢量图层 + Marker——稍后用其 options.visible 演示 Proxy 更新
+const { layer: vectorLayer } = useMaptalksLayer(map, (mt) => {
+  const vl = new mt.VectorLayer('v')
+  vl.addGeometry(new mt.Marker([121.5057, 31.2453]))
+  return vl
+})
 
-function setZoom(z: number) {
+const opacity = ref(1)
+let crossOn = false
+
+function toggleCross(e: Event) {
   const m = toValue(map)
   if (!m) return
-  // 逃生舱直调 setZoom() 运行时热更新 view（config() 只改内部快照，不触发相机变化）
-  m.setZoom(z)
-  currentZoom.value = z
+  crossOn = (e.target as HTMLInputElement).checked
+  // Proxy 拦截：直接赋值 map.options.centerCross 等效于 map.config('centerCross', ...)
+  ;(m.options as any).centerCross = crossOn
+}
+
+function setOpacity(e: Event) {
+  const m = toValue(map)
+  if (!m) return
+  const v = parseFloat((e.target as HTMLInputElement).value)
+  opacity.value = v
+  // Proxy 拦截：map.options.baseLayer 也是 Proxy，直接赋值触发生效
+  ;(m.options as any).baseLayer.options.opacity = v
+}
+
+function toggleVisible(e: Event) {
+  const vl = toValue(vectorLayer)
+  if (!vl) return
+  // Proxy 拦截：layer.options.visible 直接赋值等效于 layer.config('visible', ...)
+  ;(vl.options as any).visible = (e.target as HTMLInputElement).checked
 }
 </script>
