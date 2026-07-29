@@ -30,7 +30,7 @@ watch(
       ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
       this.completeRender()
     }
-    cl.drawOnInteracting = cl.draw
+    cl.drawOnInteracting = cl.draw as unknown as (...args: unknown[]) => void
     cl.addTo(mv as any)
   },
   { immediate: true },

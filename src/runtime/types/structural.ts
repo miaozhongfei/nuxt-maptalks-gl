@@ -86,7 +86,7 @@ export interface MaptalksMap extends MaptalksClass {
   /** 获取容器 DOM 元素 */
   getContainer(): HTMLElement | null;
   /** 获取像素尺寸 */
-  getSize(): Record<string, number>;
+  getSize(): { width: number; height: number };
   /** 获取容器像素范围 */
   getContainerExtent(): unknown;
   /** 检查尺寸变化 */
@@ -448,7 +448,7 @@ export interface MaptalksGeometry extends MaptalksClass {
   /** 读取屏幕像素范围 */
   getContainerExtent(): Record<string, unknown>;
   /** 读取屏幕像素尺寸 */
-  getSize(): Record<string, number>;
+  getSize(): { width: number; height: number };
   /** 判断是否包含指定点 */
   containsPoint(point: unknown, tolerance?: number): boolean;
   /** 读取文本内容 */

@@ -13,7 +13,8 @@ useMaptalksLayer(map, (mt) => {
   const cl = new mt.CanvasLayer('c', { forceRenderOnMoving: true, forceRenderOnZooming: true })
   cl.prepareToDraw = () => ['Hello', 'maptalks']
   cl.draw = function (this: any, ctx: CanvasRenderingContext2D, _view: unknown, p1: string, p2: string) {
-    const size = toValue(map)?.getSize() ?? { width: 800, height: 600 }
+    const size = toValue(map)?.getSize()
+    if (!size) return
     const str = `${p1}, ${p2}`
     ctx.fillStyle = '#f00'
     ctx.font = 'bolder 50px sans-serif'
@@ -21,7 +22,7 @@ useMaptalksLayer(map, (mt) => {
     ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
     this.completeRender()
   }
-  cl.drawOnInteracting = cl.draw
+  ;(cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting = cl.draw
   return cl
 })
 </script>
