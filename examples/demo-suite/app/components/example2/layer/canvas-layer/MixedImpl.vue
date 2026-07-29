@@ -36,7 +36,8 @@ watch(
       ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2);
       this.completeRender();
     };
-    ;(cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting = cl.draw;
+    (cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting =
+      cl.draw;
     cl.addTo(mv as any);
   },
   { immediate: true },

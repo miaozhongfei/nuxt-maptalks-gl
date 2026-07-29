@@ -12,6 +12,7 @@ import type {
   MaptalksCircleOptions,
   MaptalksEllipseOptions,
   MaptalksGLTFLayerOptions,
+  MaptalksImageLayerOptions,
   MaptalksLabelOptions,
   MaptalksLineStringOptions,
   MaptalksMapOptions,
@@ -311,6 +312,28 @@ export type UseMaptalksGLTFLayerOpts = Omit<UseMaptalksPresetBaseOpts, 'options'
 export type UseMaptalksWMSLayerOpts = Omit<UseMaptalksPresetBaseOpts, 'options'> & {
   options?: MaptalksWMSLayerOptions | MaybeRefOrGetter<MaptalksWMSLayerOptions | undefined>;
 };
+
+/**
+ * useMaptalksImageLayer 的 opts 参数。
+ *
+ * @description ImageLayer 不需要数据源解析，直接接受图片数组与构造选项。
+ * images 为 `{ url, extent, opacity? }` 对象数组。
+ *
+ * @example
+ * useMaptalksImageLayer(map, { images: [{ url: 'a.png', extent: [xmin, ymin, xmax, ymax] }] });
+ */
+export interface UseMaptalksImageLayerOpts {
+  /** 图层 id，缺省自动生成 */
+  id?: string | number;
+  /** 图片数组 */
+  images?: MaybeRefOrGetter<Array<{ url: string; extent: unknown; opacity?: number }> | undefined>;
+  /** 透传给 ImageLayer 构造器的完整选项 */
+  options?: MaybeRefOrGetter<MaptalksImageLayerOptions | undefined>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动移除图层，默认 true */
+  autoDispose?: boolean;
+}
 
 // ───────────────────────────────── useMaptalksInstance ─────────────────────────────────
 

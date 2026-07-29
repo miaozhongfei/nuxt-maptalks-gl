@@ -97,6 +97,7 @@ export type {
   UseMaptalksExportOpts,
   UseMaptalksGeoJSONOpts,
   UseMaptalksGLTFLayerOpts,
+  UseMaptalksImageLayerOpts,
   UseMaptalksGeometryOpts,
   UseMaptalksLabelOpts,
   UseMaptalksLayerControlOpts,

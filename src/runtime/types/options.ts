@@ -654,6 +654,56 @@ export interface MaptalksGLTFLayerOptions {
   [key: string]: unknown;
 }
 
+// ───────────────────────────────── ImageLayer ─────────────────────────────────
+
+/**
+ * ImageLayer 构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 支持 `crossOrigin`、`renderer`（'canvas' / 'gl'）、`alphaTest` 等原生选项。
+ * maptalks-gl 版本升级时需同步新增原生字段。
+ *
+ * @example
+ * const opts: MaptalksImageLayerOptions = { crossOrigin: 'anonymous', renderer: 'gl' };
+ */
+export interface MaptalksImageLayerOptions {
+  /** 图片跨域策略 */
+  crossOrigin?: string;
+  /** 渲染器类型（'canvas' / 'gl'） */
+  renderer?: string;
+  /** GL 渲染器 alpha 测试阈值 */
+  alphaTest?: number;
+  /** GL 渲染器深度写入开关 */
+  depthMask?: boolean;
+  /** 深度测试函数 */
+  depthFunc?: string;
+  /** 底层版权信息 */
+  attribution?: string;
+  /** 可见的最小缩放级别 */
+  minZoom?: number;
+  /** 可见的最大缩放级别 */
+  maxZoom?: number;
+  /** 是否可见 */
+  visible?: boolean;
+  /** 图层不透明度（0–1） */
+  opacity?: number;
+  /** 图层层级 */
+  zIndex?: number;
+  /** 交互时强制重渲 */
+  forceRenderOnMoving?: boolean;
+  /** 缩放时强制重渲 */
+  forceRenderOnZooming?: boolean;
+  /** 旋转时强制重渲 */
+  forceRenderOnRotating?: boolean;
+  /** CSS 滤镜 */
+  cssFilter?: string;
+  /** 调试轮廓颜色 */
+  debugOutline?: string;
+  /** Canvas 合成模式 */
+  globalCompositeOperation?: string;
+  /** 逃生舱：透传任意未建模的原始 ImageLayer 选项 */
+  [key: string]: unknown;
+}
+
 // ───────────────────────────────── WMSLayer ─────────────────────────────────
 
 /**

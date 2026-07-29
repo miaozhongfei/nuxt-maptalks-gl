@@ -9,6 +9,7 @@ import type {
   MaptalksGeometry,
   MaptalksGLTFLayer,
   MaptalksGroupGLLayer,
+  MaptalksImageLayer,
   MaptalksInfoWindow,
   MaptalksLabelGeometry,
   MaptalksLayer,
@@ -68,6 +69,9 @@ export type MaptalksGLTFLayerExposed = MaptalksLayerExposed<MaptalksGLTFLayer>;
 
 /** MaptalksWMSLayer 组件 defineExpose 暴露 */
 export type MaptalksWMSLayerExposed = MaptalksLayerExposed<MaptalksWMSLayer>;
+
+/** MaptalksImageLayer 组件 defineExpose 暴露 */
+export type MaptalksImageLayerExposed = MaptalksLayerExposed<MaptalksImageLayer>;
 
 /**
  * MaptalksInfoWindow 组件 defineExpose 暴露的类型。

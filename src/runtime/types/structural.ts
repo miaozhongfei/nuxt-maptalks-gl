@@ -691,12 +691,10 @@ export interface MaptalksParticleLayer extends MaptalksLayer {
  * ImageLayer 图片图层实例（extends Layer）。
  */
 export interface MaptalksImageLayer extends MaptalksLayer {
-  /** 设置图片 URL */
-  setUrl(url: string): this;
-  /** 获取图片 URL */
-  getUrl(): string;
-  /** 设置经纬度范围 */
-  setExtent(extent: unknown): this;
+  /** 设置图片数组并重绘 */
+  setImages(images: Array<{ url: string; extent: unknown; opacity?: number }>): this;
+  /** 获取图片数组 */
+  getImages(): Array<{ url: string; extent: unknown; opacity?: number }>;
   /** 逃生舱口 */
   [key: string]: unknown;
 }
@@ -825,6 +823,8 @@ export interface MaptalksGLNamespace {
   GLTFLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksGLTFLayer;
   /** VectorLayer 构造器（承载几何） */
   VectorLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksVectorLayer;
+  /** ImageLayer 构造器 */
+  ImageLayer?: new (id: string | number, images?: Array<{ url: string; extent: unknown; opacity?: number }>, options?: Record<string, unknown>) => MaptalksImageLayer;
   /** Marker 构造器 */
   Marker?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMarkerGeometry;
   /** LineString 构造器 */
