@@ -21,13 +21,11 @@
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
-
-const { layer: vectorLayer } = useMaptalksLayer(map, (mt) => {
-  const vl = new mt.VectorLayer('v')
-  vl.addGeometry(new mt.Marker([121.5057, 31.2453]))
-  return vl
-})
+// 底图瓦片层（capture 返回值以便后续操作 options.opacity Proxy）
+const { layer: baseLayer } = useMaptalksTileLayer(map, { source: 'osm' })
+// 矢量图层 + Marker（使用预设 composable，非裸 useMaptalksLayer 工厂）
+const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'v' })
+useMaptalksMarker(vectorLayer, { coordinates: [121.5057, 31.2453] })
 
 const opacity = ref(1)
 let crossOn = false
@@ -36,23 +34,23 @@ function toggleCross(e: Event) {
   const m = toValue(map)
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  // composable 返回 map，直接赋值 map.options（Proxy 拦截 → config）
+  // composable 返回 map ref，Proxy 拦截：map.options 赋值
   ;(m.options as any).centerCross = crossOn
 }
 
 function setOpacity(e: Event) {
-  const m = toValue(map)
-  if (!m) return
+  const bl = toValue(baseLayer)
+  if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  // Proxy 拦截：map.options.baseLayer 次级 Proxy → options.opacity 赋值等效 config
-  ;(m.options as any).baseLayer.options.opacity = v
+  // 预设 composable 返回的 TileLayer，Proxy 拦截：layer.options.opacity 赋值
+  ;(bl.options as any).opacity = v
 }
 
 function toggleVisible(e: Event) {
   const vl = toValue(vectorLayer)
   if (!vl) return
-  // composable 返回 layer ref，直接赋值 layer.options.visible（Proxy 拦截）
+  // 预设 composable 返回的 VectorLayer，Proxy 拦截：layer.options.visible 赋值
   ;(vl.options as any).visible = (e.target as HTMLInputElement).checked
 }
 </script>

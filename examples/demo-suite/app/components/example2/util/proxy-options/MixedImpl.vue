@@ -28,12 +28,9 @@
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => mc.value?.map ?? null)
-
-const { layer: vectorLayer } = useMaptalksLayer(map, (mt) => {
-  const vl = new mt.VectorLayer('v')
-  vl.addGeometry(new mt.Marker([121.5057, 31.2453]))
-  return vl
-})
+// 组合：组件创建地图 + 图层，preset composable 创建矢量图层和 Marker
+const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'v' })
+useMaptalksMarker(vectorLayer, { coordinates: [121.5057, 31.2453] })
 
 const opacity = ref(1)
 let crossOn = false
@@ -42,7 +39,6 @@ function toggleCross(e: Event) {
   const m = toValue(map)
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  // 组件创建地图，computed 桥接获取实例，Proxy 拦截：map.options.centerCross 赋值
   ;(m.options as any).centerCross = crossOn
 }
 
@@ -51,14 +47,14 @@ function setOpacity(e: Event) {
   if (!m) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  // Proxy 拦截：map.options.baseLayer.options.opacity 赋值
-  ;(m.options as any).baseLayer.options.opacity = v
+  // 组合：组件 base-layer 创建的底图，通过 map.getBaseLayer() 获取实例
+  const bl = (m as any).getBaseLayer()
+  if (bl) bl.options.opacity = v
 }
 
 function toggleVisible(e: Event) {
   const vl = toValue(vectorLayer)
   if (!vl) return
-  // 组合：composable 创建图层，Proxy 拦截：layer.options.visible 赋值
   ;(vl.options as any).visible = (e.target as HTMLInputElement).checked
 }
 </script>

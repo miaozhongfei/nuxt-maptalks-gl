@@ -21,15 +21,9 @@
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-// 底图瓦片层——稍后用其 options.opacity 演示 Proxy 更新
-useMaptalksTileLayer(map, { source: 'osm' })
-
-// 矢量图层 + Marker——稍后用其 options.visible 演示 Proxy 更新
-const { layer: vectorLayer } = useMaptalksLayer(map, (mt) => {
-  const vl = new mt.VectorLayer('v')
-  vl.addGeometry(new mt.Marker([121.5057, 31.2453]))
-  return vl
-})
+const { layer: baseLayer } = useMaptalksTileLayer(map, { source: 'osm' })
+const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'v' })
+useMaptalksMarker(vectorLayer, { coordinates: [121.5057, 31.2453] })
 
 const opacity = ref(1)
 let crossOn = false
@@ -38,23 +32,20 @@ function toggleCross(e: Event) {
   const m = toValue(map)
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  // Proxy 拦截：直接赋值 map.options.centerCross 等效于 map.config('centerCross', ...)
   ;(m.options as any).centerCross = crossOn
 }
 
 function setOpacity(e: Event) {
-  const m = toValue(map)
-  if (!m) return
+  const bl = toValue(baseLayer)
+  if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  // Proxy 拦截：map.options.baseLayer 也是 Proxy，直接赋值触发生效
-  ;(m.options as any).baseLayer.options.opacity = v
+  ;(bl.options as any).opacity = v
 }
 
 function toggleVisible(e: Event) {
   const vl = toValue(vectorLayer)
   if (!vl) return
-  // Proxy 拦截：layer.options.visible 直接赋值等效于 layer.config('visible', ...)
   ;(vl.options as any).visible = (e.target as HTMLInputElement).checked
 }
 </script>
