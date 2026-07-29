@@ -34,7 +34,7 @@ const collisionOn = ref(true)
 watch(collisionOn, (checked) => {
   const l = vlRef.value!.layer!
   l.getGeometries().forEach((m) => { (m as unknown as { options: Record<string, boolean> }).options.collision = checked })
-  ;(l as { getRenderer(): { draw(): void } }).getRenderer().draw()
+  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
 })
 
 const randomMarkers = Array.from({ length: 100 }, () => [

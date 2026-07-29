@@ -35,6 +35,6 @@ randomMarkers.forEach((c, i) => {
 watch(collisionOn, (checked) => {
   const l = toValue(layer)!
   l.getGeometries().forEach((m) => { (m as unknown as { options: Record<string, boolean> }).options.collision = checked })
-  ;(l as { getRenderer(): { draw(): void } }).getRenderer().draw()
+  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
 })
 </script>
