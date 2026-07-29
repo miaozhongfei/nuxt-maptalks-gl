@@ -2,7 +2,6 @@
   <div>
     <MaptalksMap
       ref="mc"
-      base-layer="osm"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       class="relative rounded border border-default overflow-hidden"
@@ -28,7 +27,8 @@
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => mc.value?.map ?? null)
-// 组合：组件创建地图 + 图层，preset composable 创建矢量图层和 Marker
+// 组合：组件创建地图，composable 创建瓦片底图和矢量图层
+const { layer: baseLayer } = useMaptalksTileLayer(map, { source: 'osm' })
 const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'v' })
 useMaptalksMarker(vectorLayer, { coordinates: [121.5057, 31.2453] })
 
@@ -43,13 +43,11 @@ function toggleCross(e: Event) {
 }
 
 function setOpacity(e: Event) {
-  const m = toValue(map)
-  if (!m) return
+  const bl = toValue(baseLayer)
+  if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  // 组合：组件 base-layer 创建的底图，通过 map.getBaseLayer() 获取实例
-  const bl = (m as any).getBaseLayer()
-  if (bl) bl.options.opacity = v
+  ;(bl.options as any).opacity = v
 }
 
 function toggleVisible(e: Event) {
