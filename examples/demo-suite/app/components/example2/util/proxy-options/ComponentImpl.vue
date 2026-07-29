@@ -17,8 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksMapExposed } from '../../../../../../src/runtime/types/exposed'
-
 const mc = ref<MaptalksMapExposed | null>(null)
 const currentZoom = ref(13)
 

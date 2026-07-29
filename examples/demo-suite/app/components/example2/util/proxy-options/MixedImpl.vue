@@ -17,8 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksMapExposed } from '../../../../../../src/runtime/types/exposed'
-
 const mc = ref<MaptalksMapExposed | null>(null)
 // 组合：组件创建地图，computed 桥接获取 map 实例供 composable 链路使用
 const map = computed(() => mc.value?.map ?? null)
