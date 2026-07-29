@@ -33,4 +33,25 @@ useMaptalksPolygon(layer, {
   coordinates: [polyCoords],
   options: { symbol: { lineColor: '#34495e', lineWidth: 2, polygonFill: 'rgb(135,196,240)', polygonOpacity: 0.6 } },
 })
+
+const holeOuter = [
+  [121.49, 31.235],
+  [121.53, 31.235],
+  [121.53, 31.255],
+  [121.49, 31.255],
+  [121.49, 31.235],
+] as [number, number][]
+
+const holeInner = [
+  [121.50, 31.240],
+  [121.52, 31.240],
+  [121.52, 31.250],
+  [121.50, 31.250],
+  [121.50, 31.240],
+] as [number, number][]
+
+useMaptalksPolygon(layer, {
+  coordinates: [holeOuter, holeInner],
+  options: { symbol: { lineColor: '#ea580c', lineWidth: 2, polygonFill: '#f97316', polygonOpacity: 0.5 } },
+})
 </script>
