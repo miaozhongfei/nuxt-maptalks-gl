@@ -864,7 +864,7 @@ export interface MaptalksLineStringGeometry extends MaptalksGeometry {
   /** 读取 LineString 坐标（点序列） */
   getCoordinates(): unknown[];
   /** 设置 LineString 坐标 */
-  setCoordinates(coordinates: Array<[number, number]>): this;
+  setCoordinates(coordinates: number[][]): this;
 }
 
 /**
@@ -890,7 +890,7 @@ export interface MaptalksPolygonGeometry extends MaptalksGeometry {
   /** 读取 Polygon 坐标（外环 + 内环） */
   getCoordinates(): unknown[][];
   /** 设置 Polygon 坐标 */
-  setCoordinates(coordinates: Array<Array<[number, number]>>): this;
+  setCoordinates(coordinates: number[][][]): this;
 }
 
 /**
