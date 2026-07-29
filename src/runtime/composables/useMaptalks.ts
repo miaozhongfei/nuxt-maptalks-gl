@@ -51,7 +51,7 @@ function buildMapOptions(options: UseMaptalksOpts): Record<string, unknown> {
 async function createMap(
   el: HTMLElement,
   options: UseMaptalksOpts,
-  blConfig?: { source: MaptalksSource; id: string; extra: Record<string, unknown> },
+  blConfig?: { source: MaptalksSource; id: string | number; extra: Record<string, unknown> },
 ): Promise<MaptalksMap> {
   if (!isWebGLAvailable()) {
     throw new MaptalksError('webgl-unsupported', '当前环境不支持 WebGL');
@@ -92,7 +92,7 @@ async function createMap(
 async function runInit(
   target: MaybeRefOrGetter<HTMLElement | null>,
   options: UseMaptalksOpts,
-  blConfig: { source: MaptalksSource; id: string; extra: Record<string, unknown> } | undefined,
+  blConfig: { source: MaptalksSource; id: string | number; extra: Record<string, unknown> } | undefined,
   map: ShallowRef<MaptalksMap | null>,
   isReady: Ref<boolean>,
   error: Ref<MaptalksError | null>,
@@ -167,7 +167,7 @@ export function useMaptalks(
  *
  * @param {UseMaptalksOpts['baseLayer'] | undefined} baseLayer - 字符串/对象/原生Layer
  * @param {Record<string, MaptalksSource> | undefined} sources - runtimeConfig 中的命名数据源表
- * @returns {{ source: MaptalksSource; id: string; extra: Record<string, unknown> } | undefined} 解析结果
+ * @returns {{ source: MaptalksSource; id: string | number; extra: Record<string, unknown> } | undefined} 解析结果
  *
  * @example
  * const blConfig = resolveBaseLayer('osm', sources);
@@ -175,7 +175,7 @@ export function useMaptalks(
 function resolveBaseLayerConfig(
   baseLayer: UseMaptalksOpts['baseLayer'],
   sources: Record<string, MaptalksSource> | undefined,
-): { source: MaptalksSource; id: string; extra: Record<string, unknown> } | undefined {
+): { source: MaptalksSource; id: string | number; extra: Record<string, unknown> } | undefined {
   if (!baseLayer) return undefined;
   const bl = baseLayer;
   if (typeof bl !== 'string' && (!bl || typeof bl !== 'object' || 'addTo' in bl)) return undefined;

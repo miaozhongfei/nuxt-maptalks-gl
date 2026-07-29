@@ -24,7 +24,7 @@ const props = withDefaults(
     /** 数据源：源名（字符串，按配置解析）或内联源对象 */
     source?: string | MaptalksSource
     /** 图层 id，缺省自动生成 */
-    id?: string
+    id?: string | number
     /** 透传给 VectorTileLayer 构造器的选项（含 style） */
     options?: MaptalksVectorTileLayerOptions
     /** 组件销毁时自动移除图层，默认 true */

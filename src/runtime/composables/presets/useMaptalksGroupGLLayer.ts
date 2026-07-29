@@ -31,7 +31,7 @@ import { useMaptalksLayer } from '../useMaptalksLayer';
  */
 export interface UseMaptalksGroupGLLayerBaseOpts {
   /** 图层 id，缺省自动生成 */
-  id?: string;
+  id?: string | number;
   /** 承载的子 GL 图层（已创建实例） */
   layers?: MaptalksLayer[];
   /** 透传给 GroupGLLayer 构造器的额外选项（优先级高于默认 sceneConfig） */

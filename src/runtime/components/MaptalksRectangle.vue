@@ -30,7 +30,7 @@ const props = withDefaults(
     /** 高度（米） */
     height: number
     /** 几何图形唯一标识 */
-    id?: string
+    id?: string | number
     /** 是否可见 */
     visible?: boolean
     /** 透传给几何构造器的完整选项（symbol / properties / draggable 等所有原生字段） */

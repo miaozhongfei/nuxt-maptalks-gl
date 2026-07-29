@@ -283,7 +283,7 @@ export interface UseMaptalksPresetBaseOpts {
   /** 数据源：源名（字符串，按配置解析）或内联源对象 */
   source?: string | MaptalksSource;
   /** 图层 id，缺省自动生成 */
-  id?: string;
+  id?: string | number;
   /** 透传给图层构造器的额外选项（预设覆写为具体 CombinedOptions + MaybeRefOrGetter） */
   options?: unknown;
   /** 事件名 → 处理器（自动 on/off） */
@@ -432,7 +432,7 @@ export interface UseMaptalksGeometryOpts {
   /** 选项整体变化时触发全量重建（remove + recreate），对标 useMaptalksInfoWindow 的 options 重建机制 */
   options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
   /** 几何 id（统一从预设选项中声明） */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性：false 隐藏几何但不销毁 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 是否响应鼠标/触摸事件 */
@@ -504,7 +504,7 @@ export interface UseMaptalksGeometryReturn<T extends MaptalksGeometry = Maptalks
  */
 export interface UseMaptalksVectorLayerBaseOpts {
   /** 图层 id，缺省自动生成 */
-  id?: string;
+  id?: string | number;
   /** 透传给 VectorLayer 构造器的选项 */
   options?: MaptalksVectorLayerOptions;
   /** 事件名 → 处理器（自动 on/off） */
@@ -532,7 +532,7 @@ export interface GeometryPresetBase {
   /** 事件名 → 处理器 */
   events?: Record<string, MaptalksEventHandler>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 自动销毁，默认 true */
   autoDispose?: boolean;
   /** 透传原生几何选项 */
@@ -555,7 +555,7 @@ export interface UseMaptalksMarkerOpts {
   /** 透传给 Marker 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMarkerOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -578,7 +578,7 @@ export interface UseMaptalksLineStringOpts {
   /** 透传给 LineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksLineStringOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -601,7 +601,7 @@ export interface UseMaptalksPolygonOpts {
   /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksPolygonOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -619,7 +619,7 @@ export interface UseMaptalksMultiPointOpts {
   /** 透传给 MultiPoint 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiPointOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -637,7 +637,7 @@ export interface UseMaptalksMultiLineStringOpts {
   /** 透传给 MultiLineString 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiLineStringOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -655,7 +655,7 @@ export interface UseMaptalksMultiPolygonOpts {
   /** 透传给 MultiPolygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksMultiPolygonOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -726,7 +726,7 @@ export interface UseMaptalksCircleOpts {
   /** 透传给 Circle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksCircleOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -753,7 +753,7 @@ export interface UseMaptalksRectangleOpts {
   /** 透传给 Rectangle 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksRectangleOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -780,7 +780,7 @@ export interface UseMaptalksEllipseOpts {
   /** 透传给 Ellipse 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksEllipseOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -809,7 +809,7 @@ export interface UseMaptalksSectorOpts {
   /** 透传给 Sector 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksSectorOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -841,7 +841,7 @@ export interface UseMaptalksLabelOpts {
   /** 透传给 Label 构造器的完整选项（symbol / properties / textSymbol / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksLabelOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
@@ -870,7 +870,7 @@ export interface UseMaptalksTextBoxOpts {
   /** 透传给 TextBox 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksTextBoxOptions | undefined>;
   /** 几何 id */
-  id?: string;
+  id?: string | number;
   /** 响应式可见性 */
   visible?: MaybeRefOrGetter<boolean | undefined>;
   /** 事件名 → 处理器（自动 on/off） */

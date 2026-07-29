@@ -24,7 +24,7 @@ const polyData = [
 polyData.forEach((item) => {
   useMaptalksPolygon(layer, {
     coordinates: item.coords,
-    id: String(item.id),
+    id: item.id,
     options: { symbol: [{ polygonFill: '#747474', polygonOpacity: 0.5, lineColor: '#000', lineWidth: 2 }, { textName: '{count}', textSize: 40, textFill: '#fff' }], properties: { count: item.id } },
   })
 })

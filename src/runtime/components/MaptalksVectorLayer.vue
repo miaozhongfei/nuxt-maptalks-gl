@@ -28,7 +28,7 @@ import type { MaptalksEventHandler, MaptalksVectorLayerOptions, MaptalksVectorLa
 const props = withDefaults(
   defineProps<{
     /** 图层 id，缺省自动生成 */
-    id?: string
+    id?: string | number
     /** 透传给 VectorLayer 构造器的选项 */
     options?: MaptalksVectorLayerOptions
     /** 组件销毁时自动移除图层，默认 true */

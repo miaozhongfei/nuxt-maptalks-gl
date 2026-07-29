@@ -331,23 +331,23 @@ export interface MaptalksGLNamespace {
   /** 地图构造器 */
   Map: new (container: string | HTMLElement, options: Record<string, unknown>) => MaptalksMap;
   /** 瓦片图层构造器（maptalks-gl 核心，始终存在） */
-  TileLayer: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
+  TileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
   /** 矢量瓦片图层构造器 */
-  VectorTileLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
+  VectorTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
   /** WMS 图层构造器（OGC WMS 服务，与 TileLayer 同构：id + options） */
-  WMSLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
+  WMSLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
   /** WMS 图层构造器的 maptalks-gl 实际导出名（maptalks 核心导出为 WMSTileLayer） */
-  WMSTileLayer?: new (id: string, options: Record<string, unknown>) => MaptalksLayer;
+  WMSTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
   /** GroupGLLayer 构造器（承载 GL 图层与光照/后处理） */
   GroupGLLayer?: new (
-    id: string,
+    id: string | number,
     layers: MaptalksLayer[],
     options?: Record<string, unknown>,
   ) => MaptalksLayer;
   /** GLTFLayer 构造器 */
-  GLTFLayer?: new (id: string, options?: Record<string, unknown>) => MaptalksLayer;
+  GLTFLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksLayer;
   /** VectorLayer 构造器（承载几何） */
-  VectorLayer?: new (id: string, options?: Record<string, unknown>) => MaptalksVectorLayer;
+  VectorLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksVectorLayer;
   /** Marker 构造器 */
   Marker?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** LineString 构造器 */

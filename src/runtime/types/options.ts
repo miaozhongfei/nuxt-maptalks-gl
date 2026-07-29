@@ -1033,7 +1033,7 @@ export interface MaptalksGeometryBaseOptions {
   /** 量测方式（如 'EPSG:4326'） */
   measure?: string;
   /** 几何 ID */
-  id?: string;
+  id?: string | number;
   /** 旋转角度（度） */
   rotateAngle?: number;
   /** 旋转中心点 */

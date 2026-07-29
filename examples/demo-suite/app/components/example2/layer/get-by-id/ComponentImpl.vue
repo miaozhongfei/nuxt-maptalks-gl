@@ -12,7 +12,7 @@
           v-for="item in polyData"
           :key="item.id"
           :coordinates="item.coords"
-          :id="String(item.id)"
+          :id="item.id"
           :options="item.options"
         />
       </MaptalksVectorLayer>
