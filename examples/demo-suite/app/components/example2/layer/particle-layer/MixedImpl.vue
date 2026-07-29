@@ -13,11 +13,13 @@
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
+let bound = false
 
 watch(
   () => mc.value?.map,
   async (mv) => {
-    if (!mv) return
+    if (!mv || bound) return
+    bound = true
     const mt = await import('maptalks-gl')
     const m = mv as any
     const center = m.getCenter()
@@ -38,6 +40,5 @@ watch(
     }
     pl.addTo(m)
   },
-  { once: true },
 )
 </script>
