@@ -685,74 +685,86 @@ export interface MaptalksCanvasTileLayer extends MaptalksLayer {
 }
 
 /**
- * maptalks `DrawTool` 实例的结构化建模。
- *
- * @description 仅声明 `useMaptalksDrawTool` 使用到的生命周期与事件方法。
- *
- * @example
- * tool.setMode('Polygon').enable();
+ * maptalks DrawTool 实例的结构化建模。
  */
 export interface MaptalksDrawTool {
   /** 绑定到地图 */
-  addTo(map: MaptalksMap): MaptalksDrawTool;
+  addTo(map: MaptalksMap): this;
   /** 启用绘制 */
-  enable(): MaptalksDrawTool;
+  enable(): this;
   /** 关闭绘制 */
-  disable(): MaptalksDrawTool;
+  disable(): this;
   /** 切换绘制模式 */
-  setMode(mode: string): MaptalksDrawTool;
+  setMode(mode: string): this;
+  /** 获取当前模式 */
+  getMode(): string;
+  /** 设置绘制样式 */
+  setSymbol(symbol: Record<string, unknown>): this;
+  /** 获取绘制样式 */
+  getSymbol(): Record<string, unknown>;
+  /** 设置测量选项 */
+  setMeasureOptions(opts: Record<string, unknown>): this;
+  /** 获取测量选项 */
+  getMeasureOptions(): Record<string, unknown>;
   /** 移除绘制工具 */
   remove(): void;
   /** 绑定事件 */
-  on(eventTypes: string, handler: MaptalksEventHandler): MaptalksDrawTool;
+  on(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
-  off(eventTypes: string, handler: MaptalksEventHandler): MaptalksDrawTool;
-  /** 逃生舱口：访问任意未建模的原生成员 */
+  off(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 逃生舱口 */
   [key: string]: unknown;
 }
 
 /**
- * maptalks 地图测量工具实例的结构化建模（仅声明本模块使用到的成员）。
- *
- * @description 通过结构化类型描述测量工具（DistanceTool / AreaTool 等），
- * 核心生命周期与事件方法给出精确签名，索引签名提供逃生舱口。
- *
- * @example
- * const tool: MaptalksMapTool | null = useMaptalksDistanceTool(map).tool.value;
- * tool?.enable();
+ * maptalks 测量工具实例的结构化建模（DistanceTool / AreaTool 基类）。
  */
 export interface MaptalksMapTool {
   /** 绑定到地图 */
-  addTo(map: MaptalksMap): MaptalksMapTool;
+  addTo(map: MaptalksMap): this;
   /** 从地图移除并销毁 */
   remove(): void;
   /** 启用工具 */
-  enable(): MaptalksMapTool;
+  enable(): this;
   /** 关闭工具 */
-  disable(): MaptalksMapTool;
+  disable(): this;
+  /** 是否启用 */
+  isEnabled(): boolean;
+  /** 获取测量结果 */
+  getMeasurements(): unknown[];
+  /** 清除测量结果 */
+  clear(): this;
+  /** 获取最后一次测量值 */
+  getLastMeasure(): number;
   /** 绑定事件 */
-  on(event: string, handler: MaptalksEventHandler): MaptalksMapTool;
+  on(event: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
-  off(event: string, handler: MaptalksEventHandler): MaptalksMapTool;
-  /** 逃生舱口：访问任意未建模的原生成员 */
+  off(event: string, handler: MaptalksEventHandler): this;
+  /** 逃生舱口 */
   [key: string]: unknown;
 }
 
 /**
- * maptalks 控件实例的结构化建模（仅声明本模块使用到的成员）。
- *
- * @description 通过结构化类型描述控件，核心生命周期方法给出精确签名，索引签名提供逃生舱口。
- *
- * @example
- * const zoom = new mt.control.Zoom();
- * zoom.addTo(map);
+ * maptalks 控件实例的结构化建模。
  */
 export interface MaptalksControl {
   /** 挂载到地图 */
-  addTo(map: MaptalksMap): MaptalksControl;
+  addTo(map: MaptalksMap): this;
   /** 从地图移除并销毁 */
   remove(): void;
-  /** 逃生舱口：访问任意未建模的原生成员 */
+  /** 获取关联地图 */
+  getMap(): MaptalksMap | null;
+  /** 显示控件 */
+  show(): this;
+  /** 隐藏控件 */
+  hide(): this;
+  /** 是否可见 */
+  isVisible(): boolean;
+  /** 设置位置 */
+  setPosition(position: string | Record<string, unknown>): this;
+  /** 获取位置 */
+  getPosition(): string | Record<string, unknown>;
+  /** 逃生舱口 */
   [key: string]: unknown;
 }
 
@@ -769,11 +781,11 @@ export interface MaptalksGLNamespace {
   /** 地图构造器 */
   Map: new (container: string | HTMLElement, options: Record<string, unknown>) => MaptalksMap;
   /** 瓦片图层构造器（maptalks-gl 核心，始终存在） */
-  TileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
+  TileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksTileLayer;
   /** 矢量瓦片图层构造器 */
-  VectorTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
+  VectorTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksVectorTileLayer;
   /** WMS 图层构造器（OGC WMS 服务，与 TileLayer 同构：id + options） */
-  WMSLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
+  WMSLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksWMSLayer;
   /** WMS 图层构造器的 maptalks-gl 实际导出名（maptalks 核心导出为 WMSTileLayer） */
   WMSTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
   /** GroupGLLayer 构造器（承载 GL 图层与光照/后处理） */
@@ -781,26 +793,26 @@ export interface MaptalksGLNamespace {
     id: string | number,
     layers: MaptalksLayer[],
     options?: Record<string, unknown>,
-  ) => MaptalksLayer;
+  ) => MaptalksGroupGLLayer;
   /** GLTFLayer 构造器 */
-  GLTFLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksLayer;
+  GLTFLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksGLTFLayer;
   /** VectorLayer 构造器（承载几何） */
   VectorLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksVectorLayer;
   /** Marker 构造器 */
-  Marker?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  Marker?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMarkerGeometry;
   /** LineString 构造器 */
-  LineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  LineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksLineStringGeometry;
   /** Polygon 构造器 */
-  Polygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  Polygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksPolygonGeometry;
   /** MultiPoint 构造器 */
-  MultiPoint?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  MultiPoint?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPointGeometry;
   /** MultiLineString 构造器 */
   MultiLineString?: new (
     coordinates: unknown,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksMultiLineStringGeometry;
   /** MultiPolygon 构造器 */
-  MultiPolygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  MultiPolygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPolygonGeometry;
   /** GeoJSON 工具命名空间 */
   GeoJSON?: {
     toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[];
@@ -812,21 +824,21 @@ export interface MaptalksGLNamespace {
     center: unknown,
     radius: number,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksCircleGeometry;
   /** Rectangle 构造器 */
   Rectangle?: new (
     coord: unknown,
     width: number,
     height: number,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksRectangleGeometry;
   /** Ellipse 构造器 */
   Ellipse?: new (
     center: unknown,
     width: number,
     height: number,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksEllipseGeometry;
   /** Sector 构造器 */
   Sector?: new (
     center: unknown,
@@ -834,13 +846,13 @@ export interface MaptalksGLNamespace {
     startAngle: number,
     endAngle: number,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksSectorGeometry;
   /** Label 构造器 */
   Label?: new (
     content: string,
     coord: unknown,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksLabelGeometry;
   /** TextBox 构造器 */
   TextBox?: new (
     content: string,
@@ -848,7 +860,7 @@ export interface MaptalksGLNamespace {
     width: number,
     height: number,
     options?: Record<string, unknown>,
-  ) => MaptalksGeometry;
+  ) => MaptalksTextBoxGeometry;
   /** 控件命名空间 */
   control?: {
     /** 缩放控件构造器 */
@@ -872,64 +884,66 @@ export interface MaptalksGLNamespace {
 
 /**
  * maptalks InfoWindow 弹出框实例的结构化建模。
- *
- * @description 通过结构化类型描述 InfoWindow，核心内容/坐标/显隐方法给出精确签名，
- * 索引签名提供逃生舱口，可调用任意原生方法。
- *
- * @example
- * const iw: MaptalksInfoWindow | null = useMaptalksInfoWindow(map).infoWindow.value;
- * iw?.setContent('<div>Hello</div>');
- * iw?.show([113.27, 23.13]);
  */
 export interface MaptalksInfoWindow {
   /** 挂载到地图或其它对象 */
-  addTo(target: MaptalksMap | unknown): MaptalksInfoWindow;
+  addTo(target: MaptalksMap | unknown): this;
   /** 从地图移除并销毁 */
   remove(): void;
   /** 显示弹出框，可传入坐标 */
-  show(coord?: unknown): MaptalksInfoWindow;
+  show(coord?: unknown): this;
   /** 隐藏弹出框 */
-  hide(): MaptalksInfoWindow;
+  hide(): this;
   /** 是否可见 */
   isVisible(): boolean;
   /** 设置弹出框内容（HTML 字符串或 DOM 元素） */
-  setContent(content: string | HTMLElement): MaptalksInfoWindow;
+  setContent(content: string | HTMLElement): this;
+  /** 获取弹出框内容 */
+  getContent(): string | HTMLElement;
   /** 设置弹出框坐标 */
-  setCoordinates(coord: unknown): MaptalksInfoWindow;
+  setCoordinates(coord: unknown): this;
+  /** 获取弹出框坐标 */
+  getCoordinates(): unknown;
+  /** 设置标题 */
+  setTitle(title: string): this;
+  /** 获取标题 */
+  getTitle(): string;
   /** 绑定事件 */
-  on?(eventTypes: string, handler: MaptalksEventHandler): MaptalksInfoWindow;
+  on?(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
-  off?(eventTypes: string, handler: MaptalksEventHandler): MaptalksInfoWindow;
-  /** 逃生舱口：访问任意未建模的原生成员 */
+  off?(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 逃生舱口 */
   [key: string]: unknown;
 }
 
 /**
- * maptalks `ui.UIMarker` 实例的结构化建模。
- *
- * @description HTML 自定义标注，叠加在地图上的 HTML DOM 元素，支持拖拽。
- *
- * @example
- * const uim: MaptalksUIMarker = useMaptalksUIMarker(map).uiMarker.value!;
- * uim.show();
+ * maptalks ui.UIMarker 实例的结构化建模。
  */
 export interface MaptalksUIMarker {
   /** 挂载到地图 */
-  addTo(target: MaptalksMap | unknown): MaptalksUIMarker;
+  addTo(target: MaptalksMap | unknown): this;
   /** 从地图移除并销毁 */
   remove(): void;
   /** 显示标注 */
-  show(): MaptalksUIMarker;
+  show(): this;
   /** 隐藏标注 */
-  hide(): MaptalksUIMarker;
+  hide(): this;
+  /** 是否可拖拽 */
+  isDraggable(): boolean;
   /** 设置坐标 */
-  setCoordinates(coord: unknown): MaptalksUIMarker;
+  setCoordinates(coord: unknown): this;
+  /** 获取坐标 */
+  getCoordinates(): unknown;
   /** 设置内容（HTML 字符串或 DOM 元素） */
-  setContent(content: string | HTMLElement): MaptalksUIMarker;
+  setContent(content: string | HTMLElement): this;
+  /** 获取内容 */
+  getContent(): string | HTMLElement;
+  /** 获取 DOM 元素 */
+  getDom(): HTMLElement;
   /** 绑定事件 */
-  on?(eventTypes: string, handler: MaptalksEventHandler): MaptalksUIMarker;
+  on?(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
-  off?(eventTypes: string, handler: MaptalksEventHandler): MaptalksUIMarker;
+  off?(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 逃生舱口 */
   [key: string]: unknown;
 }
