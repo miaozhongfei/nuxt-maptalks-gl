@@ -56,9 +56,9 @@ export function useMaptalksTextBox(
       id: opts.id,
       options: opts.options,
       extraProps: [
-        { value: opts.content, apply: (g, v) => (g as any).setContent?.(v as string) },
-        { value: opts.width, apply: (g, v) => (g as any).setWidth?.(v as number) },
-        { value: opts.height, apply: (g, v) => (g as any).setHeight?.(v as number) },
+        { value: opts.content, apply: (g, v) => (g as MaptalksTextBoxGeometry).setContent(v as string) },
+        { value: opts.width, apply: (g, v) => (g as MaptalksTextBoxGeometry).setWidth(v as number) },
+        { value: opts.height, apply: (g, v) => (g as MaptalksTextBoxGeometry).setHeight(v as number) },
       ],
     },
   );

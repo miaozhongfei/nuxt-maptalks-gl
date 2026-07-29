@@ -52,7 +52,7 @@ export function useMaptalksCircle(
       autoDispose: opts.autoDispose,
       id: opts.id,
       options: opts.options,
-      extraProps: [{ value: opts.radius, apply: (g, v) => (g as any).setRadius?.(v as number) }],
+      extraProps: [{ value: opts.radius, apply: (g, v) => (g as MaptalksCircleGeometry).setRadius(v as number) }],
     },
   );
 }

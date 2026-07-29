@@ -54,8 +54,8 @@ export function useMaptalksEllipse(
       id: opts.id,
       options: opts.options,
       extraProps: [
-        { value: opts.width, apply: (g, v) => (g as any).setWidth?.(v as number) },
-        { value: opts.height, apply: (g, v) => (g as any).setHeight?.(v as number) },
+        { value: opts.width, apply: (g, v) => (g as MaptalksEllipseGeometry).setWidth(v as number) },
+        { value: opts.height, apply: (g, v) => (g as MaptalksEllipseGeometry).setHeight(v as number) },
       ],
     },
   );

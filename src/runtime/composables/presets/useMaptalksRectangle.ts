@@ -54,8 +54,8 @@ export function useMaptalksRectangle(
       id: opts.id,
       options: opts.options,
       extraProps: [
-        { value: opts.width, apply: (g, v) => (g as any).setWidth?.(v as number) },
-        { value: opts.height, apply: (g, v) => (g as any).setHeight?.(v as number) },
+        { value: opts.width, apply: (g, v) => (g as MaptalksRectangleGeometry).setWidth(v as number) },
+        { value: opts.height, apply: (g, v) => (g as MaptalksRectangleGeometry).setHeight(v as number) },
       ],
     },
   );
