@@ -1,43 +1,54 @@
 <template>
   <div>
-    <div
-      ref="el"
-      class="relative rounded border border-default overflow-hidden"
-      style="height: 480px"
-    />
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="blue" @click="applyBlue">统一蓝色</UButton>
-      <UButton size="xs" color="red" @click="applyRed">统一红色</UButton>
-      <UButton size="xs" color="green" @click="applyGreen">统一绿色</UButton>
+      <UButton size="xs" color="primary" @click="() => applyDiffStyle()">按 count 应用差异样式</UButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const markers: { coord: [number, number]; color: string }[] = [
-  { coord: [121.4887, 31.2453], color: '#2563eb' },
-  { coord: [121.5057, 31.2553], color: '#dc2626' },
-  { coord: [121.5227, 31.2453], color: '#16a34a' },
-  { coord: [121.5057, 31.2353], color: '#ca8a04' },
-];
-markers.forEach((m) => {
-  useMaptalksMarker(layer, {
-    coordinates: m.coord,
-    options: { symbol: { markerType: 'ellipse', markerFill: m.color, markerWidth: 14, markerHeight: 14 } },
-  });
-});
+const { layer } = useMaptalksVectorLayer(map)
 
-function applyStyle(fill: string) {
-  (toValue(layer) as unknown as { setStyle?: (s: Record<string, unknown>) => void } | null)
-    ?.setStyle?.({ symbol: { markerFill: fill, markerWidth: 14, markerHeight: 14 } });
+const polyData = [
+  { id: 100, coords: [[121.4555, 31.2338], [121.4685, 31.2338], [121.4685, 31.2228], [121.4555, 31.2228]] as [number, number][] },
+  { id: 200, coords: [[121.4755, 31.2338], [121.4885, 31.2338], [121.4885, 31.2228], [121.4755, 31.2228]] as [number, number][] },
+  { id: 300, coords: [[121.4955, 31.2338], [121.5085, 31.2338], [121.5085, 31.2228], [121.4955, 31.2228]] as [number, number][] },
+]
+
+polyData.forEach((item) => {
+  useMaptalksGeometry(layer, (mt) => new mt.Polygon(
+    item.coords,
+    { properties: { count: item.id } },
+  ))
+})
+
+let initialStyleSet = false
+watch(
+  () => toValue(layer),
+  (l) => {
+    if (!l || initialStyleSet) return
+    initialStyleSet = true
+    ;(l as any)?.setStyle?.({ filter: ['count', '>=', 0], symbol: getSymbol('#747474') })
+  },
+)
+
+function getSymbol(color: string) {
+  return [
+    { polygonFill: color, polygonOpacity: 0.5, lineColor: '#000', lineWidth: 2 },
+    { textName: '{count}', textSize: 40, textFill: '#fff' },
+  ]
 }
 
-function applyBlue() { applyStyle('#2563eb'); }
-function applyRed() { applyStyle('#dc2626'); }
-function applyGreen() { applyStyle('#16a34a'); }
+function applyDiffStyle() {
+  ;(toValue(layer) as any)?.setStyle?.([
+    { filter: ['==', 'count', 100], symbol: getSymbol('#1bbc9b') },
+    { filter: ['==', 'count', 200], symbol: getSymbol('rgb(216,115,149)') },
+    { filter: ['==', 'count', 300], symbol: getSymbol('rgb(135,196,240)') },
+  ])
+}
 </script>
