@@ -39,8 +39,9 @@ export function useMaptalksPolygon(
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 Polygon');
       }
-      return new Ctor(toValue(opts.coordinates), buildGeometryOptions({ ...toValue(opts.options) }));
-
+      const rawCoords = toValue(opts.coordinates);
+      const rings = Array.isArray(rawCoords[0]?.[0]) ? (rawCoords as number[][][]) : [rawCoords as number[][]];
+      return new Ctor(rings, buildGeometryOptions({ ...toValue(opts.options) }));
     },
     {
       coordinates: opts.coordinates,

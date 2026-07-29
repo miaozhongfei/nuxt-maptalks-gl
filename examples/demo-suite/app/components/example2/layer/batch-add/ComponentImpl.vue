@@ -17,7 +17,7 @@
           :options="lineOptions"
         />
         <MaptalksPolygon
-          :coordinates="[polyCoords]"
+          :coordinates="polyCoords"
           :options="polygonOptions"
         />
         <MaptalksPolygon

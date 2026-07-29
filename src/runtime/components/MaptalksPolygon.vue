@@ -23,8 +23,8 @@ import type { MaptalksPolygonOptions } from '../types';
 
 const props = withDefaults(
   defineProps<{
-    /** 几何图形坐标 */
-    coordinates: number[][][];
+    /** 几何图形坐标（单环二维数组或环形/多洞三维数组） */
+    coordinates: number[][][] | number[][];
     /** 几何图形唯一标识 */
     id?: string;
     /** 是否可见 */

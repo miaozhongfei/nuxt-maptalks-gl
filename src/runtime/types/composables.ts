@@ -596,8 +596,8 @@ export interface UseMaptalksLineStringOpts {
  * useMaptalksPolygon(layer, { coordinates: () => rings.value, options: { symbol: { polygonFill: '#00ff00' } } });
  */
 export interface UseMaptalksPolygonOpts {
-  /** 响应式 Polygon 坐标 */
-  coordinates: MaybeRefOrGetter<number[][][]>;
+  /** 响应式 Polygon 坐标（单环二维数组或环形/多洞三维数组） */
+  coordinates: MaybeRefOrGetter<number[][][] | number[][]>;
   /** 透传给 Polygon 构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
   options?: MaybeRefOrGetter<MaptalksPolygonOptions | undefined>;
   /** 几何 id */

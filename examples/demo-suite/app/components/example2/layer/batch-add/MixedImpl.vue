@@ -36,7 +36,7 @@ const polyCoords = [
 ] as [number, number][]
 
 useMaptalksPolygon(layer, {
-  coordinates: [polyCoords],
+  coordinates: polyCoords,
   options: { symbol: { lineColor: '#34495e', lineWidth: 2, polygonFill: 'rgb(135,196,240)', polygonOpacity: 0.6 } },
 })
 
