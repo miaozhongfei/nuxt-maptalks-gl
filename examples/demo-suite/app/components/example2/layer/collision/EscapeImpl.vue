@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
     <label class="flex items-center gap-2 mt-3 cursor-pointer select-none">
       <input type="checkbox" v-model="collisionOn" class="w-4 h-4" />
       <span class="text-sm">collision</span>
@@ -9,35 +13,57 @@
 </template>
 
 <script setup lang="ts">
-import type { ShallowRef } from 'vue'
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 8 })
-useMaptalksTileLayer(map, { source: 'osm' })
+import type { ShallowRef } from 'vue';
+const el = ref<HTMLElement | null>(null);
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 8 });
+useMaptalksTileLayer(map, { source: 'osm' });
 
-const collisionOn = ref(true)
+const collisionOn = ref(true);
 
 const { layer } = useMaptalksLayer(
   map,
-  (mt) => new mt.VectorLayer('collision-layer', { collision: true, collisionDelay: 250, forceRenderOnMoving: true, forceRenderOnZooming: true, forceRenderOnRotating: true }),
-)
+  (mt) =>
+    new mt.VectorLayer('collision-layer', {
+      collision: true,
+      collisionDelay: 250,
+      forceRenderOnMoving: true,
+      forceRenderOnZooming: true,
+      forceRenderOnRotating: true,
+    }),
+);
 
-const vl = layer as ShallowRef<MaptalksVectorLayer | null>
+const vl = layer as ShallowRef<MaptalksVectorLayer | null>;
 
-const randomMarkers = Array.from({ length: 100 }, () => [
-  121.49 + Math.random() * 0.03,
-  31.22 + Math.random() * 0.05,
-] as [number, number])
+const randomMarkers = Array.from(
+  { length: 100 },
+  () => [121.49 + Math.random() * 0.03, 31.22 + Math.random() * 0.05] as [number, number],
+);
 
 randomMarkers.forEach((c, i) => {
-  useMaptalksGeometry(vl, (mt) => new mt.Marker(
-    c,
-    { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28, textName: String(i), textSize: 12, textDy: -26, textFill: '#fff' }, id: String(i) },
-  ))
-})
+  useMaptalksGeometry(
+    vl,
+    (mt) =>
+      new mt.Marker(c, {
+        symbol: {
+          markerType: 'ellipse',
+          markerFill: '#2563eb',
+          markerWidth: 28,
+          markerHeight: 28,
+          textName: String(i),
+          textSize: 12,
+          textDy: -26,
+          textFill: '#fff',
+        },
+        id: String(i),
+      }),
+  );
+});
 
 watch(collisionOn, (checked) => {
-  const l = toValue(vl)!
-  l.getGeometries().forEach((m) => { (m as unknown as { options: Record<string, boolean> }).options.collision = checked })
-  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
-})
+  const l = toValue(vl)!;
+  l.getGeometries().forEach((m) => {
+    (m as unknown as { options: Record<string, boolean> }).options.collision = checked;
+  });
+  (l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw();
+});
 </script>

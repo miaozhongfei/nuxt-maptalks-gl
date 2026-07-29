@@ -10,6 +10,7 @@ export type {
   MaptalksCanvasLayer,
   MaptalksCanvasTileLayer,
   MaptalksCircleGeometry,
+  MaptalksClass,
   MaptalksControl,
   MaptalksCoordinate,
   MaptalksDrawTool,

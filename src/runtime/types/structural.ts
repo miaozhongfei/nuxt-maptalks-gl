@@ -64,7 +64,7 @@ export type MaptalksEventHandler = (event: unknown) => void;
  * const map: MaptalksMap | null = useMaptalks(el).map.value;
  * map?.setCenter([121, 31]).setZoom(14);
  */
-export interface MaptalksMap {
+export interface MaptalksMap extends MaptalksClass {
   /** 销毁地图并释放 WebGL 上下文 */
   remove(): void;
   /** 获取或更新配置 */
@@ -311,7 +311,7 @@ export interface MaptalksMap {
  * const layer: MaptalksLayer | null = useMaptalksTileLayer(map).layer.value;
  * layer?.setOpacity(0.8).show();
  */
-export interface MaptalksLayer {
+export interface MaptalksLayer extends MaptalksClass {
   /** 从地图移除并销毁 */
   remove(): this;
   /** 添加到地图 */
@@ -372,6 +372,31 @@ export interface MaptalksLayer {
   [key: string]: unknown;
 }
 
+// ───────────────────────────────── Class 基类 Struct ─────────────────────────────────
+
+/**
+ * maptalks 根类 Class 的结构化建模（所有类公有的方法）。
+ *
+ * @description 基于 maptalks.js 1.x API，声明 Class 基类的完整公共实例方法。
+ * Geometry / Layer / Map / Control / InfoWindow / UIMarker 均继承此接口。
+ *
+ * @example
+ * const geo: MaptalksGeometry = marker.geometry.value!;
+ * geo.config('draggable', true);
+ */
+export interface MaptalksClass {
+  /** 合并选项到默认值 */
+  setOptions(options: Record<string, unknown>): this;
+  /** 读取全部选项（无参）/ 设置单项conf(param,value) / 批量设置conf(obj) */
+  config(conf?: Record<string, unknown> | string, value?: unknown): this | unknown;
+  /** config 变更时的默认回调（子类重写） */
+  onConfig(): void;
+  /** 遍历并执行所有 init hooks */
+  callInitHooks(): this;
+  /** 逃生舱口：访问任意未建模的原生成员 */
+  [key: string]: unknown;
+}
+
 /**
  * maptalks 几何图形实例的结构化建模（覆盖 Geometry 基类全部方法）。
  *
@@ -383,7 +408,7 @@ export interface MaptalksLayer {
  * geo?.setSymbol({ markerType: 'ellipse' });
  * geo?.updateSymbol({ markerWidth: 40 });
  */
-export interface MaptalksGeometry {
+export interface MaptalksGeometry extends MaptalksClass {
   /** 加入矢量图层 */
   addTo(layer: MaptalksVectorLayer): MaptalksGeometry;
   /** 从图层移除并销毁 */
@@ -691,7 +716,7 @@ export interface MaptalksCanvasTileLayer extends MaptalksLayer {
 /**
  * maptalks DrawTool 实例的结构化建模。
  */
-export interface MaptalksDrawTool {
+export interface MaptalksDrawTool extends MaptalksClass {
   /** 绑定到地图 */
   addTo(map: MaptalksMap): this;
   /** 启用绘制 */
@@ -723,7 +748,7 @@ export interface MaptalksDrawTool {
 /**
  * maptalks 测量工具实例的结构化建模（DistanceTool / AreaTool 基类）。
  */
-export interface MaptalksMapTool {
+export interface MaptalksMapTool extends MaptalksClass {
   /** 绑定到地图 */
   addTo(map: MaptalksMap): this;
   /** 从地图移除并销毁 */
@@ -751,7 +776,7 @@ export interface MaptalksMapTool {
 /**
  * maptalks 控件实例的结构化建模。
  */
-export interface MaptalksControl {
+export interface MaptalksControl extends MaptalksClass {
   /** 挂载到地图 */
   addTo(map: MaptalksMap): this;
   /** 从地图移除并销毁 */
@@ -889,7 +914,7 @@ export interface MaptalksGLNamespace {
 /**
  * maptalks InfoWindow 弹出框实例的结构化建模。
  */
-export interface MaptalksInfoWindow {
+export interface MaptalksInfoWindow extends MaptalksClass {
   /** 挂载到地图或其它对象 */
   addTo(target: MaptalksMap | unknown): this;
   /** 从地图移除并销毁 */
@@ -923,7 +948,7 @@ export interface MaptalksInfoWindow {
 /**
  * maptalks ui.UIMarker 实例的结构化建模。
  */
-export interface MaptalksUIMarker {
+export interface MaptalksUIMarker extends MaptalksClass {
   /** 挂载到地图 */
   addTo(target: MaptalksMap | unknown): this;
   /** 从地图移除并销毁 */
