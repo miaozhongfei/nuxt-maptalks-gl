@@ -1,28 +1,41 @@
 <template>
   <div>
-    <div class="grid grid-cols-2 gap-2">
-      <div ref="elA" class="relative rounded border border-default overflow-hidden" style="height: 400px" />
-      <div ref="elB" class="relative rounded border border-default overflow-hidden" style="height: 400px" />
-    </div>
+    <input type="range" v-model="swipeVal" min="0" max="100" class="w-full h-2 cursor-col-resize mb-2" />
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
   </div>
 </template>
 
 <script setup lang="ts">
-const elA = ref<HTMLElement | null>(null)
-const elB = ref<HTMLElement | null>(null)
+const swipeVal = ref(50)
+const el = ref<HTMLElement | null>(null)
 
-// 逃生舱：完全原生创建 Map + TileLayer 并手动同步，不使用任何 useMaptalks* composable
 watch(
-  () => [elA.value, elB.value],
-  async ([ea, eb]) => {
-    if (!ea || !eb) return
+  () => el.value,
+  async (container) => {
+    if (!container) return
     const mt = await import('maptalks-gl')
-    const center = [121.5057, 31.2453] as [number, number]
-    const mapA = new mt.Map(ea, { center, zoom: 13, baseLayer: new mt.TileLayer('base1', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'] }) })
-    const mapB = new mt.Map(eb, { center, zoom: 13, baseLayer: new mt.TileLayer('base2', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', subdomains: ['b', 'c', 'd'] }) })
-    const syncView = (src: any, dst: any) => { if (!dst.isZooming?.() && !dst.isMoving?.()) dst.setView(src.getView()) }
-    mapA.on('zooming moving pitch', () => syncView(mapA, mapB))
-    mapB.on('zooming moving pitch', () => syncView(mapB, mapA))
+    const baseLayer = new mt.TileLayer('base', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'] })
+    const darkLayer = new mt.TileLayer('dark', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'], forceRenderOnMoving: true, forceRenderOnZooming: true })
+    const m = new mt.Map(container as HTMLElement, { center: [121.5057, 31.2453], zoom: 13, baseLayer, layers: [darkLayer] })
+
+    const r = (darkLayer as any).getRenderer()
+    const orig = r.getCanvasImage.bind(r)
+    const swipeCanvas = document.createElement('canvas')
+    r.getCanvasImage = function () {
+      const img = orig()
+      if (!img?.image) return img
+      const w = (r.canvas as HTMLCanvasElement).width * (swipeVal.value / 100)
+      const h = (r.canvas as HTMLCanvasElement).height
+      swipeCanvas.width = (r.canvas as HTMLCanvasElement).width
+      swipeCanvas.height = h
+      const ctx = swipeCanvas.getContext('2d')!
+      ctx.clearRect(0, 0, swipeCanvas.width, h)
+      ctx.drawImage(img.image, 0, 0, w, h, 0, 0, w, h)
+      img.image = swipeCanvas
+      return img
+    }
+
+    watch(swipeVal, () => (darkLayer as any).getRenderer?.()?.setToRedraw?.())
   },
   { once: true },
 )
