@@ -10,15 +10,15 @@
       <MaptalksVectorLayer>
         <MaptalksMarker
           :coordinates="[121.5057, 31.2453]"
-          :options="{ symbol: { textFaceName: '\"microsoft yahei\",arial,sans-serif', textName: '陆家嘴', textFill: '#34495e', textHorizontalAlignment: 'right', textSize: 40 } }"
+          :options="markerOptions"
         />
         <MaptalksLineString
-          :coordinates="[[121.5057, 31.2453], [121.5117, 31.2503]]"
-          :options="{ symbol: { lineColor: '#1bbc9b', lineWidth: 3 } }"
+          :coordinates="lineCoords"
+          :options="lineOptions"
         />
         <MaptalksPolygon
           :coordinates="[polyCoords]"
-          :options="{ symbol: { lineColor: '#34495e', lineWidth: 2, polygonFill: 'rgb(135,196,240)', polygonOpacity: 0.6 } }"
+          :options="polygonOptions"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
@@ -26,6 +26,11 @@
 </template>
 
 <script setup lang="ts">
+const markerOptions = { symbol: { textFaceName: '"microsoft yahei",arial,sans-serif', textName: '陆家嘴', textFill: '#34495e', textHorizontalAlignment: 'right', textSize: 40 } }
+const lineCoords = [[121.5057, 31.2453], [121.5117, 31.2503]] as [number, number][]
+const lineOptions = { symbol: { lineColor: '#1bbc9b', lineWidth: 3 } }
+const polygonOptions = { symbol: { lineColor: '#34495e', lineWidth: 2, polygonFill: 'rgb(135,196,240)', polygonOpacity: 0.6 } }
+
 const polyCoords = [
   [121.5057 - 0.018, 31.2453 + 0.004],
   [121.5057 + 0.006, 31.2453 + 0.004],
