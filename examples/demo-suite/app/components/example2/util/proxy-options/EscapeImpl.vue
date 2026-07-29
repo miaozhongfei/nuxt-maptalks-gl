@@ -45,7 +45,7 @@ function toggleCross(e: Event) {
 function setOpacity(e: Event) {
   const m = toValue(map)
   if (!m) return
-  const v = parseFloat((e.target as HTMLInputElement).value)
+  const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
   // Proxy 拦截：map.options.baseLayer 也是 Proxy，直接赋值触发生效
   ;(m.options as any).baseLayer.options.opacity = v
