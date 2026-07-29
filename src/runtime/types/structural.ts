@@ -298,36 +298,72 @@ export interface MaptalksMap {
 }
 
 /**
- * maptalks 图层实例的结构化建模（仅声明本模块使用到的成员）。
+ * maptalks 图层基类的结构化建模（覆盖 Layer 类全部公共方法）。
  *
- * @description 不同图层类型的可写方法不一致（setStyle/config/setOptions），这里都标为可选，
- * 由 `useMaptalksLayer` 在运行时按存在性择优调用。
+ * @description 基于 maptalks.js 1.x API，声明 Layer 基类的完整公共方法签名。
+ * 所有子类图层均继承此接口。
  *
  * @example
- * const layer = useMaptalksLayer(map, (mt) => new mt.TileLayer('base', {})).layer.value;
- * layer?.setStyle?.({});
+ * const layer: MaptalksLayer | null = useMaptalksTileLayer(map).layer.value;
+ * layer?.setOpacity(0.8).show();
  */
 export interface MaptalksLayer {
-  /** 从地图移除并销毁图层 */
-  remove(): void;
-  /** 设置样式（矢量/矢量瓦片图层等） */
-  setStyle?(style: unknown): unknown;
-  /** 配置图层（部分图层支持） */
-  config?(conf: unknown): unknown;
-  /** 设置图层选项（部分图层支持） */
-  setOptions?(options: unknown): unknown;
-  /** 显示图层 */
-  show?(): MaptalksLayer;
-  /** 隐藏图层 */
-  hide?(): MaptalksLayer;
-  /** 设置图层不透明度（0–1，部分图层支持） */
-  setOpacity?(opacity: number): MaptalksLayer;
-  /** 将图层置于同级最上层 */
-  bringToFront?(): MaptalksLayer;
-  /** 将图层置于同级最下层 */
-  bringToBack?(): MaptalksLayer;
-  /** 读取图层 id */
-  getId?(): string;
+  /** 从地图移除并销毁 */
+  remove(): this;
+  /** 添加到地图 */
+  addTo(map: MaptalksMap): this;
+  /** 加载图层 */
+  load(): void;
+  /** 是否加载完成 */
+  isLoaded(): boolean;
+  /** 是否 Canvas 渲染 */
+  isCanvasRender(): boolean;
+  /** 准备加载（子类重写），返回 false 终止加载 */
+  onLoad(): boolean;
+  /** 获取图层 ID */
+  getId(): string | number;
+  /** 设置图层 ID */
+  setId(id: string | number): this;
+  /** 获取关联地图 */
+  getMap(): MaptalksMap | null;
+  /** 获取投影对象 */
+  getProjection(): Record<string, unknown>;
+  /** 获取 z-index */
+  getZIndex(): number;
+  /** 设置 z-index */
+  setZIndex(zIndex: number): this;
+  /** 置顶 */
+  bringToFront(): this;
+  /** 置底 */
+  bringToBack(): this;
+  /** 显示 */
+  show(): this;
+  /** 隐藏 */
+  hide(): this;
+  /** 是否可见 */
+  isVisible(): boolean;
+  /** 获取透明度 */
+  getOpacity(): number;
+  /** 设置透明度 */
+  setOpacity(opacity: number): this;
+  /** 获取最小可见 zoom */
+  getMinZoom(): number;
+  /** 获取最大可见 zoom */
+  getMaxZoom(): number;
+  /** 获取遮罩几何 */
+  getMask(): MaptalksGeometry | null;
+  /** 设置遮罩几何 */
+  setMask(mask: MaptalksGeometry): this;
+  /** 移除遮罩 */
+  removeMask(): this;
+  /** 获取碰撞索引 */
+  getCollisionIndex(): unknown;
+  /** 清除碰撞索引 */
+  clearCollisionIndex(): void;
+  /** 绑定事件 */
+  on(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 解绑事件 */
+  off(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -463,23 +499,189 @@ export interface MaptalksGeometry {
 }
 
 /**
- * maptalks 矢量图层（承载几何）的结构化建模。
+ * maptalks 矢量图层实例的结构化建模（extends Layer）。
  *
- * @description 在通用图层之上补充几何增删/枚举/清空方法。
+ * @description 在 Layer 基础上补充几何增删、样式筛选、动画展示等方法。
  *
  * @example
- * const layer = useMaptalksVectorLayer(map).layer.value as MaptalksVectorLayer | null;
- * layer?.clear();
+ * const layer: MaptalksVectorLayer = useMaptalksVectorLayer(map).layer.value!;
+ * const geo = layer.getGeometryById(100);
  */
 export interface MaptalksVectorLayer extends MaptalksLayer {
   /** 添加一个或多个几何 */
-  addGeometry(geo: MaptalksGeometry | MaptalksGeometry[]): MaptalksVectorLayer;
+  addGeometry(geo: MaptalksGeometry | MaptalksGeometry[]): this;
   /** 移除一个几何 */
-  removeGeometry(geo: MaptalksGeometry): MaptalksVectorLayer;
+  removeGeometry(geo: MaptalksGeometry): this;
   /** 读取全部几何 */
   getGeometries(): MaptalksGeometry[];
+  /** 按 ID 获取几何 */
+  getGeometryById(id: string | number): MaptalksGeometry | null;
+  /** 获取几何数量 */
+  getCount(): number;
   /** 清空全部几何 */
-  clear(): MaptalksVectorLayer;
+  clear(): this;
+  /** 设置图层级样式（支持 filter + symbol 数组） */
+  setStyle(style: Record<string, unknown> | Array<unknown>): this;
+  /** 获取图层级样式 */
+  getStyle(): unknown;
+  /** 移除图层级样式 */
+  removeStyle(): this;
+  /** 按条件筛选几何 */
+  filter(condition: unknown[]): MaptalksGeometry[];
+  /** 遍历全部几何 */
+  forEach(fn: (geo: MaptalksGeometry) => void): this;
+  /** 排序几何 */
+  sort(fn: (a: MaptalksGeometry, b: MaptalksGeometry) => number): this;
+  /** 几何逐个动画展示 */
+  animateShow(options?: Record<string, unknown>, cb?: (...args: unknown[]) => void): this;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+// ───────────────────────────────── Geometry Narrow Struct (supplement) ─────────────────────────────────
+
+/**
+ * MultiLineString 几何窄类型（extends MaptalksGeometry）。
+ */
+export interface MaptalksMultiLineStringGeometry extends MaptalksGeometry {
+  /** 读取 MultiLineString 坐标 */
+  getCoordinates(): unknown[][][];
+  /** 设置 MultiLineString 坐标 */
+  setCoordinates(coordinates: unknown[][][]): this;
+}
+
+/**
+ * MultiPolygon 几何窄类型（extends MaptalksGeometry）。
+ */
+export interface MaptalksMultiPolygonGeometry extends MaptalksGeometry {
+  /** 读取 MultiPolygon 坐标 */
+  getCoordinates(): unknown[][][][];
+  /** 设置 MultiPolygon 坐标 */
+  setCoordinates(coordinates: unknown[][][][]): this;
+}
+
+// ───────────────────────────────── Layer Subclass Struct ─────────────────────────────────
+
+/**
+ * TileLayer 栅格瓦片图层实例（extends Layer）。
+ */
+export interface MaptalksTileLayer extends MaptalksLayer {
+  /** 获取瓦片列表 */
+  getTiles(): unknown[];
+  /** 按坐标获取瓦片 URL */
+  getTileUrl(x: number, y: number, z: number): string;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * VectorTileLayer 矢量瓦片图层实例（extends Layer）。
+ */
+export interface MaptalksVectorTileLayer extends MaptalksLayer {
+  /** 设置矢量样式 */
+  setStyle(style: Record<string, unknown>): this;
+  /** 获取矢量样式 */
+  getStyle(): Record<string, unknown>;
+  /** 获取数据源 */
+  getSource(): unknown;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * WMSLayer 实例（extends Layer）。
+ */
+export interface MaptalksWMSLayer extends MaptalksLayer {
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * GroupGLLayer GL 图层组实例（extends Layer）。
+ */
+export interface MaptalksGroupGLLayer extends MaptalksLayer {
+  /** 添加子 GL 图层 */
+  addLayer(layer: MaptalksLayer): this;
+  /** 移除子 GL 图层 */
+  removeLayer(layer: MaptalksLayer | string): this;
+  /** 获取子图层列表 */
+  getLayers(): MaptalksLayer[];
+  /** 设置场景配置 */
+  setSceneConfig(config: Record<string, unknown>): this;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * GLTFLayer glTF 模型图层实例（extends Layer）。
+ */
+export interface MaptalksGLTFLayer extends MaptalksLayer {
+  /** 设置模型 URL */
+  setUrl(url: string): this;
+  /** 获取模型 URL */
+  getUrl(): string;
+  /** 设置缩放 */
+  setScale(scale: number): this;
+  /** 设置旋转 */
+  setRotation(rotation: unknown): this;
+  /** 设置平移 */
+  setTranslation(translation: unknown): this;
+  /** 获取模型对象 */
+  getModel(): unknown;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * CanvasLayer 自定义 Canvas 图层实例（extends Layer）。
+ */
+export interface MaptalksCanvasLayer extends MaptalksLayer {
+  /** 触发重新渲染 */
+  render(): this;
+  /** 获取 Canvas 2D 上下文 */
+  getContext(): CanvasRenderingContext2D | null;
+  /** 绘制回调（子类重写） */
+  draw?(context: unknown): void;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * ParticleLayer 粒子图层实例（extends Layer）。
+ */
+export interface MaptalksParticleLayer extends MaptalksLayer {
+  /** 设置粒子数据 */
+  setData(data: unknown): this;
+  /** 获取粒子数据 */
+  getData(): unknown;
+  /** 更新粒子配置 */
+  setOptions(opts: Record<string, unknown>): this;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * ImageLayer 图片图层实例（extends Layer）。
+ */
+export interface MaptalksImageLayer extends MaptalksLayer {
+  /** 设置图片 URL */
+  setUrl(url: string): this;
+  /** 获取图片 URL */
+  getUrl(): string;
+  /** 设置经纬度范围 */
+  setExtent(extent: unknown): this;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * CanvasTileLayer 自定义 Canvas 瓦片图层实例（extends Layer）。
+ */
+export interface MaptalksCanvasTileLayer extends MaptalksLayer {
+  /** 绘制单个瓦片（子类重写） */
+  drawTile?(context: unknown, x: number, y: number, z: number): void;
+  /** 逃生舱口 */
+  [key: string]: unknown;
 }
 
 /**
