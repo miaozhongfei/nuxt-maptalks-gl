@@ -31,8 +31,8 @@
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const blRef = ref<{ layer: ShallowRef<MaptalksTileLayer | null>; show: () => void; hide: () => void } | null>(null)
-const vlRef = ref<{ layer: ShallowRef<MaptalksVectorLayer | null>; show: () => void; hide: () => void } | null>(null)
+const blRef = ref()
+const vlRef = ref()
 
 const opacity = ref(1)
 let crossOn = false
@@ -45,7 +45,8 @@ function toggleCross(e: Event) {
 }
 
 function setOpacity(e: Event) {
-  const bl = toValue(blRef.value?.layer)
+  // Vue template ref 会自动 unwrap defineExpose 的 ref，所以 .layer 直接拿到实例
+  const bl = (blRef.value as any)?.layer
   if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
@@ -53,7 +54,7 @@ function setOpacity(e: Event) {
 }
 
 function toggleVisible(e: Event) {
-  const l = toValue(vlRef.value?.layer)
+  const l = (vlRef.value as any)?.layer
   if (!l) return
   ;(l.options as any).visible = (e.target as HTMLInputElement).checked
 }
