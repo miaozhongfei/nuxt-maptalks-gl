@@ -16,31 +16,55 @@
 </template>
 
 <script setup lang="ts">
-const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const mc = ref<MaptalksMapExposed | null>(null);
+const map = computed(() => mc.value?.map ?? null);
 
-const collisionOn = ref(true)
+const collisionOn = ref(true);
 
 const { layer } = useMaptalksVectorLayer(map, {
-  options: { collision: true, collisionDelay: 250, forceRenderOnMoving: true, forceRenderOnZooming: true, forceRenderOnRotating: true },
-})
+  options: {
+    collision: true,
+    collisionDelay: 250,
+    forceRenderOnMoving: true,
+    forceRenderOnZooming: true,
+    forceRenderOnRotating: true,
+  },
+});
 
-const randomMarkers = Array.from({ length: 100 }, () => [
-  121.49 + Math.random() * 0.03,
-  31.22 + Math.random() * 0.05,
-] as [number, number])
+const randomMarkers = Array.from(
+  { length: 100 },
+  () => [121.49 + Math.random() * 0.03, 31.22 + Math.random() * 0.05] as [number, number],
+);
 
 randomMarkers.forEach((c, i) => {
   useMaptalksMarker(layer, {
     coordinates: c,
     id: String(i),
-    options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28, textName: String(i), textSize: 12, textDy: -26, textFill: '#fff' } },
-  })
-})
+    options: {
+      symbol: {
+        markerType: 'ellipse',
+        markerFill: '#2563eb',
+        markerWidth: 28,
+        markerHeight: 28,
+        textName: String(i),
+        textSize: 12,
+        textDy: -26,
+        textFill: '#2563eb',
+      },
+    },
+  });
+});
 
 watch(collisionOn, (checked) => {
-  const l = toValue(layer)!
-  l.getGeometries().forEach((m) => { (m as unknown as { options: Record<string, boolean> }).options.collision = checked })
-  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
-})
+  const l = toValue(layer)!;
+  // l.getGeometries().forEach((m) => {
+  //   (m as unknown as { options: Record<string, boolean> }).options.collision = checked;
+  // });
+  l.getGeometries().forEach((m) => {
+    m.config({
+      collision: checked,
+    });
+  });
+  (l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw();
+});
 </script>

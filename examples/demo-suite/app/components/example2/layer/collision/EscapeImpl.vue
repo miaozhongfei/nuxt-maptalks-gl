@@ -52,7 +52,7 @@ randomMarkers.forEach((c, i) => {
           textName: String(i),
           textSize: 12,
           textDy: -26,
-          textFill: '#fff',
+          textFill: '#2563eb',
         },
         id: String(i),
       }),

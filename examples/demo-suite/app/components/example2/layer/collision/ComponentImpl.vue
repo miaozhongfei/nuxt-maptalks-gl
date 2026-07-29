@@ -9,14 +9,31 @@
     >
       <MaptalksVectorLayer
         ref="vlRef"
-        :options="{ collision: true, collisionDelay: 250, forceRenderOnMoving: true, forceRenderOnZooming: true, forceRenderOnRotating: true }"
+        :options="{
+          collision: true,
+          collisionDelay: 250,
+          forceRenderOnMoving: true,
+          forceRenderOnZooming: true,
+          forceRenderOnRotating: true,
+        }"
       >
         <MaptalksMarker
           v-for="(m, i) in randomMarkers"
           :key="i"
           :coordinates="m"
           :id="String(i)"
-          :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28, textName: String(i), textSize: 12, textDy: -26, textFill: '#fff' } }"
+          :options="{
+            symbol: {
+              markerType: 'ellipse',
+              markerFill: '#2563eb',
+              markerWidth: 28,
+              markerHeight: 28,
+              textName: String(i),
+              textSize: 12,
+              textDy: -26,
+              textFill: '#2563eb',
+            },
+          }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
@@ -28,17 +45,24 @@
 </template>
 
 <script setup lang="ts">
-const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
-const collisionOn = ref(true)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null);
+const collisionOn = ref(true);
 
 watch(collisionOn, (checked) => {
-  const l = vlRef.value!.layer!
-  l.getGeometries().forEach((m) => { (m as unknown as { options: Record<string, boolean> }).options.collision = checked })
-  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
-})
+  const l = vlRef.value!.layer!;
+  // l.getGeometries().forEach((m) => {
+  //   (m as unknown as { options: Record<string, boolean> }).options.collision = checked;
+  // });
+  l.getGeometries().forEach((m) => {
+    m.config({
+      collision: checked,
+    });
+  });
+  (l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw();
+});
 
-const randomMarkers = Array.from({ length: 100 }, () => [
-  121.49 + Math.random() * 0.03,
-  31.22 + Math.random() * 0.05,
-] as [number, number])
+const randomMarkers = Array.from(
+  { length: 100 },
+  () => [121.49 + Math.random() * 0.03, 31.22 + Math.random() * 0.05] as [number, number],
+);
 </script>
