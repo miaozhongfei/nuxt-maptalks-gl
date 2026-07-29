@@ -169,13 +169,15 @@ export interface MaptalksLayer {
 }
 
 /**
- * maptalks 几何图形实例的结构化建模（仅声明本模块使用到的成员）。
+ * maptalks 几何图形实例的结构化建模（覆盖 Geometry 基类全部方法）。
  *
- * @description 通过结构化类型描述几何，核心读写/事件方法给出签名，索引签名提供逃生舱口。
+ * @description 基于 maptalks.js 1.x API，声明 Geometry 基类的完整公共方法签名（含继承链）。
+ * 索引签名提供逃生舱口，可调用任意原生方法。
  *
  * @example
  * const geo: MaptalksGeometry | null = useMaptalksMarker(layer, { coordinates: [0, 0] }).geometry.value;
  * geo?.setSymbol({ markerType: 'ellipse' });
+ * geo?.updateSymbol({ markerWidth: 40 });
  */
 export interface MaptalksGeometry {
   /** 加入矢量图层 */
@@ -190,38 +192,108 @@ export interface MaptalksGeometry {
   setSymbol(symbol: unknown): MaptalksGeometry;
   /** 读取样式 symbol */
   getSymbol(): unknown;
+  /** 读取 symbol 哈希码 */
+  getSymbolHash(): string;
+  /** 部分更新 symbol */
+  updateSymbol(props: Record<string, unknown> | Array<unknown>): MaptalksGeometry;
   /** 设置业务属性 */
   setProperties(props: Record<string, unknown>): MaptalksGeometry;
   /** 读取业务属性 */
   getProperties(): Record<string, unknown>;
+  /** 读取几何 ID */
+  getId(): string | number;
+  /** 设置几何 ID */
+  setId(id: string | number): MaptalksGeometry;
+  /** 读取几何类型字符串 */
+  getType(): string;
+  /** 读取关联图层 */
+  getLayer(): MaptalksLayer | null;
+  /** 读取关联地图 */
+  getMap(): MaptalksMap | null;
+  /** 读取第一个坐标 */
+  getFirstCoordinate(): Record<string, number>;
+  /** 读取最后一个坐标 */
+  getLastCoordinate(): Record<string, number>;
+  /** 读取地理中心 */
+  getCenter(): Record<string, number>;
+  /** 读取地理范围 */
+  getExtent(): Record<string, unknown>;
+  /** 读取屏幕像素范围 */
+  getContainerExtent(): Record<string, unknown>;
+  /** 读取屏幕像素尺寸 */
+  getSize(): Record<string, number>;
+  /** 判断是否包含指定点 */
+  containsPoint(point: unknown, tolerance?: number): boolean;
+  /** 读取文本内容 */
+  getTextContent(): string;
+  /** 显示几何图形 */
+  show(): MaptalksGeometry;
+  /** 隐藏几何图形 */
+  hide(): MaptalksGeometry;
+  /** 是否可见 */
+  isVisible(): boolean;
+  /** 读取 zIndex */
+  getZIndex(): number;
+  /** 设置 zIndex（触发重排） */
+  setZIndex(zIndex: number): MaptalksGeometry;
+  /** 静默设置 zIndex（不触发事件） */
+  setZIndexSilently(zIndex: number): MaptalksGeometry;
+  /** 置顶 */
+  bringToFront(): MaptalksGeometry;
+  /** 置底 */
+  bringToBack(): MaptalksGeometry;
+  /** 平移 */
+  translate(x: number, y: number): MaptalksGeometry;
+  /** 旋转 */
+  rotate(angle: number, pivot?: unknown): MaptalksGeometry;
+  /** 闪烁 */
+  flash(interval?: number, count?: number, cb?: () => void, context?: unknown): MaptalksGeometry;
+  /** 克隆（不含事件） */
+  copy(): MaptalksGeometry;
+  /** 序列化为 GeoJSON */
+  toGeoJSON(): unknown;
+  /** 序列化为 GeoJSON Geometry（不含 feature 包装） */
+  toGeoJSONGeometry(): unknown;
+  /** 序列化为 Profile JSON */
+  toJSON(options?: Record<string, unknown>): Record<string, unknown>;
+  /** 读取地理长度（米） */
+  getLength(): number;
+  /** 读取地理面积（㎡） */
+  getArea(): number;
   /** 绑定事件 */
   on(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
   /** 解绑事件 */
   off(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
-  /** 序列化为 GeoJSON */
-  toGeoJSON(): unknown;
-  /** 设置半径（Circle/Sector） */
-  setRadius?(radius: number): MaptalksGeometry;
-  /** 设置宽度（Rectangle/Ellipse/TextBox） */
-  setWidth?(width: number): MaptalksGeometry;
-  /** 设置高度（Rectangle/Ellipse/TextBox） */
-  setHeight?(height: number): MaptalksGeometry;
-  /** 设置起始角（Sector） */
-  setStartAngle?(angle: number): MaptalksGeometry;
-  /** 设置结束角（Sector） */
-  setEndAngle?(angle: number): MaptalksGeometry;
-  /** 设置文本内容（Label/TextBox） */
-  setContent?(content: string): MaptalksGeometry;
-  /** 显示几何图形 */
-  show?(): MaptalksGeometry;
-  /** 隐藏几何图形 */
-  hide?(): MaptalksGeometry;
-  /** 带动画过渡 show 显示（Line / Polygon 几何逐段绘制动画） */
-  animateShow?(opts?: Record<string, unknown>): void;
-  /** 样式动画过渡（interpolate） */
-  animate?(styles: Record<string, unknown>, opts?: Record<string, unknown>): void;
+  /** 样式动画过渡 */
+  animate?(styles: Record<string, unknown>, opts?: Record<string, unknown>): Record<string, unknown>;
+  /** 带动画 show（Line / Polygon） */
+  animateShow?(opts?: Record<string, unknown>, cb?: (...args: unknown[]) => void): MaptalksGeometry;
   /** 沿路径移动动画 */
   moveAlong?(path: unknown, opts?: Record<string, unknown>): void;
+  /** 开始编辑 */
+  startEdit?(options?: Record<string, unknown>): MaptalksGeometry;
+  /** 结束编辑 */
+  endEdit?(): MaptalksGeometry;
+  /** 重做编辑 */
+  redoEdit?(): MaptalksGeometry;
+  /** 撤销编辑 */
+  undoEdit?(): MaptalksGeometry;
+  /** 取消编辑 */
+  cancelEdit?(): MaptalksGeometry;
+  /** 是否正在编辑 */
+  isEditing?(): boolean;
+  /** 是否正在拖拽 */
+  isDragging?(): boolean;
+  /** 设置 InfoWindow */
+  setInfoWindow?(options: Record<string, unknown>): MaptalksGeometry;
+  /** 获取 InfoWindow */
+  getInfoWindow?(): unknown;
+  /** 打开 InfoWindow */
+  openInfoWindow?(coordinate?: unknown): MaptalksGeometry;
+  /** 关闭 InfoWindow */
+  closeInfoWindow?(): MaptalksGeometry;
+  /** 移除 InfoWindow */
+  removeInfoWindow?(): MaptalksGeometry;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -725,6 +797,10 @@ export interface MaptalksMarkerGeometry extends MaptalksGeometry {
  * label.setBoxStyle({ padding: 8 });
  */
 export interface MaptalksLabelGeometry extends MaptalksGeometry {
+  /** 读取 Label 文字内容 */
+  getContent(): string;
+  /** 设置 Label 文字内容 */
+  setContent(content: string): this;
   /** 读取 Label 框样式 */
   getBoxStyle(): Record<string, unknown>;
   /** 设置 Label 框样式 */
@@ -745,6 +821,10 @@ export interface MaptalksLabelGeometry extends MaptalksGeometry {
  * box.setWidth(200);
  */
 export interface MaptalksTextBoxGeometry extends MaptalksGeometry {
+  /** 读取 TextBox 文字内容 */
+  getContent(): string;
+  /** 设置 TextBox 文字内容 */
+  setContent(content: string): this;
   /** 读取 TextBox 宽度 */
   getWidth(): number;
   /** 设置 TextBox 宽度 */
@@ -753,6 +833,10 @@ export interface MaptalksTextBoxGeometry extends MaptalksGeometry {
   getHeight(): number;
   /** 设置 TextBox 高度 */
   setHeight(height: number): this;
+  /** 读取 TextBox 文字符号 */
+  getTextSymbol(): Record<string, unknown>;
+  /** 设置 TextBox 文字符号 */
+  setTextSymbol(symbol: Record<string, unknown>): this;
   /** 读取 TextBox 框符号 */
   getBoxSymbol(): Record<string, unknown>;
   /** 设置 TextBox 框符号 */
@@ -773,6 +857,10 @@ export interface MaptalksTextBoxGeometry extends MaptalksGeometry {
  * const coords = line.getCoordinates();
  */
 export interface MaptalksLineStringGeometry extends MaptalksGeometry {
+  /** 读取与给定范围相交部分的中心 */
+  getCenterInExtent(extent: Record<string, unknown>): Record<string, number> | null;
+  /** 带动画 show（Path 继承） */
+  animateShow(options?: Record<string, unknown>, cb?: (...args: unknown[]) => void): this;
   /** 读取 LineString 坐标（点序列） */
   getCoordinates(): unknown[];
   /** 设置 LineString 坐标 */
@@ -795,6 +883,10 @@ export interface MaptalksPolygonGeometry extends MaptalksGeometry {
   getHoles(): unknown[][];
   /** 判断是否有孔洞 */
   hasHoles(): boolean;
+  /** 读取与给定范围相交部分的中心 */
+  getCenterInExtent(extent: Record<string, unknown>): Record<string, number> | null;
+  /** 带动画 show（Path 继承） */
+  animateShow(options?: Record<string, unknown>, cb?: (...args: unknown[]) => void): this;
   /** 读取 Polygon 坐标（外环 + 内环） */
   getCoordinates(): unknown[][];
   /** 设置 Polygon 坐标 */
@@ -815,6 +907,10 @@ export interface MaptalksCircleGeometry extends MaptalksGeometry {
   getRadius(): number;
   /** 设置 Circle 半径 */
   setRadius(radius: number): this;
+  /** 读取 Circle 外壳坐标 */
+  getShell(): unknown[];
+  /** 读取与给定范围相交部分的中心 */
+  getCenterInExtent(extent: Record<string, unknown>): Record<string, number> | null;
   /** 读取 Circle 中心坐标 */
   getCoordinates(): { x: number; y: number; [key: string]: unknown };
   /** 设置 Circle 中心坐标 */
@@ -839,6 +935,12 @@ export interface MaptalksSectorGeometry extends MaptalksCircleGeometry {
   getEndAngle(): number;
   /** 设置扇形结束角（度） */
   setEndAngle(angle: number): this;
+  /** 读取扇形半径 */
+  getRadius(): number;
+  /** 设置扇形半径 */
+  setRadius(radius: number): this;
+  /** 读取扇形外壳坐标 */
+  getShell(): unknown[];
 }
 
 /**
@@ -859,6 +961,10 @@ export interface MaptalksRectangleGeometry extends MaptalksGeometry {
   getHeight(): number;
   /** 设置 Rectangle 高度 */
   setHeight(height: number): this;
+  /** 读取 Rectangle 外壳坐标 */
+  getShell(): unknown[];
+  /** 读取与给定范围相交部分的中心 */
+  getCenterInExtent(extent: Record<string, unknown>): Record<string, number> | null;
   /** 读取 Rectangle 坐标 */
   getCoordinates(): { x: number; y: number; [key: string]: unknown };
   /** 设置 Rectangle 坐标 */
@@ -883,6 +989,10 @@ export interface MaptalksEllipseGeometry extends MaptalksGeometry {
   getHeight(): number;
   /** 设置 Ellipse 高度 */
   setHeight(height: number): this;
+  /** 读取 Ellipse 外壳坐标 */
+  getShell(): unknown[];
+  /** 读取与给定范围相交部分的中心 */
+  getCenterInExtent(extent: Record<string, unknown>): Record<string, number> | null;
   /** 读取 Ellipse 中心坐标 */
   getCoordinates(): { x: number; y: number; [key: string]: unknown };
   /** 设置 Ellipse 中心坐标 */
