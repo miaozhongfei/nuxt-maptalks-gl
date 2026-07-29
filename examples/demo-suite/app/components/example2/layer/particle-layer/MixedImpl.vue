@@ -1,16 +1,21 @@
 <template>
   <div>
-    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <MaptalksMap
+      ref="mc"
+      base-layer="osm"
+      :center="[121.5057, 31.2453]"
+      :zoom="14"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
-useMaptalksTileLayer(map, { source: 'osm' })
+const mc = ref<MaptalksMapExposed | null>(null)
 
 watch(
-  () => toValue(map),
+  () => mc.value?.map,
   async (mv) => {
     if (!mv) return
     const mt = await import('maptalks-gl')
@@ -33,5 +38,6 @@ watch(
     }
     pl.addTo(m)
   },
+  { once: true },
 )
 </script>

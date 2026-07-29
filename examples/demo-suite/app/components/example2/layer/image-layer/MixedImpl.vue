@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const mc = ref<MaptalksMapExposed | null>(null);
+const map = computed(() => mc.value?.map ?? null);
 
 useMaptalksImageLayer(map, {
   images: [
-    { url: '/images/logo-h.png', extent: [121.49, 31.235, 121.51, 31.255], opacity: 1 },
-    { url: '/images/logo-h.png', extent: [121.50, 31.240, 121.52, 31.260], opacity: 0.4 },
+    { url: '/images/1.png', extent: [121.49, 31.235, 121.51, 31.255], opacity: 1 },
+    { url: '/images/2.png', extent: [121.5, 31.24, 121.52, 31.26], opacity: 0.4 },
   ],
-})
+});
 </script>
