@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-const vlRef = ref<any>(null)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 
 function highlightById(id: number) {
   (vlRef.value?.layer as any)?.getGeometryById?.(id)?.updateSymbol?.([{ polygonFill: '#f00' }])

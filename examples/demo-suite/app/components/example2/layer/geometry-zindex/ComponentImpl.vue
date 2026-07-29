@@ -21,9 +21,9 @@
 </template>
 
 <script setup lang="ts">
-const r3 = ref<any>(null)
-const r2 = ref<any>(null)
-const r1 = ref<any>(null)
+const r3 = ref<MaptalksPolygonExposed | null>(null)
+const r2 = ref<MaptalksPolygonExposed | null>(null)
+const r1 = ref<MaptalksPolygonExposed | null>(null)
 
 function sort321() {
   ;(r3.value?.geometry as any)?.bringToFront?.()

@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-const vlRef = ref<any>(null)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 
 function filterGeos() {
   ;(vlRef.value?.layer as any)?.filter?.(['>=', 'count', 200])?.forEach((f: any) => f.updateSymbol([{ polygonFill: 'rgb(216,115,149)' }]))

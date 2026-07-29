@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-const vlRef = ref<any>(null)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 let initialStyleSet = false
 
 onMounted(() => {

@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const vlRef = ref<any>(null)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 let maskMarker: any = null
 let maskBound = false
 
