@@ -2,31 +2,35 @@
   <div>
     <MaptalksMap
       :center="[121.5057, 31.2453]"
-      :zoom="13"
+      :zoom="14"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     >
       <MaptalksVectorLayer>
         <MaptalksMarker
-          v-for="(pt, i) in pts"
-          :key="i"
-          :coordinates="pt"
-          :options="{ symbol: { markerType: 'ellipse', markerFill: colors[i % colors.length], markerWidth: 14, markerHeight: 14 } }"
+          :coordinates="[121.5057, 31.2453]"
+          :options="{ symbol: { textFaceName: '\"microsoft yahei\",arial,sans-serif', textName: '陆家嘴', textFill: '#34495e', textHorizontalAlignment: 'right', textSize: 40 } }"
+        />
+        <MaptalksLineString
+          :coordinates="[[121.5057, 31.2453], [121.5117, 31.2503]]"
+          :options="{ symbol: { lineColor: '#1bbc9b', lineWidth: 3 } }"
+        />
+        <MaptalksPolygon
+          :coordinates="polyCoords"
+          :options="{ symbol: { lineColor: '#34495e', lineWidth: 2, polygonFill: 'rgb(135,196,240)', polygonOpacity: 0.6 } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
-    <p class="text-sm mt-2 text-muted">5 个 Marker 批量声明于同一 VectorLayer</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const pts: [number, number][] = [
-  [121.4957, 31.2453],
-  [121.5057, 31.2553],
-  [121.5157, 31.2453],
-  [121.5057, 31.2353],
-  [121.5057, 31.2453],
-];
-const colors = ['#2563eb', '#dc2626', '#16a34a', '#ca8a04', '#9333ea'];
+const polyCoords = [
+  [121.5057 - 0.018, 31.2453 + 0.004],
+  [121.5057 + 0.006, 31.2453 + 0.004],
+  [121.5057 + 0.006, 31.2453 - 0.001],
+  [121.5057 - 0.018, 31.2453 - 0.001],
+  [121.5057 - 0.018, 31.2453 + 0.004],
+] as [number, number][]
 </script>

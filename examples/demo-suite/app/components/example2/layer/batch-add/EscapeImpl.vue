@@ -1,34 +1,36 @@
 <template>
   <div>
-    <div
-      ref="el"
-      class="relative rounded border border-default overflow-hidden"
-      style="height: 480px"
-    />
-    <p class="text-sm mt-2 text-muted">5 个 Marker 通过逃生舱工厂批量创建</p>
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const pts: [number, number][] = [
-  [121.4957, 31.2453],
-  [121.5057, 31.2553],
-  [121.5157, 31.2453],
-  [121.5057, 31.2353],
+const { layer } = useMaptalksVectorLayer(map)
+
+useMaptalksGeometry(layer, (mt) => new mt.Marker(
   [121.5057, 31.2453],
-];
-const colors = ['#2563eb', '#dc2626', '#16a34a', '#ca8a04', '#9333ea'];
+  { symbol: { textFaceName: '"microsoft yahei",arial,sans-serif', textName: '陆家嘴', textFill: '#34495e', textHorizontalAlignment: 'right', textSize: 40 } },
+))
 
-// 逃生舱工厂批量创建原生 Marker
-pts.forEach((c, i) => {
-  useMaptalksGeometry(layer, (mt) => new mt.Marker(
-    c,
-    { symbol: { markerType: 'ellipse', markerFill: colors[i % colors.length], markerWidth: 14, markerHeight: 14 } },
-  ));
-});
+useMaptalksGeometry(layer, (mt) => new mt.LineString(
+  [[121.5057, 31.2453], [121.5117, 31.2503]],
+  { symbol: { lineColor: '#1bbc9b', lineWidth: 3 } },
+))
+
+const polyCoords = [
+  [121.5057 - 0.018, 31.2453 + 0.004],
+  [121.5057 + 0.006, 31.2453 + 0.004],
+  [121.5057 + 0.006, 31.2453 - 0.001],
+  [121.5057 - 0.018, 31.2453 - 0.001],
+  [121.5057 - 0.018, 31.2453 + 0.004],
+] as [number, number][]
+
+useMaptalksGeometry(layer, (mt) => new mt.Polygon(
+  polyCoords,
+  { symbol: { lineColor: '#34495e', lineWidth: 2, polygonFill: 'rgb(135,196,240)', polygonOpacity: 0.6 } },
+))
 </script>

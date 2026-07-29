@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="批量添加 5 个 Marker 到同一图层（对应官网 6.8）。"
+    description="批量添加文字 Marker + LineString + Polygon 到同一图层（对应官网 6.8）。"
     :tabs="tabs"
   />
 </template>
