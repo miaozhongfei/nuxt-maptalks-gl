@@ -56,9 +56,9 @@ export function useMaptalksSector(
       id: opts.id,
       options: opts.options,
       extraProps: [
-        { value: opts.radius, apply: (g, v) => g.setRadius?.(v as number) },
-        { value: opts.startAngle, apply: (g, v) => g.setStartAngle?.(v as number) },
-        { value: opts.endAngle, apply: (g, v) => g.setEndAngle?.(v as number) },
+        { value: opts.radius, apply: (g, v) => (g as any).setRadius?.(v as number) },
+        { value: opts.startAngle, apply: (g, v) => (g as any).setStartAngle?.(v as number) },
+        { value: opts.endAngle, apply: (g, v) => (g as any).setEndAngle?.(v as number) },
       ],
     },
   );

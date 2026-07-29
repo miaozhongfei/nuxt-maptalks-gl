@@ -55,7 +55,7 @@ export function useMaptalksLabel(
       autoDispose: opts.autoDispose,
       id: opts.id,
       options: opts.options,
-      extraProps: [{ value: opts.content, apply: (g, v) => g.setContent?.(v as string) }],
+      extraProps: [{ value: opts.content, apply: (g, v) => (g as any).setContent?.(v as string) }],
     },
   );
 }
