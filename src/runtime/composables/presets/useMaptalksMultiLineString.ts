@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksMultiLineStringGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksMultiLineStringOpts,
@@ -18,7 +19,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  * MultiLineString 构造器缺失抛 geometry-failed。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
  * @param {UseMaptalksMultiLineStringOpts} opts - 坐标（必填）+ options（全部原生字段）+ visible + events + id + autoDispose
- * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
+ * @returns {UseMaptalksGeometryReturn<MaptalksMultiLineStringGeometry>} `{ geometry, remove }`
  *
  * @example
  * const { layer } = useMaptalksVectorLayer(map);
@@ -30,8 +31,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksMultiLineString(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksMultiLineStringOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksMultiLineStringGeometry> {
+  return useMaptalksGeometry<MaptalksMultiLineStringGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.MultiLineString;

@@ -7,6 +7,8 @@ import type {
   MaptalksControl,
   MaptalksEllipseGeometry,
   MaptalksGeometry,
+  MaptalksGLTFLayer,
+  MaptalksGroupGLLayer,
   MaptalksInfoWindow,
   MaptalksLabelGeometry,
   MaptalksLayer,
@@ -14,13 +16,18 @@ import type {
   MaptalksMap,
   MaptalksMapTool,
   MaptalksMarkerGeometry,
+  MaptalksMultiLineStringGeometry,
   MaptalksMultiPointGeometry,
+  MaptalksMultiPolygonGeometry,
   MaptalksPolygonGeometry,
   MaptalksRectangleGeometry,
   MaptalksSectorGeometry,
   MaptalksTextBoxGeometry,
+  MaptalksTileLayer,
   MaptalksUIMarker,
   MaptalksVectorLayer,
+  MaptalksVectorTileLayer,
+  MaptalksWMSLayer,
 } from './structural';
 
 /**
@@ -48,19 +55,19 @@ export interface MaptalksLayerExposed<T extends MaptalksLayer = MaptalksLayer> {
 export type MaptalksVectorLayerExposed = MaptalksLayerExposed<MaptalksVectorLayer>;
 
 /** MaptalksTileLayer 组件 defineExpose 暴露 */
-export type MaptalksTileLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
+export type MaptalksTileLayerExposed = MaptalksLayerExposed<MaptalksTileLayer>;
 
 /** MaptalksVectorTileLayer 组件 defineExpose 暴露 */
-export type MaptalksVectorTileLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
+export type MaptalksVectorTileLayerExposed = MaptalksLayerExposed<MaptalksVectorTileLayer>;
 
 /** MaptalksGroupGLLayer 组件 defineExpose 暴露 */
-export type MaptalksGroupGLLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
+export type MaptalksGroupGLLayerExposed = MaptalksLayerExposed<MaptalksGroupGLLayer>;
 
 /** MaptalksGLTFLayer 组件 defineExpose 暴露 */
-export type MaptalksGLTFLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
+export type MaptalksGLTFLayerExposed = MaptalksLayerExposed<MaptalksGLTFLayer>;
 
 /** MaptalksWMSLayer 组件 defineExpose 暴露 */
-export type MaptalksWMSLayerExposed = MaptalksLayerExposed<MaptalksLayer>;
+export type MaptalksWMSLayerExposed = MaptalksLayerExposed<MaptalksWMSLayer>;
 
 /**
  * MaptalksInfoWindow 组件 defineExpose 暴露的类型。
@@ -178,9 +185,9 @@ export type MaptalksEllipseExposed = MaptalksGeometryExposed<MaptalksEllipseGeom
 /** MaptalksMultiPoint 组件 defineExpose 暴露 */
 export type MaptalksMultiPointExposed = MaptalksGeometryExposed<MaptalksMultiPointGeometry>;
 /** MaptalksMultiLineString 组件 defineExpose 暴露 */
-export type MaptalksMultiLineStringExposed = MaptalksGeometryExposed<MaptalksGeometry>;
+export type MaptalksMultiLineStringExposed = MaptalksGeometryExposed<MaptalksMultiLineStringGeometry>;
 /** MaptalksMultiPolygon 组件 defineExpose 暴露 */
-export type MaptalksMultiPolygonExposed = MaptalksGeometryExposed<MaptalksGeometry>;
+export type MaptalksMultiPolygonExposed = MaptalksGeometryExposed<MaptalksMultiPolygonGeometry>;
 
 // ───────────────────────────────── Control / Tool / GeoJSON Exposed ─────────────────────────────────
 

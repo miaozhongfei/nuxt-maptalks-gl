@@ -4,6 +4,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksMultiPolygonGeometry,
   MaptalksVectorLayer,
   UseMaptalksGeometryReturn,
   UseMaptalksMultiPolygonOpts,
@@ -18,7 +19,7 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  * MultiPolygon 构造器缺失抛 geometry-failed。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
  * @param {UseMaptalksMultiPolygonOpts} opts - 坐标（必填）+ options（全部原生字段）+ visible + events + id + autoDispose
- * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
+ * @returns {UseMaptalksGeometryReturn<MaptalksMultiPolygonGeometry>} `{ geometry, remove }`
  *
  * @example
  * const { layer } = useMaptalksVectorLayer(map);
@@ -30,8 +31,8 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
 export function useMaptalksMultiPolygon(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
   opts: UseMaptalksMultiPolygonOpts,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+): UseMaptalksGeometryReturn<MaptalksMultiPolygonGeometry> {
+  return useMaptalksGeometry<MaptalksMultiPolygonGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.MultiPolygon;
