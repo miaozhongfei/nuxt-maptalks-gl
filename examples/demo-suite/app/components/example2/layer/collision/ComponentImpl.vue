@@ -32,9 +32,9 @@ const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 const collisionOn = ref(true)
 
 watch(collisionOn, (checked) => {
-  const l = vlRef.value?.layer as any
-  l?.getGeometries?.()?.forEach((m: any) => { m.options.collision = checked })
-  l?.getRenderer?.()?.draw?.()
+  const l = vlRef.value!.layer!
+  l.getGeometries().forEach((m) => { (m as { options: Record<string, boolean> }).options.collision = checked })
+  ;(l as { getRenderer(): { draw(): void } }).getRenderer().draw()
 })
 
 const randomMarkers = Array.from({ length: 100 }, () => [
