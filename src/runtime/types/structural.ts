@@ -67,6 +67,10 @@ export type MaptalksEventHandler = (event: unknown) => void;
 export interface MaptalksMap {
   /** 销毁地图并释放 WebGL 上下文 */
   remove(): void;
+  /** 获取或更新配置 */
+  config(conf: Record<string, unknown> | string, value?: unknown): this | Record<string, unknown>;
+  /** 从 Profile JSON 重现地图 */
+  fromJSON(json: unknown): MaptalksMap;
   /** 是否加载完成 */
   isLoaded(): boolean;
   /** 是否已销毁 */
