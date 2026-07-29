@@ -41,7 +41,7 @@ export function useMaptalksPolygon(
       }
       const rawCoords = toValue(opts.coordinates);
       const rings = Array.isArray(rawCoords[0]?.[0]) ? (rawCoords as number[][][]) : [rawCoords as number[][]];
-      return new Ctor(rings, buildGeometryOptions({ ...toValue(opts.options) }));
+      return new Ctor(rings, buildGeometryOptions({ id: opts.id, ...toValue(opts.options) }));
     },
     {
       coordinates: opts.coordinates,
