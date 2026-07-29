@@ -383,6 +383,8 @@ export interface MaptalksLayer extends MaptalksClass {
  * geo.config('draggable', true);
  */
 export interface MaptalksClass {
+  /** Proxy 包装的选项对象——直接赋值 xxx.options.yyy = value 等效 xxx.config('yyy', value) */
+  options: Record<string, unknown>;
   /** 合并选项到默认值 */
   setOptions(options: Record<string, unknown>): this;
   /** 读取全部选项（无参）/ 设置单项conf(param,value) / 批量设置conf(obj) */

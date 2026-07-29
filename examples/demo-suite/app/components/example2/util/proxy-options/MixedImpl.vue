@@ -39,7 +39,7 @@ function toggleCross(e: Event) {
   const m = toValue(map)
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  ;(m.options as any).centerCross = crossOn
+  ;m.options.centerCross = crossOn
 }
 
 function setOpacity(e: Event) {
@@ -47,12 +47,12 @@ function setOpacity(e: Event) {
   if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  ;(bl.options as any).opacity = v
+  ;bl.options.opacity = v
 }
 
 function toggleVisible(e: Event) {
   const vl = toValue(vectorLayer)
   if (!vl) return
-  ;(vl.options as any).visible = (e.target as HTMLInputElement).checked
+  ;vl.options.visible = (e.target as HTMLInputElement).checked
 }
 </script>

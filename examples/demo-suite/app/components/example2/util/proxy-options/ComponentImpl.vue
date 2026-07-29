@@ -31,8 +31,9 @@
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const blRef = ref()
-const vlRef = ref()
+// Vue template ref 会自动 unwrap defineExpose 暴露的 shallowRef，.layer 直接是实例
+const blRef = ref<MaptalksTileLayerExposed | null>(null)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 
 const opacity = ref(1)
 let crossOn = false
@@ -41,21 +42,21 @@ function toggleCross(e: Event) {
   const m = mc.value?.map
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  ;(m.options as any).centerCross = crossOn
+  ;m.options.centerCross = crossOn
 }
 
 function setOpacity(e: Event) {
-  // Vue template ref 会自动 unwrap defineExpose 的 ref，所以 .layer 直接拿到实例
-  const bl = (blRef.value as any)?.layer
+  // 转型：ref?.layer 在 TS 中是 ShallowRef，但 Vue template ref 已自动 unwrap
+  const bl = (blRef.value as unknown as { layer: MaptalksTileLayer | null } | null)?.layer
   if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  ;(bl.options as any).opacity = v
+  ;bl.options.opacity = v
 }
 
 function toggleVisible(e: Event) {
-  const l = (vlRef.value as any)?.layer
+  const l = (vlRef.value as unknown as { layer: MaptalksVectorLayer | null } | null)?.layer
   if (!l) return
-  ;(l.options as any).visible = (e.target as HTMLInputElement).checked
+  ;l.options.visible = (e.target as HTMLInputElement).checked
 }
 </script>
