@@ -1,30 +1,40 @@
 <template>
   <div>
-    <div
-      ref="el"
-      class="relative rounded border border-default overflow-hidden"
-      style="height: 480px"
-    />
-    <p class="text-sm mt-2 text-muted">collision: true — 3 个同坐标 Marker 自动碰撞避让</p>
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <label class="flex items-center gap-2 mt-3 cursor-pointer select-none">
+      <input type="checkbox" v-model="collisionOn" class="w-4 h-4" />
+      <span class="text-sm">collision</span>
+    </label>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 8 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-// 逃生舱：工厂创建带 collision 的 VectorLayer
+const collisionOn = ref(true)
+
 const { layer } = useMaptalksLayer(
   map,
-  (mt) => new mt.VectorLayer('collision-layer', { collision: true }),
-);
+  (mt) => new mt.VectorLayer('collision-layer', { collision: true, collisionDelay: 250, forceRenderOnMoving: true, forceRenderOnZooming: true, forceRenderOnRotating: true }),
+)
 
-const colors = ['#2563eb', '#dc2626', '#16a34a'];
-colors.forEach((c) => {
+const randomMarkers = Array.from({ length: 100 }, () => [
+  121.49 + Math.random() * 0.03,
+  31.22 + Math.random() * 0.05,
+] as [number, number])
+
+randomMarkers.forEach((c, i) => {
   useMaptalksGeometry(layer, (mt) => new mt.Marker(
-    [121.5057, 31.2453],
-    { symbol: { markerType: 'ellipse', markerFill: c, markerWidth: 18, markerHeight: 18 } },
-  ));
-});
+    c,
+    { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28, textName: String(i), textSize: 12, textDy: -26, textFill: '#fff' }, id: String(i) },
+  ))
+})
+
+watch(collisionOn, (checked) => {
+  const l = toValue(layer) as any
+  l?.getGeometries?.()?.forEach((m: any) => { m.options.collision = checked })
+  l?.getRenderer?.()?.draw?.()
+})
 </script>

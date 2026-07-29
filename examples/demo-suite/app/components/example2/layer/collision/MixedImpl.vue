@@ -1,30 +1,46 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
-      :zoom="13"
+      :zoom="8"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <p class="text-sm mt-2 text-muted">collision: true — 3 个同坐标 Marker 自动碰撞避让</p>
+    <label class="flex items-center gap-2 mt-3 cursor-pointer select-none">
+      <input type="checkbox" v-model="collisionOn" class="w-4 h-4" />
+      <span class="text-sm">collision</span>
+    </label>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => mc.value?.map ?? null)
+
+const collisionOn = ref(true)
 
 const { layer } = useMaptalksVectorLayer(map, {
-  options: { collision: true },
-});
+  options: { collision: true, collisionDelay: 250, forceRenderOnMoving: true, forceRenderOnZooming: true, forceRenderOnRotating: true },
+})
 
-const colors = ['#2563eb', '#dc2626', '#16a34a'];
-colors.forEach((c) => {
+const randomMarkers = Array.from({ length: 100 }, () => [
+  121.49 + Math.random() * 0.03,
+  31.22 + Math.random() * 0.05,
+] as [number, number])
+
+randomMarkers.forEach((c, i) => {
   useMaptalksMarker(layer, {
-    coordinates: [121.5057, 31.2453] as [number, number],
-    options: { symbol: { markerType: 'ellipse', markerFill: c, markerWidth: 18, markerHeight: 18 } },
-  });
-});
+    coordinates: c,
+    id: String(i),
+    options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 28, markerHeight: 28, textName: String(i), textSize: 12, textDy: -26, textFill: '#fff' } },
+  })
+})
+
+watch(collisionOn, (checked) => {
+  const l = toValue(layer) as any
+  l?.getGeometries?.()?.forEach((m: any) => { m.options.collision = checked })
+  l?.getRenderer?.()?.draw?.()
+})
 </script>
