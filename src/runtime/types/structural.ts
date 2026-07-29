@@ -55,80 +55,244 @@ export interface MaptalksViewLike {
 export type MaptalksEventHandler = (event: unknown) => void;
 
 /**
- * maptalks `Map` 实例的结构化建模（仅声明本模块使用到的成员）。
+ * maptalks 地图实例的结构化建模（覆盖 Map 类全部公共方法）。
  *
- * @description 通过结构化类型描述地图实例，核心方法给出精确签名，索引签名提供逃生舱口，
- * 可调用任意原生方法（如 `map.getContainer()`）。
+ * @description 基于 maptalks.js 1.x API，声明 Map 类的完整公共方法签名。
+ * 索引签名提供逃生舱口，可调用任意原生方法。
  *
  * @example
- * const map: MaptalksMap | null = useMaptalks(target).map.value;
- * map?.setZoom(12);
+ * const map: MaptalksMap | null = useMaptalks(el).map.value;
+ * map?.setCenter([121, 31]).setZoom(14);
  */
 export interface MaptalksMap {
   /** 销毁地图并释放 WebGL 上下文 */
   remove(): void;
-  /** 添加图层 */
-  addLayer(layer: MaptalksLayer): MaptalksMap;
-  /** 移除图层（按实例或 id） */
-  removeLayer(layer: MaptalksLayer | string): MaptalksMap;
-  /** 按指定 ID 顺序重排图层（数组从左到右 = 从底到顶） */
-  sortLayers(layerIds: string[]): MaptalksMap;
-  /** 读取当前中心坐标 */
+  /** 是否加载完成 */
+  isLoaded(): boolean;
+  /** 是否已销毁 */
+  isRemoved(): boolean;
+  /** 是否正在平移 */
+  isMoving(): boolean;
+  /** 是否正在缩放 */
+  isZooming(): boolean;
+  /** 是否正在交互 */
+  isInteracting(): boolean;
+  /** 是否正在动画 */
+  isAnimating(): boolean;
+  /** 容器是否离屏 */
+  isOffscreen(): boolean;
+  /** 获取容器 DOM 元素 */
+  getContainer(): HTMLElement | null;
+  /** 获取像素尺寸 */
+  getSize(): Record<string, number>;
+  /** 获取容器像素范围 */
+  getContainerExtent(): unknown;
+  /** 检查尺寸变化 */
+  checkSize(): void;
+  /** 获取地理范围 */
+  getExtent(): unknown;
+  /** 获取空间参考 */
+  getSpatialReference(): Record<string, unknown>;
+  /** 设置空间参考 */
+  setSpatialReference(sr: Record<string, unknown>): this;
+  /** 获取投影对象 */
+  getProjection(): Record<string, unknown>;
+  /** 获取全图范围 */
+  getFullExtent(): unknown;
+  /** 获取投影范围 */
+  getProjExtent(): unknown;
+  /** getProjExtent 别名 */
+  getPrjExtent(): unknown;
+  /** 获取当前中心坐标 */
   getCenter(): MaptalksCoordinate;
   /** 设置中心坐标 */
-  setCenter(center: [number, number]): MaptalksMap;
-  /** 读取当前缩放级别 */
+  setCenter(center: [number, number] | Record<string, number>, padding?: Record<string, number>): this;
+  /** 获取当前缩放级别 */
   getZoom(): number;
   /** 设置缩放级别 */
-  setZoom(zoom: number): MaptalksMap;
-  /** 读取当前俯仰角 */
+  setZoom(zoom: number, options?: Record<string, unknown>): this;
+  /** 获取最大缩放级别 */
+  getMaxZoom(): number;
+  /** 设置最大缩放级别 */
+  setMaxZoom(maxZoom: number): this;
+  /** 获取最小缩放级别 */
+  getMinZoom(): number;
+  /** 设置最小缩放级别 */
+  setMinZoom(minZoom: number): this;
+  /** 获取最大原生缩放级别 */
+  getMaxNativeZoom(): number;
+  /** 同时设置中心和缩放 */
+  setCenterAndZoom(center: unknown, zoom: number): this;
+  /** 计算适配 extent 的缩放级别 */
+  getFitZoom(extent: unknown, isFraction?: boolean, padding?: Record<string, number>): number;
+  /** 按比例计算缩放 */
+  getZoomForScale(scale: number, fromZoom: number, isFraction?: boolean): number;
+  /** 获取完整视图（center/zoom/pitch/bearing） */
+  getView(): Record<string, unknown>;
+  /** 设置完整视图 */
+  setView(view: Record<string, unknown>): this;
+  /** 读取分辨率 */
+  getResolution(zoom?: number): number;
+  /** 读取比例尺 */
+  getScale(zoom?: number): number;
+  /** GL 分辨率 */
+  getGLRes(): number;
+  /** GL 缩放 */
+  getGLScale(zoom?: number): number;
+  /** 放大一级 */
+  zoomIn(): this;
+  /** 缩小一级 */
+  zoomOut(): this;
+  /** 获取俯仰角 */
   getPitch(): number;
   /** 设置俯仰角 */
-  setPitch(pitch: number): MaptalksMap;
-  /** 读取当前方位角 */
+  setPitch(pitch: number): this;
+  /** 获取方位角 */
   getBearing(): number;
   /** 设置方位角 */
-  setBearing(bearing: number): MaptalksMap;
+  setBearing(bearing: number): this;
+  /** 获取视场角 */
+  getFov(): number;
+  /** 设置视场角 */
+  setFov(fov: number): this;
+  /** 设置相机运动 */
+  setCameraMovements(opts: Record<string, unknown>): this;
+  /** 设置相机朝向 */
+  setCameraOrientation(opts: Record<string, unknown>): this;
+  /** 设置相机位置 */
+  setCameraPosition(opts: Record<string, unknown>): this;
+  /** 添加图层 */
+  addLayer(layer: MaptalksLayer | MaptalksLayer[]): this;
+  /** 移除图层（按实例或 id） */
+  removeLayer(layer: MaptalksLayer | string): this;
+  /** 按指定 ID 顺序重排图层 */
+  sortLayers(layerIds: string[]): this;
+  /** 按 ID 获取图层 */
+  getLayer(id: string | number): MaptalksLayer | null;
+  /** 获取全部图层（可过滤） */
+  getLayers(filter?: (layer: MaptalksLayer) => boolean): MaptalksLayer[];
+  /** 获取底图 */
+  getBaseLayer(): MaptalksLayer | null;
+  /** 设置底图 */
+  setBaseLayer(layer: MaptalksLayer): this;
+  /** 移除底图 */
+  removeBaseLayer(): this;
   /** 带动画过渡到目标视图 */
   animateTo(view: MaptalksViewLike, options?: Record<string, unknown>): unknown;
   /** 飞行过渡到目标视图 */
   flyTo(view: MaptalksViewLike, options?: Record<string, unknown>): unknown;
   /** 适配范围 */
   fitExtent(extent: unknown, zoomOffset?: number, options?: Record<string, unknown>): unknown;
-  /** 绑定事件 */
-  on(eventTypes: string, handler: MaptalksEventHandler): MaptalksMap;
-  /** 解绑事件 */
-  off(eventTypes: string, handler: MaptalksEventHandler): MaptalksMap;
   /** 平移到目标坐标 */
-  panTo(
-    coord: [number, number],
-    options?: Record<string, unknown>,
-  ): MaptalksMap;
+  panTo(coord: [number, number] | Record<string, number>, options?: Record<string, unknown>): this;
   /** 按像素偏移平移 */
-  panBy(
-    offset: [number, number] | Record<string, unknown>,
-    options?: Record<string, unknown>,
-  ): MaptalksMap;
-  /** 读取当前可视范围 Extent */
-  getExtent(): unknown;
-  /** 读取分辨率，可指定 zoom */
-  getResolution(zoom?: number): number;
-  /** 读取比例尺，可指定 zoom */
-  getScale(zoom?: number): number;
-  /** 设置最大可视范围，传 null 解除限制 */
-  setMaxExtent(extent: unknown | null): MaptalksMap;
-  /** 设置最小缩放级别 */
-  setMinZoom(zoom: number): MaptalksMap;
-  /** 设置最大缩放级别 */
-  setMaxZoom(zoom: number): MaptalksMap;
-  /** 导出为 dataURL */
+  panBy(offset: [number, number] | Record<string, unknown>, options?: Record<string, unknown>): this;
+  /** 坐标→容器像素点 */
+  coordToPoint(coordinate: unknown): unknown;
+  /** 指定 zoom 的坐标→像素点 */
+  coordToPointAtRes(coordinate: unknown, zoom: number): unknown;
+  /** 容器像素点→坐标 */
+  pointToCoord(point: unknown): unknown;
+  /** 指定 zoom 的像素点→坐标 */
+  pointAtResToCoord(point: unknown, zoom: number): unknown;
+  /** 坐标→视口点 */
+  coordToViewPoint(coordinate: unknown): unknown;
+  /** 视口点→坐标 */
+  viewPointToCoord(point: unknown): unknown;
+  /** 坐标→容器点（别名） */
+  coordToContainerPoint(coordinate: unknown): unknown;
+  /** 容器点→坐标（别名） */
+  containerPointToCoord(point: unknown): unknown;
+  /** 批量坐标→容器点 */
+  coordinatesToContainerPoints(coordinates: unknown[]): unknown[];
+  /** 指定 zoom 批量坐标→容器点 */
+  coordinatesToContainerPointsAtRes(coordinates: unknown[], zoom: number): unknown[];
+  /** 容器点→视口点 */
+  containerPointToViewPoint(point: unknown): unknown;
+  /** 视口点→容器点 */
+  viewPointToContainerPoint(point: unknown): unknown;
+  /** 容器范围→地理范围 */
+  containerToExtent(extent: unknown): unknown;
+  /** 距离→屏幕像素 */
+  distanceToPixel(distance: number, zoom?: number): number;
+  /** 屏幕像素→距离 */
+  pixelToDistance(pixel: number, zoom?: number): number;
+  /** 距离→容器点距 */
+  distanceToPoint(distance: number, zoom?: number): number;
+  /** 容器点距→距离 */
+  pointToDistance(pixel: number, zoom?: number): number;
+  /** 指定 zoom 距离→点距 */
+  distanceToPointAtRes(distance: number, zoom: number): number;
+  /** 指定 zoom 点距→距离 */
+  pointAtResToDistance(pixel: number, zoom: number): number;
+  /** 高度→屏幕像素 */
+  altitudeToPoint(altitude: number, zoom?: number): number;
+  /** 偏移定位 */
+  locate(coordinate: unknown, dx: number, dy: number): unknown;
+  /** 点偏移定位 */
+  locateByPoint(coordinate: unknown, point: unknown): unknown;
+  /** 计算坐标串地理长度 */
+  computeLength(coordinates: unknown[]): number;
+  /** 计算几何地理长度 */
+  computeGeometryLength(geometry: unknown): number;
+  /** 计算几何地理面积 */
+  computeGeometryArea(geometry: unknown): number;
+  /** 获取最大范围限制 */
+  getMaxExtent(): Record<string, number> | null;
+  /** 设置最大范围限制 */
+  setMaxExtent(extent: unknown): this;
+  /** 添加控件 */
+  addControl(control: MaptalksControl): this;
+  /** 移除控件 */
+  removeControl(control: MaptalksControl): this;
+  /** 是否全屏 */
+  isFullScreen(): boolean;
+  /** 请求全屏 */
+  requestFullScreen(): this;
+  /** 取消全屏 */
+  cancelFullScreen(): this;
+  /** 获取视口历史 */
+  getViewHistory(): Array<Record<string, unknown>>;
+  /** 回退到前一视图 */
+  zoomToPreviousView(): this;
+  /** 前进到后一视图 */
+  zoomToNextView(): this;
+  /** 是否有前一视图 */
+  hasPreviousView(): boolean;
+  /** 是否有后一视图 */
+  hasNextView(): boolean;
+  /** 获取主面板 */
+  getMainPanel(): unknown;
+  /** 获取全部面板 */
+  getPanels(): unknown[];
+  /** 识别坐标处的要素 */
+  identify(coordinate: unknown, options?: Record<string, unknown>): unknown[];
+  /** 识别像素点处的要素 */
+  identifyAtPoint(point: unknown, options?: Record<string, unknown>): unknown[];
+  /** 导出截图 DataURL */
   toDataURL(options?: Record<string, unknown>): string;
-  /** 配置地图运行时选项（draggable/zoomable/dragPitch/dragRotate 等） */
-  config(conf: Record<string, unknown>): MaptalksMap;
-  /** 导出地图为 JSON */
-  toJSON(): unknown;
-  /** 从 JSON 恢复地图 */
-  fromJSON(json: unknown): MaptalksMap;
+  /** 序列化为 Profile JSON */
+  toJSON(options?: Record<string, unknown>): Record<string, unknown>;
+  /** 设置光标样式 */
+  setCursor(cursor: string): this;
+  /** 重置光标样式 */
+  resetCursor(): this;
+  /** 获取设备像素比 */
+  getDevicePixelRatio(): number;
+  /** 设置设备像素比 */
+  setDevicePixelRatio(ratio: number): this;
+  /** 平台偏移 */
+  offsetPlatform(): [number, number];
+  /** 获取视口点 */
+  getViewPoint(): unknown;
+  /** 获取 padding 像素尺寸 */
+  _getPaddingSize(options: Record<string, unknown>): Record<string, number> | null;
+  /** 内部分辨率批量坐标转容器点 */
+  _pointsAtResToContainerPoints(points: unknown[], zoom: number): unknown[];
+  /** 绑定事件 */
+  on(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 解绑事件 */
+  off(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
