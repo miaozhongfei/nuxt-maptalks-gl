@@ -1,55 +1,40 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
-      :center="[121.5057, 31.2453]"
-      :zoom="13"
+      :center="[121.4854, 31.2285]"
+      :zoom="14"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" @click="filterKind('a')">仅显示 a</UButton>
-      <UButton size="xs" @click="filterKind('b')">仅显示 b</UButton>
-      <UButton size="xs" color="green" @click="showAll">显示全部</UButton>
+      <UButton size="xs" color="primary" @click="() => filterGeos()">筛选 count >= 200</UButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const { layer } = useMaptalksVectorLayer(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => mc.value?.map ?? null)
 
-const markers: { coord: [number, number]; kind: string; color: string }[] = [
-  { coord: [121.4887, 31.2453], kind: 'a', color: '#2563eb' },
-  { coord: [121.5057, 31.2553], kind: 'a', color: '#2563eb' },
-  { coord: [121.5227, 31.2453], kind: 'a', color: '#2563eb' },
-  { coord: [121.4957, 31.2493], kind: 'b', color: '#dc2626' },
-  { coord: [121.5157, 31.2493], kind: 'b', color: '#dc2626' },
-  { coord: [121.5057, 31.2393], kind: 'b', color: '#dc2626' },
-];
-markers.forEach((m) => {
-  useMaptalksMarker(layer, {
-    coordinates: m.coord,
-    options: { symbol: { markerType: 'ellipse', markerFill: m.color, markerWidth: 14, markerHeight: 14 }, properties: { kind: m.kind } },
-  });
-});
+const { layer } = useMaptalksVectorLayer(map)
 
-function filterKind(kind: string) {
-  const vl = toValue(layer) as unknown as { getGeometries?: () => unknown[] } | null;
-  const geos = vl?.getGeometries?.() ?? [];
-  geos.forEach((g: {
-    setVisible?: (v: boolean) => void;
-    getProperties?: () => Record<string, unknown>;
-  }) => {
-    g.setVisible?.(g.getProperties?.()?.kind === kind);
-  });
-}
+const polyData = [
+  { id: 100, coords: [[121.4555, 31.2338], [121.4685, 31.2338], [121.4685, 31.2228], [121.4555, 31.2228]] as [number, number][] },
+  { id: 200, coords: [[121.4755, 31.2338], [121.4885, 31.2338], [121.4885, 31.2228], [121.4755, 31.2228]] as [number, number][] },
+  { id: 300, coords: [[121.4955, 31.2338], [121.5085, 31.2338], [121.5085, 31.2228], [121.4955, 31.2228]] as [number, number][] },
+]
 
-function showAll() {
-  const vl = toValue(layer) as unknown as { getGeometries?: () => unknown[] } | null;
-  const geos = vl?.getGeometries?.() ?? [];
-  geos.forEach((g: { setVisible?: (v: boolean) => void }) => g.setVisible?.(true));
+polyData.forEach((item) => {
+  useMaptalksPolygon(layer, {
+    coordinates: item.coords,
+    id: item.id,
+    options: { symbol: [{ polygonFill: '#747474', polygonOpacity: 0.5, lineColor: '#000', lineWidth: 2 }, { textName: '{count}', textSize: 40, textFill: '#fff' }], properties: { count: item.id } },
+  })
+})
+
+function filterGeos() {
+  ;(toValue(layer) as any)?.filter?.(['>=', 'count', 200])?.forEach((f: any) => f.updateSymbol([{ polygonFill: 'rgb(216,115,149)' }]))
 }
 </script>
