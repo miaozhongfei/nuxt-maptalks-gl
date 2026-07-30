@@ -5,6 +5,7 @@
 import type {
   MaptalksCircleGeometry,
   MaptalksControl,
+  MaptalksDrawTool,
   MaptalksEllipseGeometry,
   MaptalksGeometry,
   MaptalksGLTFLayer,
