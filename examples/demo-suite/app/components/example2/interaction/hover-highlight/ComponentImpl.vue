@@ -29,6 +29,6 @@ const normalSymbol = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth
 const hoverSymbol = { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 24, markerHeight: 24 };
 
 function onHover(i: number, v: boolean) {
-  points[i].hovered = v;
+  if (points[i]) points[i].hovered = v;
 }
 </script>
