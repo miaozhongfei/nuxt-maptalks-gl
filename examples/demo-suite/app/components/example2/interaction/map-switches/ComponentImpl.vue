@@ -31,7 +31,8 @@
 </template>
 
 <script setup lang="ts">
-const mc = ref<any>(null)
+// Vue template ref 会自动 unwrap defineExpose 的 shallowRef，所以 map 直接是 MaptalksMap 实例
+const mc = ref<{ map: MaptalksMap | null; isReady: boolean; error: MaptalksError | null } | null>(null)
 // draggable / zoomable 走组件 prop（声明式响应）
 const draggable = ref(true)
 const zoomable = ref(true)
