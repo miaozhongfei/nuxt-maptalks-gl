@@ -1,12 +1,9 @@
 ﻿import { onScopeDispose, ref, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
+import { MaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
 import type { MaptalksDrawTool, MaptalksMap, UseMaptalksDrawToolOpts, UseMaptalksDrawToolReturn } from '../types';
-import { createLogger } from '../utils/logger';
-
-/** 日志实例（单例） */
-const logger = createLogger('nuxt-maptalks-gl');
 
 /** bindDrawTool 维护的响应式状态集合 */
 interface DrawToolState {
@@ -34,16 +31,19 @@ async function createDrawTool(
   m: MaptalksMap,
   mode: string,
   options: Record<string, unknown> | undefined,
+  events: Record<string, (event: unknown) => void>,
   onResult: (geometry: unknown) => void,
-): Promise<MaptalksDrawTool | null> {
+): Promise<MaptalksDrawTool> {
   const mt = await loadMaptalks();
   const Ctor = mt.DrawTool;
   if (typeof Ctor !== 'function') {
-    logger.warn('当前 maptalks-gl 未导出 DrawTool，绘制功能不可用');
-    return null;
+    throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 DrawTool');
   }
   const tool = new Ctor({ mode, ...options });
   tool.addTo(m);
+  for (const [event, handler] of Object.entries(events)) {
+    tool.on(event, handler);
+  }
   tool.on('drawend', (event) => {
     onResult((event as { geometry?: unknown }).geometry ?? event);
   });
@@ -65,14 +65,14 @@ async function createDrawTool(
 function bindDrawTool(
   getMap: () => MaptalksMap | null,
   state: DrawToolState,
-  options: Record<string, unknown> | undefined,
+  options: () => Record<string, unknown> | undefined,
+  events: Record<string, (event: unknown) => void>,
 ): () => void {
   const setup = async (m: MaptalksMap) => {
     if (state.tool.value) return;
-    const dt = await createDrawTool(m, state.mode.value, options, (geo) => {
+    const dt = await createDrawTool(m, state.mode.value, options(), events, (geo) => {
       state.result.value = geo;
     });
-    if (!dt) return;
     if (state.enabled.value) dt.enable();
     else dt.disable();
     state.tool.value = dt;
@@ -127,9 +127,15 @@ export function useMaptalksDrawTool(
   const mode = ref(options.mode ?? 'Point');
   const result = shallowRef<unknown>(null);
 
-  const teardown = bindDrawTool(() => toValue(map), { tool, enabled, mode, result }, toValue(options.options));
-
-  onScopeDispose(teardown);
+  const drawOpts = () => toValue(options.options);
+  const events = options.events ?? {};
+  const teardown = bindDrawTool(
+    () => toValue(map),
+    { tool, enabled, mode, result },
+    drawOpts,
+    events,
+  );
+  if (options.autoDispose !== false) onScopeDispose(teardown);
 
   return {
     tool,
