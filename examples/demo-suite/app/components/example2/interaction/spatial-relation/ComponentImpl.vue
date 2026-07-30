@@ -25,21 +25,17 @@
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const pRef = ref<MaptalksPolygonExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 const rect = [[[121.49, 31.26], [121.52, 31.26], [121.52, 31.23], [121.49, 31.23], [121.49, 31.26]]] as [number, number][][]
 const insidePt = [121.50, 31.245] as [number, number]
 const outsidePt = [121.53, 31.26] as [number, number]
 const status = ref('点击地图')
 
-watch(
-  () => mc.value?.map,
-  (m) => {
-    if (!m) return
-    m.on('click', (e: unknown) => {
-      const ev = e as { containerPoint: { x: number; y: number } }
-      const inside = pRef.value?.geometry?.containsPoint(ev.containerPoint)
-      status.value = inside ? '内' : '外'
-    })
+useMaptalksEvents(map, {
+  click: (e: unknown) => {
+    const ev = e as { containerPoint: { x: number; y: number } }
+    const inside = pRef.value?.geometry?.containsPoint(ev.containerPoint)
+    status.value = inside ? '内' : '外'
   },
-  { once: true },
-)
+})
 </script>
