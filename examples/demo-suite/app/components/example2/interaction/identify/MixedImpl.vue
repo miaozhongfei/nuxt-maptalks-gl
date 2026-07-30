@@ -33,7 +33,7 @@ positions.forEach((coords, i) => {
     coordinates: coords,
     options: { symbol: normSymbol, properties: { name: String.fromCodePoint(65 + i) } },
   })
-  watch(() => toValue(geometry), (g) => { if (g) geos.push(g as unknown as MGeo) }, { once: true })
+  watch(() => toValue(geometry), (g) => { if (g) geos.push(g as unknown as MGeo) })
 })
 
 const selected = ref('无')
