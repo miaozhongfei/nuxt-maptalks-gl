@@ -13,7 +13,7 @@
         :coordinates="p.coords"
         :options="{ symbol: p.hovered ? hoverSymbol : normalSymbol }"
         @mouseenter="onHover(i, true)"
-        @mouseleave="onHover(i, false)"
+        @mouseout="onHover(i, false)"
       />
     </MaptalksVectorLayer>
   </MaptalksMap>

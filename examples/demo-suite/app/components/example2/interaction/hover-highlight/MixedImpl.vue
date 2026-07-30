@@ -20,14 +20,13 @@ const { layer } = useMaptalksVectorLayer(map)
 const normalSymbol = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 16, markerHeight: 16 }
 const hoverSymbol = { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 24, markerHeight: 24 }
 
-useMaptalksMarker(layer, { coordinates: [121.495, 31.248], options: { symbol: normalSymbol } })
-useMaptalksMarker(layer, { coordinates: [121.5057, 31.2453], options: { symbol: normalSymbol } })
-useMaptalksMarker(layer, { coordinates: [121.515, 31.242], options: { symbol: normalSymbol } })
-
 type Geo = { setSymbol: (s: Record<string, unknown>) => void }
-
-useMaptalksEvents(map, {
+const hoverEvents = {
   mouseenter: (e: unknown) => { (e as { target?: Geo }).target?.setSymbol?.(hoverSymbol) },
   mouseout: (e: unknown) => { (e as { target?: Geo }).target?.setSymbol?.(normalSymbol) },
-})
+}
+
+useMaptalksMarker(layer, { coordinates: [121.495, 31.248], options: { symbol: normalSymbol }, events: hoverEvents })
+useMaptalksMarker(layer, { coordinates: [121.5057, 31.2453], options: { symbol: normalSymbol }, events: hoverEvents })
+useMaptalksMarker(layer, { coordinates: [121.515, 31.242], options: { symbol: normalSymbol }, events: hoverEvents })
 </script>
