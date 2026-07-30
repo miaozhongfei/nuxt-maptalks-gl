@@ -37,6 +37,6 @@ const selected = ref('无')
 
 function onSelect(i: number) {
   points.forEach((p, idx) => { p.highlighted = idx === i })
-  selected.value = points[i].props.name
+  selected.value = points[i]?.props.name ?? '?'
 }
 </script>
