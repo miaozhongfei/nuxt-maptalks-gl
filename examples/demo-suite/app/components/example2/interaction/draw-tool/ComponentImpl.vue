@@ -7,12 +7,12 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     >
-      <MaptalksDrawTool ref="dt" mode="Point" />
+      <MaptalksDrawTool ref="dt" />
     </MaptalksMap>
     <div class="flex items-center gap-2 mt-3 flex-wrap">
       <UButton
         v-for="m in modes" :key="m" size="xs"
-        :variant="currentMode === m ? 'solid' : 'outline'"
+        :variant="dt?.mode === m ? 'solid' : 'outline'"
         @click="switchMode(m)"
       >{{ m }}</UButton>
       <UDivider orientation="vertical" />
@@ -25,10 +25,8 @@
 <script setup lang="ts">
 const dt = ref<any>(null)
 const modes = ['Point', 'LineString', 'Polygon', 'Circle', 'Rectangle'] as const
-const currentMode = ref('Point')
 
 function switchMode(m: string) {
-  currentMode.value = m
   dt.value?.setMode(m)
   dt.value?.enable()
 }
