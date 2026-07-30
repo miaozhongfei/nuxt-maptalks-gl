@@ -127,6 +127,8 @@ export type {
   UseMaptalksSyncOpts,
   UseMaptalksSyncReturn,
   UseMaptalksTextBoxOpts,
+  UseMaptalksDrawToolOpts,
+  UseMaptalksDrawToolReturn,
   UseMaptalksTileLayerOpts,
   UseMaptalksToolOpts,
   UseMaptalksToolReturn,

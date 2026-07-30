@@ -10,6 +10,7 @@ import type { ComputedRef, MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
 import type {
   MaptalksCircleOptions,
+  MaptalksDrawToolOptions,
   MaptalksEllipseOptions,
   MaptalksGLTFLayerOptions,
   MaptalksImageLayerOptions,
@@ -37,6 +38,7 @@ import type {
 import type {
   MaptalksControl,
   MaptalksCoordinate,
+  MaptalksDrawTool,
   MaptalksEventHandler,
   MaptalksGeometry,
   MaptalksLayer,
@@ -933,6 +935,49 @@ export interface UseMaptalksToolOpts<TNative = Record<string, unknown>> {
 export interface UseMaptalksToolReturn {
   /** 工具实例（创建前为 null） */
   tool: ShallowRef<MaptalksMapTool | null>;
+  /** 命令式移除并销毁工具 */
+  remove: () => void;
+}
+
+// ───────────────────────────────── UseMaptalksDrawTool ─────────────────────────────────
+
+/**
+ * `useMaptalksDrawTool` 的可选项。
+ *
+ * @description extends `UseMaptalksToolOpts`，增加 `mode` 初始绘制模式。支持 Point / LineString / Polygon / Circle / Rectangle。
+ *
+ * @example
+ * useMaptalksDrawTool(map, { mode: 'Polygon', options: { symbol: { lineColor: '#f00' } } });
+ */
+export interface UseMaptalksDrawToolOpts extends UseMaptalksToolOpts<MaptalksDrawToolOptions> {
+  /** 初始绘制模式，默认 'Point' */
+  mode?: string;
+}
+
+/**
+ * `useMaptalksDrawTool` 的返回值。
+ *
+ * @description 提供绘制工具的完整生命周期 API：`tool`（实例引用）、`enabled`/`mode`（双向 ref）、
+ * `result`（绘制结果）、`enable`/`disable`/`setMode` 命令式方法，以及 `remove` 销毁方法。作用域销毁时自动 dispose。
+ *
+ * @example
+ * const { enabled, mode, result, enable, setMode } = useMaptalksDrawTool(map, { mode: 'Polygon' });
+ */
+export interface UseMaptalksDrawToolReturn {
+  /** DrawTool 实例（创建前为 null） */
+  tool: ShallowRef<MaptalksDrawTool | null>;
+  /** 是否处于绘制启用状态（双向，写入即生效） */
+  enabled: Ref<boolean>;
+  /** 当前绘制模式（双向，写入即切换） */
+  mode: Ref<string>;
+  /** 最近一次绘制结果（drawend 事件的 geometry） */
+  result: ShallowRef<unknown>;
+  /** 启用绘制 */
+  enable: () => void;
+  /** 关闭绘制 */
+  disable: () => void;
+  /** 切换绘制模式 */
+  setMode: (mode: string) => void;
   /** 命令式移除并销毁工具 */
   remove: () => void;
 }

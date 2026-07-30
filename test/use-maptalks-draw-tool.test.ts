@@ -2,8 +2,7 @@
 import { effectScope, nextTick, shallowRef } from 'vue';
 
 import { useMaptalksDrawTool } from '../src/runtime/composables/useMaptalksDrawTool';
-import type { UseMaptalksDrawToolOpts } from '../src/runtime/composables/useMaptalksDrawTool';
-import type { MaptalksMap } from '../src/runtime/types';
+import type { MaptalksMap, UseMaptalksDrawToolOpts } from '../src/runtime/types';
 
 // 假命名空间：DrawTool 构造器返回带各方法 spy 的实例
 const { mt } = vi.hoisted(() => ({

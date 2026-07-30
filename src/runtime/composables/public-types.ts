@@ -108,6 +108,7 @@ export type {
 
   // ── Composable Options ──
   UseMaptalksCircleOpts,
+  UseMaptalksDrawToolOpts,
   UseMaptalksEllipseOpts,
   UseMaptalksExportOpts,
   UseMaptalksGeoJSONOpts,
@@ -139,6 +140,7 @@ export type {
   // ── Composable Returns ──
   UseMaptalksCameraReturn,
   UseMaptalksControlReturn,
+  UseMaptalksDrawToolReturn,
   UseMaptalksExportReturn,
   UseMaptalksGeoJSONReturn,
   UseMaptalksGeometryReturn,
