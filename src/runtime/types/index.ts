@@ -53,6 +53,7 @@ export type {
   MaptalksAreaToolOptions,
   MaptalksCircleOptions,
   MaptalksDistanceToolOptions,
+  MaptalksDrawToolOptions,
   MaptalksEllipseOptions,
   MaptalksGeometryBaseOptions,
   MaptalksGLTFLayerOptions,

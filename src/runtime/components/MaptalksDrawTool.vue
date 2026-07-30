@@ -13,30 +13,33 @@
  * <MaptalksDrawTool ref="dt" mode="Polygon" @drawend="(e) => result = e" />
  * ```
  */
-import { inject, watch } from 'vue'
+import { inject } from 'vue'
 
 import { useMaptalksDrawTool } from '../composables/useMaptalksDrawTool'
 import { MAP_KEY } from '../core/map-context'
+import type { MaptalksDrawToolOptions, MaptalksEventHandler } from '../types'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** 初始绘制模式，默认 'Point' */
   mode?: string
-  /** 透传给 DrawTool 构造器的额外选项 */
-  options?: Record<string, unknown>
-}>()
+  /** 透传给 DrawTool 构造器的选项 */
+  options?: MaptalksDrawToolOptions
+  /** 组件销毁时自动移除工具，默认 true */
+  autoDispose?: boolean
+  /** 原生事件名 → 处理器映射 */
+  events?: Record<string, MaptalksEventHandler>
+}>(), { mode: 'Point', options: () => ({}), autoDispose: true })
 
 const emit = defineEmits<{ drawend: [geometry: unknown] }>()
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksDrawTool 必须在 MaptalksMap 内使用')
 
-const { tool, enabled, mode: currentMode, result, enable, disable, setMode } = useMaptalksDrawTool(map, {
-  mode: props.mode ?? 'Point',
-  options: props.options,
+const { tool, enabled, mode, enable, disable, setMode, remove } = useMaptalksDrawTool(map, {
+  mode: props.mode,
+  options: () => props.options,
+  autoDispose: props.autoDispose,
+  events: { ...props.events, drawend: (e) => emit('drawend', e) },
 })
-
-watch(result, (geo) => { if (geo) emit('drawend', geo) })
-
-/** 暴露 tool 实例与控制方法，供 template ref 访问 */
-defineExpose({ tool, enabled, mode: currentMode, enable, disable, setMode })
+defineExpose({ tool, enabled, mode, enable, disable, setMode, remove })
 </script>
