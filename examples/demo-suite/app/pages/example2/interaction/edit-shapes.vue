@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="Rectangle/Circle/Ellipse 编辑模式切换，通过 startEdit()/endEdit() 控制（对应官网 8.10）。"
+    description="Rectangle/Circle/Ellipse 几何编辑：startEdit()/endEdit() 切换控制点拖拽模式（对应官网 8.10）。"
     :tabs="tabs"
   />
 </template>

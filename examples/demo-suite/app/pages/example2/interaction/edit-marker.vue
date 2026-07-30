@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="editable: true 使 Marker 进入编辑模式，通过 startEdit()/endEdit() 切换（对应官网 8.7）。"
+    description="Marker 几何编辑：startEdit()/endEdit() 切换控制点拖拽模式（对应官网 8.7）。"
     :tabs="tabs"
   />
 </template>

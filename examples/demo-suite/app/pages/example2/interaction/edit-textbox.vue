@@ -1,16 +1,16 @@
 <template>
   <Example2DemoShell
-    description="editable: true 使 TextBox 进入编辑模式，通过 startEdit()/endEdit() 切换（对应官网 8.11）。"
+    description="TextBox 几何编辑：startEdit()/endEdit() 切换控制点调整宽高模式（对应官网 8.11）。"
     :tabs="tabs"
   />
 </template>
 
 <script setup lang="ts">
-import type { DemoTab } from '~/data/example2-menu'
-import ComponentImpl from '~/components/example2/interaction/edit-textbox/ComponentImpl.vue'
-import ComposableImpl from '~/components/example2/interaction/edit-textbox/ComposableImpl.vue'
-import EscapeImpl from '~/components/example2/interaction/edit-textbox/EscapeImpl.vue'
-import MixedImpl from '~/components/example2/interaction/edit-textbox/MixedImpl.vue'
+import ComponentImpl from '~/components/example2/interaction/edit-textbox/ComponentImpl.vue';
+import ComposableImpl from '~/components/example2/interaction/edit-textbox/ComposableImpl.vue';
+import EscapeImpl from '~/components/example2/interaction/edit-textbox/EscapeImpl.vue';
+import MixedImpl from '~/components/example2/interaction/edit-textbox/MixedImpl.vue';
+import type { DemoTab } from '~/data/example2-menu';
 
 const tabs: DemoTab[] = [
   { key: 'component', label: '组件', comp: ComponentImpl },

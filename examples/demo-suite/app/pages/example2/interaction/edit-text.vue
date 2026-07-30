@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="Label 内联文字编辑，通过 startEditText()/endEditText() 切换（对应官网 8.12）。"
+    description="Label 内联文字编辑：startEditText()/endEditText() 切换文本编辑模式（对应官网 8.12）。"
     :tabs="tabs"
   />
 </template>
