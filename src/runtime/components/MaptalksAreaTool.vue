@@ -17,14 +17,16 @@ import { inject } from 'vue'
 
 import { useMaptalksAreaTool } from '../composables/useMaptalksAreaTool'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksAreaToolOptions } from '../types'
+import type { MaptalksAreaToolOptions, MaptalksEventHandler } from '../types'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** 面积测量工具配置（symbol 样式等） */
   options?: MaptalksAreaToolOptions
+  /** 组件销毁时自动移除工具，默认 true */
+  autoDispose?: boolean
   /** 原生事件名 → 处理器映射 */
-  events?: Record<string, (event: unknown) => void>
-}>()
+  events?: Record<string, MaptalksEventHandler>
+}>(), { options: () => ({}), autoDispose: true })
 
 const emit = defineEmits<{
   measure: [event: unknown]
@@ -34,18 +36,10 @@ const emit = defineEmits<{
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksAreaTool 必须在 MaptalksMap 内使用')
 
-const allEvents: Record<string, (event: unknown) => void> = { ...props.events }
-const origMeasure = allEvents['measure']
-const origClick = allEvents['click']
-allEvents['measure'] = (e: unknown) => {
-  origMeasure?.(e)
-  emit('measure', e)
-}
-allEvents['click'] = (e: unknown) => {
-  origClick?.(e)
-  emit('click', e)
-}
-
-const { tool, remove } = useMaptalksAreaTool(map, { options: () => props.options, events: allEvents })
+const { tool, remove } = useMaptalksAreaTool(map, {
+  options: () => props.options,
+  autoDispose: props.autoDispose,
+  events: { ...props.events, measure: (e) => emit('measure', e), click: (e) => emit('click', e) },
+})
 defineExpose({ tool, remove })
 </script>
