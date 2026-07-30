@@ -1,6 +1,6 @@
 <template>
   <MaptalksMap
-    ref="mapCmp"
+    ref="mc"
     :center="[121.5057, 31.2453]"
     :zoom="13"
     base-layer="osm"
@@ -10,7 +10,8 @@
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-useMaptalksAreaTool(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
+useMaptalksAreaTool(map)
 </script>
