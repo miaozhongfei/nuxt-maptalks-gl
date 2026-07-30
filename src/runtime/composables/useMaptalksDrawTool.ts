@@ -16,13 +16,14 @@ interface DrawToolState {
 /**
  * 创建 DrawTool、绑定到地图并接入 drawend 结果回调。
  *
- * @description 抽出创建核心：动态加载命名空间、检测 DrawTool 可用性、addTo(map) 并监听 drawend。
- * 当前 maptalks-gl 未导出 DrawTool 时告警并返回 null。
+ * @description 抽出创建核心：动态加载命名空间、检测 DrawTool 可用性、addTo(map) 并绑定事件收拢 drawend。
+ * 当前 maptalks-gl 未导出 DrawTool 时抛出 MaptalksError。
  * @param {MaptalksMap} m - 已就绪的地图实例
  * @param {string} mode - 初始绘制模式
  * @param {Record<string, unknown> | undefined} options - 透传给 DrawTool 的额外选项
+ * @param {Record<string, (event: unknown) => void>} events - 事件名 → 处理器映射
  * @param {(geometry: unknown) => void} onResult - drawend 结果回调
- * @returns {Promise<MaptalksDrawTool | null>} DrawTool 实例，或不可用时 null
+ * @returns {Promise<MaptalksDrawTool>} DrawTool 实例
  *
  * @example
  * const tool = await createDrawTool(map, 'Polygon', undefined, (geo) => (result.value = geo));
@@ -56,7 +57,7 @@ async function createDrawTool(
  * @description 监听地图就绪以创建工具；`mode`/`enabled` 变化时同步到工具；销毁时停止 watcher 并 remove 工具。
  * @param {() => MaptalksMap | null} getMap - 取当前地图实例
  * @param {DrawToolState} state - tool/enabled/mode/result 状态
- * @param {Record<string, unknown> | undefined} options - DrawTool 构造选项
+ * @param {() => Record<string, unknown> | undefined} options - DrawTool 构造选项 getter
  * @returns {() => void} 解除联动并销毁工具
  *
  * @example
@@ -108,7 +109,7 @@ function bindDrawTool(
  *
  * @description 地图就绪后创建 DrawTool 并 addTo(map)；`enabled`/`mode` 为双向 ref，写入即生效；
  * 监听 `drawend` 把结果写入 `result`；作用域销毁时 disable + remove。初始不自动启用绘制。
- * 若当前 maptalks-gl 未导出 DrawTool，则告警并保持 tool 为 null。
+ * 若当前 maptalks-gl 未导出 DrawTool，则抛出 MaptalksError。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksDrawToolOpts} [options] - 初始模式与 DrawTool 选项
  * @returns {UseMaptalksDrawToolReturn} `{ tool, enabled, mode, result, enable, disable, setMode }`
