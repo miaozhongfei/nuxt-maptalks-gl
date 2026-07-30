@@ -1043,6 +1043,16 @@ export type MaptalksDistanceToolOptions = Record<string, unknown>
 export type MaptalksAreaToolOptions = Record<string, unknown>
 
 /**
+ * DrawTool 构造选项的用户输入类型。
+ *
+ * @description `Record<string, unknown>`。后续可按 maptalks-gl API 补全原生字段（symbol / vertexSymbol / labelOptions 等）。
+ *
+ * @example
+ * const opts: MaptalksDrawToolOptions = { symbol: { lineColor: '#ff0000' }, language: 'zh' };
+ */
+export type MaptalksDrawToolOptions = Record<string, unknown>
+
+/**
  * 几何构造选项（手写展平基类，IDE 可补全全部原生字段）。
  *
  * @description 将所有几何对象共用的 Spec 字段（中文注释）+ Native 字段平铺合并。
