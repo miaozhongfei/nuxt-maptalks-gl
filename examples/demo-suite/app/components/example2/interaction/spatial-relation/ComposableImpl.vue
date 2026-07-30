@@ -16,17 +16,12 @@ useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
 const rect = [[[121.49, 31.26], [121.52, 31.26], [121.52, 31.23], [121.49, 31.23], [121.49, 31.26]]] as [number, number][][]
-
-// 逃生舱：工厂模式创建 VectorLayer + Polygon + 两个 Marker
-const { geometry: polygon } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Polygon(rect, { symbol: { lineColor: '#2563eb', lineWidth: 2, polygonFill: '#3b82f6', polygonOpacity: 0.2 } }),
-)
-useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker([121.50, 31.245], { symbol: { markerType: 'ellipse', markerFill: '#22c55e', markerWidth: 14, markerHeight: 14 } }),
-)
-useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker([121.53, 31.26], { symbol: { markerType: 'ellipse', markerFill: '#ef4444', markerWidth: 14, markerHeight: 14 } }),
-)
+const { geometry: polygon } = useMaptalksPolygon(layer, {
+  coordinates: rect,
+  options: { symbol: { lineColor: '#2563eb', lineWidth: 2, polygonFill: '#3b82f6', polygonOpacity: 0.2 } },
+})
+useMaptalksMarker(layer, { coordinates: [121.50, 31.245], options: { symbol: { markerType: 'ellipse', markerFill: '#22c55e', markerWidth: 14, markerHeight: 14 } } })
+useMaptalksMarker(layer, { coordinates: [121.53, 31.26], options: { symbol: { markerType: 'ellipse', markerFill: '#ef4444', markerWidth: 14, markerHeight: 14 } } })
 
 const status = ref('点击地图')
 
