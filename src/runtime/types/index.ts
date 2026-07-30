@@ -141,8 +141,10 @@ export type {
 } from './composables';
 
 export type {
+  MaptalksAreaToolExposed,
   MaptalksCircleExposed,
   MaptalksControlExposed,
+  MaptalksDistanceToolExposed,
   MaptalksDrawToolExposed,
   MaptalksEllipseExposed,
   MaptalksGeoJSONExposed,

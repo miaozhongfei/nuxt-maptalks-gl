@@ -77,8 +77,10 @@ export type {
   MaptalksWMSLayerOptions,
 
   // ── Component Exposed ──
+  MaptalksAreaToolExposed,
   MaptalksCircleExposed,
   MaptalksControlExposed,
+  MaptalksDistanceToolExposed,
   MaptalksDrawToolExposed,
   MaptalksEllipseExposed,
   MaptalksGeoJSONExposed,

@@ -223,6 +223,12 @@ export interface MaptalksToolExposed {
   remove: () => void;
 }
 
+/** DistanceTool 组件 defineExpose 暴露的类型 */
+export type MaptalksDistanceToolExposed = MaptalksToolExposed;
+
+/** AreaTool 组件 defineExpose 暴露的类型 */
+export type MaptalksAreaToolExposed = MaptalksToolExposed;
+
 /**
  * 绘制工具组件 defineExpose 暴露的类型。
  *
