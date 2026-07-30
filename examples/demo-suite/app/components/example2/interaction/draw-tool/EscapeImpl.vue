@@ -1,57 +1,54 @@
 <template>
   <div>
-    <div
-      ref="el"
-      class="relative rounded border border-default overflow-hidden"
-      style="height: 480px"
-    />
-    <div class="flex items-center gap-3 mt-3 flex-wrap">
+    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <div class="flex items-center gap-2 mt-3 flex-wrap">
       <UButton
-        v-for="m in modes"
-        :key="m"
-        size="sm"
+        v-for="m in modes" :key="m" size="xs"
         :variant="mode === m ? 'solid' : 'outline'"
         @click="switchMode(m)"
-      >
-        {{ m }}
-      </UButton>
-      <UBadge variant="subtle">当前模式: {{ mode }}</UBadge>
+      >{{ m }}</UButton>
+      <UDivider orientation="vertical" />
+      <UButton size="xs" variant="outline" @click="disable">禁用</UButton>
+      <UButton size="xs" variant="outline" @click="enable">启用</UButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const modes = ['Point', 'LineString', 'Polygon', 'Circle', 'Rectangle'] as const;
-const mode = ref<string>('Point');
-let drawTool: unknown = null;
+const modes = ['Point', 'LineString', 'Polygon', 'Circle', 'Rectangle'] as const
+const mode = ref('Point')
 
-function switchMode(m: string) {
-  mode.value = m;
-  if (!toValue(map)) return;
-  void import('maptalks-gl').then((mt) => {
-    const DT = (mt as unknown as {
-      DrawTool: new (o: Record<string, unknown>) => { addTo: (m: unknown) => void; enable: () => void; setMode: (m: string) => void };
-    }).DrawTool;
-    if (drawTool) {
-      (drawTool as { setMode: (m: string) => void }).setMode(m);
-    } else {
-      drawTool = new DT({ mode: m });
-      (drawTool as { addTo: (m: unknown) => void }).addTo(toValue(map));
-    }
-    (drawTool as { enable: () => void }).enable();
-  });
-}
+let dt: { enable: () => void; disable: () => void; setMode: (m: string) => void } | null = null
+
+// 逃生舱：map 就绪后直调原生 maptalks.DrawTool
+type RawDrawTool = { enable: () => void; disable: () => void; setMode: (m: string) => void; addTo: (target: unknown) => void }
+type RawMt = { DrawTool?: new (opts?: Record<string, unknown>) => RawDrawTool }
 
 watch(
   () => toValue(map),
   (m) => {
-    if (!m) return;
-    switchMode('Point');
+    if (!m) return
+    import('maptalks-gl').then((mt) => {
+      const Ctor = (mt as RawMt).DrawTool
+      if (!Ctor) return
+      dt = new Ctor({ mode: mode.value })
+      dt.addTo(m)
+      dt.enable()
+    })
   },
   { once: true },
-);
+)
+
+function switchMode(m: string) {
+  mode.value = m
+  dt?.setMode(m)
+  dt?.enable()
+}
+
+function enable() { dt?.enable() }
+function disable() { dt?.disable() }
 </script>
