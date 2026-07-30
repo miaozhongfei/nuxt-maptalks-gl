@@ -35,13 +35,15 @@ const { layer } = useMaptalksLayer(map, (mt) => {
 const selected = ref('无')
 
 useMaptalksEvents(map, {
-  click: (e: { coordinate: { x: number; y: number } }) => {
+  click: (e: unknown) => {
+    const coord = (e as { coordinate: { x: number; y: number } })?.coordinate
+    if (!coord) return
     const l = toValue(layer) as unknown as { forEach: (cb: (g: MGeo) => void) => void } | null
     l?.forEach((g) => g.setSymbol(normSymbol))
     const m = toValue(map)
     const ly = toValue(layer)
     if (!m || !ly) return
-    m.identify({ coordinate: e.coordinate, layers: [ly] }, (hit: unknown[]) => {
+    m.identify({ coordinate: coord, layers: [ly] }, (hit: unknown[]) => {
       const result = (hit ?? []) as MGeo[]
       if (result.length === 0) { selected.value = '无'; return }
       result.forEach((g) => g.setSymbol(hlSymbol))

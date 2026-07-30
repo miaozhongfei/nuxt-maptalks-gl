@@ -39,12 +39,14 @@ positions.forEach((coords, i) => {
 const selected = ref('无')
 
 useMaptalksEvents(map, {
-  click: (e: { coordinate: { x: number; y: number } }) => {
+  click: (e: unknown) => {
     geos.forEach((g) => g.setSymbol(normSymbol))
+    const coord = (e as { coordinate: { x: number; y: number } })?.coordinate
+    if (!coord) return
     const m = toValue(map)
     const l = toValue(layer)
     if (!m || !l) return
-    m.identify({ coordinate: e.coordinate, layers: [l] }, (hit: unknown[]) => {
+    m.identify({ coordinate: coord, layers: [l] }, (hit: unknown[]) => {
       const result = (hit ?? []) as MGeo[]
       if (result.length === 0) { selected.value = '无'; return }
       result.forEach((g) => g.setSymbol(hlSymbol))
