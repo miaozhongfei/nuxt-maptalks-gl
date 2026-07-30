@@ -16,18 +16,25 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
-
-// 逃生舱：工厂模式创建 VectorLayer + 三种可编辑形状
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry: gCircle } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Circle([121.502, 31.248], 300, { editable: true, symbol: { lineColor: '#dc2626', lineWidth: 2, polygonFill: '#ef4444', polygonOpacity: 0.3 } }),
-)
-const { geometry: gEllipse } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Ellipse([121.51, 31.248], 400, 200, { editable: true, symbol: { lineColor: '#2563eb', lineWidth: 2, polygonFill: '#3b82f6', polygonOpacity: 0.3 } }),
-)
-const { geometry: gRect } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Rectangle([121.502, 31.24], 400, 300, { editable: true, symbol: { lineColor: '#22c55e', lineWidth: 2, polygonFill: '#4ade80', polygonOpacity: 0.3 } }),
-)
+
+const { geometry: gCircle } = useMaptalksCircle(layer, {
+  coordinates: [121.502, 31.248],
+  radius: 300,
+  options: { editable: true, symbol: { lineColor: '#dc2626', lineWidth: 2, polygonFill: '#ef4444', polygonOpacity: 0.3 } },
+})
+const { geometry: gEllipse } = useMaptalksEllipse(layer, {
+  coordinates: [121.51, 31.248],
+  width: 400,
+  height: 200,
+  options: { editable: true, symbol: { lineColor: '#2563eb', lineWidth: 2, polygonFill: '#3b82f6', polygonOpacity: 0.3 } },
+})
+const { geometry: gRect } = useMaptalksRectangle(layer, {
+  coordinates: [121.502, 31.24],
+  width: 400,
+  height: 300,
+  options: { editable: true, symbol: { lineColor: '#22c55e', lineWidth: 2, polygonFill: '#4ade80', polygonOpacity: 0.3 } },
+})
 
 function startEdit() {
   toValue(gCircle)?.startEdit?.()
