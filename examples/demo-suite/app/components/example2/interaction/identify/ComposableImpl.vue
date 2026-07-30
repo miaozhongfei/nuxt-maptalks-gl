@@ -28,7 +28,7 @@ const geos: MGeo[] = []
 positions.forEach((coords, i) => {
   const { geometry } = useMaptalksMarker(layer, {
     coordinates: coords,
-    options: { symbol: normSymbol, properties: { name: String.fromCharCode(65 + i) } },
+    options: { symbol: normSymbol, properties: { name: String.fromCodePoint(65 + i) } },
   })
   watch(() => toValue(geometry), (g) => { if (g) geos.push(g as unknown as MGeo) }, { once: true })
 })

@@ -27,7 +27,7 @@ type MGeo = { setSymbol: (s: Record<string, unknown>) => void; getProperties: ()
 const { layer } = useMaptalksLayer(map, (mt) => {
   const vl = new mt.VectorLayer('v')
   positions.forEach((coords, i) => {
-    vl.addGeometry(new mt.Marker(coords, { symbol: normSymbol, properties: { name: String.fromCharCode(65 + i) } }))
+    vl.addGeometry(new mt.Marker(coords, { symbol: normSymbol, properties: { name: String.fromCodePoint(65 + i) } }))
   })
   return vl
 })
