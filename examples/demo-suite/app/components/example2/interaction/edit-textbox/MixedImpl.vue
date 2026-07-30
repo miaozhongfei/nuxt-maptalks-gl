@@ -30,4 +30,7 @@ const { geometry } = useMaptalksTextBox(layer, {
 
 function startEdit() { toValue(geometry)?.startEdit?.() }
 function endEdit() { toValue(geometry)?.endEdit?.() }
+
+// geometry 就绪后自动进入编辑模式（匹配官网示例行为）
+watch(() => toValue(geometry), (g) => { if (g) g.startEdit?.() }, { once: true })
 </script>
