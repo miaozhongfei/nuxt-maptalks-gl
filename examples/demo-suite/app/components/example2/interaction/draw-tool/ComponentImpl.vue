@@ -23,7 +23,8 @@
 </template>
 
 <script setup lang="ts">
-const dt = ref<any>(null)
+// Vue template ref 自动 unwrap defineExpose 的 ref，所以 mode/enabled 直接是原始值
+const dt = ref<{ mode: string; setMode: (m: string) => void; enable: () => void; disable: () => void } | null>(null)
 const modes = ['Point', 'LineString', 'Polygon', 'Circle', 'Rectangle'] as const
 
 function switchMode(m: string) {

@@ -14,7 +14,7 @@ const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { toJSON, fromJSON } = useMaptalksSerialize(map)
-const savedJson = ref<any>(null)
+const savedJson = ref<Record<string, unknown> | null>(null)
 function saveJson() { savedJson.value = toJSON() }
 function restoreJson() { if (savedJson.value) fromJSON(savedJson.value) }
 </script>

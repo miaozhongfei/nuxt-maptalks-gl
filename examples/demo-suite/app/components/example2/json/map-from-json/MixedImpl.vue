@@ -13,7 +13,7 @@
 const mc = ref<{ map: any } | null>(null)
 const map = computed(() => mc.value?.map ?? null)
 const { toJSON, fromJSON } = useMaptalksSerialize(map)
-const savedJson = ref<any>(null)
+const savedJson = ref<Record<string, unknown> | null>(null)
 function saveJson() { savedJson.value = toJSON() }
 function restoreJson() { if (savedJson.value) fromJSON(savedJson.value) }
 </script>
