@@ -267,8 +267,8 @@ export interface MaptalksMap extends MaptalksClass {
   getMainPanel(): unknown;
   /** 获取全部面板 */
   getPanels(): unknown[];
-  /** 识别坐标处的要素 */
-  identify(coordinate: unknown, options?: Record<string, unknown>): unknown[];
+  /** 识别坐标处的要素（opts 包含 coordinate / layers / tolerance / count，callback 接收命中的几何数组） */
+  identify(opts: { coordinate?: unknown; layers?: MaptalksLayer[]; tolerance?: number; count?: number }, callback?: (geometries: unknown[]) => void): unknown[];
   /** 识别像素点处的要素 */
   identifyAtPoint(point: unknown, options?: Record<string, unknown>): unknown[];
   /** 导出截图 DataURL */

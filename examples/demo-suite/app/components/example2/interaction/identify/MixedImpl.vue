@@ -44,10 +44,11 @@ useMaptalksEvents(map, {
     const m = toValue(map)
     const l = toValue(layer)
     if (!m || !l) return
-    (m as any).identify({ coordinate: e.coordinate, layers: [l] }, (hit: MGeo[]) => {
-      if (!hit || hit.length === 0) { selected.value = '无'; return }
-      hit.forEach((g) => g.setSymbol(hlSymbol))
-      selected.value = hit[0]?.getProperties()?.name ?? '?'
+    m.identify({ coordinate: e.coordinate, layers: [l] }, (hit: unknown[]) => {
+      const result = (hit ?? []) as MGeo[]
+      if (result.length === 0) { selected.value = '无'; return }
+      result.forEach((g) => g.setSymbol(hlSymbol))
+      selected.value = result[0]?.getProperties()?.name ?? '?'
     })
   },
 })
