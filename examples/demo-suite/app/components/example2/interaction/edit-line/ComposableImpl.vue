@@ -16,15 +16,11 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-
-// 逃生舱：工厂模式创建 VectorLayer + 可编辑 LineString
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(
-    [[121.49, 31.23], [121.5057, 31.26], [121.52, 31.23]],
-    { editable: true, symbol: { lineColor: '#dc2626', lineWidth: 4 } },
-  ),
-)
+const { geometry } = useMaptalksLineString(layer, {
+  coordinates: [[121.49, 31.23], [121.5057, 31.26], [121.52, 31.23]],
+  options: { editable: true, symbol: { lineColor: '#dc2626', lineWidth: 4 } },
+})
 
 function startEdit() { toValue(geometry)?.startEdit?.() }
 function endEdit() { toValue(geometry)?.endEdit?.() }

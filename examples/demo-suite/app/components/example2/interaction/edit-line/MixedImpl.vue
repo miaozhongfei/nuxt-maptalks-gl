@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div
-      ref="el"
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
@@ -13,18 +16,14 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
-
-// 逃生舱：工厂模式创建 VectorLayer + 可编辑 LineString
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(
-    [[121.49, 31.23], [121.5057, 31.26], [121.52, 31.23]],
-    { editable: true, symbol: { lineColor: '#dc2626', lineWidth: 4 } },
-  ),
-)
+const { geometry } = useMaptalksLineString(layer, {
+  coordinates: [[121.49, 31.23], [121.5057, 31.26], [121.52, 31.23]],
+  options: { editable: true, symbol: { lineColor: '#dc2626', lineWidth: 4 } },
+})
 
 function startEdit() { toValue(geometry)?.startEdit?.() }
 function endEdit() { toValue(geometry)?.endEdit?.() }
