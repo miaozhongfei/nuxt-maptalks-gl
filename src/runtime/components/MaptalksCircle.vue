@@ -19,7 +19,7 @@ import { inject } from 'vue'
 
 import { useMaptalksCircle } from '../composables/presets/useMaptalksCircle'
 import { GEOMETRY_LAYER_KEY } from '../core/map-context'
-import type { MaptalksCircleOptions } from '../types'
+import type { MaptalksCircleOptions, MaptalksEventHandler } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -33,6 +33,8 @@ const props = withDefaults(
     visible?: boolean
     /** 透传给几何构造器的完整选项（symbol / properties / draggable 等所有原生字段） */
     options?: MaptalksCircleOptions
+    /** 原生事件名 → 处理器映射（自动 on/off） */
+    events?: Record<string, MaptalksEventHandler>
     /** 组件销毁时自动移除几何图形，默认 true */
     autoDispose?: boolean
   }>(),
@@ -56,6 +58,7 @@ const { geometry, show, hide, remove } = useMaptalksCircle(layer, {
   id: props.id,
   autoDispose: props.autoDispose,
   events: {
+    ...props.events,
     click: (e) => emit('click', e),
     dblclick: (e) => emit('dblclick', e),
     mouseenter: (e) => emit('mouseenter', e),
