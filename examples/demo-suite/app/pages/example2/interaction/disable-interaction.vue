@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="禁用地图的拖动/缩放等交互能力（对应官网 8.1）。"
+    description="七个交互选项全部 false 禁用地图拖拽/缩放/旋转/滚轮/触屏/双击（对应官网 8.1）。"
     :tabs="tabs"
   />
 </template>

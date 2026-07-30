@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="DistanceTool 测距工具（对应官网 8.3）。"
+    description="DistanceTool 测距——点击地图绘制线段测量距离（对应官网 8.3）。"
     :tabs="tabs"
   />
 </template>

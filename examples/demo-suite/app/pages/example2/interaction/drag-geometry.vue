@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="properties.draggable: true 使几何可拖拽（对应官网 8.6）。"
+    description="draggable: true 使 Marker/LineString/Polygon 可拖拽（对应官网 8.6）。"
     :tabs="tabs"
   />
 </template>

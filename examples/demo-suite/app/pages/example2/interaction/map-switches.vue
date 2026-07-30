@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="Switch 实时开关地图拖拽和缩放功能（对应官网 8.2）。"
+    description="USwitch 实时开关地图 5 项交互：拖拽/缩放/滚轮/触屏/双击（对应官网 8.2）。"
     :tabs="tabs"
   />
 </template>

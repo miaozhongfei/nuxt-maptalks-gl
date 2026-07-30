@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="useMaptalksDrawTool 绘制点/线/面/圆/矩形（对应官网 8.5）。"
+    description="DrawTool 绘制——5 模式按钮切换 Point/LineString/Polygon/Circle/Rectangle（对应官网 8.5）。"
     :tabs="tabs"
   />
 </template>

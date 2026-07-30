@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="AreaTool 测面工具（对应官网 8.4）。"
+    description="AreaTool 测面——点击地图绘制多边形测量面积（对应官网 8.4）。"
     :tabs="tabs"
   />
 </template>
