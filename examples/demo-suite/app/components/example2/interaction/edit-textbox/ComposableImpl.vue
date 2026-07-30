@@ -16,15 +16,14 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-
-// 逃生舱：工厂模式创建 VectorLayer + 可编辑 TextBox
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.TextBox('可编辑文本框', [121.5057, 31.2453], 200, 60, {
-    symbol: { textFaceName: 'sans-serif', textFill: '#1f2937', textSize: 16, boxFill: '#fef3c7', boxOpacity: 0.8 },
-    editable: true,
-  }),
-)
+const { geometry } = useMaptalksTextBox(layer, {
+  content: '可编辑文本框',
+  coordinates: [121.5057, 31.2453],
+  width: 200,
+  height: 60,
+  options: { editable: true, symbol: { textFaceName: 'sans-serif', textFill: '#1f2937', textSize: 16, boxFill: '#fef3c7', boxOpacity: 0.8 } },
+})
 
 function startEdit() { toValue(geometry)?.startEdit?.() }
 function endEdit() { toValue(geometry)?.endEdit?.() }
