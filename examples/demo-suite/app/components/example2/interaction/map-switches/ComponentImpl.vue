@@ -31,8 +31,7 @@
 </template>
 
 <script setup lang="ts">
-// Vue template ref 会自动 unwrap defineExpose 的 shallowRef，所以 map 直接是 MaptalksMap 实例
-const mc = ref<{ map: MaptalksMap | null; isReady: boolean; error: MaptalksError | null } | null>(null)
+const mc = ref<MaptalksMapExposed | null>(null)
 // draggable / zoomable 走组件 prop（声明式响应）
 const draggable = ref(true)
 const zoomable = ref(true)
@@ -42,6 +41,7 @@ const touchZoom = ref(true)
 const dblClick = ref(true)
 
 function toggle(key: 'scrollWheelZoom' | 'touchZoom' | 'doubleClickZoom', v: boolean) {
-  mc.value?.map?.config({ [key]: v })
+  // template ref 运行时已 unwrap，toValue() 处理 TS 类型中残留的 ShallowRef
+  toValue(mc.value?.map)?.config({ [key]: v })
 }
 </script>
