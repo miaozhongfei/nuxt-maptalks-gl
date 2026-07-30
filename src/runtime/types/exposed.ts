@@ -224,6 +224,33 @@ export interface MaptalksToolExposed {
 }
 
 /**
+ * 绘制工具组件 defineExpose 暴露的类型。
+ *
+ * @description 在 `MaptalksToolExposed` 基础上增加 mode（当前绘制模式）、enabled（启用状态）
+ * 以及 enable/disable/setMode 命令式控制方法。所有 Ref 字段已按 defineExpose 规则自动解包。
+ *
+ * @example
+ * const dt = ref<MaptalksDrawToolExposed | null>(null)
+ * dt.value?.setMode('Polygon'); dt.value?.enable();
+ */
+export interface MaptalksDrawToolExposed {
+  /** 工具原生实例（defineExpose 自动解包 ShallowRef） */
+  tool: MaptalksDrawTool | null;
+  /** 是否处于绘制启用状态 */
+  enabled: boolean;
+  /** 当前绘制模式 */
+  mode: string;
+  /** 启用绘制 */
+  enable: () => void;
+  /** 关闭绘制 */
+  disable: () => void;
+  /** 切换绘制模式 */
+  setMode: (mode: string) => void;
+  /** 移除并销毁工具 */
+  remove: () => void;
+}
+
+/**
  * GeoJSON 组件 defineExpose 暴露的类型。
  *
  * @example

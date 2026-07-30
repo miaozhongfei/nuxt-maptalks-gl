@@ -143,6 +143,7 @@ export type {
 export type {
   MaptalksCircleExposed,
   MaptalksControlExposed,
+  MaptalksDrawToolExposed,
   MaptalksEllipseExposed,
   MaptalksGeoJSONExposed,
   MaptalksGeometryExposed,

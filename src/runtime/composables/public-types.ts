@@ -79,6 +79,7 @@ export type {
   // ── Component Exposed ──
   MaptalksCircleExposed,
   MaptalksControlExposed,
+  MaptalksDrawToolExposed,
   MaptalksEllipseExposed,
   MaptalksGeoJSONExposed,
   MaptalksGeometryExposed,
