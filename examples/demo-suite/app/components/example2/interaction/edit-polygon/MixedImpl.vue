@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div
-      ref="el"
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
@@ -13,18 +16,14 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
-
-// 逃生舱：工厂模式创建 VectorLayer + 可编辑 Polygon
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Polygon(
-    [[[121.49, 31.255], [121.52, 31.255], [121.52, 31.238], [121.49, 31.238], [121.49, 31.255]]],
-    { editable: true, symbol: { lineColor: '#2563eb', lineWidth: 3, polygonFill: '#22c55e', polygonOpacity: 0.3 } },
-  ),
-)
+const { geometry } = useMaptalksPolygon(layer, {
+  coordinates: [[[121.49, 31.255], [121.52, 31.255], [121.52, 31.238], [121.49, 31.238], [121.49, 31.255]]],
+  options: { editable: true, symbol: { lineColor: '#2563eb', lineWidth: 3, polygonFill: '#22c55e', polygonOpacity: 0.3 } },
+})
 
 function startEdit() { toValue(geometry)?.startEdit?.() }
 function endEdit() { toValue(geometry)?.endEdit?.() }
