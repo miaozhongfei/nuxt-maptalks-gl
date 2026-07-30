@@ -18,16 +18,23 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 const { geometry } = useMaptalksTextBox(layer, {
-  content: '可编辑文本框',
+  content: '这是一个文本框，内容非常长',
   coordinates: [121.5057, 31.2453],
   width: 200,
-  height: 60,
-  options: { editable: true, symbol: { textFaceName: 'sans-serif', textFill: '#1f2937', textSize: 16, boxFill: '#fef3c7', boxOpacity: 0.8 } },
+  height: 90,
+  options: {
+    draggable: true,
+    textStyle: {
+      wrap: true,
+      padding: [12, 8],
+      verticalAlignment: 'top',
+      horizontalAlignment: 'right',
+      symbol: { textFaceName: 'monospace', textFill: '#34495e', textHaloFill: '#fff', textHaloRadius: 4, textSize: 18, textWeight: 'bold' },
+    },
+    boxSymbol: { markerType: 'square', markerFill: 'rgb(135,196,240)', markerFillOpacity: 0.9, markerLineColor: '#34495e', markerLineWidth: 1 },
+  },
 })
 
 function startEdit() { toValue(geometry)?.startEdit?.() }
 function endEdit() { toValue(geometry)?.endEdit?.() }
-
-// geometry 就绪后自动进入编辑模式（匹配官网示例行为）
-watch(() => toValue(geometry), (g) => { if (g) g.startEdit?.() }, { once: true })
 </script>
