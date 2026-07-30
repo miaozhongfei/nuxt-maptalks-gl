@@ -41,10 +41,11 @@ useMaptalksEvents(map, {
     const m = toValue(map)
     const ly = toValue(layer)
     if (!m || !ly) return
-    const hit = (m as any).identify({ coordinate: e.coordinate, layers: [ly] }) as MGeo[]
-    if (!hit || hit.length === 0) { selected.value = '无'; return }
-    hit.forEach((g) => g.setSymbol(hlSymbol))
-    selected.value = hit[0]?.getProperties()?.name ?? '?'
+    (m as any).identify({ coordinate: e.coordinate, layers: [ly] }, (hit: MGeo[]) => {
+      if (!hit || hit.length === 0) { selected.value = '无'; return }
+      hit.forEach((g) => g.setSymbol(hlSymbol))
+      selected.value = hit[0]?.getProperties()?.name ?? '?'
+    })
   },
 })
 </script>
