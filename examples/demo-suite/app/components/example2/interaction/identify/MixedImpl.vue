@@ -1,29 +1,53 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <UBadge variant="subtle" class="mt-2">点击地图尝试点选标记</UBadge>
+    <UBadge variant="subtle" class="mt-2">已选中: {{ selected }}</UBadge>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const { layer } = useMaptalksVectorLayer(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
+const { layer } = useMaptalksVectorLayer(map)
 
-const normalSymbol = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 16, markerHeight: 16 };
-const highlightSymbol = { markerType: 'ellipse', markerFill: '#22c55e', markerWidth: 20, markerHeight: 20 };
+const normSymbol = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 16, markerHeight: 16 }
+const hlSymbol = { markerType: 'ellipse', markerFill: '#22c55e', markerWidth: 20, markerHeight: 20 }
 
-useMaptalksMarker(layer, { coordinates: [121.495, 31.248], options: { symbol: normalSymbol } });
-useMaptalksMarker(layer, { coordinates: [121.5057, 31.2453], options: { symbol: normalSymbol } });
-useMaptalksMarker(layer, { coordinates: [121.515, 31.242], options: { symbol: normalSymbol } });
+const positions: [number, number][] = [
+  [121.49, 31.25], [121.50, 31.24], [121.5057, 31.2453], [121.51, 31.25], [121.52, 31.24],
+]
 
-// placeholder: real identify via escape on map; Mixed tab provides component + composable pattern
-useMaptalksEvents(map, { click: () => {} });
+type MGeo = { setSymbol: (s: Record<string, unknown>) => void; getProperties: () => Record<string, unknown> }
+const geos: MGeo[] = []
+
+positions.forEach((coords, i) => {
+  const { geometry } = useMaptalksMarker(layer, {
+    coordinates: coords,
+    options: { symbol: normSymbol, properties: { name: String.fromCharCode(65 + i) } },
+  })
+  watch(() => toValue(geometry), (g) => { if (g) geos.push(g as unknown as MGeo) }, { once: true })
+})
+
+const selected = ref('无')
+
+useMaptalksEvents(map, {
+  click: (e: { coordinate: { x: number; y: number } }) => {
+    geos.forEach((g) => g.setSymbol(normSymbol))
+    const m = toValue(map)
+    const l = toValue(layer)
+    if (!m || !l) return
+    const hit = (m as any).identify({ coordinate: e.coordinate, layers: [l] }) as MGeo[]
+    if (!hit || hit.length === 0) { selected.value = '无'; return }
+    hit.forEach((g) => g.setSymbol(hlSymbol))
+    selected.value = hit[0]?.getProperties()?.name ?? '?'
+  },
+})
 </script>

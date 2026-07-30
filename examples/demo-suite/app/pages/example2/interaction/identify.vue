@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="点击地图点选最近几何并高亮（对应官网 8.13）。"
+    description="map.identify() 空间点选——点击地图识别最近几何并高亮（对应官网 8.13）。"
     :tabs="tabs"
   />
 </template>
