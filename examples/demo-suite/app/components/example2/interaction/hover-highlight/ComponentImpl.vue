@@ -21,9 +21,9 @@
 
 <script setup lang="ts">
 const points = reactive([
-  { coords: [121.495, 31.248], hovered: false },
-  { coords: [121.5057, 31.2453], hovered: false },
-  { coords: [121.515, 31.242], hovered: false },
+  { coords: [121.495, 31.248] as [number, number], hovered: false },
+  { coords: [121.5057, 31.2453] as [number, number], hovered: false },
+  { coords: [121.515, 31.242] as [number, number], hovered: false },
 ]);
 const normalSymbol = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 16, markerHeight: 16 };
 const hoverSymbol = { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 24, markerHeight: 24 };
