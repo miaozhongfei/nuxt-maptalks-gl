@@ -188,6 +188,8 @@ function bindOptionsRebuild(
   return watch(
     () => toValue(options.options),
     (opts) => {
+      // 首次触发仅初始化 prevOpts，不重建（模板内联 :options 产生新引用但内容未变时，避免无谓 remove + create）
+      if (prevOpts === undefined) { prevOpts = opts as Record<string, unknown>; return; }
       if (dequal(opts, prevOpts)) return;
       prevOpts = opts as Record<string, unknown> | undefined;
       const geo = state.geometry.value;
