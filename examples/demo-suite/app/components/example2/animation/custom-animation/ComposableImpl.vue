@@ -22,7 +22,7 @@ const { geometry } = useMaptalksMarker(layer, {
   options: { symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerFillOpacity: 0.8, markerLineColor: '#fff', markerLineWidth: 3, markerWidth: 20, markerHeight: 20 } },
 })
 
-let player: { cancel: () => void } | null = null
+let player: { play: () => void; cancel: () => void } | null = null
 
 async function startAnim() {
   const mt = await import('maptalks-gl')
@@ -33,7 +33,7 @@ async function startAnim() {
     { duration: 1000, easing: 'out' },
     (frame: any) => { if (frame.styles) geo.updateSymbol(frame.styles.symbol) },
   )
-  player!.play()
+  player.play()
 }
 function stopAnim() { player?.cancel(); player = null }
 </script>

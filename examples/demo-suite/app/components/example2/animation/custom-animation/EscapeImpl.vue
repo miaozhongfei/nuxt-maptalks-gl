@@ -25,7 +25,7 @@ const { geometry } = useMaptalksGeometry(layer, (mt) =>
   }),
 )
 
-let player: { cancel: () => void } | null = null
+let player: { play: () => void; cancel: () => void } | null = null
 
 async function startAnim() {
   const mt = await import('maptalks-gl')
@@ -36,7 +36,7 @@ async function startAnim() {
     { duration: 1000, easing: 'out' },
     (frame: any) => { if (frame.styles) geo.updateSymbol(frame.styles.symbol) },
   )
-  player!.play()
+  player.play()
 }
 function stopAnim() { player?.cancel(); player = null }
 </script>
