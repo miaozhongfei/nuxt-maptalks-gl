@@ -1,7 +1,6 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -10,7 +9,7 @@
     >
       <MaptalksVectorLayer>
         <MaptalksLineString
-          :coordinates="[[center, endPt]]"
+          :coordinates="[center, endPt]"
           :options="{ arrowStyle: 'classic', arrowPlacement: 'vertex-last', symbol: { lineColor: '#dc2626', lineWidth: 4 } }"
         />
         <MaptalksMarker
@@ -28,7 +27,6 @@
 </template>
 
 <script setup lang="ts">
-const mc = ref<MaptalksMapExposed | null>(null)
 const mRef = ref<MaptalksMarkerExposed | null>(null)
 const center: [number, number] = [121.5057, 31.2453]
 const translateOffset: [number, number] = [0.025, 0.018]
