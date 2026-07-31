@@ -21,11 +21,9 @@
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
-// 组合：组件创建地图，computed 桥接 map 供 composable 使用
-const cam = useMaptalksCamera(map)
 
-function flyNear() { cam.flyTo({ center: [121.5057, 31.2453], zoom: 15 }, { duration: 2000 }) }
-function flyFar() { cam.flyTo({ center: [121.5057, 31.2453], zoom: 5 }, { duration: 2000 }) }
-function animA() { cam.animateTo({ center: [121.5057, 31.2453], zoom: 14, bearing: 30 }, { duration: 5000 }) }
-function animB() { cam.animateTo({ center: [121.5057, 31.2453], zoom: 16, pitch: 45, bearing: 180 }, { duration: 4000 }) }
+function flyNear() { toValue(map)?.flyTo({ center: [121.5057, 31.2453], zoom: 15 }, { duration: 2000 }) }
+function flyFar() { toValue(map)?.flyTo({ center: [121.5057, 31.2453], zoom: 5 }, { duration: 2000 }) }
+function animA() { toValue(map)?.animateTo({ center: [121.5057, 31.2453], zoom: 14, bearing: 30 }, { duration: 5000 }) }
+function animB() { toValue(map)?.animateTo({ center: [121.5057, 31.2453], zoom: 16, pitch: 45, bearing: 180 }, { duration: 4000 }) }
 </script>
