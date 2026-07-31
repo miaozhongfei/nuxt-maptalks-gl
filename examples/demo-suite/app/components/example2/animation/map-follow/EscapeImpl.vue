@@ -6,46 +6,76 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-3 mt-3">
-      <UButton size="sm" variant="outline" @click="start">开始跟随</UButton>
+      <UButton size="sm" variant="outline" @click="start">开始</UButton>
       <UButton size="sm" variant="outline" @click="stop">停止</UButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
-const cam = useMaptalksCamera(map);
+import { bearing, point } from '@turf/turf'
 
-let marker: unknown = null;
-let timer: ReturnType<typeof setInterval> | null = null;
-let angle = 0;
+import { COORDINATES, MARKER_FILE } from './constants'
 
-useMaptalksGeometry(layer, (mt) => {
-  marker = new mt.Marker([121.5057, 31.2453], {
-    symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 18, markerHeight: 18 },
-  });
-  return marker as any;
-});
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: COORDINATES[0], zoom: 14, pitch: 60 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
+
+const { geometry: lineGeo } = useMaptalksGeometry(
+  layer,
+  (mt) => new mt.LineString(COORDINATES, { symbol: { lineWidth: 5, lineColor: '#facc15' } }),
+)
+const { geometry: markerGeo } = useMaptalksGeometry(
+  layer,
+  (mt) =>
+    new mt.Marker(COORDINATES[0], {
+      symbol: { markerFile: MARKER_FILE, markerWidth: 50, markerHeight: 50 },
+    }),
+)
+
+const animating = ref(false)
+const stopped = ref(false)
 
 function start() {
-  if (timer) return;
-  timer = setInterval(() => {
-    angle += 0.015;
-    const cx = 121.5057 + Math.cos(angle) * 0.005;
-    const cy = 31.2453 + Math.sin(angle) * 0.005;
-    (marker as { setCoordinates: (c: [number, number]) => void }).setCoordinates([cx, cy]);
-    // camera follows
-    cam.center.value = { x: cx, y: cy };
-    cam.zoom.value = 15;
-  }, 30);
+  if (animating.value) return
+  animating.value = true
+  stopped.value = false
+  const line = toValue(lineGeo)
+  const m = toValue(map)
+  if (!line || !m || !line.animateShow) return
+  line.hide()
+  const marker = toValue(markerGeo)
+  if (marker) marker.setCoordinates(COORDINATES[0])
+  let preCoord: { x: number; y: number } | null = null
+  line.animateShow(
+    { duration: 30000, easing: 'linear' },
+    (...args: unknown[]) => {
+      if (stopped.value) return
+      const coord = args[1] as { x: number; y: number }
+      const mk = toValue(markerGeo)
+      if (!mk) return
+      mk.setCoordinates(coord)
+      if (!m.isInteracting()) {
+        m.setCenter(coord as any)
+        m.setZoom(16)
+        if (preCoord) {
+          const b = bearing(point([preCoord.x, preCoord.y]), point([coord.x, coord.y]))
+          if (Math.abs(m.getBearing() - b) >= 5) m.setBearing(b)
+        }
+      }
+      preCoord = { x: coord.x, y: coord.y }
+    },
+  )
 }
 
 function stop() {
-  if (timer) { clearInterval(timer); timer = null; }
+  stopped.value = true
+  animating.value = false
+  toValue(lineGeo)?.hide()
+  const marker = toValue(markerGeo)
+  if (marker) marker.setCoordinates(COORDINATES[0])
 }
 
-onBeforeUnmount(() => { stop(); });
+onBeforeUnmount(() => { stop() })
 </script>

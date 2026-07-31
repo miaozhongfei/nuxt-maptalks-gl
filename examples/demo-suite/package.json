@@ -14,6 +14,7 @@
   "dependencies": {
     "@lacqjs/nuxt-maptalks-gl": "workspace:*",
     "@nuxt/ui": "^4.9.0",
+    "@turf/turf": "^7.3.5",
     "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
     "d3-geo": "^3.1.1",
