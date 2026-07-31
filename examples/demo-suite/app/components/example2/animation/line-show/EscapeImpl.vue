@@ -25,6 +25,6 @@ const { geometry } = useMaptalksGeometry(layer, (mt) =>
 function animateShow() {
   const geo = toValue(geometry)
   geo?.hide()
-  geo?.animateShow({ duration: 1500, easing: 'out' })
+  geo?.animateShow?.({ duration: 1500, easing: 'out' })
 }
 </script>
