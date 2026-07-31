@@ -16,15 +16,14 @@ useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
 const ring = [[[121.49, 31.255], [121.52, 31.255], [121.52, 31.238], [121.49, 31.238], [121.49, 31.255]]] as [number, number][][]
-
-// 逃生舱：工厂模式创建 Polygon，直调原生 animateShow
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Polygon(ring, { visible: false, symbol: { lineColor: '#2563eb', lineWidth: 3, polygonFill: '#22c55e', polygonOpacity: 0.4 } }),
-)
+const { geometry } = useMaptalksPolygon(layer, {
+  coordinates: ring,
+  options: { visible: false, symbol: { lineColor: '#2563eb', lineWidth: 3, polygonFill: '#22c55e', polygonOpacity: 0.4 } },
+})
 
 function animateShow() {
   const geo = toValue(geometry)
   geo?.hide()
-  geo?.animateShow?.({ duration: 1500, easing: 'out' })
+  geo?.animateShow({ duration: 1500, easing: 'out' })
 }
 </script>
