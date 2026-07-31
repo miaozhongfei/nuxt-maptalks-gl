@@ -37,7 +37,7 @@ export interface MaptalksMenuItem {
   /** 菜单项文本 */
   item: string;
   /** 点击回调（返回 false 阻止事件冒泡） */
-  click: (coordinate?: { x: number; y: number }) => void | false;
+  click: (coordinate?: { x: number; y: number }) => unknown;
   /** 允许携带 maptalks 原生额外字段（disable、children 等） */
   [key: string]: unknown;
 }
@@ -55,8 +55,8 @@ export interface MaptalksMenuOptions {
   width?: number;
   /** 是否使用自定义容器 */
   custom?: boolean;
-  /** 菜单项（'-' 表示分隔线） */
-  items: (MaptalksMenuItem | '-')[];
+  /** 菜单项（custom 模式下可为 HTML 字符串或元素；slot 模式下可省略由组件注入） */
+  items?: (MaptalksMenuItem | '-')[] | string | HTMLElement;
   /** 允许携带 maptalks 原生额外字段 */
   [key: string]: unknown;
 }
