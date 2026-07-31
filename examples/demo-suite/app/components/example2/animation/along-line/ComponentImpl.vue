@@ -34,10 +34,33 @@ const lRef = ref<MaptalksLineStringExposed | null>(null)
 const startCoord = [121.49, 31.25] as [number, number]
 const pathCoords = [startCoord, [121.5057, 31.248] as [number, number], [121.52, 31.24] as [number, number]]
 
+let animating = false
 function startMove() {
-  mRef.value?.geometry?.moveAlong?.(lRef.value?.geometry, { duration: 4000, easing: 'linear' })
+  const marker = mRef.value?.geometry
+  const line = lRef.value?.geometry
+  if (!marker || animating) return
+  if (typeof (marker as any).moveAlong === 'function') {
+    (marker as any).moveAlong(line, { duration: 4000, easing: 'linear' })
+    return
+  }
+  const path = pathCoords
+  const duration = 4000
+  const steps = 80
+  const interval = duration / steps
+  animating = true
+  let step = 0
+  const timer = setInterval(() => {
+    step++
+    if (step >= steps) { clearInterval(timer); animating = false; return }
+    const t = step / steps
+    const segIdx = Math.floor(t * (path.length - 1))
+    const segT = (t * (path.length - 1)) - segIdx
+    const from = path[segIdx]
+    const to = path[Math.min(segIdx + 1, path.length - 1)]
+    const lon = from[0] + (to[0] - from[0]) * segT
+    const lat = from[1] + (to[1] - from[1]) * segT
+    marker.setCoordinates([lon, lat])
+  }, interval)
 }
-function resetMarker() {
-  mRef.value?.geometry?.setCoordinates(startCoord)
-}
+function resetMarker() { mRef.value?.geometry?.setCoordinates(startCoord) }
 </script>

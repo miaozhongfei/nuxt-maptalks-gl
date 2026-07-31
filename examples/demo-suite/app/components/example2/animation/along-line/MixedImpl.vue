@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div
-      ref="el"
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
@@ -13,21 +16,21 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 const { layer } = useMaptalksVectorLayer(map)
 
 const startCoord: [number, number] = [121.49, 31.25]
 const pathCoords = [startCoord, [121.5057, 31.248] as [number, number], [121.52, 31.24] as [number, number]]
 
-// 逃生舱：工厂模式创建 LineString + Marker
-const { geometry: lineGeo } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(pathCoords, { symbol: { lineColor: '#dc2626', lineWidth: 3, lineDasharray: [8, 4] } }),
-)
-const { geometry: markerGeo } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker(startCoord, { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }),
-)
+const { geometry: lineGeo } = useMaptalksLineString(layer, {
+  coordinates: pathCoords,
+  options: { symbol: { lineColor: '#dc2626', lineWidth: 3, lineDasharray: [8, 4] } },
+})
+const { geometry: markerGeo } = useMaptalksMarker(layer, {
+  coordinates: startCoord,
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
+})
 
 let animating = false
 function startMove() {

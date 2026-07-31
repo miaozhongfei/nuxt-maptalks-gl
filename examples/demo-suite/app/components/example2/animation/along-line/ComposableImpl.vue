@@ -21,18 +21,20 @@ const { layer } = useMaptalksVectorLayer(map)
 const startCoord: [number, number] = [121.49, 31.25]
 const pathCoords = [startCoord, [121.5057, 31.248] as [number, number], [121.52, 31.24] as [number, number]]
 
-// 逃生舱：工厂模式创建 LineString + Marker
-const { geometry: lineGeo } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(pathCoords, { symbol: { lineColor: '#dc2626', lineWidth: 3, lineDasharray: [8, 4] } }),
-)
-const { geometry: markerGeo } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker(startCoord, { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }),
-)
+const { geometry: lineGeo } = useMaptalksLineString(layer, {
+  coordinates: pathCoords,
+  options: { symbol: { lineColor: '#dc2626', lineWidth: 3, lineDasharray: [8, 4] } },
+})
+const { geometry: markerGeo } = useMaptalksMarker(layer, {
+  coordinates: startCoord,
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
+})
 
 let animating = false
 function startMove() {
   const marker = toValue(markerGeo)
   if (!marker || animating) return
+  // 先尝试原生 moveAlong，不可用时回退到手动插值动画
   if (typeof (marker as any).moveAlong === 'function') {
     (marker as any).moveAlong(toValue(lineGeo), { duration: 4000, easing: 'linear' })
     return
