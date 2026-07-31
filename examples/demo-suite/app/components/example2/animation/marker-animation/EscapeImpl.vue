@@ -13,33 +13,18 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
 
-let markerGeo: unknown = null;
-
-useMaptalksGeometry(layer, (mt) => {
-  markerGeo = new mt.Marker([121.5057, 31.2453], {
+// 逃生舱：工厂模式创建 Marker，直调原生 animate()
+const { geometry } = useMaptalksGeometry(layer, (mt) =>
+  new mt.Marker([121.5057, 31.2453], {
     symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 },
-  });
-  return markerGeo as any;
-});
+  }),
+)
 
-function grow() {
-  if (!markerGeo) return;
-  (markerGeo as { animate: (o: Record<string, unknown>, opts: Record<string, unknown>) => void }).animate(
-    { symbol: { markerWidth: 40, markerHeight: 40 } },
-    { duration: 1500 },
-  );
-}
-
-function shrink() {
-  if (!markerGeo) return;
-  (markerGeo as { animate: (o: Record<string, unknown>, opts: Record<string, unknown>) => void }).animate(
-    { symbol: { markerWidth: 20, markerHeight: 20 } },
-    { duration: 1500 },
-  );
-}
+function grow() { toValue(geometry)?.animate?.({ symbol: { markerWidth: 40, markerHeight: 40 } }, { duration: 1500 }) }
+function shrink() { toValue(geometry)?.animate?.({ symbol: { markerWidth: 20, markerHeight: 20 } }, { duration: 1500 }) }
 </script>
