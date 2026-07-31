@@ -6,32 +6,36 @@
 
 <script setup lang="ts">
 /**
- * 地图级右键菜单组件（MapMenu）。
+ * 几何体级右键菜单组件（GeometryMenu）。
  *
- * @description 对 `useMaptalksMenu` 的声明式封装。在 MaptalksMap 内渲染，
- * 通过 `inject(MAP_KEY)` 获取 map。支持两种模式：
+ * @description 对 `useMaptalksGeometryMenu` 的声明式封装。通过 `inject(GEOMETRY_KEY)` 获取
+ * 父级几何体组件的 geometry 引用。支持两种模式：
  * 1. **标准模式**：`options.items` 数组 → composable 内部调 `menu.setItems(items)`
  * 2. **自定义模式**：`options.custom: true` + `<slot />` → `createApp` 子应用 mount → `menu.setItems(el)`
  *
- * 必须在 `<MaptalksMap>` 内使用。
+ * 必须在提供 `GEOMETRY_KEY` 的几何体组件（如 MaptalksMarker）内使用。
  *
  * @example
  * <!-- 标准模式 -->
- * <MaptalksMenu :options="{ width: 160, items: menuItems }" />
+ * <MaptalksMarker :coordinates="[121,31]">
+ *   <MaptalksGeometryMenu :options="{ width: 160, items: menuItems }" />
+ * </MaptalksMarker>
  *
  * @example
  * <!-- 自定义模式 -->
- * <MaptalksMenu :options="{ custom: true }">
- *   <div class="p-2"><UButton @click="zoomIn">放大</UButton></div>
- * </MaptalksMenu>
+ * <MaptalksMarker :coordinates="[121,31]">
+ *   <MaptalksGeometryMenu :options="{ custom: true }">
+ *     <div class="p-2"><UButton @click="zoomIn">放大</UButton></div>
+ *   </MaptalksGeometryMenu>
+ * </MaptalksMarker>
  */
 import { createApp, h, inject, onBeforeUnmount, onUpdated, ref, watch } from 'vue'
 import type { App } from 'vue'
 import { dequal } from 'dequal'
 
-import { useMaptalksMenu } from '../composables/useMaptalksMenu'
-import type { UseMaptalksMenuOpts } from '../composables/useMaptalksMenu'
-import { MAP_KEY } from '../core/map-context'
+import { useMaptalksGeometryMenu } from '../composables/useMaptalksGeometryMenu'
+import type { UseMaptalksGeometryMenuOpts } from '../composables/useMaptalksGeometryMenu'
+import { GEOMETRY_KEY } from '../core/map-context'
 import type { MaptalksEventHandler, MaptalksMenuOptions } from '../types'
 
 const props = withDefaults(
@@ -46,9 +50,9 @@ const props = withDefaults(
   { options: undefined, events: undefined, autoDispose: true },
 )
 
-// 从祖先 MaptalksMap 获取 map 引用
-const map = inject(MAP_KEY)
-if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksMenu 必须在 MaptalksMap 内使用')
+// 从祖先几何体组件获取 geometry 引用（如 MaptalksMarker）
+const geometry = inject(GEOMETRY_KEY)
+if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksGeometryMenu 必须在提供 GEOMETRY_KEY 的几何体组件内使用')
 
 const slots = defineSlots()
 
@@ -74,13 +78,13 @@ watch(
   { immediate: true },
 )
 
-const menuOpts: UseMaptalksMenuOpts = {
+const menuOpts: UseMaptalksGeometryMenuOpts = {
   options: () => stableOpts.value as MaptalksMenuOptions | undefined,
   events: props.events,
   autoDispose: props.autoDispose,
 }
 
-const { menu, show, hide } = useMaptalksMenu(map, menuOpts)
+const { menu, show, hide } = useMaptalksGeometryMenu(geometry, menuOpts)
 
 /** 创建 Vue 子应用 mount 到临时 DOM，将 slot 内容注入 Menu.setItems */
 function mountSlotContent() {

@@ -3,12 +3,12 @@ import type { MaybeRefOrGetter, ShallowRef } from 'vue'
 
 import { MaptalksError, toMaptalksError } from '../core/errors'
 import { loadMaptalks } from '../core/loader'
-import type { MaptalksEventHandler, MaptalksMap, MaptalksMenu, MaptalksMenuOptions, MaptalksMenuItem } from '../types'
+import type { MaptalksEventHandler, MaptalksGeometry, MaptalksMenu, MaptalksMenuOptions, MaptalksMenuItem } from '../types'
 import { createLogger } from '../utils/logger'
 
 const logger = createLogger('nuxt-maptalks-gl')
 
-export interface UseMaptalksMenuOpts {
+export interface UseMaptalksGeometryMenuOpts {
   /** 透传给 `ui.Menu` 构造器的选项（含中文字段注释，详见 MaptalksMenuOptions） */
   options?: MaybeRefOrGetter<MaptalksMenuOptions | undefined>
   /** 事件名 → 处理器（自动 on/off，如 showstart / hide） */
@@ -17,7 +17,7 @@ export interface UseMaptalksMenuOpts {
   autoDispose?: boolean
 }
 
-export interface UseMaptalksMenuReturn {
+export interface UseMaptalksGeometryMenuReturn {
   /** Menu 实例（创建前为 null） */
   menu: ShallowRef<MaptalksMenu | null>
   /** 在指定坐标显示菜单 */
@@ -45,17 +45,15 @@ function unbindEvents(menu: MaptalksMenu, events: Record<string, MaptalksEventHa
   }
 }
 
-/** 移除 Menu 实例并清理 watcher/events/contextmenu 绑定，路由切换时地图可能已销毁，对 remove 用 try-catch 兜底 */
+/** 移除 Menu 实例并清理 watcher/events/contextmenu 绑定，路由切换时几何体可能已销毁，对 remove 用 try-catch 兜底 */
 function removeMenu(
   menuRef: ShallowRef<MaptalksMenu | null>,
   s1: () => void,
   s2: () => void,
-  s3: (() => void) | null,
   events: Record<string, MaptalksEventHandler>,
   contextmenuCleanup: (() => void) | null,
 ): void {
   s1(); s2()
-  if (s3) s3()
   const menu = menuRef.value
   if (!menu) return
   unbindEvents(menu, events)
@@ -67,36 +65,35 @@ function removeMenu(
 }
 
 /**
- * 地图右键菜单（ui.Menu）。
+ * 几何体右键菜单（ui.Menu）。
  *
- * @description 对标 `useMaptalksInfoWindow`：在 map 就绪后创建 `mt.ui.Menu` 实例并通过 `addTo(map)` 绑定；
+ * @description 对标 `useMaptalksMenu`：在 geometry 就绪后创建 `mt.ui.Menu` 实例并通过 `addTo(geometry)` 绑定；
  * 手动监听 `contextmenu` 事件 → `menu.show(coord)` 实现右键弹出。options 变化时移除旧实例并重建；
  * items 单独变化时调 `setItems` 增量更新（不重建）。events 自动 on/off；作用域销毁或 `autoDispose` 时自动 cleanup。
  * 构造器缺失抛 `control-failed`。
  *
- * @param {MaybeRefOrGetter<MaptalksMap | null>} target - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksMenuOpts} [opts] - 菜单选项、事件绑定与自动销毁控制
- * @returns {UseMaptalksMenuReturn} `{ menu, show, hide, remove }`
+ * @param {MaybeRefOrGetter<MaptalksGeometry | null>} geometry - 几何体引用（如 useMaptalksMarker 返回的 geometry）
+ * @param {UseMaptalksGeometryMenuOpts} [opts] - 菜单选项、事件绑定与自动销毁控制
+ * @returns {UseMaptalksGeometryMenuReturn} `{ menu, show, hide, remove }`
  *
  * @example
- * const { map } = useMaptalks(el)
- * const { menu } = useMaptalksMenu(map, {
+ * const { geometry } = useMaptalksMarker(layer, { coordinates: [121, 31], ... })
+ * const { menu } = useMaptalksGeometryMenu(geometry, {
  *   options: { width: 160, items: [{ item: '放大', click: () => map.value?.zoomIn() }] },
- *   events: { showend: () => console.log('菜单已显示') },
  * })
  */
-export function useMaptalksMenu(
-  target: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksMenuOpts = {},
-): UseMaptalksMenuReturn {
+export function useMaptalksGeometryMenu(
+  geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
+  opts: UseMaptalksGeometryMenuOpts = {},
+): UseMaptalksGeometryMenuReturn {
   const menu = shallowRef<MaptalksMenu | null>(null)
   let creating = false
   let contextmenuCleanup: (() => void) | null = null
   const events = opts.events ?? {}
 
   async function reload() {
-    const m = toValue(target)
-    if (!m || creating) return
+    const geo = toValue(geometry)
+    if (!geo || creating) return
     creating = true
     if (menu.value) {
       unbindEvents(menu.value, events)
@@ -111,23 +108,23 @@ export function useMaptalksMenu(
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 ui.Menu')
       const rawOpts = { ...toValue(opts.options) }
       const mnu = new Ctor(rawOpts) as MaptalksMenu
-      mnu.addTo(m)
+      mnu.addTo(geo as any)
       const cmHandler = (e: unknown) => {
         const coord = (e as { coordinate?: { x: number; y: number } }).coordinate
         mnu.show(coord as { x: number; y: number } | undefined)
       }
-      m.on('contextmenu', cmHandler)
-      contextmenuCleanup = () => m.off('contextmenu', cmHandler)
+      geo.on('contextmenu', cmHandler)
+      contextmenuCleanup = () => geo.off('contextmenu', cmHandler)
       bindEvents(mnu, events)
       menu.value = mnu
     } catch (cause) {
-      logger.error('Menu 创建失败', toMaptalksError(cause, 'control-failed', 'Menu 创建失败'))
+      logger.error('GeometryMenu 创建失败', toMaptalksError(cause, 'control-failed', 'GeometryMenu 创建失败'))
     } finally {
       creating = false
     }
   }
 
-  const stop1 = watch([() => toValue(target), () => toValue(opts.options)], reload, { immediate: true })
+  const stop1 = watch([() => toValue(geometry), () => toValue(opts.options)], reload, { immediate: true })
 
   const stop2 = watch(
     () => { const r = toValue(opts.options); return r ? toValue(r.items as MaybeRefOrGetter<(MaptalksMenuItem | '-')[] | undefined> | undefined) : undefined },
@@ -137,6 +134,6 @@ export function useMaptalksMenu(
   function show(coordinate?: { x: number; y: number }): void { requestAnimationFrame(() => menu.value?.show(coordinate)) }
   function hide(): void { menu.value?.hide() }
 
-  if (opts.autoDispose !== false) onScopeDispose(() => removeMenu(menu, stop1, stop2, null, events, contextmenuCleanup))
-  return { menu, show, hide, remove: () => removeMenu(menu, stop1, stop2, null, events, contextmenuCleanup) }
+  if (opts.autoDispose !== false) onScopeDispose(() => removeMenu(menu, stop1, stop2, events, contextmenuCleanup))
+  return { menu, show, hide, remove: () => removeMenu(menu, stop1, stop2, events, contextmenuCleanup) }
 }

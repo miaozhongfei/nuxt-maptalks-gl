@@ -50,7 +50,7 @@ const VECTOR_CHILDREN = new Set([
 
 /** 必须在 MaptalksMarker 内使用的组件 */
 const MARKER_CHILDREN = new Set([
-  'MaptalksMarkerInfoWindow',
+  'MaptalksGeometryInfoWindow',
 ])
 
 /** 透明的结构标签——不影响实际的父子层级 */

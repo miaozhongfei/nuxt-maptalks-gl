@@ -12,7 +12,7 @@
           :coordinates="[121.5057, 31.2453]"
           :options="{ symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 20, markerHeight: 20 } }"
         >
-          <MaptalksMarkerInfoWindow
+          <MaptalksGeometryInfoWindow
             ref="miwRef"
             :options="{ title: '组件 InfoWindow', custom: true }"
           >
@@ -20,7 +20,7 @@
               <p class="mb-1">来自组件 slot</p>
               <UButton size="xs" color="neutral" variant="soft" class="mt-1" @click="miwRef?.hide()">关闭</UButton>
             </div>
-          </MaptalksMarkerInfoWindow>
+          </MaptalksGeometryInfoWindow>
         </MaptalksMarker>
       </MaptalksVectorLayer>
     </MaptalksMap>

@@ -1,7 +1,7 @@
 ﻿<template>
   <div>
     <h1 class="text-2xl font-bold mb-1">组件单独示例 · 信息框</h1>
-    <p class="text-muted mb-6">演示 <code>MaptalksInfoWindow</code> 与 <code>MaptalksMarkerInfoWindow</code>。</p>
+    <p class="text-muted mb-6">演示 <code>MaptalksInfoWindow</code> 与 <code>MaptalksGeometryInfoWindow</code>。</p>
 
     <UCard class="mb-6"><template #header><h2 class="font-semibold">地图点击弹框</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
       <MaptalksMap ref="mapCmp1" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height:380px" baseLayer="osm">
@@ -21,34 +21,34 @@
       <template #footer><span class="text-sm text-muted">点蓝/红 Marker。</span></template>
     </UCard>
 
-    <!-- 卡片 3：MaptalksMarkerInfoWindow——对照 composable 页 bindCloseBtn 模式，在 @click 直接 open+bind -->
-    <UCard class="mb-6"><template #header><h2 class="font-semibold">MaptalksMarkerInfoWindow · 每个 Marker 独立信息框 · 自定义关闭</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
-      <p class="text-sm text-muted mb-2"><code>&lt;MaptalksMarkerInfoWindow&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，autoOpenOn 默认 'click' 处理打开，<code>@click</code> 只绑关闭按钮；关闭通过 expose 的 <code>hide()</code> 调 <code>closeInfoWindow</code>。</p>
+    <!-- 卡片 3：MaptalksGeometryInfoWindow——对照 composable 页 bindCloseBtn 模式，在 @click 直接 open+bind -->
+    <UCard class="mb-6"><template #header><h2 class="font-semibold">MaptalksGeometryInfoWindow · 每个 Marker 独立信息框 · 自定义关闭</h2><UBadge color="primary" variant="subtle">组件</UBadge></template>
+      <p class="text-sm text-muted mb-2"><code>&lt;MaptalksGeometryInfoWindow&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，autoOpenOn 默认 'click' 处理打开，<code>@click</code> 只绑关闭按钮；关闭通过 expose 的 <code>hide()</code> 调 <code>closeInfoWindow</code>。</p>
       <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:400px" baseLayer="osm">
         <MaptalksVectorLayer>
           <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24} }" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwA)">
-            <MaptalksMarkerInfoWindow ref="miwA" :options="{ title: '', custom: true }">
+            <MaptalksGeometryInfoWindow ref="miwA" :options="{ title: '', custom: true }">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>东门店 A</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.47000, 31.23000]</div>
               </div>
-            </MaptalksMarkerInfoWindow>
+            </MaptalksGeometryInfoWindow>
           </MaptalksMarker>
           <MaptalksMarker :coordinates="[121.5,31.24]" :options="{ symbol: {markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24} }" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwB)">
-            <MaptalksMarkerInfoWindow ref="miwB" :options="{ title: '', custom: true }">
+            <MaptalksGeometryInfoWindow ref="miwB" :options="{ title: '', custom: true }">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>西门店 B</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.50000, 31.24000]</div>
               </div>
-            </MaptalksMarkerInfoWindow>
+            </MaptalksGeometryInfoWindow>
           </MaptalksMarker>
           <MaptalksMarker :coordinates="[121.52,31.22]" :options="{ symbol: {markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24} }" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwC)">
-            <MaptalksMarkerInfoWindow ref="miwC" :options="{ title: '', custom: true }">
+            <MaptalksGeometryInfoWindow ref="miwC" :options="{ title: '', custom: true }">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>南门店 C</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
                 <div style="background:#fff;padding:5px 10px;font-size:12px;color:#374151">[121.52000, 31.22000]</div>
               </div>
-            </MaptalksMarkerInfoWindow>
+            </MaptalksGeometryInfoWindow>
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>

@@ -18,7 +18,7 @@ const { geometry } = useMaptalksMarker(vLayer.layer, {
   coordinates: [121.5057, 31.2453],
   options: { symbol: { markerType: 'ellipse', markerFill: '#ef4444', markerWidth: 20, markerHeight: 20 } },
 });
-const { show, hide } = useMaptalksMarkerInfoWindow(geometry, {
+const { show, hide } = useMaptalksGeometryInfoWindow(geometry, {
   options: { title: '桥接 InfoWindow', custom: true, content: '<div class=p-2>来自桥接模式</div>' },
 });
 </script>

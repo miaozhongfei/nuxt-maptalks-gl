@@ -6,7 +6,7 @@
  *
  * @description 对 `useMaptalksMarker` 的声明式封装。在父级 MaptalksVectorLayer 内创建 Marker，
  * 支持响应式坐标、symbol 样式、显隐控制。通过 GEOMETRY_LAYER_KEY inject 获取图层引用，
- * 并通过 MARKER_GEOMETRY_KEY provide 向子组件（如 MaptalksMarkerInfoWindow）传递 geometry 引用。
+ * 并通过 GEOMETRY_KEY provide 向子组件（如 MaptalksGeometryInfoWindow）传递 geometry 引用。
  * 必须在 MaptalksVectorLayer 内使用。
  *
  * @example
@@ -19,7 +19,7 @@
 import { inject, provide } from 'vue'
 
 import { useMaptalksMarker } from '../composables/presets/useMaptalksMarker'
-import { GEOMETRY_LAYER_KEY, MARKER_GEOMETRY_KEY } from '../core/map-context'
+import { GEOMETRY_LAYER_KEY, GEOMETRY_KEY } from '../core/map-context'
 import type { MaptalksMarkerOptions, MaptalksEventHandler } from '../types'
 
 const props = withDefaults(
@@ -63,7 +63,7 @@ const { geometry, show, hide, remove } = useMaptalksMarker(layer, {
     mouseout: (e) => emit('mouseout', e),
   },
 })
-// 向子组件（如 MaptalksMarkerInfoWindow）提供 geometry 引用
-provide(MARKER_GEOMETRY_KEY, geometry)
+// 向子组件（如 MaptalksGeometryInfoWindow）提供 geometry 引用
+provide(GEOMETRY_KEY, geometry)
 defineExpose({ geometry, show, hide, remove })
 </script>

@@ -4,27 +4,27 @@
 
 <script setup lang="ts">
 /**
- * 标记级信息窗组件（MarkerInfoWindow，内联于 Marker 几何的弹窗）。
+ * 几何体级信息窗组件（GeometryInfoWindow，内联于 Marker/几何体 的弹窗）。
  *
- * @description 对 `useMaptalksMarkerInfoWindow` 的声明式封装。在父级 MaptalksMarker 上注册 setInfoWindow，
- * 通过 `<slot />` 传入 Vue 组件内容（自动 createApp mount 保留响应式）。标记级信息窗只属于该 Marker——
+ * @description 对 `useMaptalksGeometryInfoWindow` 的声明式封装。在父级几何体组件（如 MaptalksMarker）上注册 setInfoWindow，
+ * 通过 `<slot />` 传入 Vue 组件内容（自动 createApp mount 保留响应式）。几何体级信息窗只属于该几何体——
  * 点击自动弹出、点击别处自动关闭。支持响应式 options、事件绑定、`defineExpose({ show, hide })` 程序式控制。
- * 必须在 MaptalksMarker 内使用。
+ * 必须在提供 GEOMETRY_KEY 的几何体组件内使用。
  *
  * @example
  * ```vue
  * <MaptalksMarker :coordinates="[121,31]">
- *   <MaptalksMarkerInfoWindow :options="{ title: '站点', custom: true }">
+ *   <MaptalksGeometryInfoWindow :options="{ title: '站点', custom: true }">
  *     <div class="iw-content"><strong>站点详情</strong></div>
- *   </MaptalksMarkerInfoWindow>
+ *   </MaptalksGeometryInfoWindow>
  * </MaptalksMarker>
  * ```
  */
 import { createApp, h, inject, onBeforeUnmount, toValue, useSlots, watch } from 'vue'
 import type { App } from 'vue'
 
-import { useMaptalksMarkerInfoWindow } from '../composables/useMaptalksMarkerInfoWindow'
-import { MARKER_GEOMETRY_KEY } from '../core/map-context'
+import { useMaptalksGeometryInfoWindow } from '../composables/useMaptalksGeometryInfoWindow'
+import { GEOMETRY_KEY } from '../core/map-context'
 import type { MaptalksEventHandler, MaptalksInfoWindowOptions } from '../types'
 
 const props = withDefaults(
@@ -42,10 +42,10 @@ const props = withDefaults(
 const slots = useSlots()
 let slotApp: App | null = null
 
-const geometry = inject(MARKER_GEOMETRY_KEY)
-if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksMarkerInfoWindow 必须在 MaptalksMarker 内使用')
+const geometry = inject(GEOMETRY_KEY)
+if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksGeometryInfoWindow 必须在提供 GEOMETRY_KEY 的几何体组件内使用')
 
-const { show, hide } = useMaptalksMarkerInfoWindow(geometry, {
+const { show, hide } = useMaptalksGeometryInfoWindow(geometry, {
   options: () => props.options,
   events: props.events,
   autoDispose: props.autoDispose,

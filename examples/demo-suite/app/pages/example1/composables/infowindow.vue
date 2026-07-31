@@ -2,7 +2,7 @@
   <div>
     <h1 class="text-2xl font-bold mb-1">Composable 单独示例 · 信息框</h1>
     <p class="text-muted mb-6">
-      演示 <code>useMaptalksInfoWindow</code>（地图级）与 <code>useMaptalksMarkerInfoWindow</code>（标记级）。
+      演示 <code>useMaptalksInfoWindow</code>（地图级）与 <code>useMaptalksGeometryInfoWindow</code>（标记级）。
     </p>
 
     <!-- 卡片 1：地图级：点击地图弹出 + 实时内容 + 事件 -->
@@ -35,17 +35,17 @@
       </template>
     </UCard>
 
-    <!-- 卡片 3：标记级：useMaptalksMarkerInfoWindow —— 原生 marker.setInfoWindow()，每个 Marker 独立信息框 -->
+    <!-- 卡片 3：标记级：useMaptalksGeometryInfoWindow —— 原生 marker.setInfoWindow()，每个 Marker 独立信息框 -->
     <UCard class="mb-6">
       <template #header>
         <div class="flex items-center gap-2 flex-wrap">
-          <h2 class="font-semibold">useMaptalksMarkerInfoWindow · 标记级 · 每个 Marker 独立信息框</h2>
+          <h2 class="font-semibold">useMaptalksGeometryInfoWindow · 标记级 · 每个 Marker 独立信息框</h2>
           <UBadge color="primary" variant="subtle">composable</UBadge>
           <UBadge color="neutral" variant="outline">官网 10.5 / 原生 marker.setInfoWindow()</UBadge>
         </div>
       </template>
       <p class="text-sm text-muted mb-2">
-        <code>useMaptalksMarkerInfoWindow(geometry, { title, content, custom })</code> 封装了
+        <code>useMaptalksGeometryInfoWindow(geometry, { title, content, custom })</code> 封装了
         maptalks 原生 <code>marker.setInfoWindow()</code>——<strong>每个 Marker 有自己独立的信息框</strong>，
         点 Marker 弹出、点别处自动关闭。支持 <code>custom:true</code> 完全自绘 UI。
       </p>
@@ -147,7 +147,7 @@ useMaptalksMarker(vec2, {
   events: { click: () => { mk2Label.value = '—'; hide2(); } },
 });
 
-// ====== 卡片 3：标记级 · useMaptalksMarkerInfoWindow（原生 marker.setInfoWindow） ======
+// ====== 卡片 3：标记级 · useMaptalksGeometryInfoWindow（原生 marker.setInfoWindow） ======
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
@@ -192,7 +192,7 @@ const gA = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
-const miwA = useMaptalksMarkerInfoWindow(gA, { options: { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) } });
+const miwA = useMaptalksGeometryInfoWindow(gA, { options: { title: '', custom: true, content: mkContent('东门店 A', '#2563eb', [121.47, 31.23]) } });
 useMaptalksEvents(gA as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { curOpen = miwA; mkOpenTime = Date.now(); iw3Label.value = '东门店 A'; bindCloseBtn(miwA); },
 });
@@ -201,7 +201,7 @@ const gB = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
-const miwB = useMaptalksMarkerInfoWindow(gB, { options: { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) } });
+const miwB = useMaptalksGeometryInfoWindow(gB, { options: { title: '', custom: true, content: mkContent('西门店 B', '#dc2626', [121.5, 31.24]) } });
 useMaptalksEvents(gB as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { curOpen = miwB; mkOpenTime = Date.now(); iw3Label.value = '西门店 B'; bindCloseBtn(miwB); },
 });
@@ -210,7 +210,7 @@ const gC = useMaptalksMarker(vec3, {
   coordinates: [121.52, 31.22],
   options: { symbol: { markerType: 'ellipse', markerFill: '#16a34a', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
-const miwC = useMaptalksMarkerInfoWindow(gC, { options: { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) } });
+const miwC = useMaptalksGeometryInfoWindow(gC, { options: { title: '', custom: true, content: mkContent('南门店 C', '#16a34a', [121.52, 31.22]) } });
 useMaptalksEvents(gC as unknown as Parameters<typeof useMaptalksEvents>[0], {
   click: () => { curOpen = miwC; mkOpenTime = Date.now(); iw3Label.value = '南门店 C'; bindCloseBtn(miwC); },
 });

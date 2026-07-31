@@ -1,7 +1,7 @@
 ﻿<template>
   <div>
-    <h1 class="text-2xl font-bold mb-1">MarkerInfoWindow 测试</h1>
-    <p class="text-muted mb-6">测试 MaptalksMarkerInfoWindow custom slot 内的按钮事件 + 动画</p>
+    <h1 class="text-2xl font-bold mb-1">GeometryInfoWindow 测试</h1>
+    <p class="text-muted mb-6">测试 MaptalksGeometryInfoWindow custom slot 内的按钮事件 + 动画</p>
 
     <div class="grid grid-cols-2 gap-4">
       <!-- 卡片 1：custom slot 带按钮 -->
@@ -10,7 +10,7 @@
         <MaptalksMap ref="mapCmp1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24} }">
-              <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
+              <MaptalksGeometryInfoWindow :options="{ title: '', custom: true }">
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">东门店</div>
                   <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
@@ -18,10 +18,10 @@
                     <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countA=0">重置</button>
                   </div>
                 </div>
-              </MaptalksMarkerInfoWindow>
+              </MaptalksGeometryInfoWindow>
             </MaptalksMarker>
             <MaptalksMarker :coordinates="[121.5,31.24]" :options="{ symbol: {markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24} }">
-              <MaptalksMarkerInfoWindow :options="{ title: '', custom: true }">
+              <MaptalksGeometryInfoWindow :options="{ title: '', custom: true }">
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">西门店</div>
                   <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
@@ -29,7 +29,7 @@
                     <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countB=0">重置</button>
                   </div>
                 </div>
-              </MaptalksMarkerInfoWindow>
+              </MaptalksGeometryInfoWindow>
             </MaptalksMarker>
           </MaptalksVectorLayer>
         </MaptalksMap>
@@ -42,9 +42,9 @@
         <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24} }">
-              <MaptalksMarkerInfoWindow :options="{ title: '南门店', width: 200, height: 120 }">
+              <MaptalksGeometryInfoWindow :options="{ title: '南门店', width: 200, height: 120 }">
                 <div style="padding:6px 10px;font-size:13px">坐标 [121.47000, 31.23000]</div>
-              </MaptalksMarkerInfoWindow>
+              </MaptalksGeometryInfoWindow>
             </MaptalksMarker>
           </MaptalksVectorLayer>
         </MaptalksMap>
@@ -53,13 +53,13 @@
     </div>
 
     <UCard class="mt-4">
-      <template #header><h2 class="font-semibold">useMaptalksMarkerInfoWindow（composable）· 原生 DOM 按钮</h2></template>
+      <template #header><h2 class="font-semibold">useMaptalksGeometryInfoWindow（composable）· 原生 DOM 按钮</h2></template>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
       <template #footer><span class="text-sm text-muted">composable 直调。点 Marker 弹出，👍计数，关闭按钮。</span></template>
     </UCard>
 
     <UCard class="mt-4">
-      <template #header><h2 class="font-semibold">useMaptalksMarkerInfoWindow · 响应式改内容</h2></template>
+      <template #header><h2 class="font-semibold">useMaptalksGeometryInfoWindow · 响应式改内容</h2></template>
       <div ref="el4" class="relative rounded border border-default overflow-hidden" style="height:350px" />
       <template #footer><div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="changeMIWContent()">改内容</UButton><span class="text-sm text-muted">当前内容：{{ miwContent4 }}</span></div></template>
     </UCard>
@@ -71,7 +71,7 @@ const center: [number, number] = [121.4737, 31.2304];
 const countA = ref(0);
 const countB = ref(0);
 
-// 卡片 3：useMaptalksMarkerInfoWindow composable 直调
+// 卡片 3：useMaptalksGeometryInfoWindow composable 直调
 const el3 = ref<HTMLElement | null>(null);
 const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
 useMaptalksTileLayer(map3, { source: 'osm' });
@@ -111,13 +111,13 @@ const gC = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
-useMaptalksMarkerInfoWindow(gC, { options: { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) } });
+useMaptalksGeometryInfoWindow(gC, { options: { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) } });
 
 const gD = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
-useMaptalksMarkerInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } });
+useMaptalksGeometryInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } });
 
 // 卡片 4：响应式改内容
 const el4 = ref<HTMLElement | null>(null);
@@ -129,7 +129,7 @@ const gE = useMaptalksMarker(vec4, {
   coordinates: [121.47, 31.23],
   options: { symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 24, markerHeight: 24 } },
 }).geometry;
-useMaptalksMarkerInfoWindow(gE, { options: () => ({ title: '', custom: true, content: miwContent4.value }) });
+useMaptalksGeometryInfoWindow(gE, { options: () => ({ title: '', custom: true, content: miwContent4.value }) });
 function changeMIWContent() {
   miwContent4.value = `<div style="padding:10px;min-width:140px;text-align:center">
     <strong style="color:#8b5cf6">改内容测试</strong>

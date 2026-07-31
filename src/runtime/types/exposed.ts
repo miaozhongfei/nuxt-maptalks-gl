@@ -130,15 +130,15 @@ export interface MaptalksUIMarkerExposed {
 }
 
 /**
- * MaptalksMarkerInfoWindow 组件 defineExpose 暴露的类型。
+ * MaptalksGeometryInfoWindow 组件 defineExpose 暴露的类型。
  *
  * @description Marker 级信息框仅暴露 show/hide，实例由父 Marker 管理。
  *
  * @example
- * const miw = ref<MaptalksMarkerInfoWindowExposed | null>(null)
+ * const miw = ref<MaptalksGeometryInfoWindowExposed | null>(null)
  * miw.value?.show()
  */
-export interface MaptalksMarkerInfoWindowExposed {
+export interface MaptalksGeometryInfoWindowExposed {
   /** 显示信息框 */
   show: () => void;
   /** 隐藏信息框 */

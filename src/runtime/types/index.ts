@@ -161,7 +161,7 @@ export type {
   MaptalksLineStringExposed,
   MaptalksMapExposed,
   MaptalksMarkerExposed,
-  MaptalksMarkerInfoWindowExposed,
+  MaptalksGeometryInfoWindowExposed,
   MaptalksMenuExposed,
   MaptalksMultiLineStringExposed,
   MaptalksMultiPointExposed,
