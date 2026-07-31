@@ -6,7 +6,7 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-3 mt-3 flex-wrap">
-      <UButton size="sm" variant="outline" @click="startMove">开始沿路径动画</UButton>
+      <UButton size="sm" variant="outline" @click="startMove">开始</UButton>
       <UButton size="sm" variant="outline" @click="resetMarker">重置</UButton>
     </div>
   </div>
@@ -18,43 +18,23 @@ const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
-const startCoord: [number, number] = [121.49, 31.25]
-const pathCoords = [startCoord, [121.5057, 31.248] as [number, number], [121.52, 31.24] as [number, number]]
+const center: [number, number] = [121.5057, 31.2453]
+const translateOffset: [number, number] = [0.025, 0.018]
+const endPt: [number, number] = [center[0] + translateOffset[0], center[1] + translateOffset[1]]
 
-// 逃生舱：工厂模式创建 LineString + Marker
-const { geometry: lineGeo } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(pathCoords, { symbol: { lineColor: '#dc2626', lineWidth: 3, lineDasharray: [8, 4] } }),
+// 逃生舱：工厂模式创建箭头线 + Marker
+useMaptalksGeometry(layer, (mt) =>
+  new mt.LineString([center, endPt], { arrowStyle: 'classic', arrowPlacement: 'vertex-last', symbol: { lineColor: '#dc2626', lineWidth: 4 } }),
 )
 const { geometry: markerGeo } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker(startCoord, { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }),
+  new mt.Marker(center, { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }),
 )
 
-let animating = false
 function startMove() {
-  const marker = toValue(markerGeo)
-  if (!marker || animating) return
-  if (typeof (marker as any).moveAlong === 'function') {
-    (marker as any).moveAlong(toValue(lineGeo), { duration: 4000, easing: 'linear' })
-    return
-  }
-  const path = pathCoords
-  const duration = 4000
-  const steps = 80
-  const interval = duration / steps
-  animating = true
-  let step = 0
-  const timer = setInterval(() => {
-    step++
-    if (step >= steps) { clearInterval(timer); animating = false; return }
-    const t = step / steps
-    const segIdx = Math.floor(t * (path.length - 1))
-    const segT = (t * (path.length - 1)) - segIdx
-    const from = path[segIdx]
-    const to = path[Math.min(segIdx + 1, path.length - 1)]
-    const lon = from[0] + (to[0] - from[0]) * segT
-    const lat = from[1] + (to[1] - from[1]) * segT
-    marker.setCoordinates([lon, lat])
-  }, interval)
+  // 官网核心 API：animate({ translate: [dx, dy] }, { duration, focus })
+  toValue(markerGeo)?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true })
 }
-function resetMarker() { toValue(markerGeo)?.setCoordinates(startCoord) }
+function resetMarker() {
+  toValue(markerGeo)?.setCoordinates(center)
+}
 </script>
