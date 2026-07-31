@@ -13,34 +13,21 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
 
-const origin: [number, number] = [121.5057, 31.2453];
-let geo: unknown = null;
-
-useMaptalksGeometry(layer, (mt) => {
-  geo = new mt.Marker(origin, {
+// 逃生舱：工厂模式创建 Marker
+const { geometry } = useMaptalksGeometry(layer, (mt) =>
+  new mt.Marker([121.5057, 31.2453], {
     symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 },
-  });
-  return geo as any;
-});
+  }),
+)
 
-function moveRight() {
-  if (!geo) return;
-  (geo as { animate: (o: Record<string, unknown>, opts: Record<string, unknown>) => void }).animate(
-    { coordinates: [121.52, 31.25] },
-    { duration: 2000 },
-  );
-}
+const translateOffset: [number, number] = [0.02, 0]
 
-function moveBack() {
-  if (!geo) return;
-  (geo as { animate: (o: Record<string, unknown>, opts: Record<string, unknown>) => void }).animate(
-    { coordinates: origin },
-    { duration: 2000 },
-  );
-}
+// 官网核心 API：geometry.animate({ translate: [dx, dy] }, { duration, focus })
+function moveRight() { toValue(geometry)?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true }) }
+function moveBack() { toValue(geometry)?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true }) }
 </script>
