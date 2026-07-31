@@ -29,8 +29,8 @@ let player: { cancel: () => void } | null = null
 async function startAnim() {
   const mt = await import('maptalks-gl')
   const geo = mRef.value?.geometry
-  if (!geo || typeof (mt as any).animation?.Animation?.animate !== 'function') return
-  player = (mt as any).animation.Animation.animate(
+  if (!geo || typeof mt.animation?.Animation?.animate !== 'function') return
+  player = mt.animation.Animation.animate(
     { symbol: { markerWidth: 80, markerHeight: 80 } },
     { duration: 1000, easing: 'out' },
     (frame: any) => { if (frame.styles) geo.updateSymbol(frame.styles.symbol) },
