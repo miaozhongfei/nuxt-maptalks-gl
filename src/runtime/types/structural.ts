@@ -497,8 +497,6 @@ export interface MaptalksGeometry extends MaptalksClass {
   animate?(styles: Record<string, unknown>, opts?: Record<string, unknown>): Record<string, unknown>;
   /** 带动画 show（Line / Polygon） */
   animateShow?(opts?: Record<string, unknown>, cb?: (...args: unknown[]) => void): MaptalksGeometry;
-  /** 沿路径移动动画 */
-  moveAlong?(path: unknown, opts?: Record<string, unknown>): void;
   /** 开始编辑 */
   startEdit?(options?: Record<string, unknown>): MaptalksGeometry;
   /** 结束编辑 */
