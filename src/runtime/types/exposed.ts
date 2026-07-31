@@ -17,6 +17,7 @@ import type {
   MaptalksLineStringGeometry,
   MaptalksMap,
   MaptalksMapTool,
+  MaptalksMenu,
   MaptalksMarkerGeometry,
   MaptalksMultiLineStringGeometry,
   MaptalksMultiPointGeometry,
@@ -89,6 +90,24 @@ export interface MaptalksInfoWindowExposed {
   /** 显示信息框（可选传坐标） */
   show: (coord?: unknown) => void;
   /** 隐藏信息框 */
+  hide: () => void;
+}
+
+/**
+ * MaptalksMenu 组件 defineExpose 暴露的类型。
+ *
+ * @description 与其他 UI 层一致：实例 + show/hide 命令。
+ *
+ * @example
+ * const menuRef = ref<MaptalksMenuExposed | null>(null)
+ * menuRef.value?.show([121, 31])
+ */
+export interface MaptalksMenuExposed {
+  /** Menu 原生实例（defineExpose 自动解包 ShallowRef） */
+  menu: MaptalksMenu | null;
+  /** 在指定坐标显示菜单 */
+  show: (coordinate?: { x: number; y: number }) => void;
+  /** 隐藏菜单 */
   hide: () => void;
 }
 

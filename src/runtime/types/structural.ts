@@ -26,6 +26,42 @@ export interface MaptalksCoordinate {
 }
 
 /**
+ * 右键菜单项（ui.Menuable mixin）。
+ *
+ * @description 图标/分隔符等扩展字段通过索引签名透传。
+ *
+ * @example
+ * const item: MaptalksMenuItem = { item: '放大', click: () => map.zoomIn() }
+ */
+export interface MaptalksMenuItem {
+  /** 菜单项文本 */
+  item: string;
+  /** 点击回调（返回 false 阻止事件冒泡） */
+  click: (coordinate?: { x: number; y: number }) => void | false;
+  /** 允许携带 maptalks 原生额外字段（disable、children 等） */
+  [key: string]: unknown;
+}
+
+/**
+ * map.setMenu / geometry.setMenu 的选项。
+ *
+ * @description `items` 中 `'-'` 表示分隔线。
+ *
+ * @example
+ * map.setMenu({ width: 160, items: [{ item: '放大', click: () => map.zoomIn() }, '-', { item: '缩小', click: () => map.zoomOut() }] })
+ */
+export interface MaptalksMenuOptions {
+  /** 菜单宽度（px） */
+  width?: number;
+  /** 是否使用自定义容器 */
+  custom?: boolean;
+  /** 菜单项（'-' 表示分隔线） */
+  items: (MaptalksMenuItem | '-')[];
+  /** 允许携带 maptalks 原生额外字段 */
+  [key: string]: unknown;
+}
+
+/**
  * 相机视图描述（用于 animateTo / flyTo 等）。
  *
  * @description 描述目标视图的中心、缩放、俯仰、方位，字段均可选。
@@ -295,6 +331,18 @@ export interface MaptalksMap extends MaptalksClass {
   on(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
   off(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** ui.Menuable || 设置右键菜单（接受 Menu 实例或原始 options） */
+  setMenu(options: MaptalksMenu | MaptalksMenuOptions): this;
+  /** ui.Menuable || 打开右键菜单 */
+  openMenu(coordinate?: { x: number; y: number }): this;
+  /** ui.Menuable || 关闭右键菜单 */
+  closeMenu(): this;
+  /** ui.Menuable || 更新菜单项（保持宽度 / 自定义容器配置不变） */
+  setMenuItems(items: (MaptalksMenuItem | '-')[]): this;
+  /** ui.Menuable || 获取当前菜单项 */
+  getMenuItems(): (MaptalksMenuItem | '-')[];
+  /** ui.Menuable || 移除右键菜单 */
+  removeMenu(): this;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -521,6 +569,18 @@ export interface MaptalksGeometry extends MaptalksClass {
   closeInfoWindow?(): MaptalksGeometry;
   /** 移除 InfoWindow */
   removeInfoWindow?(): MaptalksGeometry;
+  /** ui.Menuable || 设置右键菜单 */
+  setMenu?(options: MaptalksMenuOptions): MaptalksGeometry;
+  /** ui.Menuable || 打开右键菜单 */
+  openMenu?(coordinate?: { x: number; y: number }): MaptalksGeometry;
+  /** ui.Menuable || 关闭右键菜单 */
+  closeMenu?(): MaptalksGeometry;
+  /** ui.Menuable || 更新菜单项 */
+  setMenuItems?(items: (MaptalksMenuItem | '-')[]): MaptalksGeometry;
+  /** ui.Menuable || 获取当前菜单项 */
+  getMenuItems?(): (MaptalksMenuItem | '-')[];
+  /** ui.Menuable || 移除右键菜单 */
+  removeMenu?(): MaptalksGeometry;
   /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
@@ -737,7 +797,19 @@ export interface MaptalksDrawTool extends MaptalksClass {
   on(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
   off(eventTypes: string, handler: MaptalksEventHandler): this;
-  /** 逃生舱口 */
+  /** ui.Menuable || 设置右键菜单 */
+  setMenu(options: MaptalksMenuOptions): this;
+  /** ui.Menuable || 打开右键菜单 */
+  openMenu(coordinate?: { x: number; y: number }): this;
+  /** ui.Menuable || 关闭右键菜单 */
+  closeMenu(): this;
+  /** ui.Menuable || 更新菜单项（保持宽度 / 自定义容器配置不变） */
+  setMenuItems(items: (MaptalksMenuItem | '-')[]): this;
+  /** ui.Menuable || 获取当前菜单项 */
+  getMenuItems(): (MaptalksMenuItem | '-')[];
+  /** ui.Menuable || 移除右键菜单 */
+  removeMenu(): this;
+  /** 逃生舱口：访问任意未建模的原生成员 */
   [key: string]: unknown;
 }
 
@@ -904,7 +976,7 @@ export interface MaptalksGLNamespace {
   /** AreaTool 测量工具构造器 */
   AreaTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
   /** InfoWindow 弹出框构造器 */
-  ui?: { InfoWindow?: new (options?: Record<string, unknown>) => MaptalksInfoWindow; UIMarker?: new (coord: unknown, options?: Record<string, unknown>) => MaptalksUIMarker; };
+  ui?: { InfoWindow?: new (options?: Record<string, unknown>) => MaptalksInfoWindow; UIMarker?: new (coord: unknown, options?: Record<string, unknown>) => MaptalksUIMarker; Menu?: new (options?: Record<string, unknown>) => MaptalksMenu; };
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }
@@ -935,6 +1007,42 @@ export interface MaptalksInfoWindow extends MaptalksClass {
   setTitle(title: string): this;
   /** 获取标题 */
   getTitle(): string;
+  /** 绑定事件 */
+  on?(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 解绑事件 */
+  off?(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 逃生舱口 */
+  [key: string]: unknown;
+}
+
+/**
+ * maptalks ui.Menu 实例的结构化建模。
+ *
+ * @description `ui.Menu` 创建右键菜单实例，需通过 `addTo(map)` 绑定到地图，
+ * `show(coord)` 在指定坐标弹出。支持标准模式（items 数组）与自定义模式（HTML 字符串/元素）。
+ * 继承 `ui.UIComponent`。
+ *
+ * @example
+ * const menu = new mt.ui.Menu({ width: 160, items: [{ item: '放大', click: () => map.zoomIn() }] })
+ * menu.addTo(map)
+ */
+export interface MaptalksMenu extends MaptalksClass {
+  /** 挂载到地图或几何体 */
+  addTo(target: MaptalksMap | unknown): this;
+  /** 从地图移除并销毁 */
+  remove(): void;
+  /** 在指定坐标显示菜单 */
+  show(coordinate?: { x: number; y: number }): this;
+  /** 隐藏菜单 */
+  hide(): this;
+  /** 是否可见 */
+  isVisible(): boolean;
+  /** 设置菜单项（标准模式：items 数组；自定义模式：HTML 字符串或元素） */
+  setItems(items: (MaptalksMenuItem | '-')[] | string | HTMLElement): this;
+  /** 获取菜单项 */
+  getItems(): (MaptalksMenuItem | '-')[] | string | HTMLElement;
+  /** 获取菜单 DOM 元素 */
+  getDOM(): HTMLElement;
   /** 绑定事件 */
   on?(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */

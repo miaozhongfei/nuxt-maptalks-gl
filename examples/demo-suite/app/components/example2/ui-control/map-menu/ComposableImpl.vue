@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grid grid-cols-2 gap-4">
     <div>
       <div
@@ -6,7 +6,7 @@
         class="relative rounded border border-default overflow-hidden"
         style="height: 400px"
       />
-      <p class="text-xs text-muted mt-1">旧 API：map.setMenu() 直接传 options（对应官网 10.1）。</p>
+      <p class="text-xs text-muted mt-1">旧 API：useMaptalks + watch → map.setMenu()（对应官网 10.1）。</p>
     </div>
     <div>
       <div
@@ -14,7 +14,7 @@
         class="relative rounded border border-default overflow-hidden"
         style="height: 400px"
       />
-      <p class="text-xs text-muted mt-1">新封装：new mt.ui.Menu(opts).addTo(map)——ui.Menu 实例模式。</p>
+      <p class="text-xs text-muted mt-1">新封装：useMaptalksMenu composable——items 数组配置。</p>
     </div>
   </div>
 </template>
@@ -35,22 +35,17 @@ watch(() => toValue(map1), (m) => {
   })
 })
 
-// —— 新封装：new mt.ui.Menu().addTo(map) ——
+// —— 新封装：useMaptalksMenu ——
 const el2 = ref<HTMLElement | null>(null)
 const { map: map2 } = useMaptalks(el2, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map2, { source: 'osm' })
-watch(() => toValue(map2), async (m) => {
-  if (!m) return
-  const mt = await import('maptalks-gl')
-  if (!mt.ui?.Menu) return
-  const menu = new mt.ui.Menu({
+useMaptalksMenu(map2, {
+  options: {
     width: 160,
     items: [
-      { item: '放大', click: () => { m.zoomIn() } },
-      { item: '缩小', click: () => { m.zoomOut() } },
+      { item: '放大', click: () => { toValue(map2)?.zoomIn() } },
+      { item: '缩小', click: () => { toValue(map2)?.zoomOut() } },
     ],
-  })
-  menu.addTo(m)
-  m.on('contextmenu', (e: any) => { menu.show(e.coordinate) })
+  },
 })
 </script>
