@@ -115,7 +115,7 @@ watch(
   () => mc3.value?.map,
   (m) => {
     if (!m) return;
-    m.setMenu({ custom: true, items: customEl3 });
+    m.setMenu({ custom: true, items: customEl3 } as any);
   },
 );
 
@@ -126,7 +126,8 @@ const menuOpts4: MaptalksMenuOptions = { custom: true };
 function customMenuEl(
   zoomIn: (() => void) | undefined,
   zoomOut: (() => void) | undefined,
-): HTMLElement {
+): HTMLElement | null {
+  if (typeof document === 'undefined') return null;
   const d = document.createElement('div');
   d.style.cssText = 'padding:2px;min-width:120px';
   const b1 = document.createElement('button');

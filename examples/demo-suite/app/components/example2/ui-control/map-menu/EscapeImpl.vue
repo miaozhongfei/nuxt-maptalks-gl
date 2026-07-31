@@ -81,7 +81,8 @@ watch(
   },
 );
 
-function customEl(zoomIn: () => void, zoomOut: () => void): HTMLElement {
+function customEl(zoomIn: () => void, zoomOut: () => void): HTMLElement | null {
+  if (typeof document === 'undefined') return null;
   const d = document.createElement('div');
   d.style.cssText = 'padding:2px;min-width:120px';
   const b1 = document.createElement('button');
@@ -111,7 +112,7 @@ watch(
       items: customEl(
         () => m.zoomIn(),
         () => m.zoomOut(),
-      ),
+      ) as any,
     });
   },
 );
