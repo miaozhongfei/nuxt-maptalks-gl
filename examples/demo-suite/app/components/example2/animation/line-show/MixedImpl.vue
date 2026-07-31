@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div
-      ref="el"
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
@@ -10,17 +13,15 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 const { layer } = useMaptalksVectorLayer(map)
 
 const path = [[121.49, 31.25], [121.495, 31.248], [121.5057, 31.2453], [121.516, 31.242], [121.522, 31.24]] as [number, number][]
-
-// 逃生舱：工厂模式创建 LineString，直调原生 animateShow
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(path, { visible: false, arrowStyle: 'classic', arrowPlacement: 'vertex-last', symbol: { lineColor: '#dc2626', lineWidth: 4 } }),
-)
+const { geometry } = useMaptalksLineString(layer, {
+  coordinates: path,
+  options: { visible: false, arrowStyle: 'classic', arrowPlacement: 'vertex-last', symbol: { lineColor: '#dc2626', lineWidth: 4 } },
+})
 
 function animateShow() {
   const geo = toValue(geometry)

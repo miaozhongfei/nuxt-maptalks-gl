@@ -16,11 +16,10 @@ useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
 const path = [[121.49, 31.25], [121.495, 31.248], [121.5057, 31.2453], [121.516, 31.242], [121.522, 31.24]] as [number, number][]
-
-// 逃生舱：工厂模式创建 LineString，直调原生 animateShow
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.LineString(path, { visible: false, arrowStyle: 'classic', arrowPlacement: 'vertex-last', symbol: { lineColor: '#dc2626', lineWidth: 4 } }),
-)
+const { geometry } = useMaptalksLineString(layer, {
+  coordinates: path,
+  options: { visible: false, arrowStyle: 'classic', arrowPlacement: 'vertex-last', symbol: { lineColor: '#dc2626', lineWidth: 4 } },
+})
 
 function animateShow() {
   const geo = toValue(geometry)
