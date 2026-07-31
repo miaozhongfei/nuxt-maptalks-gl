@@ -26,6 +26,6 @@ const { geometry } = useMaptalksMarker(layer, {
 
 const translateOffset: [number, number] = [0.02, 0]
 
-function moveRight() { toValue(geometry)?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true }) }
-function moveBack() { toValue(geometry)?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true }) }
+function moveRight() { toValue(geometry)?.bringToFront()?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true }) }
+function moveBack() { toValue(geometry)?.bringToFront()?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true }) }
 </script>

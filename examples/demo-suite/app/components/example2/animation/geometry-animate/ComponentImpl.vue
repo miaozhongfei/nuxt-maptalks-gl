@@ -27,9 +27,9 @@ const mRef = ref<MaptalksMarkerExposed | null>(null)
 const translateOffset: [number, number] = [0.02, 0]
 
 function moveRight() {
-  mRef.value?.geometry?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true })
+  mRef.value?.geometry?.bringToFront()?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true })
 }
 function moveBack() {
-  mRef.value?.geometry?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true })
+  mRef.value?.geometry?.bringToFront()?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true })
 }
 </script>
