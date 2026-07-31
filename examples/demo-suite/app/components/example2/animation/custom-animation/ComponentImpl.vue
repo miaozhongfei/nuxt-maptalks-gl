@@ -1,10 +1,20 @@
 <template>
   <div>
-    <div
-      ref="el"
+    <MaptalksMap
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
-    />
+    >
+      <MaptalksVectorLayer>
+        <MaptalksMarker
+          ref="mRef"
+          :coordinates="[121.5057, 31.2453]"
+          :options="{ symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerFillOpacity: 0.8, markerLineColor: '#fff', markerLineWidth: 3, markerWidth: 20, markerHeight: 20 } }"
+        />
+      </MaptalksVectorLayer>
+    </MaptalksMap>
     <div class="flex items-center gap-3 mt-3">
       <UButton size="sm" variant="outline" @click="startAnim">开始</UButton>
       <UButton size="sm" variant="outline" @click="stopAnim">停止</UButton>
@@ -13,23 +23,12 @@
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
-const { layer } = useMaptalksVectorLayer(map)
-
-// 逃生舱：工厂模式创建 Marker
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker([121.5057, 31.2453], {
-    symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerFillOpacity: 0.8, markerLineColor: '#fff', markerLineWidth: 3, markerWidth: 20, markerHeight: 20 },
-  }),
-)
-
+const mRef = ref<MaptalksMarkerExposed | null>(null)
 let player: { cancel: () => void } | null = null
 
 async function startAnim() {
   const mt = await import('maptalks-gl')
-  const geo = toValue(geometry)
+  const geo = mRef.value?.geometry
   if (!geo || typeof (mt as any).animation?.Animation?.animate !== 'function') return
   player = (mt as any).animation.Animation.animate(
     { symbol: { markerWidth: 80, markerHeight: 80 } },

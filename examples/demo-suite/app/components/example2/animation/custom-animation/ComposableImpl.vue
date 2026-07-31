@@ -17,13 +17,10 @@ const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
-
-// 逃生舱：工厂模式创建 Marker
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
-  new mt.Marker([121.5057, 31.2453], {
-    symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerFillOpacity: 0.8, markerLineColor: '#fff', markerLineWidth: 3, markerWidth: 20, markerHeight: 20 },
-  }),
-)
+const { geometry } = useMaptalksMarker(layer, {
+  coordinates: [121.5057, 31.2453],
+  options: { symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerFillOpacity: 0.8, markerLineColor: '#fff', markerLineWidth: 3, markerWidth: 20, markerHeight: 20 } },
+})
 
 let player: { cancel: () => void } | null = null
 
