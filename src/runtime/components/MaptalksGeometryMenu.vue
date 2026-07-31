@@ -107,6 +107,7 @@ watch(() => menu.value, (v) => {
 onUpdated(() => {
   if (!props.options?.custom) return
   if (skipNextUpdate) { skipNextUpdate = false; return }
+  if (menu.value?.isVisible?.()) return
   mountSlotContent()
 })
 

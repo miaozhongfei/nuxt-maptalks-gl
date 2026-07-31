@@ -1,20 +1,20 @@
-﻿<template>
+<template>
   <div class="grid grid-cols-2 gap-3">
     <div>
       <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height: 280px" />
-      <p class="text-xs text-muted mt-1">旧 API + 简单 DOM：setMenu({ custom: true, items: el })——放大/缩小按钮。</p>
+      <p class="text-xs text-muted mt-1">旧 API + 简单 DOM：setMenu({ custom: true, items: el })。</p>
     </div>
     <div>
       <div ref="el2" class="relative rounded border border-default overflow-hidden" style="height: 280px" />
-      <p class="text-xs text-muted mt-1">新封装 + 简单 DOM：new mt.ui.Menu({ custom: true })——放大/缩小按钮。</p>
+      <p class="text-xs text-muted mt-1">新封装 + 简单 DOM：useMaptalksMenu({ custom: true, items: el })。</p>
     </div>
     <div>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height: 280px" />
-      <p class="text-xs text-muted mt-1">旧 API + 复杂表单：setMenu({ custom: true })——输入坐标 + 搜索按钮。</p>
+      <p class="text-xs text-muted mt-1">旧 API + 复杂表单：setMenu({ custom: true })——输入坐标 + 搜索。</p>
     </div>
     <div>
       <div ref="el4" class="relative rounded border border-default overflow-hidden" style="height: 280px" />
-      <p class="text-xs text-muted mt-1">新封装 + 复杂表单：new mt.ui.Menu({ custom: true })——输入坐标 + 搜索按钮。</p>
+      <p class="text-xs text-muted mt-1">新封装 + 复杂表单：useMaptalksMenu({ custom: true })——输入坐标 + 搜索。</p>
     </div>
   </div>
 </template>
@@ -35,20 +35,16 @@ function simpleEl(zoomIn: () => void, zoomOut: () => void): HTMLElement {
 function formEl(search: (v: string) => void): HTMLElement {
   const d = document.createElement('div'); d.style.cssText = 'padding:4px;min-width:180px'
   const lbl = document.createElement('div'); lbl.textContent = '输入坐标（如 121.5,31.2）：'; lbl.style.cssText = 'font-size:12px;margin-bottom:4px;color:#666'
-  const inp = document.createElement('input')
-  inp.style.cssText = 'width:100%;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:13px;margin-bottom:4px;box-sizing:border-box'
-  const btn = document.createElement('button'); btn.textContent = '搜索'
-  btn.style.cssText = 'width:100%;padding:3px 0;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer'
+  const inp = document.createElement('input'); inp.style.cssText = 'width:100%;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:13px;margin-bottom:4px;box-sizing:border-box'
+  const btn = document.createElement('button'); btn.textContent = '搜索'; btn.style.cssText = 'width:100%;padding:3px 0;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer'
   btn.addEventListener('click', (e) => { e.stopPropagation(); search(inp.value) })
   d.append(lbl, inp, btn)
   return d
 }
 
-function parseCoordAndFly(m: maptalks.Map | any, s: string) {
+function flyToCoord(m: any, s: string) {
   const parts = s.split(',').map(Number)
-  if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-    m.flyTo({ center: parts, zoom: 16 })
-  }
+  if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) m.flyTo({ center: parts, zoom: 16 })
 }
 
 // —— 旧 API + 简单 DOM ——
@@ -61,31 +57,17 @@ watch(() => toValue(map1), (m) => { if (m) m.setMenu({ custom: true, items: simp
 const el2 = ref<HTMLElement | null>(null)
 const { map: map2 } = useMaptalks(el2, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map2, { source: 'osm' })
-watch(() => toValue(map2), async (m) => {
-  if (!m) return
-  const mt = await import('maptalks-gl')
-  if (!mt.ui?.Menu) return
-  const mu = new mt.ui.Menu({ custom: true, items: simpleEl(() => m.zoomIn(), () => m.zoomOut()) } as any)
-  mu.addTo(m as any)
-  m.on('contextmenu', (e: any) => mu.show(e.coordinate))
-})
+useMaptalksMenu(map2, { options: { custom: true, items: simpleEl(() => toValue(map2)?.zoomIn?.(), () => toValue(map2)?.zoomOut?.()) } })
 
 // —— 旧 API + 复杂表单 ——
 const el3 = ref<HTMLElement | null>(null)
 const { map: map3 } = useMaptalks(el3, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map3, { source: 'osm' })
-watch(() => toValue(map3), (m) => { if (m) m.setMenu({ custom: true, items: formEl((v) => parseCoordAndFly(m, v)) }) })
+watch(() => toValue(map3), (m) => { if (m) m.setMenu({ custom: true, items: formEl((v) => flyToCoord(m, v)) }) })
 
 // —— 新封装 + 复杂表单 ——
 const el4 = ref<HTMLElement | null>(null)
 const { map: map4 } = useMaptalks(el4, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map4, { source: 'osm' })
-watch(() => toValue(map4), async (m) => {
-  if (!m) return
-  const mt = await import('maptalks-gl')
-  if (!mt.ui?.Menu) return
-  const mu = new mt.ui.Menu({ custom: true, items: formEl((v) => parseCoordAndFly(m, v)) } as any)
-  mu.addTo(m as any)
-  m.on('contextmenu', (e: any) => mu.show(e.coordinate))
-})
+useMaptalksMenu(map4, { options: { custom: true, items: formEl((v) => flyToCoord(toValue(map4), v)) } })
 </script>
