@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 400px" />
     <div class="mt-3 flex items-center gap-6">
@@ -11,7 +11,7 @@
         <USwitch v-model="fadeInOn" />
       </div>
     </div>
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：直接改每个 uiMarker.options.collision（零重建）（对应官网 10.9）。</p>
+    <p class="text-sm text-muted mt-2">useMaptalksUIMarker 循环 21 个——options getter 共享开关 ref，响应式重建（对应官网 10.9）。</p>
   </div>
 </template>
 
@@ -34,29 +34,17 @@ const { map } = useMaptalks(el, { center: [121.49, 31.245], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const COLORS = ['#dc2626', '#2563eb', '#10b981']
-let uims: { options: Record<string, unknown> }[] = []
-watch(() => toValue(map), async (m) => {
-  if (!m) return
-  const mt = await import('maptalks-gl')
-  const ui = (mt as any).ui
-  uims = MARKERS.map((mk, idx) => {
-    const uim = new ui.UIMarker(mk.coord, {
-      content: `<div style="background:${COLORS[idx % 3]};color:#fff;padding:2px 6px;border-radius:3px;font-size:12px;white-space:nowrap">${mk.label}</div>`,
-      collision: true,
+// 循环创建 21 个 UIMarker，options getter 共享碰撞开关
+MARKERS.forEach((m, idx) => {
+  useMaptalksUIMarker(map, {
+    options: () => ({
+      content: `<div style="background:${COLORS[idx % 3]};color:#fff;padding:2px 6px;border-radius:3px;font-size:12px;white-space:nowrap">${m.label}</div>`,
+      collision: collisionOn.value,
       collisionBufferSize: 2,
-      collisionWeight: mk.weight,
-      collisionFadeIn: true,
-    })
-    uim.addTo(m as any)
-    return uim
-  })
-}, { immediate: true })
-
-// 官网原生方式：下拉变化 → 直接改每个 uiMarker.options，零重建
-watch([collisionOn, fadeInOn], ([c, f]) => {
-  uims.forEach((u) => {
-    u.options.collision = c
-    u.options.collisionFadeIn = f
+      collisionWeight: m.weight,
+      collisionFadeIn: fadeInOn.value,
+      coordinates: m.coord,
+    }),
   })
 })
 </script>
