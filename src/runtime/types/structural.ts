@@ -1063,6 +1063,8 @@ export interface MaptalksUIMarker extends MaptalksClass {
   show(): this;
   /** 隐藏标注 */
   hide(): this;
+  /** 是否可见 */
+  isVisible(): boolean;
   /** 是否可拖拽 */
   isDraggable(): boolean;
   /** 设置坐标 */

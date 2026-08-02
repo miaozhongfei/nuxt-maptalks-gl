@@ -106,8 +106,10 @@ watch(() => uiMarker.value, (v) => {
 }, { immediate: true })
 
 // 父组件更新时重新 mount（show() 触发的更新跳过）
+// UIMarker 可见时跳过重挂载——避免 slot 内输入/交互触发重建导致中断（与 MaptalksMenu/InfoWindow 一致）
 onUpdated(() => {
   if (skipNextUpdate) { skipNextUpdate = false; return; }
+  if (uiMarker.value?.isVisible?.()) return;
   mountSlotContent();
 })
 

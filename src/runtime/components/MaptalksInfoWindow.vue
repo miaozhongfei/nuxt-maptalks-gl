@@ -98,8 +98,10 @@ watch(() => infoWindow.value, (v) => {
 }, { immediate: true })
 
 // 父组件更新时重新 mount（show() 触发的更新跳过，避免打断动画）
+// 弹框可见时跳过重挂载——避免 slot 内输入/交互（v-model 等）触发重建导致弹框中断
 onUpdated(() => {
   if (skipNextUpdate) { skipNextUpdate = false; return; }
+  if (infoWindow.value?.isVisible?.()) return;
   mountSlotContent();
 })
 
