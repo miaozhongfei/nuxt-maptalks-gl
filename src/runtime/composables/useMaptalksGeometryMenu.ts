@@ -1,5 +1,6 @@
 import { onScopeDispose, shallowRef, toValue, watch } from 'vue'
 import type { MaybeRefOrGetter, ShallowRef } from 'vue'
+import { dequal } from 'dequal'
 
 import { MaptalksError, toMaptalksError } from '../core/errors'
 import { loadMaptalks } from '../core/loader'
@@ -45,15 +46,22 @@ function unbindEvents(menu: MaptalksMenu, events: Record<string, MaptalksEventHa
   }
 }
 
+/** 提取 options 中除 items 外的部分（items 变化走 setItems 增量，不走 reload 重建） */
+function buildRest(opts: UseMaptalksGeometryMenuOpts): Record<string, unknown> | undefined {
+  const raw = toValue(opts.options)
+  if (!raw) return undefined
+  const { items: _, ...rest } = raw as Record<string, unknown>
+  return rest
+}
+
 /** 移除 Menu 实例并清理 watcher/events/contextmenu 绑定，路由切换时几何体可能已销毁，对 remove 用 try-catch 兜底 */
 function removeMenu(
   menuRef: ShallowRef<MaptalksMenu | null>,
-  s1: () => void,
-  s2: () => void,
+  stops: (() => void)[],
   events: Record<string, MaptalksEventHandler>,
   contextmenuCleanup: (() => void) | null,
 ): void {
-  s1(); s2()
+  for (const s of stops) s()
   const menu = menuRef.value
   if (!menu) return
   unbindEvents(menu, events)
@@ -88,6 +96,8 @@ export function useMaptalksGeometryMenu(
 ): UseMaptalksGeometryMenuReturn {
   const menu = shallowRef<MaptalksMenu | null>(null)
   let creating = false
+  // prevRest 在 reload 创建成功后捕获——后续仅 items 变化时 dequal 命中跳过重建，菜单不重建
+  let prevRest: Record<string, unknown> | undefined
   let contextmenuCleanup: (() => void) | null = null
   const events = opts.events ?? {}
 
@@ -117,6 +127,8 @@ export function useMaptalksGeometryMenu(
       contextmenuCleanup = () => geo.off('contextmenu', cmHandler)
       bindEvents(mnu, events)
       menu.value = mnu
+      // 创建成功后同步捕获 prevRest——items 变化不再触发 reload 重建
+      prevRest = buildRest(opts)
     } catch (cause) {
       logger.error('GeometryMenu 创建失败', toMaptalksError(cause, 'control-failed', 'GeometryMenu 创建失败'))
     } finally {
@@ -124,7 +136,17 @@ export function useMaptalksGeometryMenu(
     }
   }
 
-  const stop1 = watch([() => toValue(geometry), () => toValue(opts.options)], reload, { immediate: true })
+  // geometry 就绪 → 创建/重建
+  const stop1Target = watch(() => toValue(geometry), (g) => { if (g) void reload() }, { immediate: true })
+  // options（不含 items）真实变化 → 重建；items 由 stop2 增量处理（菜单不重建）
+  const stop1Rest = watch(
+    () => buildRest(opts),
+    (rest) => {
+      if (!rest || dequal(rest, prevRest)) return
+      prevRest = rest
+      void reload()
+    },
+  )
 
   const stop2 = watch(
     () => { const r = toValue(opts.options); return r ? toValue(r.items as MaybeRefOrGetter<(MaptalksMenuItem | '-')[] | undefined> | undefined) : undefined },
@@ -134,6 +156,6 @@ export function useMaptalksGeometryMenu(
   function show(coordinate?: { x: number; y: number }): void { requestAnimationFrame(() => menu.value?.show(coordinate)) }
   function hide(): void { menu.value?.hide() }
 
-  if (opts.autoDispose !== false) onScopeDispose(() => removeMenu(menu, stop1, stop2, events, contextmenuCleanup))
-  return { menu, show, hide, remove: () => removeMenu(menu, stop1, stop2, events, contextmenuCleanup) }
+  if (opts.autoDispose !== false) onScopeDispose(() => removeMenu(menu, [stop1Target, stop1Rest, stop2], events, contextmenuCleanup))
+  return { menu, show, hide, remove: () => removeMenu(menu, [stop1Target, stop1Rest, stop2], events, contextmenuCleanup) }
 }
