@@ -29,11 +29,19 @@ interface GeometryInfoWindowOptions {
 /** 带 setInfoWindow/openInfoWindow/closeInfoWindow 的原生 Marker 接口 */
 interface NativeMarker {
   setInfoWindow(opts: GeometryInfoWindowOptions): void;
-  getInfoWindow(): { setContent(content: string | HTMLElement): void; on?(event: string, handler: MaptalksEventHandler): void; off?(event: string, handler: MaptalksEventHandler): void } | null;
+  getInfoWindow(): NativeInfoWindow | null;
   openInfoWindow(): void;
   closeInfoWindow(): void;
   on(event: string, handler: MaptalksEventHandler): void;
   off(event: string, handler: MaptalksEventHandler): void;
+}
+
+/** 原生 InfoWindow 实例接口（getInfoWindow() 返回值，含 isVisible 供组件守卫判断） */
+interface NativeInfoWindow {
+  setContent(content: string | HTMLElement): void;
+  on?(event: string, handler: MaptalksEventHandler): void;
+  off?(event: string, handler: MaptalksEventHandler): void;
+  isVisible?(): boolean;
 }
 
 /**
@@ -63,13 +71,17 @@ export interface UseMaptalksGeometryInfoWindowOpts {
 /**
  * useMaptalksGeometryInfoWindow 的返回值。
  *
- * @description 提供 Marker 级信息框的三项控制：`show`（弹出）、`hide`（关闭）、`remove`（移除配置并关闭）。
+ * @description 提供 Marker 级信息框的控制：`infoWindow`（原生实例 ref）、`show`（弹出）、`hide`（关闭）、
+ * `remove`（移除配置并关闭）。
  *
  * @example
- * const { show, hide, remove } = useMaptalksGeometryInfoWindow(geometry, { options: { title: '站点' } });
+ * const { infoWindow, show, hide, remove } = useMaptalksGeometryInfoWindow(geometry, { options: { title: '站点' } });
  * show(); // 弹出该 Marker 的信息框
+ * infoWindow.value?.isVisible?.(); // 判断是否可见
  */
 export interface UseMaptalksGeometryInfoWindowReturn {
+  /** 原生 InfoWindow 实例（geometry 就绪并 setInfoWindow 后非 null，用 ShallowRef 避免响应式深代理） */
+  infoWindow: ShallowRef<NativeInfoWindow | null>;
   /** 显示该 Marker 的信息框 */
   show: () => void;
   /** 隐藏该 Marker 的信息框 */
@@ -86,7 +98,7 @@ export interface UseMaptalksGeometryInfoWindowReturn {
  * 自动弹出、点击别处自动关闭，不需手动操控坐标；内容/标题支持响应式更新。
  * @param {MaybeRefOrGetter<MaptalksGeometry | null>} geometry - useMaptalksMarker 返回的 geometry
  * @param {UseMaptalksGeometryInfoWindowOpts} [opts] - 信息框配置（options/events/autoDispose）
- * @returns {UseMaptalksGeometryInfoWindowReturn} `{ show, hide, remove }`
+ * @returns {UseMaptalksGeometryInfoWindowReturn} `{ infoWindow, show, hide, remove }`
  *
  * @example
  * const { geometry } = useMaptalksMarker(layer, { coordinates: [113.27, 23.13] });
@@ -114,6 +126,7 @@ function setupMarkerIW(
   opts: UseMaptalksGeometryInfoWindowOpts,
   hasSet: ShallowRef<boolean>,
   events: Record<string, MaptalksEventHandler>,
+  infoWindow: ShallowRef<NativeInfoWindow | null>,
 ): void {
   // prevRest 需在 watch #1 之前声明：watch #1 immediate 回调同步执行时会初始化它，避免 TDZ
   let prevRest: Record<string, unknown> | undefined;
@@ -165,6 +178,8 @@ function setupMarkerIW(
       return m?.getInfoWindow?.() ?? null;
     },
     (iw) => {
+      // 同步实例到 infoWindow ref——组件与用户可经其做 isVisible 判断 / setContent 增量更新
+      infoWindow.value = iw;
       if (!iw) return;
       for (const [event, handler] of Object.entries(events)) {
         iw.on?.(event, handler);
@@ -179,7 +194,9 @@ export function useMaptalksGeometryInfoWindow(
 ): UseMaptalksGeometryInfoWindowReturn {
   const events = opts.events ?? {};
   const hasSet = shallowRef(false);
-  setupMarkerIW(geometry, opts, hasSet, events);
+  // 原生 InfoWindow 实例 ref——geometry 就绪并 setInfoWindow 后由事件透传 watch 同步
+  const infoWindow = shallowRef<NativeInfoWindow | null>(null);
+  setupMarkerIW(geometry, opts, hasSet, events, infoWindow);
 
   const show = (): void => {
     (toValue(geometry) as NativeMarker | null)?.openInfoWindow();
@@ -195,5 +212,5 @@ export function useMaptalksGeometryInfoWindow(
   }
 
   if (opts.autoDispose ?? true) onScopeDispose(remove);
-  return { show, hide, remove };
+  return { infoWindow, show, hide, remove };
 }
