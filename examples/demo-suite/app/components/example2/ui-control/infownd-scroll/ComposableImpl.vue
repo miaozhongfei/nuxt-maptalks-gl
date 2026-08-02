@@ -20,12 +20,6 @@
 </template>
 
 <script setup lang="ts">
-type IWHandle = {
-  show: (c: unknown) => void
-  hide: () => void
-  setContent: (c: string | HTMLElement) => void
-}
-
 const LONG_TEXT = [
   '<div style="max-height:200px;overflow:auto;padding:4px">',
   ...Array.from({ length: 50 }, (_, i) => `<p style="margin:2px 0;font-size:13px">第 ${i + 1} 行：InfoWindow 滚动内容示例</p>`),
@@ -51,38 +45,31 @@ const MIXED_HTML = [
   '</div>',
 ].join('')
 
-async function createIW(m: MaptalksMap, title: string, content: string, enableScrollbar?: boolean): Promise<IWHandle | null> {
-  const mt = await import('maptalks-gl')
-  // 原生构造器在 mt.ui.InfoWindow（非顶层 mt.InfoWindow）
-  if (!mt.ui?.InfoWindow) return null
-  const iw = enableScrollbar === undefined
-    ? new mt.ui.InfoWindow({ title, content } as any)
-    : new mt.ui.InfoWindow({ title, content, enableScrollbar } as any)
-  iw.addTo(m as any)
-  return iw as unknown as IWHandle
-}
-
 // —— 左上：长文本列表 ——
 const el1 = ref<HTMLElement | null>(null)
 const { map: map1 } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map1, { source: 'osm' })
-watch(() => toValue(map1), async (m) => { if (m) { const iw = await createIW(m, '长文本列表', LONG_TEXT); iw?.show([121.5057, 31.2453]) } }, { immediate: true })
+const { show: showIW1 } = useMaptalksInfoWindow(map1, { options: { title: '长文本列表', content: LONG_TEXT } })
+onMounted(() => { showIW1([121.5057, 31.2453]) })
 
 // —— 右上：长表格 ——
 const el2 = ref<HTMLElement | null>(null)
 const { map: map2 } = useMaptalks(el2, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map2, { source: 'osm' })
-watch(() => toValue(map2), async (m) => { if (m) { const iw = await createIW(m, '长表格', TABLE_HTML); iw?.show([121.5057, 31.2453]) } }, { immediate: true })
+const { show: showIW2 } = useMaptalksInfoWindow(map2, { options: { title: '长表格', content: TABLE_HTML } })
+onMounted(() => { showIW2([121.5057, 31.2453]) })
 
 // —— 左下：混合富内容 ——
 const el3 = ref<HTMLElement | null>(null)
 const { map: map3 } = useMaptalks(el3, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map3, { source: 'osm' })
-watch(() => toValue(map3), async (m) => { if (m) { const iw = await createIW(m, '混合内容', MIXED_HTML); iw?.show([121.5057, 31.2453]) } }, { immediate: true })
+const { show: showIW3 } = useMaptalksInfoWindow(map3, { options: { title: '混合内容', content: MIXED_HTML } })
+onMounted(() => { showIW3([121.5057, 31.2453]) })
 
 // —— 右下：enableScrollbar ——
 const el4 = ref<HTMLElement | null>(null)
 const { map: map4 } = useMaptalks(el4, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map4, { source: 'osm' })
-watch(() => toValue(map4), async (m) => { if (m) { const iw = await createIW(m, 'enableScrollbar', LONG_TEXT, true); iw?.show([121.5057, 31.2453]) } }, { immediate: true })
+const { show: showIW4 } = useMaptalksInfoWindow(map4, { options: { title: 'enableScrollbar', content: LONG_TEXT, enableScrollbar: true } })
+onMounted(() => { showIW4([121.5057, 31.2453]) })
 </script>
