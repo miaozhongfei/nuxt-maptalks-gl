@@ -47,7 +47,9 @@ const geometry = inject(GEOMETRY_KEY)
 if (!geometry) throw new Error('[nuxt-maptalks-gl] MaptalksGeometryInfoWindow 必须在提供 GEOMETRY_KEY 的几何体组件内使用')
 
 const slots = defineSlots()
+// show() 触发的更新标记：下次 onUpdated 时跳过重挂载，避免打断弹出动画
 let skipNextUpdate = false
+// slot 内容 Vue 子应用实例（重挂载前先 unmount 旧实例）
 let slotApp: App | null = null
 
 // dequal 深比较防内联字面量每次渲染触发 composable 重建
@@ -67,6 +69,7 @@ watch(
   { immediate: true },
 )
 
+// 传给 composable 的选项：options 走 stableOpts 稳定引用（防内联字面量触发重建），events/autoDispose 直接透传
 const iwOpts: UseMaptalksGeometryInfoWindowOpts = {
   options: () => stableOpts.value,
   events: props.events,
