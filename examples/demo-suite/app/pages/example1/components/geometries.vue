@@ -21,7 +21,7 @@
           <MaptalksMarker
             :coordinates="[121.47, 31.23]"
             :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
-            @click="lastClick = 'Marker 被点击'"
+            @click="() => { lastClick = 'Marker 被点击' }"
           />
           <!-- 文字标签 -->
           <MaptalksLabel

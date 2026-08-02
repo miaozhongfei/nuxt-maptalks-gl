@@ -16,7 +16,7 @@
           <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:22,markerHeight:22} }" @click="onMarkerClick('A',[121.47,31.23])" />
           <MaptalksMarker :coordinates="[121.5,31.24]" :options="{ symbol: {markerType:'ellipse',markerFill:'#dc2626',markerWidth:22,markerHeight:22} }" @click="onMarkerClick('B',[121.5,31.24])" />
         </MaptalksVectorLayer>
-         <MaptalksInfoWindow ref="iwRef" :coordinates="mkCoord" :visible="showMK"><div style="min-width:180px"><strong>Marker {{ mkLabel }}</strong><p>[{{ mkCoord[0].toFixed(5) }}, {{ mkCoord[1].toFixed(5) }}]</p><p>{{ mkTime }}</p><div style="display:flex;gap:4px"><button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="mkCount+=1">👍 {{ mkCount }}</button><button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="iwRef?.hide()">关闭</button></div></div></MaptalksInfoWindow>
+         <MaptalksInfoWindow ref="iwRef" :coordinates="mkCoord" :visible="showMK"><div style="min-width:180px"><strong>Marker {{ mkLabel }}</strong><p>[{{ mkCoord[0].toFixed(5) }}, {{ mkCoord[1].toFixed(5) }}]</p><p>{{ mkTime }}</p><div style="display:flex;gap:4px"><button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="() => { mkCount += 1 }">👍 {{ mkCount }}</button><button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="iwRef?.hide()">关闭</button></div></div></MaptalksInfoWindow>
       </MaptalksMap>
       <template #footer><span class="text-sm text-muted">点蓝/红 Marker。</span></template>
     </UCard>
@@ -26,7 +26,7 @@
       <p class="text-sm text-muted mb-2"><code>&lt;MaptalksGeometryInfoWindow&gt;</code> 放在 <code>&lt;MaptalksMarker&gt;</code> 内，autoOpenOn 默认 'click' 处理打开，<code>@click</code> 只绑关闭按钮；关闭通过 expose 的 <code>hide()</code> 调 <code>closeInfoWindow</code>。</p>
       <MaptalksMap ref="mapCmp3" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:400px" baseLayer="osm">
         <MaptalksVectorLayer>
-          <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24} }" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwA)">
+          <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24} }" @click="() => { cmpOpenTime = Date.now(); bindCloseBtn(miwA) }">
             <MaptalksGeometryInfoWindow ref="miwA" :options="{ title: '', custom: true }">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>东门店 A</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
@@ -34,7 +34,7 @@
               </div>
             </MaptalksGeometryInfoWindow>
           </MaptalksMarker>
-          <MaptalksMarker :coordinates="[121.5,31.24]" :options="{ symbol: {markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24} }" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwB)">
+          <MaptalksMarker :coordinates="[121.5,31.24]" :options="{ symbol: {markerType:'ellipse',markerFill:'#dc2626',markerWidth:24,markerHeight:24} }" @click="() => { cmpOpenTime = Date.now(); bindCloseBtn(miwB) }">
             <MaptalksGeometryInfoWindow ref="miwB" :options="{ title: '', custom: true }">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>西门店 B</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
@@ -42,7 +42,7 @@
               </div>
             </MaptalksGeometryInfoWindow>
           </MaptalksMarker>
-          <MaptalksMarker :coordinates="[121.52,31.22]" :options="{ symbol: {markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24} }" @click="cmpOpenTime = Date.now(); bindCloseBtn(miwC)">
+          <MaptalksMarker :coordinates="[121.52,31.22]" :options="{ symbol: {markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24} }" @click="() => { cmpOpenTime = Date.now(); bindCloseBtn(miwC) }">
             <MaptalksGeometryInfoWindow ref="miwC" :options="{ title: '', custom: true }">
               <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                 <div style="background:#16a34a;color:#fff;padding:4px 10px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center"><span>南门店 C</span><span class="mt-miw-close" style="cursor:pointer;font-size:16px;line-height:1">×</span></div>
@@ -52,7 +52,7 @@
           </MaptalksMarker>
         </MaptalksVectorLayer>
       </MaptalksMap>
-      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="cmpAutoClose = !cmpAutoClose">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="primary" variant="soft" @click="miwA?.show()">打开东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.show()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.show()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机</span></div></template>
+      <template #footer><div class="flex gap-2 items-center flex-wrap"><UButton size="sm" :color="cmpAutoClose ? 'success' : 'neutral'" variant="soft" @click="() => { cmpAutoClose = !cmpAutoClose }">点别处关闭：{{ cmpAutoClose ? '开' : '关' }}</UButton><UButton size="sm" color="primary" variant="soft" @click="miwA?.show()">打开东门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwB?.show()">打开西门店</UButton><UButton size="sm" color="primary" variant="soft" @click="miwC?.show()">打开南门店</UButton><UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机</UButton><UButton size="sm" color="error" variant="soft" @click="randomClose">关闭全部</UButton><span class="text-sm text-muted">open() 直调 + 随机</span></div></template>
     </UCard>
   </div>
 </template>

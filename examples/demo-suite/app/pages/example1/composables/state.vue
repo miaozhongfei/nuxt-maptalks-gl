@@ -22,10 +22,10 @@
         <div class="flex flex-col gap-2">
           <div class="flex gap-2 items-center flex-wrap">
             <span class="text-sm text-muted">同步模式：</span>
-            <UButton size="sm" :variant="syncMode === 'mutual' ? 'solid' : 'soft'" @click="syncMode = 'mutual'">
+            <UButton size="sm" :variant="syncMode === 'mutual' ? 'solid' : 'soft'" @click="() => { syncMode = 'mutual' }">
               双向 mutual
             </UButton>
-            <UButton size="sm" :variant="syncMode === 'master-slave' ? 'solid' : 'soft'" @click="syncMode = 'master-slave'">
+            <UButton size="sm" :variant="syncMode === 'master-slave' ? 'solid' : 'soft'" @click="() => { syncMode = 'master-slave' }">
               主从 master-slave
             </UButton>
           </div>

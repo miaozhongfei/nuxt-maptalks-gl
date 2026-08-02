@@ -52,7 +52,7 @@
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height: 380px" />
       <template #footer>
         <div class="flex gap-2 items-center flex-wrap">
-          <UButton size="sm" :color="autoClose ? 'success' : 'neutral'" variant="soft" @click="autoClose = !autoClose">
+          <UButton size="sm" :color="autoClose ? 'success' : 'neutral'" variant="soft" @click="() => { autoClose = !autoClose }">
             点别处自动关闭：{{ autoClose ? '开' : '关' }}
           </UButton>
           <UButton size="sm" color="warning" variant="soft" @click="randomOpen">随机打开一个</UButton>

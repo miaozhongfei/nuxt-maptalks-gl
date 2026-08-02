@@ -7,7 +7,7 @@
       <UCard>
         <template #header><h2 class="font-semibold">图层透明度</h2></template>
         <div ref="el1" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-        <template #footer><div class="flex gap-2 items-center"><UButton size="sm" @click="opacity=1">100%</UButton><UButton size="sm" @click="opacity=0.6">60%</UButton><UButton size="sm" @click="opacity=0.3">30%</UButton><span class="text-sm text-muted">当前：{{ Math.round(opacity * 100) }}%</span></div></template>
+        <template #footer><div class="flex gap-2 items-center"><UButton size="sm" @click="() => { opacity = 1 }">100%</UButton><UButton size="sm" @click="() => { opacity = 0.6 }">60%</UButton><UButton size="sm" @click="() => { opacity = 0.3 }">30%</UButton><span class="text-sm text-muted">当前：{{ Math.round(opacity * 100) }}%</span></div></template>
       </UCard>
 
       <UCard>

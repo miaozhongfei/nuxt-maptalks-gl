@@ -18,9 +18,9 @@
 
       <div class="flex gap-2 flex-wrap items-center mb-3">
         <span class="text-sm text-muted">父容器高度：</span>
-        <UButton size="sm" color="neutral" @click="boxHeight = 300">300px</UButton>
-        <UButton size="sm" color="neutral" @click="boxHeight = 460">460px</UButton>
-        <UButton size="sm" color="neutral" @click="boxHeight = 620">620px</UButton>
+        <UButton size="sm" color="neutral" @click="() => { boxHeight = 300 }">300px</UButton>
+        <UButton size="sm" color="neutral" @click="() => { boxHeight = 460 }">460px</UButton>
+        <UButton size="sm" color="neutral" @click="() => { boxHeight = 620 }">620px</UButton>
         <span class="text-sm text-muted">当前 {{ boxHeight }}px（也可拖动容器右下角手动缩放）</span>
       </div>
 

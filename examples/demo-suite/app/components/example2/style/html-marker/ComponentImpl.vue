@@ -25,7 +25,7 @@
       </MaptalksUIMarker>
     </MaptalksMap>
     <div class="mt-3 flex items-center gap-2">
-      <UButton size="sm" @click="show = !show">{{ show ? '隐藏' : '显示' }}marker</UButton>
+      <UButton size="sm" @click="() => { show = !show }">{{ show ? '隐藏' : '显示' }}marker</UButton>
       <UButton size="sm" @click="swapContent">替换内容</UButton>
       <span class="text-sm text-muted">当前内容: {{ text }}</span>
     </div>

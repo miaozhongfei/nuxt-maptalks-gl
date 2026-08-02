@@ -14,8 +14,8 @@
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#2563eb;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">东门店</div>
                   <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
-                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countA++">👍 {{ countA }}</button>
-                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countA=0">重置</button>
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="() => { countA++ }">👍 {{ countA }}</button>
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="() => { countA = 0 }">重置</button>
                   </div>
                 </div>
               </MaptalksGeometryInfoWindow>
@@ -25,8 +25,8 @@
                 <div style="min-width:160px;border-radius:4px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,0.12)">
                   <div style="background:#dc2626;color:#fff;padding:4px 10px;font-size:13px;font-weight:600">西门店</div>
                   <div style="background:#fff;padding:4px 8px;display:flex;gap:4px">
-                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countB++">👍 {{ countB }}</button>
-                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="countB=0">重置</button>
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="() => { countB++ }">👍 {{ countB }}</button>
+                    <button style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px" @click="() => { countB = 0 }">重置</button>
                   </div>
                 </div>
               </MaptalksGeometryInfoWindow>

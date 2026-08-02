@@ -21,7 +21,7 @@
             <MaptalksGeometryInfoWindow ref="miw2" :options="opts2">
               <div class="p-2 min-w-35">
                 <div class="text-sm mb-1">计数器：<b>{{ count }}</b></div>
-                <UButton size="xs" color="primary" @click="count++">点击 +1</UButton>
+                <UButton size="xs" color="primary" @click="() => { count++ }">点击 +1</UButton>
               </div>
             </MaptalksGeometryInfoWindow>
           </MaptalksMarker>
