@@ -100,6 +100,14 @@ function buildMarkerIWOptions(opts: UseMaptalksGeometryInfoWindowOpts): Geometry
   return { ...toValue(opts.options) } as GeometryInfoWindowOptions;
 }
 
+/** 提取 options 中除 content 外的部分（用于判断是否需重建——content 变化走 setContent 增量，不走重建） */
+function buildRest(opts: UseMaptalksGeometryInfoWindowOpts): Record<string, unknown> | undefined {
+  const raw = toValue(opts.options);
+  if (!raw) return undefined;
+  const { content: _, ...rest } = raw as Record<string, unknown>;
+  return rest;
+}
+
 /** 设置 Marker 信息框的响应式 watch（几何就绪配置 + options 变化重建） */
 function setupMarkerIW(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
@@ -107,25 +115,26 @@ function setupMarkerIW(
   hasSet: ShallowRef<boolean>,
   events: Record<string, MaptalksEventHandler>,
 ): void {
+  // prevRest 需在 watch #1 之前声明：watch #1 immediate 回调同步执行时会初始化它，避免 TDZ
+  let prevRest: Record<string, unknown> | undefined;
   watch(
     () => toValue(geometry) as NativeMarker | null,
     (m) => {
       if (m && !hasSet.value) {
-        try { m.setInfoWindow(buildMarkerIWOptions(opts)); hasSet.value = true; }
+        try {
+          m.setInfoWindow(buildMarkerIWOptions(opts));
+          hasSet.value = true;
+          // 首次配置后同步捕获 prevRest——后续仅 content 变化时 dequal 命中跳过重建，弹框保持打开
+          prevRest = buildRest(opts);
+        }
         catch (cause) { logger.error('GeometryInfoWindow 配置失败', toMaptalksError(cause, 'control-failed', 'GeometryInfoWindow 配置失败')); }
       }
     },
     { immediate: true },
   );
   // options（不含 content）变化 → setInfoWindow() 重建；content 由单独 watch 处理
-  let prevRest: Record<string, unknown> | undefined;
   watch(
-    () => {
-      const raw = toValue(opts.options);
-      if (!raw) return;
-      const { content: _, ...rest } = raw as Record<string, unknown>;
-      return rest;
-    },
+    () => buildRest(opts),
     (rest) => {
       if (!rest || dequal(rest, prevRest)) return;
       prevRest = rest;
