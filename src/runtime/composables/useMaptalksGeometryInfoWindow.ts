@@ -9,24 +9,57 @@ import { createLogger } from '../utils/logger';
 /** 日志实例 */
 const logger = createLogger('nuxt-maptalks-gl');
 
-/** 原生 Marker 的 setInfoWindow 入参 */
+/**
+ * 原生 Marker 的 setInfoWindow 入参（信息框展示配置）。
+ *
+ * @description 建模 maptalks `marker.setInfoWindow()` 的选项对象：标题/内容/尺寸/自定义弹框/动画等。
+ * 非导出接口，仅内部用于类型约束与透传。
+ *
+ * @example
+ * const opts: GeometryInfoWindowOptions = {
+ *   title: '站点详情',
+ *   content: '<div>内容</div>',
+ *   custom: true,
+ *   autoOpenOn: 'click',
+ * };
+ */
 interface GeometryInfoWindowOptions {
+  /** 弹框标题（字符串或 DOM） */
   title?: string | HTMLElement;
+  /** 弹框内容（字符串或 DOM） */
   content?: string | HTMLElement;
+  /** 弹框宽度（px） */
   width?: number;
+  /** 弹框高度（px） */
   height?: number;
+  /** 是否自定义弹框（true 时使用传入的 content DOM，而非 maptalks 默认样式） */
   custom?: boolean;
+  /** 弹出时是否自动平移到可见区域 */
   autoPan?: boolean;
+  /** 同时只显示一个弹框 */
   single?: boolean;
+  /** 弹出动画（如 'fadeIn'） */
   animation?: string;
+  /** 内容水平偏移（px） */
   dx?: number;
+  /** 内容垂直偏移（px） */
   dy?: number;
+  /** 自动弹出事件（如 'click'，null 禁用自动弹出） */
   autoOpenOn?: string | null;
   /** 自定义选项透传 */
   [key: string]: unknown;
 }
 
-/** 带 setInfoWindow/openInfoWindow/closeInfoWindow 的原生 Marker 接口 */
+/**
+ * 带 setInfoWindow/openInfoWindow/closeInfoWindow 的原生 Marker 接口。
+ *
+ * @description 建模 maptalks Marker 上信息框相关的最小方法集，供本 composable 内部调用
+ * （geometry 的真实类型为 MaptalksGeometry，运行时按此结构窄化）。非导出接口。
+ *
+ * @example
+ * const m = toValue(geometry) as NativeMarker | null;
+ * m?.setInfoWindow({ title: '站点' });
+ */
 interface NativeMarker {
   /** 注册信息框配置 */
   setInfoWindow(opts: GeometryInfoWindowOptions): void;
@@ -42,7 +75,16 @@ interface NativeMarker {
   off(event: string, handler: MaptalksEventHandler): void;
 }
 
-/** 原生 InfoWindow 实例接口（getInfoWindow() 返回值，含 isVisible 供组件守卫判断） */
+/**
+ * 原生 InfoWindow 实例接口（getInfoWindow() 返回值）。
+ *
+ * @description 建模 maptalks `marker.getInfoWindow()` 返回实例的最小方法集：
+ * setContent 增量更新、on/off 事件绑定、isVisible 守卫判断。非导出接口。
+ *
+ * @example
+ * const iw = m?.getInfoWindow?.();
+ * if (iw?.isVisible?.()) iw.setContent('<div>新内容</div>');
+ */
 interface NativeInfoWindow {
   /** 替换弹框内容（字符串或 DOM，增量更新不重建实例） */
   setContent(content: string | HTMLElement): void;
@@ -100,12 +142,31 @@ export interface UseMaptalksGeometryInfoWindowReturn {
   remove: () => void;
 }
 
-/** 从选项构建原生 setInfoWindow 入参 */
+/**
+ * 从选项构建原生 setInfoWindow 入参。
+ *
+ * @description 展开 `opts.options`（支持响应式 getter）为普通对象，供 setInfoWindow 调用。
+ * @param {UseMaptalksGeometryInfoWindowOpts} opts - composable 选项（取 options 字段）
+ * @returns {GeometryInfoWindowOptions} 原生 setInfoWindow 入参
+ *
+ * @example
+ * buildMarkerIWOptions({ options: () => ({ title: '站点' }) }); // → { title: '站点' }
+ */
 function buildMarkerIWOptions(opts: UseMaptalksGeometryInfoWindowOpts): GeometryInfoWindowOptions {
   return { ...toValue(opts.options) } as GeometryInfoWindowOptions;
 }
 
-/** 提取 options 中除 content 外的部分（用于判断是否需重建——content 变化走 setContent 增量，不走重建） */
+/**
+ * 提取 options 中除 content 外的部分（用于判断是否需重建）。
+ *
+ * @description content 变化走 setContent 增量、不走重建，因此比较重建依据时剔除 content 字段，
+ * 仅当其他选项变化时才触发 setInfoWindow() 全量重建。
+ * @param {UseMaptalksGeometryInfoWindowOpts} opts - composable 选项（取 options 字段）
+ * @returns {Record<string, unknown> | undefined} 去除 content 后的选项对象；options 为空时返回 undefined
+ *
+ * @example
+ * buildRest({ options: { title: 't', content: '<div>c</div>' } }); // → { title: 't' }
+ */
 function buildRest(opts: UseMaptalksGeometryInfoWindowOpts): Record<string, unknown> | undefined {
   const raw = toValue(opts.options);
   if (!raw) return undefined;
