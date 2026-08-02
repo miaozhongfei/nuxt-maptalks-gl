@@ -1,5 +1,5 @@
 <template>
-  <Example2DemoShell description="Marker 点击弹出 InfoWindow（对应官网 10.5）。" :tabs="tabs" />
+  <Example2DemoShell     description="几何体 InfoWindow——Marker 点击弹出，字符串内容 vs 自定义 slot/DOM 内容，4 种实现（对应官网 10.5）。" :tabs="tabs" />
 </template>
 
 <script setup lang="ts">

@@ -24,7 +24,7 @@ export interface UseMaptalksInfoWindowOpts {
     MaptalksInfoWindowOptions
     | undefined
   >;
-  /** 事件名 → 处理器（自动 on/off） */
+  /** 事件名 → 处理器（自动 on/off，事件名为 maptalks 原生名：add / showstart / showend / hide / remove） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 `true` */
   autoDispose?: boolean;
@@ -84,7 +84,7 @@ function unbindEvents(iw: MaptalksInfoWindow, events: Record<string, MaptalksEve
  * const { infoWindow, show } = useMaptalksInfoWindow(map, {
  *   content: computed(() => `<div>${detail.value}</div>`),
  *   coordinates: () => markerCoord.value,
- *   events: { open: () => console.warn('opened') },
+ *   events: { showstart: () => console.warn('opened') },
  * });
  * // 在 marker click 中：
  * show(markerCoord.value);

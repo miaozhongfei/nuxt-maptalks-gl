@@ -29,7 +29,7 @@ interface GeometryInfoWindowOptions {
 /** 带 setInfoWindow/openInfoWindow/closeInfoWindow 的原生 Marker 接口 */
 interface NativeMarker {
   setInfoWindow(opts: GeometryInfoWindowOptions): void;
-  getInfoWindow(): { setContent(content: string | HTMLElement): void } | null;
+  getInfoWindow(): { setContent(content: string | HTMLElement): void; on?(event: string, handler: MaptalksEventHandler): void; off?(event: string, handler: MaptalksEventHandler): void } | null;
   openInfoWindow(): void;
   closeInfoWindow(): void;
   on(event: string, handler: MaptalksEventHandler): void;
@@ -105,6 +105,7 @@ function setupMarkerIW(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
   opts: UseMaptalksGeometryInfoWindowOpts,
   hasSet: ShallowRef<boolean>,
+  events: Record<string, MaptalksEventHandler>,
 ): void {
   watch(
     () => toValue(geometry) as NativeMarker | null,
@@ -145,6 +146,22 @@ function setupMarkerIW(
       if (iw && c !== undefined) iw.setContent(c);
     },
   );
+  // 原生 InfoWindow 事件全量透传到 events（add / showstart / showend / hide / remove）
+  // 点击 Marker 自动弹出（autoOpenOn:'click'）走原生 openInfoWindow()，不经 show() 包装，
+  // 需在此把原生实例上的事件绑定到用户 events，保证日志/联动一致。
+  // options 重建（setInfoWindow）会生成新 InfoWindow 实例 → getInfoWindow() 引用变化 → watch 重新触发重新绑定。
+  watch(
+    () => {
+      const m = toValue(geometry) as NativeMarker | null;
+      return m?.getInfoWindow?.() ?? null;
+    },
+    (iw) => {
+      if (!iw) return;
+      for (const [event, handler] of Object.entries(events)) {
+        iw.on?.(event, handler);
+      }
+    },
+  );
 }
 
 export function useMaptalksGeometryInfoWindow(
@@ -153,7 +170,7 @@ export function useMaptalksGeometryInfoWindow(
 ): UseMaptalksGeometryInfoWindowReturn {
   const events = opts.events ?? {};
   const hasSet = shallowRef(false);
-  setupMarkerIW(geometry, opts, hasSet);
+  setupMarkerIW(geometry, opts, hasSet, events);
 
   const show = (): void => {
     (toValue(geometry) as NativeMarker | null)?.openInfoWindow();
