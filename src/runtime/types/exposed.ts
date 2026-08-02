@@ -132,7 +132,7 @@ export interface MaptalksUIMarkerExposed {
 /**
  * MaptalksGeometryInfoWindow 组件 defineExpose 暴露的类型。
  *
- * @description 与其他 UI 层一致：原生实例 + show/hide 命令，实例由父 Marker 管理。
+ * @description 与其他 UI 层一致：原生实例 + show/hide 命令，实例由父几何体管理。
  *
  * @example
  * const miw = ref<MaptalksGeometryInfoWindowExposed | null>(null)

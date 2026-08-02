@@ -6,20 +6,21 @@
 
 <script setup lang="ts">
 /**
- * 几何体级信息窗组件（GeometryInfoWindow，内联于 Marker/几何体 的弹窗）。
+ * 几何体级信息窗组件（GeometryInfoWindow，内联于任意几何体的弹窗）。
  *
- * @description 对 `useMaptalksGeometryInfoWindow` 的声明式封装。在父级几何体组件（如 MaptalksMarker）上注册 setInfoWindow，
- * 通过 `<slot />` 传入 Vue 组件内容（自动 createApp mount 保留响应式）。几何体级信息窗只属于该几何体——
- * 点击自动弹出、点击别处自动关闭。支持响应式 options、事件绑定、`defineExpose({ infoWindow, show, hide })` 程序式控制。
+ * @description 对 `useMaptalksGeometryInfoWindow` 的声明式封装。在父级几何体组件（MaptalksMarker /
+ * MaptalksPolygon / MaptalksCircle 等）上注册 setInfoWindow，通过 `<slot />` 传入 Vue 组件内容
+ * （自动 createApp mount 保留响应式）。几何体级信息窗只属于该几何体——点击几何体自动弹出、
+ * 点击别处自动关闭。支持响应式 options、事件绑定、`defineExpose({ infoWindow, show, hide })` 程序式控制。
  * 父组件更新时重新挂载 slot 内容（弹框可见时跳过，避免输入中断）。必须在提供 GEOMETRY_KEY 的几何体组件内使用。
  *
  * @example
  * ```vue
- * <MaptalksMarker :coordinates="[121,31]">
- *   <MaptalksGeometryInfoWindow :options="{ title: '站点', custom: true }">
- *     <div class="iw-content"><strong>站点详情</strong></div>
+ * <MaptalksPolygon :coordinates="[[[121,31],[121.1,31],[121.1,31.1]]]">
+ *   <MaptalksGeometryInfoWindow :options="{ title: '区域', custom: true }">
+ *     <div class="iw-content"><strong>区域详情</strong></div>
  *   </MaptalksGeometryInfoWindow>
- * </MaptalksMarker>
+ * </MaptalksPolygon>
  * ```
  */
 import { createApp, h, inject, onBeforeUnmount, onUpdated, ref, watch } from 'vue'
@@ -33,7 +34,7 @@ import type { MaptalksEventHandler, MaptalksInfoWindowOptions } from '../types'
 
 const props = withDefaults(
   defineProps<{
-    /** 透传给 marker.setInfoWindow() 的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
+    /** 透传给 geometry.setInfoWindow() 的选项（含中文字段注释，详见 MaptalksInfoWindowOptions） */
     options?: MaptalksInfoWindowOptions
     /** 事件名 → 处理器（自动 on/off，与 @open / @close 共存） */
     events?: Record<string, MaptalksEventHandler>
