@@ -1,5 +1,8 @@
 <template>
-  <Example2DemoShell description="Attribution 版权控件（对应官网 10.17）。" :tabs="tabs" />
+  <Example2DemoShell
+    description="Attribution 版权控件——2 个官网布局（默认/自定义位置 × content），4 种实现（组件/Composable/组合/逃生舱）（对应官网 10.17）。"
+    :tabs="tabs"
+  />
 </template>
 
 <script setup lang="ts">
@@ -8,8 +11,11 @@ import ComponentImpl from '~/components/example2/ui-control/attribution-control/
 import ComposableImpl from '~/components/example2/ui-control/attribution-control/ComposableImpl.vue'
 import MixedImpl from '~/components/example2/ui-control/attribution-control/MixedImpl.vue'
 import EscapeImpl from '~/components/example2/ui-control/attribution-control/EscapeImpl.vue'
-const tabs: DemoTab[] = [{ key: 'component', label: '组件', comp: ComponentImpl },
+
+const tabs: DemoTab[] = [
+  { key: 'component', label: '组件', comp: ComponentImpl },
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
-  { key: 'escape', label: '逃生舱', comp: EscapeImpl }]
+  { key: 'escape', label: '逃生舱', comp: EscapeImpl },
+]
 </script>
