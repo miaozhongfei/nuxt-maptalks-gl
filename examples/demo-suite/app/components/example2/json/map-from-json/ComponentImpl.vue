@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <MaptalksMap
       ref="mc"
@@ -7,13 +7,13 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
-    <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksSerialize.fromJSON——静态 JSON 直接建图（含底图与 Marker，对应官网 11.4）。</p>
+    <p class="text-sm text-muted mt-2">MaptalksMap + map.fromJSON(mapJSON)——静态 JSON 直接建图（含底图与 Marker，对应官网 11.4）。</p>
     <pre class="text-xs mt-2 p-3 rounded border border-default overflow-auto max-h-48">{{ jsonSrc }}</pre>
   </div>
 </template>
 
 <script setup lang="ts">
-// MaptalksMap ref 桥接：组件实例取 map 后经 useMaptalksSerialize.fromJSON 建图
+// 官网 11.4：静态 mapJSON（options/baseLayer/layers）→ Map.fromJSON 直接建图
 const jsonSrc = JSON.stringify(
   {
     version: '1.0',
@@ -42,15 +42,21 @@ const jsonSrc = JSON.stringify(
 )
 
 const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => toValue(mc.value?.map) ?? null)
-const { fromJSON } = useMaptalksSerialize(map)
+const applied = ref(false)
 
-// 函数 getter watch（对齐组件版）：MaptalksMap expose 的 shallowRef 经代理解包，
-// 直接追踪 computed ref 可能失效，getter 每次求值确保捕获 map 就绪时机
 watch(
   () => toValue(mc.value?.map) ?? null,
-  (m) => {
-    if (m) fromJSON(JSON.parse(jsonSrc))
+  async (m) => {
+    if (m && !applied.value) {
+      applied.value = true
+      // maptalks 的 fromJSON 仅静态：取容器 → 移除当前实例 → 静态重建
+      const mt = await import('maptalks-gl')
+      const container = m.getContainer()
+      if (!container) return
+      m.remove()
+      ;(mt as unknown as MaptalksGLNamespace).Map.fromJSON(container, JSON.parse(jsonSrc))
+    }
   },
+  { immediate: true },
 )
 </script>

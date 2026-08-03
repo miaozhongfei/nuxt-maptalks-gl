@@ -103,8 +103,6 @@ export type MaptalksEventHandler = (event: unknown) => void;
 export interface MaptalksMap extends MaptalksClass {
   /** 销毁地图并释放 WebGL 上下文 */
   remove(): void;
-  /** 从 Profile JSON 重现地图 */
-  fromJSON(json: unknown): MaptalksMap;
   /** 是否加载完成 */
   isLoaded(): boolean;
   /** 是否已销毁 */
@@ -1013,8 +1011,12 @@ export interface MaptalksLayerSwitcherControl extends MaptalksControl {
  * useMaptalksLayer(map, (mt) => new mt.TileLayer('base', { urlTemplate }));
  */
 export interface MaptalksGLNamespace {
-  /** 地图构造器 */
-  Map: new (container: string | HTMLElement, options: Record<string, unknown>) => MaptalksMap;
+  /** 地图构造器（含静态 fromJSON——maptalks 的 fromJSON 仅静态，实例无此方法） */
+  Map: {
+    new (container: string | HTMLElement, options: Record<string, unknown>): MaptalksMap;
+    /** 静态：从 Profile JSON 在容器上重现地图（会销毁容器上的旧实例） */
+    fromJSON(container: string | HTMLElement, profile: Record<string, unknown>): MaptalksMap;
+  };
   /** 瓦片图层构造器（maptalks-gl 核心，始终存在） */
   TileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksTileLayer;
   /** 矢量瓦片图层构造器 */
