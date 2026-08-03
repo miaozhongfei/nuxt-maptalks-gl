@@ -15,6 +15,7 @@ const elB = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 
 let mapIns: any = null
+let mapB: any = null
 
 watch(
   () => toValue(map),
@@ -40,7 +41,9 @@ function copyMap(): void {
   void (async () => {
     const mt = await import('maptalks-gl');
     const json = mapIns.toJSON();
-    (mt as any).Map.fromJSON(elB.value, json);
+    // 重复复制：销毁 B 容器上上次复制的地图实例，再静态重建（支持多次复制）
+    if (mapB) mapB.remove();
+    mapB = (mt as any).Map.fromJSON(elB.value, json);
   })();
 }
 </script>
