@@ -872,42 +872,52 @@ export interface MaptalksControl extends MaptalksClass {
 /**
  * Zoom 控件实例窄类型（extends MaptalksControl）。
  *
- * @description 无特有公开方法（缩放按钮/滑块行为由控件内部处理），作为类型标签供
- * `UseMaptalksControlReturn<MaptalksZoomControl>` 显式泛型使用。
+ * @description 建模文档列出的私有方法 buildOn（构建控件 DOM，maptalks 内部调用）；
+ * 供 `UseMaptalksControlReturn<MaptalksZoomControl>` 显式泛型使用。
  *
  * @example
  * const { control } = useMaptalksZoom(map, { options: { position: 'top-left' } });
  * control.value?.isVisible();
  */
-export interface MaptalksZoomControl extends MaptalksControl {}
+export interface MaptalksZoomControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+}
 
 /**
  * Compass 控件实例窄类型（extends MaptalksControl）。
  *
- * @description 无特有公开方法（点击复位朝向由控件内部处理），作为类型标签供
- * `UseMaptalksControlReturn<MaptalksCompassControl>` 显式泛型使用。
+ * @description 建模文档列出的私有方法 buildOn（构建控件 DOM，maptalks 内部调用）；
+ * 供 `UseMaptalksControlReturn<MaptalksCompassControl>` 显式泛型使用。
  *
  * @example
  * const { control } = useMaptalksCompass(map, { options: { position: 'top-right' } });
  * control.value?.show();
  */
-export interface MaptalksCompassControl extends MaptalksControl {}
+export interface MaptalksCompassControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+}
 
 /**
  * Scale 控件实例窄类型（extends MaptalksControl）。
  *
- * @description 无特有公开方法，作为类型标签供 `UseMaptalksControlReturn<MaptalksScaleControl>` 显式泛型使用。
+ * @description 建模文档列出的私有方法 buildOn（构建控件 DOM，maptalks 内部调用）；
+ * 供 `UseMaptalksControlReturn<MaptalksScaleControl>` 显式泛型使用。
  *
  * @example
  * const { control } = useMaptalksScale(map, { options: { position: 'bottom-left' } });
  * control.value?.hide();
  */
-export interface MaptalksScaleControl extends MaptalksControl {}
+export interface MaptalksScaleControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+}
 
 /**
  * Attribution 控件实例窄类型（extends MaptalksControl）。
  *
- * @description 特有方法 setContent/getContent（动态更新版权信息内容），
+ * @description 建模文档列出的私有方法 buildOn 与公开方法 setContent/getContent（动态更新版权信息内容），
  * 供 `UseMaptalksControlReturn<MaptalksAttributionControl>` 显式泛型使用。
  *
  * @example
@@ -915,6 +925,8 @@ export interface MaptalksScaleControl extends MaptalksControl {}
  * control.value?.setContent('Powered by maptalks');
  */
 export interface MaptalksAttributionControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
   /** 替换版权信息内容（字符串或 DOM） */
   setContent(content: string | HTMLElement): this;
   /** 读取版权信息内容 */
@@ -924,14 +936,17 @@ export interface MaptalksAttributionControl extends MaptalksControl {
 /**
  * Toolbar 控件实例窄类型（extends MaptalksControl）。
  *
- * @description 无特有公开方法（子菜单/点击由控件内部处理），作为类型标签供
- * `UseMaptalksControlReturn<MaptalksToolbarControl>` 显式泛型使用。
+ * @description 建模文档列出的私有方法 buildOn（构建控件 DOM，maptalks 内部调用）；
+ * 供 `UseMaptalksControlReturn<MaptalksToolbarControl>` 显式泛型使用。
  *
  * @example
  * const { control } = useMaptalksToolbar(map, { options: { position: 'top-right', items } });
  * control.value?.isVisible();
  */
-export interface MaptalksToolbarControl extends MaptalksControl {}
+export interface MaptalksToolbarControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+}
 
 /**
  * 已加载的 maptalks-gl 命名空间（动态 import 的结果）。

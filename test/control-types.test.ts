@@ -18,9 +18,11 @@ describe('控件类型', () => {
     expectTypeOf<UseMaptalksControlReturn['hide']>().toBeFunction();
   });
 
-  it('控件窄类型 extends MaptalksControl，Attribution 有 setContent', () => {
+  it('控件窄类型 extends MaptalksControl，含 buildOn 私有方法与 Attribution setContent', () => {
     expectTypeOf<MaptalksZoomControl>().toExtend<MaptalksControl>();
+    expectTypeOf<MaptalksZoomControl['buildOn']>().toBeFunction();
     expectTypeOf<MaptalksAttributionControl>().toExtend<MaptalksControl>();
+    expectTypeOf<MaptalksAttributionControl['buildOn']>().toBeFunction();
     expectTypeOf<MaptalksAttributionControl['setContent']>().toBeFunction();
     expectTypeOf<MaptalksAttributionControl['getContent']>().toBeFunction();
   });
