@@ -7,6 +7,7 @@ import type {
   MaptalksControl,
   MaptalksEventHandler,
   MaptalksMap,
+  MaptalksToolbarControl,
   MaptalksToolbarOptions,
   UseMaptalksControlReturn,
 } from '../types';
@@ -77,8 +78,8 @@ function unbindEvents(control: MaptalksControl, events: Record<string, MaptalksE
 export function useMaptalksToolbar(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksToolbarOpts = {},
-): UseMaptalksControlReturn {
-  const control = shallowRef<MaptalksControl | null>(null);
+): UseMaptalksControlReturn<MaptalksToolbarControl> {
+  const control = shallowRef<MaptalksToolbarControl | null>(null);
   let creating = false;
   const events = opts.events ?? {};
 
@@ -96,7 +97,7 @@ export function useMaptalksToolbar(
       const Ctor = mt.control?.Toolbar;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 Toolbar 控件');
-      const ctrl = new Ctor(toValue(opts.options));
+      const ctrl = new Ctor(toValue(opts.options)) as MaptalksToolbarControl;
       ctrl.addTo(m);
       bindEvents(ctrl, events);
       control.value = ctrl;

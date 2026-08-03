@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksControl, MaptalksEventHandler, MaptalksMap, UseMaptalksControlReturn, UseMaptalksCompassOpts } from '../types';
+import type { MaptalksCompassControl, MaptalksControl, MaptalksEventHandler, MaptalksMap, UseMaptalksControlReturn, UseMaptalksCompassOpts } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -46,8 +46,8 @@ function unbindEvents(control: MaptalksControl, events: Record<string, MaptalksE
 export function useMaptalksCompass(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksCompassOpts = {},
-): UseMaptalksControlReturn {
-  const control = shallowRef<MaptalksControl | null>(null);
+): UseMaptalksControlReturn<MaptalksCompassControl> {
+  const control = shallowRef<MaptalksCompassControl | null>(null);
   let creating = false;
   const events = opts.events ?? {};
 
@@ -65,7 +65,7 @@ export function useMaptalksCompass(
       const Ctor = mt.control?.Compass;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 Compass 控件');
-      const ctrl = new Ctor(toValue(opts.options));
+      const ctrl = new Ctor(toValue(opts.options)) as MaptalksCompassControl;
       ctrl.addTo(m);
       bindEvents(ctrl, events);
       control.value = ctrl;

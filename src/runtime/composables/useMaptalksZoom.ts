@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksControl, MaptalksEventHandler, MaptalksMap, UseMaptalksControlReturn, UseMaptalksZoomOpts } from '../types';
+import type { MaptalksZoomControl, MaptalksControl, MaptalksEventHandler, MaptalksMap, UseMaptalksControlReturn, UseMaptalksZoomOpts } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -46,8 +46,8 @@ function unbindEvents(control: MaptalksControl, events: Record<string, MaptalksE
 export function useMaptalksZoom(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksZoomOpts = {},
-): UseMaptalksControlReturn {
-  const control = shallowRef<MaptalksControl | null>(null);
+): UseMaptalksControlReturn<MaptalksZoomControl> {
+  const control = shallowRef<MaptalksZoomControl | null>(null);
   let creating = false;
   const events = opts.events ?? {};
 
@@ -65,7 +65,7 @@ export function useMaptalksZoom(
       const Ctor = mt.control?.Zoom;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 Zoom 控件');
-      const ctrl = new Ctor(toValue(opts.options));
+      const ctrl = new Ctor(toValue(opts.options)) as MaptalksZoomControl;
       ctrl.addTo(m);
       bindEvents(ctrl, events);
       control.value = ctrl;

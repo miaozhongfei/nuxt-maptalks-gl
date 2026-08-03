@@ -870,6 +870,70 @@ export interface MaptalksControl extends MaptalksClass {
 }
 
 /**
+ * Zoom 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 无特有公开方法（缩放按钮/滑块行为由控件内部处理），作为类型标签供
+ * `UseMaptalksControlReturn<MaptalksZoomControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksZoom(map, { options: { position: 'top-left' } });
+ * control.value?.isVisible();
+ */
+export interface MaptalksZoomControl extends MaptalksControl {}
+
+/**
+ * Compass 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 无特有公开方法（点击复位朝向由控件内部处理），作为类型标签供
+ * `UseMaptalksControlReturn<MaptalksCompassControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksCompass(map, { options: { position: 'top-right' } });
+ * control.value?.show();
+ */
+export interface MaptalksCompassControl extends MaptalksControl {}
+
+/**
+ * Scale 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 无特有公开方法，作为类型标签供 `UseMaptalksControlReturn<MaptalksScaleControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksScale(map, { options: { position: 'bottom-left' } });
+ * control.value?.hide();
+ */
+export interface MaptalksScaleControl extends MaptalksControl {}
+
+/**
+ * Attribution 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 特有方法 setContent/getContent（动态更新版权信息内容），
+ * 供 `UseMaptalksControlReturn<MaptalksAttributionControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksAttribution(map, { options: { position: 'bottom-right' } });
+ * control.value?.setContent('Powered by maptalks');
+ */
+export interface MaptalksAttributionControl extends MaptalksControl {
+  /** 替换版权信息内容（字符串或 DOM） */
+  setContent(content: string | HTMLElement): this;
+  /** 读取版权信息内容 */
+  getContent(): string | HTMLElement;
+}
+
+/**
+ * Toolbar 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 无特有公开方法（子菜单/点击由控件内部处理），作为类型标签供
+ * `UseMaptalksControlReturn<MaptalksToolbarControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksToolbar(map, { options: { position: 'top-right', items } });
+ * control.value?.isVisible();
+ */
+export interface MaptalksToolbarControl extends MaptalksControl {}
+
+/**
  * 已加载的 maptalks-gl 命名空间（动态 import 的结果）。
  *
  * @description `factory` 与各预设接收此命名空间以构造图层/工具。已知构造器标为可选
