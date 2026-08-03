@@ -67,7 +67,8 @@ async function createMap(
     if (resolved?.urlTemplate) tileOpts.urlTemplate = resolved.urlTemplate;
     if (resolved?.url) tileOpts.url = resolved.url;
     const tileLayer = new mt.TileLayer(id, tileOpts as Record<string, unknown>);
-    map.addLayer(tileLayer as unknown as Parameters<typeof map.addLayer>[0]);
+    // baseLayer 选项需 setBaseLayer 而非 addLayer——getBaseLayer()/Overview 鹰眼/attribution 底图分组才可识别
+    map.setBaseLayer(tileLayer as unknown as Parameters<typeof map.setBaseLayer>[0]);
   }
   if (el.offsetHeight === 0 && prevHeight > 0) {
     el.style.height = prevHeight + 'px';
