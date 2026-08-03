@@ -2,6 +2,9 @@ import { describe, expectTypeOf, it } from 'vitest';
 import type {
   MaptalksAttributionControl,
   MaptalksControl,
+  MaptalksControlExposed,
+  MaptalksOverviewControl,
+  MaptalksOverviewControlExposed,
   MaptalksZoomControl,
   UseMaptalksControlReturn,
 } from '../src/runtime/types';
@@ -25,5 +28,10 @@ describe('控件类型', () => {
     expectTypeOf<MaptalksAttributionControl['buildOn']>().toBeFunction();
     expectTypeOf<MaptalksAttributionControl['setContent']>().toBeFunction();
     expectTypeOf<MaptalksAttributionControl['getContent']>().toBeFunction();
+  });
+
+  it('控件 Exposed 窄类型化：control 为控件窄类型', () => {
+    expectTypeOf<MaptalksOverviewControlExposed['control']>().toEqualTypeOf<MaptalksOverviewControl | null>();
+    expectTypeOf<MaptalksControlExposed['control']>().toEqualTypeOf<MaptalksControl | null>();
   });
 });

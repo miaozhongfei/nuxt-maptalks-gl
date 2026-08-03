@@ -15,13 +15,13 @@
 // 鹰眼配置：右下角 + 小地图尺寸 + 默认展开
 const ovOpts: MaptalksOverviewOptions = { position: 'bottom-right', size: [150, 110], maximize: true }
 
-const ovRef = ref<MaptalksControlExposed | null>(null)
+// Overview 窄类型 Exposed：control 为 MaptalksOverviewControl，maxmize/minimize 直接可调
+const ovRef = ref<MaptalksOverviewControlExposed | null>(null)
 
-// maxmize/minimize 为 Overview 窄类型特有方法（MaptalksControlExposed 的 control 是基类，需窄化）
 function doMaxmize() {
-  (ovRef.value?.control as MaptalksOverviewControl | null)?.maxmize?.()
+  ovRef.value?.control?.maxmize?.()
 }
 function doMinimize() {
-  (ovRef.value?.control as MaptalksOverviewControl | null)?.minimize?.()
+  ovRef.value?.control?.minimize?.()
 }
 </script>

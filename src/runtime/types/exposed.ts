@@ -1,9 +1,13 @@
+/* oxlint-disable max-lines */
+
 /**
  * 图层/组件 defineExpose 暴露的类型。
  */
 
 import type {
+  MaptalksAttributionControl,
   MaptalksCircleGeometry,
+  MaptalksCompassControl,
   MaptalksControl,
   MaptalksDrawTool,
   MaptalksEllipseGeometry,
@@ -14,6 +18,7 @@ import type {
   MaptalksInfoWindow,
   MaptalksLabelGeometry,
   MaptalksLayer,
+  MaptalksLayerSwitcherControl,
   MaptalksLineStringGeometry,
   MaptalksMap,
   MaptalksMapTool,
@@ -22,15 +27,20 @@ import type {
   MaptalksMultiLineStringGeometry,
   MaptalksMultiPointGeometry,
   MaptalksMultiPolygonGeometry,
+  MaptalksOverviewControl,
+  MaptalksPanelControl,
   MaptalksPolygonGeometry,
   MaptalksRectangleGeometry,
+  MaptalksScaleControl,
   MaptalksSectorGeometry,
   MaptalksTextBoxGeometry,
   MaptalksTileLayer,
+  MaptalksToolbarControl,
   MaptalksUIMarker,
   MaptalksVectorLayer,
   MaptalksVectorTileLayer,
   MaptalksWMSLayer,
+  MaptalksZoomControl,
 } from './structural';
 
 /**
@@ -218,15 +228,17 @@ export type MaptalksMultiPolygonExposed = MaptalksGeometryExposed<MaptalksMultiP
 // ───────────────────────────────── Control / Tool / GeoJSON Exposed ─────────────────────────────────
 
 /**
- * 控件组件 defineExpose 暴露的类型。
+ * 控件组件 defineExpose 暴露的类型（泛型支持控件窄类型）。
  *
  * @example
  * const zoomRef = ref<MaptalksControlExposed | null>(null)
  * zoomRef.value?.remove()
+ *
+ * @template T - 控件具体类型，默认 MaptalksControl
  */
-export interface MaptalksControlExposed {
+export interface MaptalksControlExposed<T extends MaptalksControl = MaptalksControl> {
   /** 控件原生实例（defineExpose 自动解包 ShallowRef） */
-  control: MaptalksControl | null;
+  control: T | null;
   /** 显示控件（Control 基类 show() 封装，部分控件组件提供） */
   show?: () => void;
   /** 隐藏控件（Control 基类 hide() 封装，部分控件组件提供） */
@@ -234,6 +246,23 @@ export interface MaptalksControlExposed {
   /** 移除并销毁控件 */
   remove: () => void;
 }
+
+/** Zoom 控件组件 defineExpose 暴露的类型 */
+export type MaptalksZoomControlExposed = MaptalksControlExposed<MaptalksZoomControl>;
+/** Compass 控件组件 defineExpose 暴露的类型 */
+export type MaptalksCompassControlExposed = MaptalksControlExposed<MaptalksCompassControl>;
+/** Scale 控件组件 defineExpose 暴露的类型 */
+export type MaptalksScaleControlExposed = MaptalksControlExposed<MaptalksScaleControl>;
+/** Attribution 控件组件 defineExpose 暴露的类型（含 setContent/getContent） */
+export type MaptalksAttributionControlExposed = MaptalksControlExposed<MaptalksAttributionControl>;
+/** Toolbar 控件组件 defineExpose 暴露的类型 */
+export type MaptalksToolbarControlExposed = MaptalksControlExposed<MaptalksToolbarControl>;
+/** Panel 控件组件 defineExpose 暴露的类型（含 setContent/getContent） */
+export type MaptalksPanelControlExposed = MaptalksControlExposed<MaptalksPanelControl>;
+/** Overview 控件组件 defineExpose 暴露的类型（含 maxmize/minimize） */
+export type MaptalksOverviewControlExposed = MaptalksControlExposed<MaptalksOverviewControl>;
+/** LayerSwitcher 控件组件 defineExpose 暴露的类型 */
+export type MaptalksLayerSwitcherControlExposed = MaptalksControlExposed<MaptalksLayerSwitcherControl>;
 
 /**
  * 工具组件 defineExpose 暴露的类型。
