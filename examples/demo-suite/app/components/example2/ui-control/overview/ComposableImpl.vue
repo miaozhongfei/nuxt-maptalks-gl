@@ -43,8 +43,8 @@ const ovOpts: MaptalksOverviewOptions = {
 };
 
 const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 45 });
-useMaptalksTileLayer(map, { source: 'osm' });
+// baseLayer 走 useMaptalks 参数（setBaseLayer）——Overview 鹰眼需 getBaseLayer() 复制底图
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 45, baseLayer: 'osm' });
 // control 为窄类型 MaptalksOverviewControl，maxmize/minimize 直接可用
 const { control } = useMaptalksOverview(map, { options: ovOpts });
 </script>

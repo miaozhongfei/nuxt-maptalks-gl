@@ -11,8 +11,8 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 45 })
-useMaptalksTileLayer(map, { source: 'osm' })
+// baseLayer 走 useMaptalks 参数（setBaseLayer）——Overview 鹰眼需 getBaseLayer() 复制底图
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 45, baseLayer: 'osm' })
 
 // 原生实例引用（maxmize/minimize 直接调用；逃生舱惯例用 any——原生命名空间类型不可枚举）
 let ov: any = null
