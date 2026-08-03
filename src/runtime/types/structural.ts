@@ -861,6 +861,10 @@ export interface MaptalksControl extends MaptalksClass {
   setPosition(position: string | Record<string, unknown>): this;
   /** 获取位置 */
   getPosition(): string | Record<string, unknown>;
+  /** 绑定事件（add / remove / positionchange） */
+  on?(eventTypes: string, handler: MaptalksEventHandler): this;
+  /** 解绑事件 */
+  off?(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 逃生舱口 */
   [key: string]: unknown;
 }

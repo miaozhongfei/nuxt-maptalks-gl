@@ -34,8 +34,8 @@ const tbOpts4: MaptalksToolbarOptions = { position: { top: 120, left: 20 }, vert
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-useMaptalksToolbar(map, tbOpts1)
-useMaptalksToolbar(map, tbOpts2)
-useMaptalksToolbar(map, tbOpts3)
-useMaptalksToolbar(map, tbOpts4)
+useMaptalksToolbar(map, { options: tbOpts1 })
+useMaptalksToolbar(map, { options: tbOpts2 })
+useMaptalksToolbar(map, { options: tbOpts3 })
+useMaptalksToolbar(map, { options: tbOpts4 })
 </script>

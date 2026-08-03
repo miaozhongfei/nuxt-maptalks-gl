@@ -42,8 +42,8 @@ const tbOpts4: MaptalksToolbarOptions = { position: { top: 120, left: 20 }, vert
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
 
-useMaptalksToolbar(map, tbOpts1)
-useMaptalksToolbar(map, tbOpts2)
-useMaptalksToolbar(map, tbOpts3)
-useMaptalksToolbar(map, tbOpts4)
+useMaptalksToolbar(map, { options: tbOpts1 })
+useMaptalksToolbar(map, { options: tbOpts2 })
+useMaptalksToolbar(map, { options: tbOpts3 })
+useMaptalksToolbar(map, { options: tbOpts4 })
 </script>

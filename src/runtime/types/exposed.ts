@@ -227,6 +227,10 @@ export type MaptalksMultiPolygonExposed = MaptalksGeometryExposed<MaptalksMultiP
 export interface MaptalksControlExposed {
   /** 控件原生实例（defineExpose 自动解包 ShallowRef） */
   control: MaptalksControl | null;
+  /** 显示控件（Control 基类 show() 封装，部分控件组件提供） */
+  show?: () => void;
+  /** 隐藏控件（Control 基类 hide() 封装，部分控件组件提供） */
+  hide?: () => void;
   /** 移除并销毁控件 */
   remove: () => void;
 }

@@ -1,43 +1,109 @@
 import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
-import type { MaybeRefOrGetter } from 'vue';
+import type { MaybeRefOrGetter, ShallowRef } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksControl, MaptalksMap, MaptalksToolbarOptions, UseMaptalksControlReturn } from '../types';
+import type { MaptalksControl, MaptalksEventHandler, MaptalksMap, MaptalksToolbarOptions } from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
 
 /**
+ * useMaptalksToolbar 的选项。
+ *
+ * @description 配置 Toolbar 工具条控件：透传给 `control.Toolbar` 构造器的选项（position / vertical / items 等）、
+ * 控件事件绑定（仅 add / remove / positionchange，Control 基类无 show/hide 事件）、自动销毁开关。
+ *
+ * @example
+ * const opts: UseMaptalksToolbarOpts = {
+ *   options: { position: 'top-right', items: [{ item: '放大' }] },
+ *   events: { positionchange: () => console.log('位置变化') },
+ * };
+ */
+export interface UseMaptalksToolbarOpts {
+  /** 透传给 `control.Toolbar` 构造器的选项（含中文字段注释，详见 MaptalksToolbarOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksToolbarOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，仅 add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * useMaptalksToolbar 的返回值。
+ *
+ * @description 提供 Toolbar 控件实例与命令式控制：`control`（原生实例 ref）、`show`/`hide`（显隐，Control 基类方法）、
+ * `remove`（移除并销毁）。
+ *
+ * @example
+ * const { control, show, hide, remove } = useMaptalksToolbar(map, { options: { position: 'top-right' } });
+ * show(); // 显示控件
+ * control.value?.isVisible(); // 判断是否可见
+ */
+export interface UseMaptalksToolbarReturn {
+  /** 控件实例（创建前为 null，用 ShallowRef 避免响应式深代理） */
+  control: ShallowRef<MaptalksControl | null>;
+  /** 显示控件（Control 基类 show() 的封装） */
+  show: () => void;
+  /** 隐藏控件（Control 基类 hide() 的封装） */
+  hide: () => void;
+  /** 命令式移除并销毁控件 */
+  remove: () => void;
+}
+
+/** 批量绑定事件到控件实例 */
+function bindEvents(control: MaptalksControl, events: Record<string, MaptalksEventHandler>): void {
+  if (control.on) {
+    for (const [event, handler] of Object.entries(events)) {
+      control.on(event, handler);
+    }
+  }
+}
+
+/** 批量解绑事件 */
+function unbindEvents(control: MaptalksControl, events: Record<string, MaptalksEventHandler>): void {
+  if (control.off) {
+    for (const [event, handler] of Object.entries(events)) {
+      control.off(event, handler);
+    }
+  }
+}
+
+/**
  * 地图控件：工具条（Toolbar）。
  *
  * @description 在 map 就绪后创建 Toolbar 控件并 `addTo(map)`；响应式 `options` 变化时移除旧控件并重建
- * （items / position / vertical 等均需重建 DOM）；作用域销毁时自动 `remove()`。
- * Toolbar 构造器缺失抛 `control-failed`。
+ * （items / position / vertical 等均需重建 DOM）；events 自动 on/off；作用域销毁或 `autoDispose` 时自动 cleanup。
+ * 构造器缺失抛 `control-failed`。控件事件仅 add / remove / positionchange（Control 基类无 show/hide 事件，
+ * 显隐用返回的 show/hide 方法）。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {MaybeRefOrGetter<MaptalksToolbarOptions | undefined>} [options] - 控件选项（position/vertical/reverseMenu/items），变化时重建控件
- * @returns {UseMaptalksControlReturn} `{ control, remove }`——control 为控件实例，remove 可命令式移除
+ * @param {UseMaptalksToolbarOpts} [opts] - 控件选项、事件绑定与自动销毁控制
+ * @returns {UseMaptalksToolbarReturn} `{ control, show, hide, remove }`
  *
  * @example
  * const { map } = useMaptalks(el);
- * useMaptalksToolbar(map, {
- *   position: 'top-right',
- *   items: [{ item: '放大', click: () => map.value?.zoomIn() }],
+ * const { control } = useMaptalksToolbar(map, {
+ *   options: {
+ *     position: 'top-right',
+ *     items: [{ item: '放大', click: () => map.value?.zoomIn() }],
+ *   },
+ *   events: { positionchange: () => console.log('位置变化') },
  * });
  */
 export function useMaptalksToolbar(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  options: MaybeRefOrGetter<MaptalksToolbarOptions | undefined> = {},
-): UseMaptalksControlReturn {
+  opts: UseMaptalksToolbarOpts = {},
+): UseMaptalksToolbarReturn {
   const control = shallowRef<MaptalksControl | null>(null);
   let creating = false;
+  const events = opts.events ?? {};
 
-  const reload = async () => {
+  async function reload() {
     const m = toValue(map);
-    const opts = toValue(options);
     if (!m || creating) return;
     creating = true;
     if (control.value) {
+      unbindEvents(control.value, events);
       control.value.remove();
       control.value = null;
     }
@@ -46,24 +112,31 @@ export function useMaptalksToolbar(
       const Ctor = mt.control?.Toolbar;
       if (typeof Ctor !== 'function')
         throw new MaptalksError('control-failed', '当前 maptalks-gl 未导出 Toolbar 控件');
-      const ctrl = new Ctor(opts);
+      const ctrl = new Ctor(toValue(opts.options));
       ctrl.addTo(m);
+      bindEvents(ctrl, events);
       control.value = ctrl;
     } catch (cause) {
       logger.error('控件创建失败', toMaptalksError(cause, 'control-failed', '控件创建失败'));
     } finally {
       creating = false;
     }
-  };
-  const stop = watch([() => toValue(map), () => toValue(options)], reload, { immediate: true });
+  }
+
+  // map 就绪或 options 变化 → 创建/重建
+  const stop = watch([() => toValue(map), () => toValue(opts.options)], () => { void reload(); }, { immediate: true });
+
+  function show(): void { control.value?.show(); }
+  function hide(): void { control.value?.hide(); }
 
   const remove = () => {
     stop();
     if (control.value) {
+      unbindEvents(control.value, events);
       control.value.remove();
       control.value = null;
     }
   };
-  onScopeDispose(remove);
-  return { control, remove };
+  if (opts.autoDispose !== false) onScopeDispose(remove);
+  return { control, show, hide, remove };
 }
