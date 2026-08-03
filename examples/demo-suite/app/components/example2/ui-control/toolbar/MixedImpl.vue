@@ -33,11 +33,10 @@ const baseItems = (): MaptalksToolbarItem[] => [
 ]
 
 // 官网 4 布局：左上水平 / 左下水平+reverseMenu / 右上垂直 / 左上垂直+自定义位置
-// cssName 供页面 CSS 定向覆盖子菜单定位（消除 maptalks 原生 22px 间距导致的 hover 中断）
-const tbOpts1: MaptalksToolbarOptions = { position: 'top-left', vertical: false, cssName: 'tb-h-down', items: baseItems() }
-const tbOpts2: MaptalksToolbarOptions = { position: 'bottom-left', vertical: false, reverseMenu: true, cssName: 'tb-h-up', items: baseItems() }
-const tbOpts3: MaptalksToolbarOptions = { position: 'top-right', vertical: true, cssName: 'tb-v-left', items: baseItems() }
-const tbOpts4: MaptalksToolbarOptions = { position: { top: 120, left: 20 }, vertical: true, reverseMenu: true, cssName: 'tb-v-right', items: baseItems() }
+const tbOpts1: MaptalksToolbarOptions = { position: 'top-left', vertical: false, items: baseItems() }
+const tbOpts2: MaptalksToolbarOptions = { position: 'bottom-left', vertical: false, reverseMenu: true, items: baseItems() }
+const tbOpts3: MaptalksToolbarOptions = { position: 'top-right', vertical: true, items: baseItems() }
+const tbOpts4: MaptalksToolbarOptions = { position: { top: 120, left: 20 }, vertical: true, reverseMenu: true, items: baseItems() }
 
 // MaptalksMap ref 桥接：从组件实例取 map，再经 composable 创建控件
 const mc = ref<MaptalksMapExposed | null>(null)
