@@ -50,14 +50,22 @@ export interface MaptalksMapOptions {
   zoomInCenter?: boolean;
   /** 空间参考系（含自定义 resolutions / LOD） */
   spatialReference?: Record<string, unknown>;
-  /** 底图图层 */
+  /** 底图图层：源名 / 内联源对象 / 原生 Layer 实例 / 多底图候选数组（自动打包 GroupTileLayer，第一项可见其余隐藏） */
   baseLayer?: MaptalksLayer | string | {
     source?: string;
     urlTemplate?: string;
     subdomains?: string[];
     attribution?: string;
     options?: Record<string, unknown>;
-  };
+  } | Array<string | {
+    /** 候选图层 id（LayerSwitcher 显示名），缺省 base-序号 */
+    id?: string | number;
+    source?: string;
+    urlTemplate?: string;
+    subdomains?: string[];
+    attribution?: string;
+    options?: Record<string, unknown>;
+  }>;
   /** 初始图层数组 */
   layers?: MaptalksLayer[];
   /** 渲染器类型 */

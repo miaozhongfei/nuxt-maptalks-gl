@@ -1,7 +1,7 @@
 ﻿<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <p class="text-sm text-muted mt-2">useMaptalks + useMaptalksLayerSwitcher——GroupTileLayer 底图候选 + 叠加图层，hover 切换（对应官网 10.19）。</p>
+    <p class="text-sm text-muted mt-2">useMaptalks + useMaptalksLayerSwitcher——baseLayer 数组声明多底图候选（GroupTileLayer）+ 叠加图层，hover 切换（对应官网 10.19）。</p>
   </div>
 </template>
 
@@ -15,24 +15,15 @@ const lsOpts: MaptalksLayerSwitcherOptions = {
   containerClass: 'maptalks-layer-switcher',
 }
 
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksLayerSwitcher(map, { options: lsOpts })
+// baseLayer 数组：Carto light 可见 / Carto dark 隐藏（自动打包 GroupTileLayer，LayerSwitcher 列为 Base Layers 候选）
+const blOpts: Array<string | { id?: string | number; source?: string; options?: Record<string, unknown> }> = [
+  { id: 'Carto light', options: { urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'] } },
+  { id: 'Carto dark', options: { urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'], visible: false } },
+]
 
-// GroupTileLayer 底图：Carto light 可见 / Carto dark 隐藏（LayerSwitcher 自动列为候选）
-const { layer: gtl } = useMaptalksLayer(map, (mt) => new mt.GroupTileLayer('Base TileLayer', [
-  new mt.TileLayer('Carto light', {
-    urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-    subdomains: ['a', 'b', 'c', 'd'],
-  }),
-  new mt.TileLayer('Carto dark', {
-    visible: false,
-    urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    subdomains: ['a', 'b', 'c', 'd'],
-  }),
-]))
-// GroupTileLayer 显式设为底图——LayerSwitcher 的 Base Layers 分组依赖 getBaseLayer()
-watch([() => toValue(map), gtl], ([m, g]) => { if (m && g) m.setBaseLayer(g) }, { immediate: true })
+const el = ref<HTMLElement | null>(null)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: blOpts })
+useMaptalksLayerSwitcher(map, { options: lsOpts })
 
 // 叠加标记图层（LayerSwitcher 的 Layers 分组）
 const v1 = useMaptalksVectorLayer(map, { id: 'Vector Markers' })

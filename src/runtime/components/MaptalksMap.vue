@@ -50,8 +50,8 @@ const props = withDefaults(defineProps<{
   name?: string
   /** 透传给 maptalks Map 构造器的额外选项 */
   options?: MaptalksMapOptions
-  /** 底图：源名（字符串）或内联源对象 */
-  baseLayer?: string | { source?: string; options?: Record<string, unknown> }
+  /** 底图：源名（字符串）/ 内联源对象 / 多底图候选数组（自动打包 GroupTileLayer，第一项可见其余隐藏） */
+  baseLayer?: string | { source?: string; options?: Record<string, unknown> } | Array<string | { id?: string | number; source?: string; options?: Record<string, unknown> }>
 }>(), { options: () => ({}) })
 
 const emit = defineEmits<{ ready: [map: MaptalksMap]; error: [err: MaptalksError] }>()
