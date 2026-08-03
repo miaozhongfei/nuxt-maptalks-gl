@@ -1,26 +1,30 @@
 ﻿<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <UButton size="sm" class="mt-3" @click="exportGeoJSON">导出为 GeoJSON</UButton>
+    <div class="mt-2 flex items-center gap-2">
+      <UButton size="sm" variant="outline" @click="exportGeoJSON">导出为 GeoJSON</UButton>
+    </div>
     <pre v-if="result" class="text-xs mt-2 p-3 rounded border border-default overflow-auto max-h-48">{{ result }}</pre>
+    <p class="text-sm text-muted mt-2">useMaptalks + useMaptalksMarker——properties 随几何，toGeoJSON() 导出（对应官网 11.2）。</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-useMaptalksTileLayer(map, { source: 'osm' })
-const result = ref('')
-let markerGeo: any = null
-watch(() => toValue(map), async (m) => {
-  if (!m) return
-  const mt = await import('maptalks-gl')
-  const layer = new mt.VectorLayer('v').addTo(m)
-  markerGeo = new mt.Marker([121.5057, 31.2453], { symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 16, markerHeight: 16 } })
-  markerGeo.addTo(layer)
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { layer } = useMaptalksVectorLayer(map, { id: 'v' })
+// 官网 11.2：Marker 带 properties（顶层 properties 字段），toGeoJSON() 导出
+const mk = useMaptalksMarker(layer, {
+  coordinates: [121.5057, 31.2453],
+  properties: { name: 'point marker' },
+  options: { symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 16, markerHeight: 16 } },
 })
+
+const result = ref('')
+
 function exportGeoJSON() {
-  if (!markerGeo) return
-  result.value = JSON.stringify(markerGeo.toGeoJSON(), null, 2)
+  const geo = mk.geometry.value
+  if (!geo) return
+  result.value = JSON.stringify(geo.toGeoJSON(), null, 2)
 }
 </script>
