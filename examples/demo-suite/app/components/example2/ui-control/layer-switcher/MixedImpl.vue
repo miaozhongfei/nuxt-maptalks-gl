@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <MaptalksMap
       ref="mc"
@@ -28,7 +28,7 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 useMaptalksLayerSwitcher(map, { options: lsOpts })
 
 // GroupTileLayer 底图：Carto light 可见 / Carto dark 隐藏（LayerSwitcher 自动列为候选）
-useMaptalksLayer(map, (mt) => new mt.GroupTileLayer('Base TileLayer', [
+const { layer: gtl } = useMaptalksLayer(map, (mt) => new mt.GroupTileLayer('Base TileLayer', [
   new mt.TileLayer('Carto light', {
     urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     subdomains: ['a', 'b', 'c', 'd'],
@@ -39,6 +39,8 @@ useMaptalksLayer(map, (mt) => new mt.GroupTileLayer('Base TileLayer', [
     subdomains: ['a', 'b', 'c', 'd'],
   }),
 ]))
+// GroupTileLayer 显式设为底图——LayerSwitcher 的 Base Layers 分组依赖 getBaseLayer()
+watch([() => toValue(map), gtl], ([m, g]) => { if (m && g) m.setBaseLayer(g) }, { immediate: true })
 
 // 叠加标记图层（LayerSwitcher 的 Layers 分组）
 const v1 = useMaptalksVectorLayer(map, { id: 'Vector Markers' })
