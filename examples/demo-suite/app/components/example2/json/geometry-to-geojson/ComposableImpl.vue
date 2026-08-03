@@ -13,11 +13,13 @@
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 const { layer } = useMaptalksVectorLayer(map, { id: 'v' })
-// 官网 11.2：Marker 带 properties（顶层 properties 字段），toGeoJSON() 导出
+// 官网 11.2：Marker 带 properties（构造 options 内），toGeoJSON() 导出
 const mk = useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
-  properties: { name: 'point marker' },
-  options: { symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 16, markerHeight: 16 } },
+  options: {
+    properties: { name: 'point marker' },
+    symbol: { markerType: 'ellipse', markerFill: '#f59e0b', markerWidth: 16, markerHeight: 16 },
+  },
 })
 
 const result = ref('')
