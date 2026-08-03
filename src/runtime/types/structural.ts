@@ -968,6 +968,8 @@ export interface MaptalksGLNamespace {
     Scale?: new (options?: Record<string, unknown>) => MaptalksControl;
     /** 归属控件构造器 */
     Attribution?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** Toolbar 工具条控件构造器（items 按钮列表 + children 子菜单） */
+    Toolbar?: new (options?: Record<string, unknown>) => MaptalksControl;
     /** 罗盘控件构造器 */
     Compass?: new (options?: Record<string, unknown>) => MaptalksControl;
   };

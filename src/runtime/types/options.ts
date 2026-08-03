@@ -1213,3 +1213,51 @@ export interface MaptalksUIMarkerOptions {
   /** 逃生舱：透传任意未建模的原始 UIMarker 选项 */
   [key: string]: unknown;
 }
+
+// ───────────────────────────────── Toolbar ─────────────────────────────────
+
+/**
+ * Toolbar 控件单个按钮/子菜单项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 `control.Toolbar` items 数组中的一项：`item` 为按钮文案，
+ * `click` 为点击回调，`children` 声明下拉子菜单（递归同构）。
+ *
+ * @example
+ * const item: MaptalksToolbarItem = { item: 'menu', click: () => {}, children: [{ item: 'child 1' }] };
+ */
+export interface MaptalksToolbarItem {
+  /** 按钮文案 */
+  item: string;
+  /** 点击回调（无参） */
+  click?: () => void;
+  /** 子菜单项（递归），存在时按钮展开为下拉菜单 */
+  children?: MaptalksToolbarItem[];
+  /** 逃生舱：透传任意未建模的原始 Toolbar 项（iconClass / tooltip 等） */
+  [key: string]: unknown;
+}
+
+/**
+ * Toolbar 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Toolbar` 构造器选项：位置（字符串或对象）、
+ * 水平/垂直方向、下拉菜单方向反转、按钮项列表。
+ *
+ * @example
+ * const opts: MaptalksToolbarOptions = {
+ *   position: 'top-right',
+ *   vertical: true,
+ *   items: [{ item: '放大', click: () => map.zoomIn() }],
+ * };
+ */
+export interface MaptalksToolbarOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 是否垂直排列（默认 true；false 为水平排列） */
+  vertical?: boolean;
+  /** 下拉子菜单方向是否反转（默认 false，底部弹出） */
+  reverseMenu?: boolean;
+  /** 按钮项列表（含 children 子菜单） */
+  items?: MaptalksToolbarItem[];
+  /** 逃生舱：透传任意未建模的原始 Toolbar 选项 */
+  [key: string]: unknown;
+}
