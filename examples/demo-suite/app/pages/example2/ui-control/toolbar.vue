@@ -18,17 +18,16 @@
 </style>
 
 <script setup lang="ts">
-import type { DemoTab } from '~/data/example2-menu'
-import ComponentImpl from '~/components/example2/ui-control/toolbar/ComponentImpl.vue'
-import ComposableImpl from '~/components/example2/ui-control/toolbar/ComposableImpl.vue'
-import MixedImpl from '~/components/example2/ui-control/toolbar/MixedImpl.vue'
-import EscapeImpl from '~/components/example2/ui-control/toolbar/EscapeImpl.vue'
+import ComponentImpl from '~/components/example2/ui-control/toolbar/ComponentImpl.vue';
+import ComposableImpl from '~/components/example2/ui-control/toolbar/ComposableImpl.vue';
+import EscapeImpl from '~/components/example2/ui-control/toolbar/EscapeImpl.vue';
+import MixedImpl from '~/components/example2/ui-control/toolbar/MixedImpl.vue';
+import type { DemoTab } from '~/data/example2-menu';
 
 const tabs: DemoTab[] = [
   { key: 'component', label: '组件', comp: ComponentImpl },
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-]
+];
 </script>
-
