@@ -9,7 +9,9 @@
 import type { ComputedRef, MaybeRefOrGetter, Ref, ShallowRef } from 'vue';
 
 import type {
+  MaptalksAttributionOptions,
   MaptalksCircleOptions,
+  MaptalksCompassOptions,
   MaptalksDrawToolOptions,
   MaptalksEllipseOptions,
   MaptalksGLTFLayerOptions,
@@ -23,12 +25,14 @@ import type {
   MaptalksMultiPolygonOptions,
   MaptalksPolygonOptions,
   MaptalksRectangleOptions,
+  MaptalksScaleOptions,
   MaptalksSectorOptions,
   MaptalksTextBoxOptions,
   MaptalksTileLayerOptions,
   MaptalksVectorLayerOptions,
   MaptalksVectorTileLayerOptions,
   MaptalksWMSLayerOptions,
+  MaptalksZoomOptions,
 } from './options';
 import type {
   MaptalksError,
@@ -985,16 +989,91 @@ export interface UseMaptalksDrawToolReturn {
 // ───────────────────────────────── useMaptalksControl ─────────────────────────────────
 
 /**
- * `useMaptalksControl` 的返回。
+ * Zoom 控件可选项。
  *
- * @description 暴露响应式控件实例与命令式移除方法。
+ * @description 透传给 `control.Zoom` 构造器的选项（position / zoomLevel / slider）、控件事件绑定
+ * （add / remove / positionchange）、自动销毁开关。
  *
  * @example
- * const { control, remove } = useMaptalksControl(map, (mt) => new mt.control.Zoom());
+ * useMaptalksZoom(map, { options: { position: 'top-left', zoomLevel: true } });
  */
-export interface UseMaptalksControlReturn {
+export interface UseMaptalksZoomOpts {
+  /** 透传给 `control.Zoom` 构造器的选项（含中文字段注释，详见 MaptalksZoomOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksZoomOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Compass 控件可选项。
+ *
+ * @description 透传给 `control.Compass` 构造器的选项（position）、控件事件绑定、自动销毁开关。
+ *
+ * @example
+ * useMaptalksCompass(map, { options: { position: 'top-right' } });
+ */
+export interface UseMaptalksCompassOpts {
+  /** 透传给 `control.Compass` 构造器的选项（含中文字段注释，详见 MaptalksCompassOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksCompassOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Scale 控件可选项。
+ *
+ * @description 透传给 `control.Scale` 构造器的选项（position / metric / imperial）、控件事件绑定、自动销毁开关。
+ *
+ * @example
+ * useMaptalksScale(map, { options: { position: 'bottom-left', metric: true } });
+ */
+export interface UseMaptalksScaleOpts {
+  /** 透传给 `control.Scale` 构造器的选项（含中文字段注释，详见 MaptalksScaleOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksScaleOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Attribution 控件可选项。
+ *
+ * @description 透传给 `control.Attribution` 构造器的选项（position / content）、控件事件绑定、自动销毁开关。
+ *
+ * @example
+ * useMaptalksAttribution(map, { options: { position: 'bottom-right', content: 'Powered by maptalks' } });
+ */
+export interface UseMaptalksAttributionOpts {
+  /** 透传给 `control.Attribution` 构造器的选项（含中文字段注释，详见 MaptalksAttributionOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksAttributionOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * `useMaptalksControl` 及各控件预设（Zoom / Compass / Scale / Attribution / Toolbar）的返回。
+ *
+ * @description 暴露响应式控件实例与命令式显隐/移除。泛型参数支持控件窄类型。
+ *
+ * @example
+ * const { control, show, hide, remove } = useMaptalksZoom(map, { options: { position: 'top-left' } });
+ *
+ * @template T - 控件具体类型，默认 MaptalksControl
+ */
+export interface UseMaptalksControlReturn<T extends MaptalksControl = MaptalksControl> {
   /** 控件实例（创建前为 null） */
-  control: ShallowRef<MaptalksControl | null>;
+  control: ShallowRef<T | null>;
+  /** 显示控件（Control 基类 show() 封装） */
+  show: () => void;
+  /** 隐藏控件（Control 基类 hide() 封装） */
+  hide: () => void;
   /** 命令式移除并销毁控件 */
   remove: () => void;
 }

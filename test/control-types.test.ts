@@ -7,7 +7,9 @@ describe('控件类型', () => {
     expectTypeOf<MaptalksControl['remove']>().toBeFunction();
   });
 
-  it('UseMaptalksControlReturn 有 control/remove', () => {
+  it('UseMaptalksControlReturn 有 control/show/hide/remove', () => {
     expectTypeOf<UseMaptalksControlReturn['remove']>().toBeFunction();
+    expectTypeOf<UseMaptalksControlReturn['show']>().toBeFunction();
+    expectTypeOf<UseMaptalksControlReturn['hide']>().toBeFunction();
   });
 });

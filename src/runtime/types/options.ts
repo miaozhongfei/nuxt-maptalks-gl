@@ -1261,3 +1261,75 @@ export interface MaptalksToolbarOptions {
   /** 逃生舱：透传任意未建模的原始 Toolbar 选项 */
   [key: string]: unknown;
 }
+
+// ───────────────────────────────── Zoom / Compass / Scale / Attribution ─────────────────────────────────
+
+/**
+ * Zoom 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Zoom` 构造器选项：位置、是否显示缩放级别、是否显示滑块。
+ *
+ * @example
+ * const opts: MaptalksZoomOptions = { position: 'top-left', zoomLevel: true };
+ */
+export interface MaptalksZoomOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 是否显示当前缩放级别文字（默认 false） */
+  zoomLevel?: boolean;
+  /** 是否显示缩放滑块（默认 true） */
+  slider?: boolean;
+  /** 逃生舱：透传任意未建模的原始 Zoom 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * Compass 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Compass` 构造器选项：位置。
+ *
+ * @example
+ * const opts: MaptalksCompassOptions = { position: 'top-right' };
+ */
+export interface MaptalksCompassOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 逃生舱：透传任意未建模的原始 Compass 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * Scale 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Scale` 构造器选项：位置、米制/英制显示。
+ *
+ * @example
+ * const opts: MaptalksScaleOptions = { position: 'bottom-left', metric: true, imperial: false };
+ */
+export interface MaptalksScaleOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 是否显示米制比例尺（默认 true） */
+  metric?: boolean;
+  /** 是否显示英制比例尺（默认 false） */
+  imperial?: boolean;
+  /** 逃生舱：透传任意未建模的原始 Scale 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * Attribution 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Attribution` 构造器选项：位置、版权信息内容。
+ *
+ * @example
+ * const opts: MaptalksAttributionOptions = { position: 'bottom-right', content: 'Powered by maptalks' };
+ */
+export interface MaptalksAttributionOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 版权信息内容（字符串或 DOM 元素） */
+  content?: string | HTMLElement;
+  /** 逃生舱：透传任意未建模的原始 Attribution 选项 */
+  [key: string]: unknown;
+}

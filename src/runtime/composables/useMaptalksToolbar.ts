@@ -1,9 +1,15 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
-import type { MaybeRefOrGetter, ShallowRef } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
 import { loadMaptalks } from '../core/loader';
-import type { MaptalksControl, MaptalksEventHandler, MaptalksMap, MaptalksToolbarOptions } from '../types';
+import type {
+  MaptalksControl,
+  MaptalksEventHandler,
+  MaptalksMap,
+  MaptalksToolbarOptions,
+  UseMaptalksControlReturn,
+} from '../types';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('nuxt-maptalks-gl');
@@ -27,28 +33,6 @@ export interface UseMaptalksToolbarOpts {
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动 `remove`，默认 true */
   autoDispose?: boolean;
-}
-
-/**
- * useMaptalksToolbar 的返回值。
- *
- * @description 提供 Toolbar 控件实例与命令式控制：`control`（原生实例 ref）、`show`/`hide`（显隐，Control 基类方法）、
- * `remove`（移除并销毁）。
- *
- * @example
- * const { control, show, hide, remove } = useMaptalksToolbar(map, { options: { position: 'top-right' } });
- * show(); // 显示控件
- * control.value?.isVisible(); // 判断是否可见
- */
-export interface UseMaptalksToolbarReturn {
-  /** 控件实例（创建前为 null，用 ShallowRef 避免响应式深代理） */
-  control: ShallowRef<MaptalksControl | null>;
-  /** 显示控件（Control 基类 show() 的封装） */
-  show: () => void;
-  /** 隐藏控件（Control 基类 hide() 的封装） */
-  hide: () => void;
-  /** 命令式移除并销毁控件 */
-  remove: () => void;
 }
 
 /** 批量绑定事件到控件实例 */
@@ -78,7 +62,7 @@ function unbindEvents(control: MaptalksControl, events: Record<string, MaptalksE
  * 显隐用返回的 show/hide 方法）。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksToolbarOpts} [opts] - 控件选项、事件绑定与自动销毁控制
- * @returns {UseMaptalksToolbarReturn} `{ control, show, hide, remove }`
+ * @returns {UseMaptalksControlReturn} `{ control, show, hide, remove }`
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -93,7 +77,7 @@ function unbindEvents(control: MaptalksControl, events: Record<string, MaptalksE
 export function useMaptalksToolbar(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksToolbarOpts = {},
-): UseMaptalksToolbarReturn {
+): UseMaptalksControlReturn {
   const control = shallowRef<MaptalksControl | null>(null);
   let creating = false;
   const events = opts.events ?? {};

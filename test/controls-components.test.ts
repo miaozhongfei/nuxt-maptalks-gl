@@ -27,26 +27,33 @@ vi.mock('../src/runtime/composables/useMaptalksCompass', () => ({ useMaptalksCom
 
 const provideMap = { [MAP_KEY]: shallowRef<MaptalksMap | null>({} as MaptalksMap) };
 
+// composable 返回结构：{ control, show, hide, remove }（mock 需提供完整返回值供组件解构）
+const ctlReturn = () => ({ control: shallowRef(null), show: vi.fn(), hide: vi.fn(), remove: vi.fn() });
+
 describe('control components', () => {
   it('Zoom', () => {
+    zoom.mockReturnValue(ctlReturn());
     const w = mount(MaptalksZoomControl, { global: { provide: provideMap } });
     expect(zoom).toHaveBeenCalledTimes(1);
     w.unmount();
   });
 
   it('Scale', () => {
+    scale.mockReturnValue(ctlReturn());
     const w = mount(MaptalksScaleControl, { global: { provide: provideMap } });
     expect(scale).toHaveBeenCalledTimes(1);
     w.unmount();
   });
 
   it('Attribution', () => {
+    attr.mockReturnValue(ctlReturn());
     const w = mount(MaptalksAttributionControl, { global: { provide: provideMap } });
     expect(attr).toHaveBeenCalledTimes(1);
     w.unmount();
   });
 
   it('Compass', () => {
+    compass.mockReturnValue(ctlReturn());
     const w = mount(MaptalksCompassControl, { global: { provide: provideMap } });
     expect(compass).toHaveBeenCalledTimes(1);
     w.unmount();

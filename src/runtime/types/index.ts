@@ -54,7 +54,9 @@ export type {
 
 export type {
   MaptalksAreaToolOptions,
+  MaptalksAttributionOptions,
   MaptalksCircleOptions,
+  MaptalksCompassOptions,
   MaptalksDistanceToolOptions,
   MaptalksDrawToolOptions,
   MaptalksEllipseOptions,
@@ -72,6 +74,7 @@ export type {
   MaptalksMultiPolygonOptions,
   MaptalksPolygonOptions,
   MaptalksRectangleOptions,
+  MaptalksScaleOptions,
   MaptalksSectorOptions,
   MaptalksTextBoxOptions,
   MaptalksTileLayerOptions,
@@ -81,6 +84,7 @@ export type {
   MaptalksVectorLayerOptions,
   MaptalksVectorTileLayerOptions,
   MaptalksWMSLayerOptions,
+  MaptalksZoomOptions,
 } from './options';
 
 export type {
@@ -100,8 +104,10 @@ export type {
   GeometryPresetBase,
   MaptalksInstanceRef,
   MaptalksSyncField,
+  UseMaptalksAttributionOpts,
   UseMaptalksCameraReturn,
   UseMaptalksCircleOpts,
+  UseMaptalksCompassOpts,
   UseMaptalksControlReturn,
   UseMaptalksEllipseOpts,
   UseMaptalksExportOpts,
@@ -128,6 +134,7 @@ export type {
   UseMaptalksRectangleOpts,
   UseMaptalksRegistryReturn,
   UseMaptalksReturn,
+  UseMaptalksScaleOpts,
   UseMaptalksSectorOpts,
   UseMaptalksSourceReturn,
   UseMaptalksSyncOpts,
@@ -143,6 +150,7 @@ export type {
   UseMaptalksVectorLayerReturn,
   UseMaptalksVectorTileLayerOpts,
   UseMaptalksWMSLayerOpts,
+  UseMaptalksZoomOpts,
 } from './composables';
 
 export type {

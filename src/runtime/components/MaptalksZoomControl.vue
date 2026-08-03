@@ -4,24 +4,39 @@
 /**
  * 缩放控件组件。
  *
- * @description 对 `useMaptalksZoom` 的声明式封装。在地图上添加 +/- 缩放按钮控件，
- * 支持 `:options` 透传位置、样式等配置。必须在 MaptalksMap 内使用。
+ * @description 对 `useMaptalksZoom` 的声明式封装。在地图上添加缩放按钮/滑块控件，
+ * 支持 `:options` 透传位置、zoomLevel 等配置，`:events` 绑定控件事件（add / remove / positionchange），
+ * `:autoDispose` 控制销毁时是否自动移除。必须在 MaptalksMap 内使用。
  *
  * @example
  * ```vue
- * <MaptalksZoomControl :options="{ position: 'top-left' }" />
+ * <MaptalksZoomControl :options="{ position: 'top-left', zoomLevel: true }" />
  * ```
  */
 import { inject } from 'vue'
 
 import { useMaptalksZoom } from '../composables/useMaptalksZoom'
 import { MAP_KEY } from '../core/map-context'
+import type { MaptalksEventHandler, MaptalksZoomOptions } from '../types'
 
-const props = defineProps<{ options?: Record<string, unknown> }>()
-/** 缩放控件配置（position 等） */
+const props = withDefaults(
+  defineProps<{
+    /** 透传给 `control.Zoom` 构造器的选项（含中文字段注释，详见 MaptalksZoomOptions） */
+    options?: MaptalksZoomOptions
+    /** 控件事件名 → 处理器（自动 on/off，仅 add / remove / positionchange） */
+    events?: Record<string, MaptalksEventHandler>
+    /** 组件销毁时自动移除控件，默认 true */
+    autoDispose?: boolean
+  }>(),
+  { options: undefined, autoDispose: true },
+)
 
 const map = inject(MAP_KEY)
 if (!map) throw new Error('[nuxt-maptalks-gl] MaptalksZoomControl 必须在 MaptalksMap 内使用')
-const { control, remove } = useMaptalksZoom(map, () => props.options)
-defineExpose({ control, remove })
+const { control, show, hide, remove } = useMaptalksZoom(map, {
+  options: () => props.options,
+  events: props.events,
+  autoDispose: props.autoDispose,
+})
+defineExpose({ control, show, hide, remove })
 </script>
