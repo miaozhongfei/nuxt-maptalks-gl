@@ -949,6 +949,61 @@ export interface MaptalksToolbarControl extends MaptalksControl {
 }
 
 /**
+ * Panel 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 建模文档列出的私有方法 buildOn 与公开方法 setContent/getContent（动态更新面板内容，
+ * 更新后自动重建 DOM 并触发 contentchange 事件）；
+ * 供 `UseMaptalksControlReturn<MaptalksPanelControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksPanel(map, { options: { position: 'top-right', content: '面板' } });
+ * control.value?.setContent('新内容');
+ */
+export interface MaptalksPanelControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+  /** 替换面板内容（字符串或 DOM，更新后重建面板 DOM） */
+  setContent(content: string | HTMLElement): this;
+  /** 读取面板内容 */
+  getContent(): string | HTMLElement;
+}
+
+/**
+ * Overview 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 建模文档列出的私有方法 buildOn 与公开方法 maxmize/minimize（展开/收起鹰眼小地图，
+ * maxmize 为 maptalks 原始拼写，非 maximize）；
+ * 供 `UseMaptalksControlReturn<MaptalksOverviewControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksOverview(map, { options: { position: 'bottom-right' } });
+ * control.value?.maxmize();
+ */
+export interface MaptalksOverviewControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+  /** 展开鹰眼小地图（maptalks 原始拼写 maxmize） */
+  maxmize(): this;
+  /** 收起鹰眼小地图 */
+  minimize(): this;
+}
+
+/**
+ * LayerSwitcher 控件实例窄类型（extends MaptalksControl）。
+ *
+ * @description 建模文档列出的私有方法 buildOn（构建控件 DOM，maptalks 内部调用）；
+ * 供 `UseMaptalksControlReturn<MaptalksLayerSwitcherControl>` 显式泛型使用。
+ *
+ * @example
+ * const { control } = useMaptalksLayerSwitcher(map, { options: { position: 'top-right' } });
+ * control.value?.isVisible();
+ */
+export interface MaptalksLayerSwitcherControl extends MaptalksControl {
+  /** 构建控件 DOM（文档列出的私有方法建模；原生升级若签名变化需同步更新） */
+  buildOn(map: MaptalksMap): HTMLElement;
+}
+
+/**
  * 已加载的 maptalks-gl 命名空间（动态 import 的结果）。
  *
  * @description `factory` 与各预设接收此命名空间以构造图层/工具。已知构造器标为可选
@@ -1053,6 +1108,12 @@ export interface MaptalksGLNamespace {
     Attribution?: new (options?: Record<string, unknown>) => MaptalksControl;
     /** Toolbar 工具条控件构造器（items 按钮列表 + children 子菜单） */
     Toolbar?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** Panel 面板控件构造器（内容/关闭按钮/可拖拽） */
+    Panel?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** Overview 鹰眼控件构造器（内嵌小地图 + 展开/收起） */
+    Overview?: new (options?: Record<string, unknown>) => MaptalksControl;
+    /** LayerSwitcher 图层选择控件构造器（hover 展开图层面板） */
+    LayerSwitcher?: new (options?: Record<string, unknown>) => MaptalksControl;
     /** 罗盘控件构造器 */
     Compass?: new (options?: Record<string, unknown>) => MaptalksControl;
   };

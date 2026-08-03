@@ -17,12 +17,15 @@ import type {
   MaptalksGLTFLayerOptions,
   MaptalksImageLayerOptions,
   MaptalksLabelOptions,
+  MaptalksLayerSwitcherOptions,
   MaptalksLineStringOptions,
   MaptalksMapOptions,
   MaptalksMarkerOptions,
   MaptalksMultiLineStringOptions,
   MaptalksMultiPointOptions,
   MaptalksMultiPolygonOptions,
+  MaptalksOverviewOptions,
+  MaptalksPanelOptions,
   MaptalksPolygonOptions,
   MaptalksRectangleOptions,
   MaptalksScaleOptions,
@@ -1051,6 +1054,60 @@ export interface UseMaptalksScaleOpts {
 export interface UseMaptalksAttributionOpts {
   /** 透传给 `control.Attribution` 构造器的选项（含中文字段注释，详见 MaptalksAttributionOptions），变化时重建控件 */
   options?: MaybeRefOrGetter<MaptalksAttributionOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Panel 控件可选项。
+ *
+ * @description 透传给 `control.Panel` 构造器的选项（position / content / closeButton / draggable 等）、
+ * 控件事件绑定（add / remove / positionchange / close / contentchange）、自动销毁开关。
+ *
+ * @example
+ * useMaptalksPanel(map, { options: { position: 'top-right', content: '面板内容', closeButton: true } });
+ */
+export interface UseMaptalksPanelOpts {
+  /** 透传给 `control.Panel` 构造器的选项（含中文字段注释，详见 MaptalksPanelOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksPanelOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange / close / contentchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * Overview 控件可选项。
+ *
+ * @description 透传给 `control.Overview` 构造器的选项（position / size / maximize 等）、
+ * 控件事件绑定、自动销毁开关。
+ *
+ * @example
+ * useMaptalksOverview(map, { options: { position: 'bottom-right', size: [150, 110] } });
+ */
+export interface UseMaptalksOverviewOpts {
+  /** 透传给 `control.Overview` 构造器的选项（含中文字段注释，详见 MaptalksOverviewOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksOverviewOptions | undefined>;
+  /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
+  events?: Record<string, MaptalksEventHandler>;
+  /** 作用域销毁时是否自动 `remove`，默认 true */
+  autoDispose?: boolean;
+}
+
+/**
+ * LayerSwitcher 控件可选项。
+ *
+ * @description 透传给 `control.LayerSwitcher` 构造器的选项（position / baseTitle / overlayTitle 等）、
+ * 控件事件绑定、自动销毁开关。
+ *
+ * @example
+ * useMaptalksLayerSwitcher(map, { options: { position: 'top-right', baseTitle: '底图' } });
+ */
+export interface UseMaptalksLayerSwitcherOpts {
+  /** 透传给 `control.LayerSwitcher` 构造器的选项（含中文字段注释，详见 MaptalksLayerSwitcherOptions），变化时重建控件 */
+  options?: MaybeRefOrGetter<MaptalksLayerSwitcherOptions | undefined>;
   /** 控件事件名 → 处理器（自动 on/off，add / remove / positionchange） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动 `remove`，默认 true */

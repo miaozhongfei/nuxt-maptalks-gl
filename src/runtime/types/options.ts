@@ -1262,7 +1262,80 @@ export interface MaptalksToolbarOptions {
   [key: string]: unknown;
 }
 
-// ───────────────────────────────── Zoom / Compass / Scale / Attribution ─────────────────────────────────
+// ───────────────────────────────── Zoom / Compass / Scale / Attribution / Panel / Overview / LayerSwitcher ─────────────────────────────────
+
+/**
+ * Panel 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Panel` 构造器选项：位置、自定义内容、关闭按钮、可拖拽等。
+ *
+ * @example
+ * const opts: MaptalksPanelOptions = { position: 'top-right', content: '面板内容', closeButton: true };
+ */
+export interface MaptalksPanelOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 面板宽度（像素） */
+  width?: number;
+  /** 面板高度（像素） */
+  height?: number;
+  /** 是否自定义面板（true 时 content 为 HTML 字符串/DOM，不套 maptalks-panel 默认结构） */
+  custom?: boolean;
+  /** 面板内容（字符串或 DOM 元素） */
+  content?: string | HTMLElement;
+  /** 是否显示关闭按钮（点击触发 close 事件） */
+  closeButton?: boolean;
+  /** 是否可拖拽 */
+  draggable?: boolean;
+  /** 逃生舱：透传任意未建模的原始 Panel 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * Overview 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.Overview` 构造器选项：位置、小地图尺寸、默认展开、容器/按钮样式类。
+ *
+ * @example
+ * const opts: MaptalksOverviewOptions = { position: 'bottom-right', size: [150, 110], maximize: false };
+ */
+export interface MaptalksOverviewOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 鹰眼小地图尺寸（[宽, 高] 像素） */
+  size?: [number, number];
+  /** 是否默认展开（false 时仅显示按钮，点击展开） */
+  maximize?: boolean;
+  /** 小地图容器 CSS 类 */
+  containerClass?: string;
+  /** 展开/收起按钮 CSS 类 */
+  buttonClass?: string;
+  /** 逃生舱：透传任意未建模的原始 Overview 选项 */
+  [key: string]: unknown;
+}
+
+/**
+ * LayerSwitcher 控件构造选项（手写展平，IDE 可补全全部原生字段）。
+ *
+ * @description 对应 maptalks `control.LayerSwitcher` 构造器选项：位置、底图/图层分组标题、排除图层、容器样式类。
+ *
+ * @example
+ * const opts: MaptalksLayerSwitcherOptions = { position: 'top-right', baseTitle: '底图', overlayTitle: '图层' };
+ */
+export interface MaptalksLayerSwitcherOptions {
+  /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
+  position?: string | Record<string, unknown>;
+  /** 底图图层分组标题 */
+  baseTitle?: string;
+  /** 叠加图层分组标题 */
+  overlayTitle?: string;
+  /** 不需要管理的图层 id 列表（排除出选择面板） */
+  excludeLayers?: string[];
+  /** 容器 CSS 类（默认 'maptalks-layer-switcher'） */
+  containerClass?: string;
+  /** 逃生舱：透传任意未建模的原始 LayerSwitcher 选项 */
+  [key: string]: unknown;
+}
 
 /**
  * Zoom 控件构造选项（手写展平，IDE 可补全全部原生字段）。
