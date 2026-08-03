@@ -7,7 +7,7 @@ import { MaptalksError, toMaptalksError } from '../core/errors';
 import { isWebGLAvailable, loadMaptalks } from '../core/loader';
 import { mapRegistry } from '../core/registry';
 import { resolveSource } from '../core/resolve-source';
-import type { MaptalksLayer, MaptalksMap, MaptalksSource, UseMaptalksOpts, UseMaptalksReturn } from '../types';
+import type { MaptalksGLNamespace, MaptalksLayer, MaptalksMap, MaptalksSource, UseMaptalksOpts, UseMaptalksReturn } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例（单例） */
@@ -63,36 +63,54 @@ async function createMap(
   const mt = await loadMaptalks();
   const map = new mt.Map(el, buildMapOptions(options));
   // 自动创建底图瓦片层
-  if (blConfig) {
-    if (blConfig.length === 1) {
-      // 单底图：单个 TileLayer 设为底图（getBaseLayer()/Overview 鹰眼/LayerSwitcher 可识别）
-      const item = blConfig[0];
-      if (item) {
-        const tileOpts = await buildTileLayerOptions(item);
-        const tileLayer = new mt.TileLayer(item.id, tileOpts as Record<string, unknown>);
-        map.setBaseLayer(tileLayer as unknown as Parameters<typeof map.setBaseLayer>[0]);
-      }
-    } else {
-      // 多底图候选：打包 GroupTileLayer（第一项可见、其余隐藏，供 LayerSwitcher 切换）
-      const GtlCtor = mt.GroupTileLayer;
-      if (typeof GtlCtor !== 'function')
-        throw new MaptalksError('layer-failed', '当前 maptalks-gl 未导出 GroupTileLayer');
-      const layers: MaptalksLayer[] = [];
-      for (let i = 0; i < blConfig.length; i++) {
-        const item = blConfig[i];
-        if (!item) continue;
-        const tileOpts = await buildTileLayerOptions(item);
-        if (i > 0 && tileOpts.visible === undefined) tileOpts.visible = false;
-        layers.push(new mt.TileLayer(item.id, tileOpts) as unknown as MaptalksLayer);
-      }
-      const gtl = new GtlCtor('base', layers);
-      map.setBaseLayer(gtl as unknown as Parameters<typeof map.setBaseLayer>[0]);
-    }
-  }
+  if (blConfig) await buildBaseLayers(map, mt, blConfig);
   if (el.offsetHeight === 0 && prevHeight > 0) {
     el.style.height = prevHeight + 'px';
   }
   return map;
+}
+
+/**
+ * 按 blConfig 构建底图并 setBaseLayer（单底图 → TileLayer；多候选 → GroupTileLayer）。
+ *
+ * @description 单底图路径：单个 TileLayer 设为底图（getBaseLayer()/Overview 鹰眼/LayerSwitcher 可识别）；
+ * 多底图候选路径：逐元素建 TileLayer（未显式 visible 时第一项可见、其余隐藏）打包 GroupTileLayer。
+ * @param {MaptalksMap} map - 目标地图
+ * @param {MaptalksGLNamespace} mt - 已加载的 maptalks-gl 命名空间
+ * @param {Array<{ source: MaptalksSource | null; id: string; extra: Record<string, unknown> }>} blConfig - 底图项列表
+ * @returns {Promise<void>}
+ *
+ * @example
+ * await buildBaseLayers(map, mt, blConfig);
+ */
+async function buildBaseLayers(
+  map: MaptalksMap,
+  mt: MaptalksGLNamespace,
+  blConfig: Array<{ source: MaptalksSource | null; id: string; extra: Record<string, unknown> }>,
+): Promise<void> {
+  if (blConfig.length === 1) {
+    const item = blConfig[0];
+    if (item) {
+      const tileOpts = await buildTileLayerOptions(item);
+      const tileLayer = new mt.TileLayer(item.id, tileOpts as Record<string, unknown>);
+      map.setBaseLayer(tileLayer as unknown as Parameters<typeof map.setBaseLayer>[0]);
+    }
+    return;
+  }
+  // 多底图候选：打包 GroupTileLayer（第一项可见、其余隐藏，供 LayerSwitcher 切换）
+  const GtlCtor = mt.GroupTileLayer;
+  if (typeof GtlCtor !== 'function')
+    throw new MaptalksError('layer-failed', '当前 maptalks-gl 未导出 GroupTileLayer');
+  const layers: MaptalksLayer[] = [];
+  for (let i = 0; i < blConfig.length; i++) {
+    const item = blConfig[i];
+    if (!item) continue;
+    const tileOpts = await buildTileLayerOptions(item);
+    if (i > 0 && tileOpts.visible === undefined) tileOpts.visible = false;
+    layers.push(new mt.TileLayer(item.id, tileOpts) as unknown as MaptalksLayer);
+  }
+  const gtl = new GtlCtor('base', layers);
+  map.setBaseLayer(gtl as unknown as Parameters<typeof map.setBaseLayer>[0]);
 }
 
 /**

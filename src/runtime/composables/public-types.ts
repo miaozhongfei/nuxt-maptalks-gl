@@ -12,6 +12,7 @@
  */
 export type {
   // ── 核心结构 ──
+  GeoJSONData,
   MaptalksAttributionControl,
   MaptalksCircleGeometry,
   MaptalksCompassControl,
