@@ -1023,6 +1023,8 @@ export interface MaptalksGLNamespace {
   WMSLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksWMSLayer;
   /** WMS 图层构造器的 maptalks-gl 实际导出名（maptalks 核心导出为 WMSTileLayer） */
   WMSTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
+  /** GroupTileLayer 构造器（瓦片图层组，可作底图并供 LayerSwitcher 列选子图层） */
+  GroupTileLayer?: new (id: string | number, layers: MaptalksLayer[], options?: Record<string, unknown>) => MaptalksLayer;
   /** GroupGLLayer 构造器（承载 GL 图层与光照/后处理） */
   GroupGLLayer?: new (
     id: string | number,

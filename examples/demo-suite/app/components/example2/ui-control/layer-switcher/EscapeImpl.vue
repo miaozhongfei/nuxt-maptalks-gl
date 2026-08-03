@@ -1,36 +1,50 @@
 ﻿<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <div class="flex items-center gap-2 mt-3">
-      <UButton size="sm" :variant="showA ? 'solid' : 'outline'" @click="switchLayer('a')">OSM 图层</UButton>
-      <UButton size="sm" :variant="showB ? 'solid' : 'outline'" @click="switchLayer('b')">天地图图层</UButton>
-    </div>
-    <p class="text-sm text-muted mt-2">按钮切换图层显隐实现图层选择器效果（对应官网 10.19）。</p>
+    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：GroupTileLayer 底图候选 + mt.control.LayerSwitcher，hover 切换（对应官网 10.19）。</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-const showA = ref(true)
-const showB = ref(true)
+
 watch(() => toValue(map), async (m) => {
   if (!m) return
   const mt = await import('maptalks-gl')
-  const lA = new mt.TileLayer('base', { urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c'] }).addTo(m)
-  const lB = new mt.TileLayer('tdt', { urlTemplate: 'https://t{s}.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=56b06c0a8c92743da8aa9fb6f0e8db39', subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'] }).addTo(m)
-  layerA = lA; layerB = lB
-  switchLayerNow()
-})
-let layerA: any = null
-let layerB: any = null
-function switchLayer(target: string) {
-  if (target === 'a') showA.value = !showA.value
-  else showB.value = !showB.value
-  switchLayerNow()
-}
-function switchLayerNow() {
-  if (layerA) { if (showA.value) layerA.show(); else layerA.hide() }
-  if (layerB) { if (showB.value) layerB.show(); else layerB.hide() }
-}
+  // GroupTileLayer 底图：Carto light 可见 / Carto dark 隐藏（LayerSwitcher 自动列为候选）
+  const gtl = new mt.GroupTileLayer('Base TileLayer', [
+    new mt.TileLayer('Carto light', {
+      urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+      subdomains: ['a', 'b', 'c', 'd'],
+    }),
+    new mt.TileLayer('Carto dark', {
+      visible: false,
+      urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+      subdomains: ['a', 'b', 'c', 'd'],
+    }),
+  ])
+  m.setBaseLayer(gtl)
+  // 叠加标记图层（LayerSwitcher 的 Layers 分组）
+  const markers = [
+    [121.5057, 31.2453], [121.5157, 31.2453], [121.5157, 31.2353],
+  ]
+  new mt.VectorLayer('Vector Markers', markers.map((c) => new mt.Marker(c, {
+    symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 },
+  }))).addTo(m as any)
+  const circles = [
+    [121.4957, 31.2453], [121.4957, 31.2353], [121.4957, 31.2553],
+  ]
+  new mt.VectorLayer('Circle Markers', circles.map((c) => new mt.Marker(c, {
+    symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 },
+  }))).addTo(m as any)
+  // LayerSwitcher 控件
+  new mt.control.LayerSwitcher({
+    position: 'top-right',
+    baseTitle: 'Base Layers',
+    overlayTitle: 'Layers',
+    excludeLayers: [],
+    containerClass: 'maptalks-layer-switcher',
+  }).addTo(m as any)
+}, { immediate: true })
 </script>
