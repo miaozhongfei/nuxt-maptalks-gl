@@ -10,8 +10,9 @@
       style="height: 480px"
     />
     <div class="mt-2 flex items-center gap-2">
-      <UButton size="sm" variant="outline" @click="() => { control.value?.maxmize() }">展开鹰眼</UButton>
-      <UButton size="sm" variant="outline" @click="() => { control.value?.minimize() }">收起鹰眼</UButton>
+      <!-- 模板中 ref 自动解包：control 直接是 MaptalksOverviewControl | null，无需 .value -->
+      <UButton size="sm" variant="outline" @click="() => { control?.maxmize() }">展开鹰眼</UButton>
+      <UButton size="sm" variant="outline" @click="() => { control?.minimize() }">收起鹰眼</UButton>
     </div>
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksOverview——鹰眼小地图 + maxmize/minimize 按钮（对应官网 10.13）。</p>
   </div>
