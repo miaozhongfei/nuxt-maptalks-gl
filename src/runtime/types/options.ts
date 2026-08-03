@@ -1309,6 +1309,8 @@ export interface MaptalksCompassOptions {
 export interface MaptalksScaleOptions {
   /** 控件位置：'top-left' / 'top-right' / 'bottom-left' / 'bottom-right' 或 { top, left } 像素对象 */
   position?: string | Record<string, unknown>;
+  /** 比例尺最大宽度（像素） */
+  maxWidth?: number;
   /** 是否显示米制比例尺（默认 true） */
   metric?: boolean;
   /** 是否显示英制比例尺（默认 false） */
