@@ -41,6 +41,7 @@ watch(
       { item: 'item 3', click: () => info('item 3') },
     ];
     // 官网 4 布局：左上水平 / 左下水平+reverseMenu / 右上垂直 / 左上垂直+自定义位置
+    // cssName 供页面 CSS 定向覆盖子菜单定位（消除 maptalks 原生 22px 间距导致的 hover 中断）
     new mt.control.Toolbar({ position: 'top-left', vertical: false, items }).addTo(m as any);
     new mt.control.Toolbar({
       position: 'bottom-left',
@@ -48,11 +49,12 @@ watch(
       reverseMenu: true,
       items,
     }).addTo(m as any);
-    new mt.control.Toolbar({ position: 'top-right', vertical: true, items }).addTo(m as any);
+    new mt.control.Toolbar({ position: 'top-right', vertical: true, cssName: 'tb-v-left', items }).addTo(m as any);
     new mt.control.Toolbar({
       position: { top: 120, left: 20 },
       vertical: true,
       reverseMenu: true,
+      cssName: 'tb-v-right',
       items,
     }).addTo(m as any);
   },

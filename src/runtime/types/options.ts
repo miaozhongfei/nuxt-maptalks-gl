@@ -1256,6 +1256,8 @@ export interface MaptalksToolbarOptions {
   vertical?: boolean;
   /** 下拉子菜单方向是否反转（默认 false，底部弹出） */
   reverseMenu?: boolean;
+  /** 控件 DOM 追加的 CSS 类（字符串或数组，可配合样式覆盖子菜单定位等） */
+  cssName?: string | string[];
   /** 按钮项列表（含 children 子菜单） */
   items?: MaptalksToolbarItem[];
   /** 逃生舱：透传任意未建模的原始 Toolbar 选项 */
