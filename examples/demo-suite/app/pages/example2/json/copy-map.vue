@@ -1,5 +1,8 @@
 <template>
-  <Example2DemoShell description="序列化一张地图再还原到另一张上——复制地图（对应官网 11.5）。" :tabs="tabs" />
+  <Example2DemoShell
+    description="用 JSON 复制地图——A 图（底图 + Marker）toJSON 后复制到空容器 B，3 种实现（Composable/组合/逃生舱）（对应官网 11.5）。"
+    :tabs="tabs"
+  />
 </template>
 
 <script setup lang="ts">
