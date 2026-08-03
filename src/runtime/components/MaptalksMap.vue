@@ -1,5 +1,9 @@
 ﻿<template>
-  <div ref="el" style="height: 100%; width: 100%"><slot /></div>
+  <div ref="el" style="height: 100%; width: 100%">
+    <!-- slot 内容挂 Vue 私有隐藏 div：避免 maptalks 地图容器（el）的 DOM 操作破坏 Vue 占位节点
+         （v-if 切换时 patch insertBefore null） -->
+    <div style="display: none"><slot /></div>
+  </div>
 </template>
 
 <script setup lang="ts">
