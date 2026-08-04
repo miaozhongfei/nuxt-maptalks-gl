@@ -400,6 +400,8 @@ export interface MaptalksLayer extends MaptalksClass {
   getMaxZoom(): number;
   /** 获取遮罩几何 */
   getMask(): MaptalksGeometry | null;
+  /** 序列化为 Profile JSON（供静态 Layer.fromJSON 重建） */
+  toJSON(options?: Record<string, unknown>): Record<string, unknown>;
   /** 设置遮罩几何 */
   setMask(mask: MaptalksGeometry): this;
   /** 移除遮罩 */
@@ -1016,6 +1018,12 @@ export interface MaptalksGLNamespace {
     new (container: string | HTMLElement, options: Record<string, unknown>): MaptalksMap;
     /** 静态：从 Profile JSON 在容器上重现地图（会销毁容器上的旧实例） */
     fromJSON(container: string | HTMLElement, profile: Record<string, unknown>): MaptalksMap;
+  };
+  /** Layer 构造器（含静态 fromJSON——反序列化为独立图层副本，可 addTo 任意地图） */
+  Layer: {
+    new (id: string | number, options?: Record<string, unknown>): MaptalksLayer;
+    /** 静态：从图层 Profile JSON 重建独立图层实例 */
+    fromJSON(layerJSON: Record<string, unknown>): MaptalksLayer;
   };
   /** 瓦片图层构造器（maptalks-gl 核心，始终存在） */
   TileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksTileLayer;
