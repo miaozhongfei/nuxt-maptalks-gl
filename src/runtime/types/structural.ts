@@ -1066,6 +1066,10 @@ export interface MaptalksGLNamespace {
   GeoJSON?: {
     toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[];
   };
+  /** Geometry 基类（静态 fromJSON 反序列化为独立几何副本，可 addTo 任意图层） */
+  Geometry?: {
+    fromJSON(geometryJSON: Record<string, unknown>): MaptalksGeometry | MaptalksGeometry[];
+  };
   /** DrawTool 构造器 */
   DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** Circle 构造器 */
