@@ -1,23 +1,31 @@
-﻿<template>
+<template>
   <div>
-    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：class extends maptalks.control.Control + buildOn + mergeOptions + addControl（对应官网 13.1）。</p>
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-sm text-muted mt-2">MaptalksMap ref + 自定义控件类（extends mt.control.Control + buildOn）——map.addControl 挂载（对应官网 13.1）。</p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+// MaptalksMap ref 桥接：组件实例取 map 后 addControl 挂载自定义控件
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const status = ref('加载中…')
 
 watch(
-  () => toValue(map),
+  map,
   async (m) => {
-    if (!m) return
+    if (!m || status.value.includes('已添加')) return
     const mt: any = await import('maptalks-gl')
-    // 官网 13.1 同款：自定义控件类 + mergeOptions 默认项 + buildOn 返回 DOM
+    // 自定义控件类：extends mt.control.Control + buildOn 返回 DOM（官网 13.1 核心）
     class MyControl extends mt.control.Control {
       buildOn(): HTMLElement {
         const dom = document.createElement('div')
