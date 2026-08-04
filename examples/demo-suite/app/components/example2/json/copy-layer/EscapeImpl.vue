@@ -43,6 +43,8 @@ async function copyLayer(): Promise<void> {
   const mt = await import('maptalks-gl');
   // 幂等：重复复制时先移除 B 上同 id 副本（maptalks 同 id addLayer 会抛 Duplicate）
   mb.getLayer('v0')?.remove();
-  mt.Layer.fromJSON(srcLayer.toJSON()).addTo(mb as never);
+  // 静态 fromJSON 类型返回 Layer | null（可空），先取副本再挂载
+  const copy = mt.Layer.fromJSON(srcLayer.toJSON());
+  copy?.addTo(mb as never);
 }
 </script>
