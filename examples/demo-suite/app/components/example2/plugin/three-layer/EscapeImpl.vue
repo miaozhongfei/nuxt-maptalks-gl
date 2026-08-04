@@ -1,24 +1,28 @@
 ﻿<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <p class="text-sm text-muted mt-2">maptalks.three ThreeLayer 3D 图层（对应官网 12.4）。</p>
+    <p class="text-sm text-muted mt-2">逃生舱——插件 README ES Modules 用法：import * as THREE + import { ThreeLayer }（对应官网 12.4）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 60, bearing: 30 })
-useMaptalksTileLayer(map, { source: 'osm' })
-watch(() => toValue(map), async (m) => {
-  if (!m) return
-  try {
-    const three = await import('maptalks.three')
-    const ThreeLayer = (three as any).default || (three as any).ThreeLayer
-    if (ThreeLayer) {
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 60, bearing: 30, baseLayer: 'osm' })
+
+const status = ref('加载中…')
+
+watch(
+  () => toValue(map),
+  async (m) => {
+    if (!m) return
+    // README ES Modules 用法：THREE 从 three 模块导入（非 window.THREE），ThreeLayer 从插件导入
+    const { ThreeLayer }: any = await import('maptalks.three')
+    const THREE: any = await import('three')
+    try {
       const tLayer = new ThreeLayer('three')
-      tLayer.prepareToDraw = (gl: any, scene: any, camera: any) => {
-        const THREE = (window as any).THREE
-        if (!THREE) return
+      // prepareToDraw 在图层渲染时回调（gl/scene/camera 为 three.js 对象）——添加灯光与红色方块
+      tLayer.prepareToDraw = (gl: unknown, scene: any, camera: any) => {
         const light = new THREE.AmbientLight(0xffffff, 0.6)
         scene.add(light)
         const geometry = new THREE.BoxGeometry(200, 200, 200)
@@ -29,10 +33,12 @@ watch(() => toValue(map), async (m) => {
         scene.add(box)
         tLayer.renderScene()
       }
-      tLayer.addTo(m)
+      tLayer.addTo(m as never)
+      status.value = 'ThreeLayer 已添加'
+    } catch (e) {
+      status.value = `添加失败: ${(e as Error).message}`
     }
-  } catch {
-    // Plugin may not be installed
-  }
-})
+  },
+  { immediate: true },
+)
 </script>
