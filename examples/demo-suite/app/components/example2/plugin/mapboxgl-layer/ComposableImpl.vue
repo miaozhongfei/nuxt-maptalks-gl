@@ -1,7 +1,7 @@
-﻿<template>
+<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <p class="text-sm text-muted mt-2">逃生舱——插件 README 原生用法：import maptalks.mapboxgl → new MapboxglLayer(...).addTo(map)（对应官网 12.1）。</p>
+    <p class="text-sm text-muted mt-2">useMaptalksLayer 通用原语 + maptalks.mapboxgl 插件构造器——MapboxglLayer GL 栅格图层（对应官网 12.1）。</p>
   </div>
 </template>
 
@@ -12,21 +12,27 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 
+// 插件构造器按需加载（maptalks.mapboxgl 的 MapboxglLayer，extends maptalks.Layer 与 maptalks-gl 同源）
+const MapboxglLayerCtor = ref<any>(null)
 watch(
   () => toValue(map),
   async (m) => {
-    if (!m) return
+    if (!m || MapboxglLayerCtor.value) return
     // mapbox-gl v1 每帧校验 token（无效 token 仅 fire 错误不影响渲染），静默避免控制台噪音；
     // carto 公共样式为自定义 URL 实际不消费 token，占位即可
     const mapboxgl: any = await import('mapbox-gl')
     mapboxgl.accessToken = 'pk.placeholder'
     mapboxgl.Map.prototype['_silenceAuthErrors'] = true
-    // 插件 README 用法：import 插件模块后直接用其导出的 MapboxglLayer 类（extends maptalks.Layer）
-    const { MapboxglLayer }: any = await import('maptalks.mapboxgl')
-    new MapboxglLayer('mbgl', {
-      glOptions: { style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' },
-    }).addTo(m as never)
+    const mod: any = await import('maptalks.mapboxgl')
+    MapboxglLayerCtor.value = mod.MapboxglLayer
   },
   { immediate: true },
+)
+
+// 通用图层原语消费插件构造器：enabled 门控等插件模块就绪后再创建（carto 公共 GL 样式，免 token）
+const { layer } = useMaptalksLayer(
+  map,
+  () => new MapboxglLayerCtor.value('mbgl', { glOptions: { style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' } }),
+  { enabled: MapboxglLayerCtor },
 )
 </script>

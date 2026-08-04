@@ -20,7 +20,7 @@
     "d3-geo": "^3.1.1",
     "echarts": "^6.1.0",
     "highcharts": "^13.0.0",
-    "mapbox-gl": "^3.7.0",
+    "mapbox-gl": "^1.13.3",
     "maptalks-gl": "^0.124.0",
     "maptalks.e3": "^0.5.2",
     "maptalks.heatmap": "^0.8.1",
