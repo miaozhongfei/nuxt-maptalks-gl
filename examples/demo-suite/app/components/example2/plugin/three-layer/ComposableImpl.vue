@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 60, bearing: 30, baseLayer: 'osm' })
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 10, pitch: 60, bearing: 30, baseLayer: 'osm' })
 
 // 插件与 THREE 模块按需加载（README ES Modules 用法：import * as THREE from 'three'）
 // 顺序：先加载 THREE（大模块）再启用门控，避免 prepareToDraw 回调时 THREE 未就绪

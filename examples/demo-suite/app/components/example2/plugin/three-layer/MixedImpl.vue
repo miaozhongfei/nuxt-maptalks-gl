@@ -3,7 +3,7 @@
     <MaptalksMap
       ref="mc"
       :center="[121.5057, 31.2453]"
-      :zoom="13"
+      :zoom="10"
       :pitch="60"
       :bearing="30"
       base-layer="osm"

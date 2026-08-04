@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 60, bearing: 30, baseLayer: 'osm' })
+const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 10, pitch: 60, bearing: 30, baseLayer: 'osm' })
 
 const status = ref('加载中…')
 
