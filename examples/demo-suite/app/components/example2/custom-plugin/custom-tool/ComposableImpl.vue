@@ -1,8 +1,8 @@
-﻿<template>
+<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <UButton size="sm" class="mt-3" :variant="toolActive ? 'solid' : 'outline'" @click="toggleTool">{{ toolActive ? '关闭工具' : '开启工具' }}</UButton>
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：class extends maptalks.MapTool + onEnable/onDisable/getEvents + new CustomTool().addTo(map)（对应官网 13.3）。</p>
+    <p class="text-sm text-muted mt-2">useMaptalks + 自定义 MapTool 子类（onEnable 建图层 / onDisable 移除 / click 加 Marker / 右键清空）——new CustomTool().addTo(map)（对应官网 13.3）。</p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
@@ -20,7 +20,7 @@ watch(
   async (m) => {
     if (!m || tool) return
     const mt: any = await import('maptalks-gl')
-    // 官网 13.3 同款：自定义 MapTool 子类 + Toolbar 提示 + new CustomTool().addTo(map)
+    // 自定义 MapTool 子类（官网 13.3 核心）：onEnable 建图层、onDisable 移除、getEvents 绑定 click/contextmenu
     class CustomTool extends mt.MapTool {
       private _markerLayer: any = null
 
