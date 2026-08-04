@@ -1,8 +1,8 @@
-﻿<template>
+<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <UButton size="sm" class="mt-3" @click="clearAll">清空文字</UButton>
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：class extends maptalks.Layer + 自定义 renderer（drawOnInteracting 交互重绘 _drawnData）+ 点击地图添加文字（对应官网 14.2）。</p>
+    <p class="text-sm text-muted mt-2">useMaptalks + 自定义 HelloLayer + dom renderer（drawOnInteracting 交互重绘 _drawnData）——点击地图添加文字，拖动/缩放跟随（对应官网 14.2）。</p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
