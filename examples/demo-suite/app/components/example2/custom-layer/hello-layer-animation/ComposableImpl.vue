@@ -1,7 +1,7 @@
-﻿<template>
+<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：class extends maptalks.Layer + 自定义 renderer（needToRedraw 恒 true 动画图层，文字颜色 300ms 循环）——对应官网 14.3。</p>
+    <p class="text-sm text-muted mt-2">useMaptalks + 自定义 HelloLayer + dom renderer（animation 动画图层——needToRedraw 恒 true，文字颜色 300ms 循环）——对应官网 14.3。</p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>

@@ -1,14 +1,22 @@
-﻿<template>
+<template>
   <div>
-    <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：class extends maptalks.Layer + 自定义 renderer（needToRedraw 恒 true 动画图层，文字颜色 300ms 循环）——对应官网 14.3。</p>
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-sm text-muted mt-2">MaptalksMap ref + 自定义 HelloLayer + dom renderer（animation 动画图层——needToRedraw 恒 true，文字颜色 300ms 循环）——对应官网 14.3。</p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+// MaptalksMap ref 桥接：组件实例取 map 后挂载自定义图层
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const status = ref('加载中…')
 let layer: any = null
@@ -146,7 +154,7 @@ function createHelloLayer(m: any, mt: any): any {
 }
 
 watch(
-  () => toValue(map),
+  map,
   async (m) => {
     if (!m || layer) return
     try {
