@@ -26,7 +26,12 @@ watch(
     if (!m || status.value.includes('已添加')) return
     const mt: any = await import('maptalks-gl')
     // 自定义控件类：extends mt.control.Control + buildOn 返回 DOM（官网 13.1 核心）
+    // 显式构造器透传 options（Volar 对父类构造器签名解析差异，as never 兜底）
     class MyControl extends mt.control.Control {
+      constructor(options?: Record<string, unknown>) {
+        super(options as never)
+      }
+
       buildOn(): HTMLElement {
         const dom = document.createElement('div')
         dom.style.cssText = 'background:#051127;border:5px solid #fff;border-radius:5px;color:#fff;height:50px;line-height:50px;text-align:center;font-size:30px;padding:0 8px'

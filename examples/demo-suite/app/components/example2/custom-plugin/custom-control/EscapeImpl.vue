@@ -18,7 +18,12 @@ watch(
     if (!m) return
     const mt: any = await import('maptalks-gl')
     // 官网 13.1 同款：自定义控件类 + mergeOptions 默认项 + buildOn 返回 DOM
+    // 显式构造器透传 options（Volar 对父类构造器签名解析差异，as never 兜底）
     class MyControl extends mt.control.Control {
+      constructor(options?: Record<string, unknown>) {
+        super(options as never)
+      }
+
       buildOn(): HTMLElement {
         const dom = document.createElement('div')
         dom.style.cssText = 'background:#051127;border:5px solid #fff;border-radius:5px;color:#fff;height:50px;line-height:50px;text-align:center;font-size:30px;padding:0 8px'
