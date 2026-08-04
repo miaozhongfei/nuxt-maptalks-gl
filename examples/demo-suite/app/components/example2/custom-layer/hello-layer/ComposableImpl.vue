@@ -2,7 +2,7 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <UButton size="sm" class="mt-3" @click="switchData">切换数据</UButton>
-    <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：class extends maptalks.Layer + 自定义 renderer + registerRenderer + addTo（对应官网 14.1，renderer 适配 maptalks-gl 用 dom）。</p>
+    <p class="text-sm text-muted mt-2">useMaptalks + 自定义 HelloLayer（extends mt.Layer + setData/getData + mergeOptions）+ 自定义 dom renderer（文字 DOM 渲染）——registerRenderer + addTo（对应官网 14.1，renderer 适配 maptalks-gl）。</p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
