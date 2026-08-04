@@ -21,6 +21,7 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const status = ref('加载中…')
 let layer: any = null
+let mtModule: any = null
 
 /** 自定义图层类：extends mt.Layer + setData/getData + mergeOptions 默认配置（官网 14.1 核心） */
 function buildHelloLayerCtor(mt: any): any {
@@ -72,7 +73,7 @@ HelloLayerRenderer.prototype.render = function (this: any): void {
   const mp = this.layer.getMap()
   data.forEach((d: any) => {
     // 经纬度转容器像素坐标，屏幕外跳过以提高性能
-    const point = mp.coordinateToContainerPoint(d.coord)
+    const point = mp.coordinateToContainerPoint(new mtModule.Coordinate(d.coord))
     if (!mp.getContainerExtent().contains(point)) return
     const textEl = document.createElement('div')
     textEl.style.cssText = `position:absolute;color:${color};font:${font};white-space:nowrap;transform:translate(-50%,0)`
@@ -82,6 +83,11 @@ HelloLayerRenderer.prototype.render = function (this: any): void {
     this['_container'].append(textEl)
   })
   this.layer.fire('layerload')
+}
+
+HelloLayerRenderer.prototype.getEvents = function (this: any): Record<string, unknown> {
+  // 地图移动/缩放后重绘，保证文字跟随地图
+  return { moveend: this.render, zoomend: this.render }
 }
 
 HelloLayerRenderer.prototype.needToRedraw = function (this: any): boolean {
@@ -142,6 +148,7 @@ watch(
     if (!m || layer) return
     try {
       const mt: any = await import('maptalks-gl')
+      mtModule = mt
       layer = createHelloLayer(m, mt)
       status.value = 'HelloLayer 已添加（自定义 Layer + dom renderer）'
     } catch (e) {
