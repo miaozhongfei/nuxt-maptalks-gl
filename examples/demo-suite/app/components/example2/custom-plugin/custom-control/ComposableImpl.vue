@@ -36,7 +36,8 @@ watch(
     }
     MyControl.mergeOptions({ position: 'top-right', content: 'My Control' })
     ctrl = new MyControl({ content: 'Hello, MyControl!' })
-    m.addControl(ctrl)
+    // addControl 参数为模块建模的 MaptalksControl，自定义类与 maptalks 类型结构不匹配，as never 兜底
+    m.addControl(ctrl as never)
     status.value = 'MyControl 已添加（top-right）'
   },
   { immediate: true },
