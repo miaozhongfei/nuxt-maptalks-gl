@@ -30,66 +30,57 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">原生事件镜像，单向模式下仅主图（左）驱动从图（右）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl';
+import type { MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl'
 
-const elA = ref<HTMLElement | null>(null);
-const elB = ref<HTMLElement | null>(null);
-const { map: mapA } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13 });
-const { map: mapB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(mapA, { source: 'osm' });
-useMaptalksTileLayer(mapB, { source: 'osm' });
+const elA = ref<HTMLElement | null>(null)
+const elB = ref<HTMLElement | null>(null)
+const { map: mapA, isReady } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13 })
+const { map: mapB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(mapA, { source: 'osm' })
+useMaptalksTileLayer(mapB, { source: 'osm' })
 
-const syncEnabled = ref(true);
-const isDualMode = ref(true);
-function enableSync() { syncEnabled.value = true; }
-function disableSync() { syncEnabled.value = false; }
+const syncEnabled = ref(true)
+const isDualMode = ref(true)
+function enableSync() { syncEnabled.value = true }
+function disableSync() { syncEnabled.value = false }
 
-let lock = false;
+let lock = false
 function bind(src: MtMap, dst: MtMap) {
-  const s = src as unknown as {
-    on: (t: string, fn: () => void) => void;
-    getCenter: () => unknown;
-    getZoom: () => number;
-    getPitch: () => number;
-    getBearing: () => number;
-  };
-  const d = dst as unknown as {
-    setCenter: (c: unknown) => void;
-    setZoom: (z: number, o?: Record<string, unknown>) => void;
-    setPitch: (v: number) => void;
-    setBearing: (v: number) => void;
-  };
+  // on 未建模（仅索引逃生舱），cast 兜底；其余同步方法均已建模
+  const s = src as unknown as { on: (t: string, fn: () => void) => void }
   s.on('moving moveend zooming zoomend rotate pitch', () => {
     // 单向模式下跳过从图→主图的同步（即 src 为从图时不做任何事）
-    if (!isDualMode.value && src !== toValue(mapA)) return;
-    if (lock || !syncEnabled.value) return;
-    lock = true;
-    d.setCenter(s.getCenter());
-    d.setZoom(s.getZoom(), { animation: false });
-    d.setPitch(s.getPitch());
-    d.setBearing(s.getBearing());
-    lock = false;
-  });
+    if (!isDualMode.value && src !== toValue(mapA)) return
+    if (lock || !syncEnabled.value) return
+    lock = true
+    dst.setCenter(src.getCenter())
+    dst.setZoom(src.getZoom(), { animation: false })
+    dst.setPitch(src.getPitch())
+    dst.setBearing(src.getBearing())
+    lock = false
+  })
 }
 // 两张地图都就绪后双向绑定，单向模式通过 handler 内 isDualMode 判断过滤从→主
 watch(
   [() => toValue(mapA), () => toValue(mapB)],
   ([a, b]) => {
-    if (!a || !b) return;
-    bind(a, b);
-    bind(b, a);
+    if (!a || !b) return
+    bind(a, b)
+    bind(b, a)
   },
-);
+)
 
-// 从图交互开关
-const slaveLocked = ref(false);
+// 从图交互开关（config 已建模）
+const slaveLocked = ref(false)
 function lockSlave() {
-  slaveLocked.value = !slaveLocked.value;
-  const m = mapB.value as unknown as { config: (o: Record<string, unknown>) => void } | null;
-  m?.config({ draggable: !slaveLocked.value, scrollWheelZoom: !slaveLocked.value });
+  slaveLocked.value = !slaveLocked.value
+  mapB.value?.config({ draggable: !slaveLocked.value, scrollWheelZoom: !slaveLocked.value })
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（原生事件镜像同步）' : '加载中…'))
 </script>

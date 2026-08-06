@@ -10,7 +10,7 @@
         style="height: 420px"
       />
       <MaptalksMap
-        ref="mapBComp"
+        ref="mcB"
         name="sync-m-b"
         :center="[121.5057, 31.2453]"
         :zoom="13"
@@ -36,35 +36,37 @@
         <UButton size="sm" color="neutral" variant="outline" @click="lockSlave">{{ slaveLocked ? '解锁从图交互' : '禁用从图交互' }}</UButton>
       </div>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 // 从图 ref 用于交互锁定
-const mapBComp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
+const mcB = ref<MaptalksMapExposed | null>(null)
+const mapB = computed(() => toValue(mcB.value?.map) ?? null)
 
-const sMutual = useMaptalksSync(['sync-m-a', 'sync-m-b']);
-const sMaster = useMaptalksSync(['sync-m-a', 'sync-m-b'], { mode: 'master-slave', master: 'sync-m-a' });
-sMaster.disable();
+const sMutual = useMaptalksSync(['sync-m-a', 'sync-m-b'])
+const sMaster = useMaptalksSync(['sync-m-a', 'sync-m-b'], { mode: 'master-slave', master: 'sync-m-a' })
+sMaster.disable()
 
-const isDualMode = ref(true);
-const isEnabled = computed(() => isDualMode.value ? sMutual.isEnabled.value : sMaster.isEnabled.value);
+const isDualMode = ref(true)
+const isEnabled = computed(() => isDualMode.value ? sMutual.isEnabled.value : sMaster.isEnabled.value)
 
-function disable() { sMutual.disable(); sMaster.disable(); }
+function disable() { sMutual.disable(); sMaster.disable() }
 function dualEnable() {
-  if (isDualMode.value) { sMaster.disable(); sMutual.enable(); }
-  else { sMutual.disable(); sMaster.enable(); }
+  if (isDualMode.value) { sMaster.disable(); sMutual.enable() }
+  else { sMutual.disable(); sMaster.enable() }
 }
 function onModeChange(v: boolean) {
-  if (v) { sMaster.disable(); sMutual.enable(); }
-  else { sMutual.disable(); sMaster.enable(); }
+  if (v) { sMaster.disable(); sMutual.enable() }
+  else { sMutual.disable(); sMaster.enable() }
 }
 
-const slaveLocked = ref(false);
+const slaveLocked = ref(false)
 function lockSlave() {
-  slaveLocked.value = !slaveLocked.value;
-  const m = mapBComp.value?.map as unknown as { value?: unknown } | null;
-  const mm = (m as unknown as { config?: (o: Record<string, unknown>) => void } | null);
-  mm?.config?.({ draggable: !slaveLocked.value, scrollWheelZoom: !slaveLocked.value });
+  slaveLocked.value = !slaveLocked.value
+  mapB.value?.config({ draggable: !slaveLocked.value, scrollWheelZoom: !slaveLocked.value })
 }
+
+const status = computed(() => (mapB.value ? '地图已创建（双地图同步就绪）' : '加载中…'))
 </script>
