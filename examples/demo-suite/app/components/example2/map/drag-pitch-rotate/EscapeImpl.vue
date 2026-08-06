@@ -13,21 +13,23 @@
       按住右键（或 Ctrl+左键）拖拽。
       当前俯仰 {{ (cam.pitch.value ?? 0).toFixed(1) }}° · 旋转 {{ (cam.bearing.value ?? 0).toFixed(1) }}°
     </p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const dragPitch = ref(true);
-const dragRotate = ref(true);
+const dragPitch = ref(true)
+const dragRotate = ref(true)
 // 相机实时回流角度
-const cam = useMaptalksCamera(map);
-// 逃生舱：原生 map.config() 热更新任意 option
+const cam = useMaptalksCamera(map)
+// 逃生舱：原生 map.config() 热更新任意 option（MaptalksMap 已建模 config）
 watch([dragPitch, dragRotate], ([p, r]) => {
-  const m = map.value as unknown as { config: (o: Record<string, unknown>) => void } | null;
-  m?.config({ dragPitch: p, dragRotate: r });
-});
+  map.value?.config({ dragPitch: p, dragRotate: r })
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（拖拽开关实时生效）' : '加载中…'))
 </script>
