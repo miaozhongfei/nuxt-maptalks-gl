@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="创建地图并加载 carto light 底图（对应官网 1.1 显示）"
+    description="创建地图并加载 carto light 底图（对应官网 1.1）"
     :tabs="tabs"
   />
 </template>
