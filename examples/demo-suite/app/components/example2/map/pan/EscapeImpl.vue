@@ -15,27 +15,27 @@
         中心：{{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
       </span>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 // 相机 composable 仅用于只读显示——逃生舱的业务逻辑仍走原生 API
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
 
-// 逃生舱：原生 panTo / panBy / setCenter（坐标数组会被 maptalks 自动转为 Coordinate）
+// 逃生舱：原生 panTo / panBy / setCenter（坐标数组会被 maptalks 自动转为 Coordinate；均已建模）
 function panTo(c: [number, number]) {
-  const m = map.value as unknown as { panTo: (c: [number, number]) => void } | null;
-  m?.panTo(c);
+  map.value?.panTo(c)
 }
 function panBy(dx: number, dy: number) {
-  const m = map.value as unknown as { panBy: (p: [number, number], o?: Record<string, unknown>) => void } | null;
-  m?.panBy([dx, dy]);
+  map.value?.panBy([dx, dy])
 }
 function setCenter(c: [number, number]) {
-  const m = map.value as unknown as { setCenter: (c: [number, number]) => void } | null;
-  m?.setCenter(c);
+  map.value?.setCenter(c)
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（原生 panTo / panBy / setCenter）' : '加载中…'))
 </script>

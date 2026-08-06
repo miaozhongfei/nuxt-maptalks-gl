@@ -2,7 +2,7 @@
   <div>
     <!-- 组合：组件建图 + camera composable 平移 -->
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       base-layer="osm"
@@ -19,12 +19,15 @@
         中心：{{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
       </span>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 // 组件与 composable 桥接
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const cam = useMaptalksCamera(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+const cam = useMaptalksCamera(map)
+
+const status = computed(() => (map.value ? '地图已创建（panTo / panBy / setCenter 平移）' : '加载中…'))
 </script>

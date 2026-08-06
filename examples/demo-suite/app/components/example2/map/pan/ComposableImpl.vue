@@ -15,13 +15,16 @@
         中心：{{ (cam.center.value?.x ?? 0).toFixed(4) }}, {{ (cam.center.value?.y ?? 0).toFixed(4) }}
       </span>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 // panTo / panBy 由 camera composable 提供；center ref 实时回流
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
+
+const status = computed(() => (isReady.value ? '地图已创建（panTo / panBy / setCenter 平移）' : '加载中…'))
 </script>
