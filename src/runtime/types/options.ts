@@ -304,8 +304,8 @@ export interface MaptalksInfoWindowOptions {
  * const opts: MaptalksTileLayerOptions = { urlTemplate: 'https://.../{z}/{x}/{y}.png' };
  */
 export interface MaptalksTileLayerOptions {
-  /** 瓦片 URL 模板（含 {x}/{y}/{z} 占位符） */
-  urlTemplate?: string | ((...args: unknown[]) => string);
+  /** 瓦片 URL 模板（含 {x}/{y}/{z} 占位符；回调参数为 x/y/z 瓦片坐标与 options） */
+  urlTemplate?: string | ((x: number, y: number, z: number, options?: Record<string, unknown>) => string);
   /** 子域名数组（用于加速瓦片加载，如 ['a','b','c']） */
   subdomains?: string[] | number[];
   /** 图层不透明度（0=全透明，1=不透明） */
@@ -750,8 +750,8 @@ export interface MaptalksWMSLayerOptions {
   uppercase?: boolean;
   /** 自动检测 Retina 屏 */
   detectRetina?: boolean;
-  /** 瓦片 URL 模板（继承自 TileLayer） */
-  urlTemplate?: string | ((...args: unknown[]) => string);
+  /** 瓦片 URL 模板（继承自 TileLayer；回调参数为 x/y/z 瓦片坐标与 options） */
+  urlTemplate?: string | ((x: number, y: number, z: number, options?: Record<string, unknown>) => string);
   /** 子域名数组 */
   subdomains?: string[] | number[];
   /** 图层不透明度 */
