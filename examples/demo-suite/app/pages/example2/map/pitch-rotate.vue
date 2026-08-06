@@ -1,7 +1,7 @@
 <template>
   <!-- 1.2 倾斜与旋转 -->
   <Example2DemoShell
-    description="设置与调整地图俯仰角（pitch）和方位角（bearing），对应官网 1.2"
+    description="设置与调整地图俯仰角（pitch）和方位角（bearing）（对应官网 1.2）"
     :tabs="tabs"
   />
 </template>
