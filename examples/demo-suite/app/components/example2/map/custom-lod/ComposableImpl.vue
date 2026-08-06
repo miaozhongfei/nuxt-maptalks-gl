@@ -11,6 +11,7 @@
       <UButton size="sm" @click="applyCustom">切到自定义 6 级 LOD</UButton>
       <UButton size="sm" color="neutral" @click="applyDefault">恢复默认 LOD</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -18,37 +19,37 @@
 const resolutions = Array.from(
   { length: 6 },
   (_, i) => (2 * 6378137 * Math.PI) / (256 * 2 ** (i + 10)),
-);
-const spatialReference = { projection: 'EPSG:3857', resolutions };
-const customSR = { projection: 'EPSG:3857', resolutions };
+)
+const spatialReference = { projection: 'EPSG:3857', resolutions }
+const customSR = { projection: 'EPSG:3857', resolutions }
 
-const el = ref<HTMLElement | null>(null);
-const customMode = ref(true);
-const { map } = useMaptalks(el, {
+const el = ref<HTMLElement | null>(null)
+const customMode = ref(true)
+const { map, isReady } = useMaptalks(el, {
   center: [121.5057, 31.2453],
   zoom: 3,
   spatialReference,
-});
+})
 useMaptalksTileLayer(map, {
   options: {
     urlTemplate: (x: number, y: number, z: number) => {
-      const offset = customMode.value ? 10 : 0;
-      return `https://b.basemaps.cartocdn.com/light_all/${z + offset}/${x}/${y}.png`;
+      const offset = customMode.value ? 10 : 0
+      return `https://b.basemaps.cartocdn.com/light_all/${z + offset}/${x}/${y}.png`
     },
   },
-});
-const cam = useMaptalksCamera(map);
+})
+const cam = useMaptalksCamera(map)
 
 function applyCustom() {
-  customMode.value = true;
-  const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
-  m?.setSpatialReference(customSR);
-  m?.setZoom(3);
+  customMode.value = true
+  map.value?.setSpatialReference(customSR)
+  map.value?.setZoom(3)
 }
 function applyDefault() {
-  customMode.value = false;
-  const m = map.value as unknown as { setSpatialReference: (sr: unknown) => void; setZoom: (z: number) => void } | null;
-  m?.setSpatialReference(null);
-  m?.setZoom(14);
+  customMode.value = false
+  map.value?.setSpatialReference(null as unknown as Record<string, unknown>)
+  map.value?.setZoom(14)
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（自定义 6 级 LOD）' : '加载中…'))
 </script>
