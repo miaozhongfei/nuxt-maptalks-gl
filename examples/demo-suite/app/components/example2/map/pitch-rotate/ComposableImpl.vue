@@ -21,27 +21,33 @@
       <UButton size="sm" color="neutral" variant="outline" @click="set(30, 90)">俯仰 30° · 旋转 90°</UButton>
       <UButton size="sm" color="neutral" @click="set(0, 0)">复位</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, {
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, {
   center: [121.5057, 31.2453],
   zoom: 14,
   pitch: 45,
   bearing: -30,
-});
-useMaptalksTileLayer(map, { source: 'osm' });
+})
+useMaptalksTileLayer(map, { source: 'osm' })
 // 相机双向同步：写 ref 即写回地图；拖动地图也会回流到 ref
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
 const pitch = computed({
   get: () => cam.pitch.value ?? 0,
-  set: (v) => { cam.pitch.value = v; },
-});
+  set: (v) => { cam.pitch.value = v },
+})
 const bearing = computed({
   get: () => cam.bearing.value ?? 0,
-  set: (v) => { cam.bearing.value = v; },
-});
-function set(p: number, b: number) { cam.animateTo({ pitch: p, bearing: b }); }
+  set: (v) => { cam.bearing.value = v },
+})
+function set(p: number, b: number) { cam.animateTo({ pitch: p, bearing: b }) }
+
+const status = computed(() => {
+  if (!isReady.value) return '加载中…'
+  return `地图已创建（pitch ${pitch.value.toFixed(0)}° / bearing ${bearing.value.toFixed(0)}°）`
+})
 </script>

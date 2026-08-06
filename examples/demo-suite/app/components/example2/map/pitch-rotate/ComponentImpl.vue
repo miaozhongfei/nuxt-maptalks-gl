@@ -1,7 +1,7 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       :pitch="45"
@@ -26,21 +26,27 @@
       <UButton size="sm" color="neutral" variant="outline" @click="set(30, 90)">俯仰 30° · 旋转 90°</UButton>
       <UButton size="sm" color="neutral" @click="set(0, 0)">复位</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 // 经组件 expose 的 map 桥接给相机 composable——只读角度，写回由滑杆/按钮驱动
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const cam = useMaptalksCamera(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+const cam = useMaptalksCamera(map)
 const pitch = computed({
   get: () => cam.pitch.value ?? 0,
-  set: (v) => { cam.pitch.value = v; },
-});
+  set: (v) => { cam.pitch.value = v },
+})
 const bearing = computed({
   get: () => cam.bearing.value ?? 0,
-  set: (v) => { cam.bearing.value = v; },
-});
-function set(p: number, b: number) { cam.animateTo({ pitch: p, bearing: b }); }
+  set: (v) => { cam.bearing.value = v },
+})
+function set(p: number, b: number) { cam.animateTo({ pitch: p, bearing: b }) }
+
+const status = computed(() => {
+  if (!map.value) return '加载中…'
+  return `地图已创建（pitch ${pitch.value.toFixed(0)}° / bearing ${bearing.value.toFixed(0)}°）`
+})
 </script>
