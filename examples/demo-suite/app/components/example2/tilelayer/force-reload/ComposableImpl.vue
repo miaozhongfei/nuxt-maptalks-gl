@@ -9,18 +9,21 @@
       <UButton size="sm" @click="reload">强制重载</UButton>
       <UBadge color="primary" variant="subtle">已强制重载 {{ count }} 次</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-const { layer } = useMaptalksTileLayer(map, { source: 'osm' });
-const count = ref(0);
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const { layer } = useMaptalksTileLayer(map, { source: 'osm' })
+const count = ref(0)
 
-// forceReload 丢缓存重拉当前视野瓦片
+// forceReload 丢缓存重拉当前视野瓦片（forceReload 未建模，cast 兜底）
 function reload() {
-  (toValue(layer) as unknown as { forceReload?: () => void } | null)?.forceReload?.();
-  count.value += 1;
+  (toValue(layer) as unknown as { forceReload?: () => void } | null)?.forceReload?.()
+  count.value += 1
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可强制重载瓦片）' : '加载中…'))
 </script>
