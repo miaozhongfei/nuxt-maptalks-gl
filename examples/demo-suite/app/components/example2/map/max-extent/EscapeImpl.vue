@@ -9,24 +9,26 @@
       <UButton size="sm" @click="setLimit">原生 new Extent + setMaxExtent</UButton>
       <UButton size="sm" color="neutral" @click="clearLimit">解除限制</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-// 逃生舱：动态 import 拿命名空间，new 原生 Extent
+// 逃生舱：动态 import 拿命名空间，new 原生 Extent（setMaxExtent 已建模）
 function setLimit() {
-  const m = map.value as unknown as { setMaxExtent: (e: unknown) => void } | null;
-  if (!m) return;
+  const m = toValue(map)
+  if (!m) return
   void import('maptalks-gl').then((mt) => {
-    m.setMaxExtent(new mt.Extent(121.47, 31.22, 121.55, 31.27));
-  });
+    m.setMaxExtent(new mt.Extent(121.47, 31.22, 121.55, 31.27))
+  })
 }
 function clearLimit() {
-  const m = map.value as unknown as { setMaxExtent: (e: unknown) => void } | null;
-  m?.setMaxExtent(null);
+  toValue(map)?.setMaxExtent(null)
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（原生 maxExtent 限制）' : '加载中…'))
 </script>
