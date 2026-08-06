@@ -12,13 +12,16 @@
       <div class="rounded border border-default p-2">俯仰<br>{{ (cam.pitch.value ?? 0).toFixed(1) }}°</div>
       <div class="rounded border border-default p-2">旋转<br>{{ (cam.bearing.value ?? 0).toFixed(1) }}°</div>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 // 四个状态 ref 自动跟随地图（moveend/zoomend/pitch/rotate）
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
+
+const status = computed(() => (isReady.value ? '地图已创建（四状态实时回流）' : '加载中…'))
 </script>

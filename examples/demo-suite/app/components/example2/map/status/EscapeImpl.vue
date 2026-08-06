@@ -16,28 +16,23 @@
       <UButton size="sm" @click="read">原生 API 读取完整状态</UButton>
       <pre v-if="stateText" class="text-xs mt-2 p-3 rounded border border-default overflow-auto">{{ stateText }}</pre>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 // 相机实时回流四状态
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
 
-const stateText = ref('');
-// 逃生舱：getCenter/getZoom/getPitch/getBearing/getSize 原生读取
+const stateText = ref('')
+// 逃生舱：getCenter/getZoom/getPitch/getBearing/getSize 原生读取（均已建模）
 function read() {
-  const m = map.value as unknown as {
-    getCenter: () => { x: number; y: number };
-    getZoom: () => number;
-    getPitch: () => number;
-    getBearing: () => number;
-    getSize: () => { width: number; height: number };
-  } | null;
-  if (!m) return;
-  const c = m.getCenter();
+  const m = toValue(map)
+  if (!m) return
+  const c = m.getCenter()
   stateText.value = JSON.stringify(
     {
       center: [Number(c.x.toFixed(5)), Number(c.y.toFixed(5))],
@@ -48,6 +43,8 @@ function read() {
     },
     null,
     2,
-  );
+  )
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（四状态实时回流）' : '加载中…'))
 </script>
