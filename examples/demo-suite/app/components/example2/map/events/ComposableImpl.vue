@@ -9,27 +9,30 @@
     <ul class="text-xs font-mono mt-3 space-y-1">
       <li v-for="(line, i) in logs" :key="i" class="text-muted">{{ line }}</li>
     </ul>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const logs = ref<string[]>([]);
+const logs = ref<string[]>([])
 // 环形日志：只保留最近 8 条
 function push(line: string) {
-  logs.value = [`${new Date().toLocaleTimeString()} ${line}`, ...logs.value].slice(0, 8);
+  logs.value = [`${new Date().toLocaleTimeString()} ${line}`, ...logs.value].slice(0, 8)
 }
 // useMaptalksEvents：key 即事件名（支持空格分隔多事件），生命周期自动解绑
 useMaptalksEvents(map, {
   click: (e) => {
-    const ev = e as { coordinate?: { x: number; y: number } };
-    push(`click @ ${ev.coordinate?.x.toFixed(4)}, ${ev.coordinate?.y.toFixed(4)}`);
+    const ev = e as { coordinate?: { x: number; y: number } }
+    push(`click @ ${ev.coordinate?.x.toFixed(4)}, ${ev.coordinate?.y.toFixed(4)}`)
   },
   dblclick: () => push('dblclick'),
   zoomend: () => push('zoomend'),
   moveend: () => push('moveend'),
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（click/dblclick/zoomend/moveend 监听）' : '加载中…'))
 </script>
