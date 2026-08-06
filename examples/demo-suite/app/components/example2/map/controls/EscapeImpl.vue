@@ -21,14 +21,16 @@ watch(
   (m) => {
     if (!m) return
     void import('maptalks-gl').then((mt) => {
-      new mt.control.Zoom({ position: 'top-left' }).addTo(m)
+      // addTo 参数为 maptalks 原生 Map 类型，模块 MaptalksMap 结构不匹配，as never 兜底；
+      // 原生构造器直接收 position（无模块的 options 包裹层）
+      new mt.control.Zoom({ position: 'top-left' }).addTo(m as never)
       new mt.control.Toolbar({
         position: 'top-right',
         items: [
           { item: '放大', click: () => m.zoomIn() },
           { item: '缩小', click: () => m.zoomOut() },
         ],
-      }).addTo(m)
+      }).addTo(m as never)
     })
   },
 )
