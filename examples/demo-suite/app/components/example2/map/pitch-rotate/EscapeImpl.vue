@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14, pitch: 45, bearing: -30 })
 useMaptalksTileLayer(map, { source: 'osm' })
 // 逃生舱：经相机 composable 双向同步，写 ref 即调原生 setPitch/setBearing
 const cam = useMaptalksCamera(map)
