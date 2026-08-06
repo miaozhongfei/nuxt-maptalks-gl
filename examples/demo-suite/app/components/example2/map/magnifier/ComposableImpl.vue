@@ -10,18 +10,19 @@
     >
       <div ref="elMag" class="absolute inset-0" />
     </div>
+    <p class="absolute bottom-1 left-2 text-xs bg-background/80 px-1.5 py-0.5 rounded">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const elMain = ref<HTMLElement | null>(null);
-const elMag = ref<HTMLElement | null>(null);
-const visible = ref(false);
-const pos = ref({ x: 0, y: 0 });
+const elMain = ref<HTMLElement | null>(null)
+const elMag = ref<HTMLElement | null>(null)
+const visible = ref(false)
+const pos = ref({ x: 0, y: 0 })
 
 // 主地图
-const { map: mainMap } = useMaptalks(elMain, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(mainMap, { source: 'osm' });
+const { map: mainMap, isReady } = useMaptalks(elMain, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(mainMap, { source: 'osm' })
 // 放大镜地图：禁用一切交互，仅做展示
 const { map: magMap } = useMaptalks(elMag, {
   center: [121.5057, 31.2453],
@@ -29,29 +30,31 @@ const { map: magMap } = useMaptalks(elMag, {
   draggable: false,
   zoomable: false,
   controls: false,
-});
+})
 useMaptalksTileLayer(magMap, {
   options: {
     urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     subdomains: ['b', 'c', 'd'],
     attribution: '',
   },
-});
+})
 
-const camMain = useMaptalksCamera(mainMap);
-const camMag = useMaptalksCamera(magMap);
+const camMain = useMaptalksCamera(mainMap)
+const camMag = useMaptalksCamera(magMap)
 // 鼠标移动：放大镜中心 = 鼠标处坐标，缩放 = 主图 + 2（相对 ref 双向写入）
 useMaptalksEvents(mainMap, {
   mousemove: (e) => {
-    const ev = e as { coordinate?: { x: number; y: number }; containerPoint?: { x: number; y: number } };
-    if (!ev.coordinate || !ev.containerPoint) return;
-    visible.value = true;
-    pos.value = { x: ev.containerPoint.x - 90, y: ev.containerPoint.y - 90 };
-    camMag.center.value = ev.coordinate;
-    camMag.zoom.value = (camMain.zoom.value ?? 13) + 2;
+    const ev = e as { coordinate?: { x: number; y: number }; containerPoint?: { x: number; y: number } }
+    if (!ev.coordinate || !ev.containerPoint) return
+    visible.value = true
+    pos.value = { x: ev.containerPoint.x - 90, y: ev.containerPoint.y - 90 }
+    camMag.center.value = ev.coordinate
+    camMag.zoom.value = (camMain.zoom.value ?? 13) + 2
   },
   mouseout: () => {
-    visible.value = false;
+    visible.value = false
   },
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（放大镜跟随鼠标）' : '加载中…'))
 </script>

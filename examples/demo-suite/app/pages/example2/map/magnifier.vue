@@ -1,18 +1,18 @@
 <template>
   <!-- 1.16 地图放大镜（双图叠加技巧，组件/组合难以表达浮动小图，故只有 U·E） -->
   <Example2DemoShell
-    description="跟随鼠标的放大镜小地图：小图中心与缩放实时跟随主图鼠标位置，对应官网「地图 - 地图放大镜」"
+    description="跟随鼠标的放大镜小地图：小图中心与缩放实时跟随主图鼠标位置（对应官网 1.16）"
     :tabs="tabs"
   />
 </template>
 
 <script setup lang="ts">
-import type { DemoTab } from '~/data/example2-menu';
-import ComposableImpl from '~/components/example2/map/magnifier/ComposableImpl.vue';
-import EscapeImpl from '~/components/example2/map/magnifier/EscapeImpl.vue';
+import type { DemoTab } from '~/data/example2-menu'
+import ComposableImpl from '~/components/example2/map/magnifier/ComposableImpl.vue'
+import EscapeImpl from '~/components/example2/map/magnifier/EscapeImpl.vue'
 
 const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>
