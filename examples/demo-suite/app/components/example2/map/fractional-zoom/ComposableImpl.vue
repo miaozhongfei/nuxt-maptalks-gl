@@ -9,20 +9,23 @@
       <span class="text-sm w-24 shrink-0">zoom {{ zoom.toFixed(1) }}</span>
       <USlider v-model="zoom" :min="12" :max="17" :step="0.1" />
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
 // 相机 zoom 双向 ref：滑杆写 0.1 步进的小数级别
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
 const zoom = computed({
   get: () => cam.zoom.value ?? 14,
   set: (v) => {
-    cam.zoom.value = v;
+    cam.zoom.value = v
   },
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（0.1 步进细微缩放）' : '加载中…'))
 </script>

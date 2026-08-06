@@ -9,20 +9,22 @@
       <span class="text-sm w-24 shrink-0">zoom {{ zoom.toFixed(1) }}</span>
       <USlider v-model="zoom" :min="12" :max="17" :step="0.1" />
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
-// 逃生舱：相机 ref 读取方向（拖动地图回流），set 方向走原生 setZoom 无动画
-const cam = useMaptalksCamera(map);
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
+// 逃生舱：相机 ref 读取方向（拖动地图回流），set 方向走原生 setZoom 无动画（已建模）
+const cam = useMaptalksCamera(map)
 const zoom = computed({
   get: () => cam.zoom.value ?? 14,
   set: (v) => {
-    const m = map.value as unknown as { setZoom: (z: number, o?: Record<string, unknown>) => void } | null;
-    m?.setZoom(v, { animation: false });
+    map.value?.setZoom(v, { animation: false })
   },
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（原生 setZoom 细微缩放）' : '加载中…'))
 </script>
