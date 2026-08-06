@@ -47,10 +47,10 @@ useMaptalksPolygon(layer, { coordinates: [[[121.45, 31.23], [121.48, 31.23], [12
 useMaptalksCircle(layer, { coordinates: [121.5, 31.23], radius: 700, options: { symbol: { polygonFill: '#6366f1', polygonOpacity: 0.3, lineColor: '#4f46e5', lineWidth: 2 } } });
 useMaptalksTextBox(layer, { content: '编组合', coordinates: [121.51, 31.26], width: 100, height: 36 });
 // 控件
-useMaptalksZoom(map, { position: 'top-left' });
-useMaptalksScale(map, { position: 'bottom-left' });
-useMaptalksCompass(map, { position: 'top-right' });
-useMaptalksAttribution(map, { position: 'bottom-right' });
+useMaptalksZoom(map, { options: { position: 'top-left' } });
+useMaptalksScale(map, { options: { position: 'bottom-left' } });
+useMaptalksCompass(map, { options: { position: 'top-right' } });
+useMaptalksAttribution(map, { options: { position: 'bottom-right' } });
 // 相机
 const cam = useMaptalksCamera(map);
 // 事件

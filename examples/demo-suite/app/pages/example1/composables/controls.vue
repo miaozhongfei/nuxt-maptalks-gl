@@ -27,8 +27,8 @@ const { map } = useMaptalks(el, { center: [121.4737, 31.2304], zoom: 11, pitch: 
 useMaptalksTileLayer(map, { source: 'osm' });
 
 // 4 个控件 composable，各自指定位置
-useMaptalksZoom(map, { position: 'top-left' });
-useMaptalksScale(map, { position: 'bottom-left' });
-useMaptalksCompass(map, { position: 'top-right' });
-useMaptalksAttribution(map, { position: 'bottom-right' });
+useMaptalksZoom(map, { options: { position: 'top-left' } });
+useMaptalksScale(map, { options: { position: 'bottom-left' } });
+useMaptalksCompass(map, { options: { position: 'top-right' } });
+useMaptalksAttribution(map, { options: { position: 'bottom-right' } });
 </script>
