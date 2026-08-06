@@ -1,7 +1,7 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       :min-zoom="12"
@@ -21,16 +21,19 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">当前缩放 {{ (cam.zoom.value ?? 0).toFixed(2) }}</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const minZoom = ref(12);
-const maxZoom = ref(16);
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const cam = useMaptalksCamera(map);
+const minZoom = ref(12)
+const maxZoom = ref(16)
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+const cam = useMaptalksCamera(map)
 watch([minZoom, maxZoom], ([min, max]) => {
-  if (map.value) cam.setZoomRange(min, max);
-}, { immediate: true });
+  if (map.value) cam.setZoomRange(min, max)
+}, { immediate: true })
+
+const status = computed(() => (map.value ? '地图已创建（minZoom/maxZoom 滑杆热更新）' : '加载中…'))
 </script>
