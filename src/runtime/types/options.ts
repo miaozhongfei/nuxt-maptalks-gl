@@ -356,8 +356,8 @@ export interface MaptalksTileLayerOptions {
   cascadeTiles?: boolean;
   /** 瓦片偏移 */
   offset?: number[] | ((...args: unknown[]) => number[]);
-  /** 自定义瓦片坐标系 [xMin, yMin, xMax, yMax] */
-  tileSystem?: [number, number, number, number];
+  /** 自定义瓦片坐标系 [xMin, yMin, xMax, yMax]（原生接受任意数组，4 元组为规范写法） */
+  tileSystem?: [number, number, number, number] | number[];
   /** 占位瓦片（布尔值或函数） */
   placeholder?: boolean | ((...args: unknown[]) => boolean);
   /** 片元着色器源码 */
@@ -543,8 +543,8 @@ export interface MaptalksVectorTileLayerOptions {
   repeatWorld?: boolean;
   /** 瓦片偏移 */
   offset?: number[] | ((...args: unknown[]) => number[]);
-  /** 自定义瓦片坐标系 */
-  tileSystem?: [number, number, number, number];
+  /** 自定义瓦片坐标系（原生接受任意数组，4 元组为规范写法） */
+  tileSystem?: [number, number, number, number] | number[];
   /** 是否作为底图 */
   background?: boolean;
   /** 占位瓦片 */
@@ -802,8 +802,8 @@ export interface MaptalksWMSLayerOptions {
   cascadeTiles?: boolean;
   /** 瓦片偏移 */
   offset?: number[] | ((...args: unknown[]) => number[]);
-  /** 自定义瓦片坐标系 */
-  tileSystem?: [number, number, number, number];
+  /** 自定义瓦片坐标系（原生接受任意数组，4 元组为规范写法） */
+  tileSystem?: [number, number, number, number] | number[];
   /** 占位瓦片 */
   placeholder?: boolean | ((...args: unknown[]) => boolean);
   /** 片元着色器源码 */
