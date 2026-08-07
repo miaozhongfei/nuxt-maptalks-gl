@@ -1,48 +1,56 @@
 <template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-let m: any = null
-let maskMarker: any = null
+let m: MaptalksMap | null = null
+let maskMarker: { setCoordinates?: (c: unknown) => unknown } | null = null
 let maskBound = false
 
 watch(
   () => toValue(map),
   async (mv) => {
-    if (!mv) return
-    m = mv as any
-    if (maskBound) return
+    if (!mv || maskBound) return
+    m = mv
     maskBound = true
     const mt = await import('maptalks-gl')
-    const extent = m.getExtent()
+    // getExtent 建模返回 unknown——按使用处窄断言
+    const extent = m.getExtent() as { getMin: () => { x: number; y: number }; getWidth: () => number; getHeight: () => number }
     const min = extent.getMin()
     const w = extent.getWidth()
     const h = extent.getHeight()
-    const markers = []
+    const markers: mt.Marker[] = []
     for (let i = 0; i < 100; i++) {
       markers.push(new mt.Marker([min.x + Math.random() * w, min.y + Math.random() * h]))
     }
     const layer = new mt.VectorLayer('vector', markers)
-    layer.addTo(m)
-    m.on('mousemove', (e: any) => {
+    // 原生 VectorLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
+    layer.addTo(m as never)
+    // map 的 on 未建模（MaptalksClass 索引签名不可调用）——逃生舱断言（1.12 events 同款）
+    const raw = m as unknown as { on: (t: string, fn: (e: unknown) => void) => void }
+    raw.on('mousemove', (e) => {
+      const ev = e as { coordinate?: { x: number; y: number } }
       if (maskMarker) {
-        maskMarker.setCoordinates(e.coordinate)
+        maskMarker.setCoordinates(ev.coordinate)
       } else {
-        maskMarker = new mt.Marker(e.coordinate, {
+        maskMarker = new mt.Marker(ev.coordinate, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
-        layer.setMask(maskMarker)
+        // 窄类型非原生 Mask——逃生舱断言
+        layer.setMask(maskMarker as never)
       }
     })
   },
 )
 
 onBeforeUnmount(() => { m = null; maskMarker = null })
+
+const status = computed(() => (isReady.value ? '地图已创建（移动鼠标查看遮罩效果）' : '加载中…'))
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -11,7 +12,7 @@ const randomPts = Array.from({ length: 100 }, () => [
 ] as [number, number])
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'vector' })
@@ -23,29 +24,33 @@ randomPts.forEach((c, i) => {
   })
 })
 
-let maskMarker: any = null
+let maskMarker: { setCoordinates?: (c: unknown) => unknown } | null = null
 let maskBound = false
 
 watch(
   () => toValue(map),
   async (mv) => {
-    if (!mv) return
-    const m = mv as any
-    if (maskBound) return
+    if (!mv || maskBound) return
     maskBound = true
     const mt = await import('maptalks-gl')
-    m.on('mousemove', (e: any) => {
+    // map 的 on 未建模（MaptalksClass 索引签名不可调用）——逃生舱断言（1.12 events 同款）
+    const raw = mv as unknown as { on: (t: string, fn: (e: unknown) => void) => void }
+    raw.on('mousemove', (e) => {
+      const ev = e as { coordinate?: { x: number; y: number } }
       if (maskMarker) {
-        maskMarker.setCoordinates(e.coordinate)
+        maskMarker.setCoordinates(ev.coordinate)
       } else {
-        maskMarker = new mt.Marker(e.coordinate, {
+        maskMarker = new mt.Marker(ev.coordinate, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
-        ;(toValue(vectorLayer) as any)?.setMask?.(maskMarker)
+        // 原生 Marker 与建模 MaptalksGeometry 逆变不兼容——断言
+        toValue(vectorLayer)?.setMask?.(maskMarker as unknown as MaptalksGeometry)
       }
     })
   },
 )
 
 onBeforeUnmount(() => { maskMarker = null })
+
+const status = computed(() => (isReady.value ? '地图已创建（移动鼠标查看遮罩效果）' : '加载中…'))
 </script>
