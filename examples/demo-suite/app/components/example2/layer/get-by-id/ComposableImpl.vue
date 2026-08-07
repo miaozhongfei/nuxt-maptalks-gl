@@ -9,15 +9,16 @@
       <UButton size="xs" color="primary" @click="() => highlightById(100)">高亮 100</UButton>
       <UButton size="xs" color="primary" @click="() => highlightById(200)">高亮 200</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const { layer } = useMaptalksVectorLayer(map);
+const { layer } = useMaptalksVectorLayer(map)
 
 const polyData = [
   {
@@ -47,7 +48,7 @@ const polyData = [
       [121.4955, 31.2228],
     ] as [number, number][],
   },
-];
+]
 
 polyData.forEach((item) => {
   useMaptalksPolygon(layer, {
@@ -60,10 +61,12 @@ polyData.forEach((item) => {
       ],
       properties: { count: item.id },
     },
-  });
-});
+  })
+})
 
 function highlightById(id: number) {
-  (toValue(layer) as any)?.getGeometryById?.(id)?.updateSymbol?.([{ polygonFill: '#f00' }]);
+  toValue(layer)?.getGeometryById?.(id)?.updateSymbol?.([{ polygonFill: '#f00' }])
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可按 ID 高亮图形）' : '加载中…'))
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.4854, 31.2285]"
       :zoom="14"
       base-layer="osm"
@@ -21,14 +22,17 @@
       <UButton size="xs" color="primary" @click="() => highlightById(100)">高亮 100</UButton>
       <UButton size="xs" color="primary" @click="() => highlightById(200)">高亮 200</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 
+// exposed layer 是 Ref——toValue 解包后调 getGeometryById（已建模）链式 updateSymbol
 function highlightById(id: number) {
-  (vlRef.value?.layer as any)?.getGeometryById?.(id)?.updateSymbol?.([{ polygonFill: '#f00' }])
+  toValue(vlRef.value?.layer)?.getGeometryById?.(id)?.updateSymbol?.([{ polygonFill: '#f00' }])
 }
 
 const polyData = [
@@ -48,4 +52,6 @@ const polyData = [
     options: { symbol: [{ polygonFill: '#747474', polygonOpacity: 0.5, lineColor: '#000', lineWidth: 2 }, { textName: '{count}', textSize: 40, textFill: '#fff' }], properties: { count: 300 } },
   },
 ]
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可按 ID 高亮图形）' : '加载中…'))
 </script>
