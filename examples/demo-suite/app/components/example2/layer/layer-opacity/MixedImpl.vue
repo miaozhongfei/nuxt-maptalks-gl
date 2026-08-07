@@ -12,12 +12,13 @@
       <span class="text-sm w-28 shrink-0">透明度 {{ op.toFixed(2) }}</span>
       <USlider v-model="op" :min="0" :max="1" :step="0.05" />
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const mc = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { layer } = useMaptalksVectorLayer(map)
 useMaptalksMarker(layer, {
@@ -27,4 +28,6 @@ useMaptalksMarker(layer, {
 
 const op = ref(1)
 watch(op, (v) => { layer.value?.setOpacity?.(v) }, { immediate: true })
+
+const status = computed(() => (map.value ? '地图已创建（可调透明度）' : '加载中…'))
 </script>
