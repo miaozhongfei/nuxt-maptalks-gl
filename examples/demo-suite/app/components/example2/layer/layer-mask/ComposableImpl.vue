@@ -41,8 +41,8 @@ watch(
       if (maskMarker) {
         maskMarker.setCoordinates?.(coord)
       } else {
-        // e.coordinate 运行时即原生 Coordinate——断言还原（{x,y} 缺类方法无法直接匹配 MarkerCoordinatesType）
-        maskMarker = new mt.Marker(coord as unknown as mt.Coordinate, {
+        // e.coordinate 运行时为原生 Coordinate 实例，类型上无法表达（MarkerCoordinatesType 要求类结构）——逃生舱断言
+        maskMarker = new mt.Marker(coord as never, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
         // 原生 Marker 与建模 MaptalksGeometry 逆变不兼容——断言

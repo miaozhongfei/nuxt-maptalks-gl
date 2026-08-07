@@ -46,8 +46,8 @@ watch(
         maskMarker.setCoordinates?.(coord)
       } else {
         import('maptalks-gl').then((mt) => {
-          // e.coordinate 运行时即原生 Coordinate——断言还原（{x,y} 缺类方法无法直接匹配 MarkerCoordinatesType）
-          maskMarker = new mt.Marker(coord as unknown as mt.Coordinate, {
+          // e.coordinate 运行时为原生 Coordinate 实例，类型上无法表达（MarkerCoordinatesType 要求类结构）——逃生舱断言
+          maskMarker = new mt.Marker(coord as never, {
             symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
           })
           // exposed layer 是 Ref——toValue 解包；原生 Marker 与建模 MaptalksGeometry 逆变不兼容——断言
