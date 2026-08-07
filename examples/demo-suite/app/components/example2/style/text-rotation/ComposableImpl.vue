@@ -1,16 +1,19 @@
 <template>
-  <div
-    ref="el"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
 // 文字标签 Label
 useMaptalksLabel(layer, {
   content: '文字标签 Label',
@@ -28,7 +31,7 @@ useMaptalksLabel(layer, {
       textRotation: 60,
     },
   },
-});
+})
 useMaptalksLabel(layer, {
   content: '文字标签 Label',
   coordinates: [121.5057, 31.2553],
@@ -60,7 +63,7 @@ useMaptalksLabel(layer, {
       textRotation: 60,
     },
   },
-});
+})
 // 文字标注 Marker（useMaptalksMarker，无 markerType 则为纯文字）
 useMaptalksMarker(layer, {
   coordinates: [121.5557, 31.2513],
@@ -80,5 +83,7 @@ useMaptalksMarker(layer, {
       textRotation: 60,
     },
   },
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（旋转文字标注）' : '加载中…'))
 </script>
