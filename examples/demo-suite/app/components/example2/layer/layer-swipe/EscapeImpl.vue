@@ -9,7 +9,8 @@
 <script setup lang="ts">
 const swipeVal = ref(50)
 const el = ref<HTMLElement | null>(null)
-const { isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+// 逃生舱自建原生 Map（不能再用 useMaptalks 占用同一容器——会报 Container is already loaded）
+const created = ref(false)
 
 // renderer 结构未建模——逃生舱断言类型（getCanvasImage 劫持实现卷帘裁剪，官网 6.17 同款）
 type SwipeRenderer = {
@@ -27,6 +28,7 @@ watch(
     const baseLayer = new mt.TileLayer('base', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'] })
     const darkLayer = new mt.TileLayer('dark', { urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', subdomains: ['a', 'b', 'c', 'd'], forceRenderOnMoving: true, forceRenderOnZooming: true })
     const m = new mt.Map(container as HTMLElement, { center: [121.5057, 31.2453], zoom: 13, baseLayer })
+    created.value = true
     // 暗色图层走 addLayer 添加（构造时 layers 数组传入的图层渲染器懒创建，getRenderer 会一直为 null）
     m.addLayer(darkLayer)
 
@@ -62,5 +64,5 @@ watch(
   { once: true },
 )
 
-const status = computed(() => (isReady.value ? '地图已创建（拖动滑块查看卷帘）' : '加载中…'))
+const status = computed(() => (created.value ? '地图已创建（拖动滑块查看卷帘）' : '加载中…'))
 </script>
