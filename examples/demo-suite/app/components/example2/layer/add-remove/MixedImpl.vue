@@ -1,7 +1,7 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
       :zoom="13"
@@ -15,36 +15,39 @@
       >
       <UBadge color="primary" variant="subtle">图层数 {{ handles.length }}</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
-const handles = ref<{ remove: () => void }[]>([]);
+const handles = ref<{ remove: () => void }[]>([])
 const coords = [
   [121.4957, 31.2453],
   [121.5057, 31.2553],
   [121.5157, 31.2453],
   [121.5057, 31.2353],
-];
-let idx = 0;
+]
+let idx = 0
 
 function add() {
-  const { layer, remove } = useMaptalksVectorLayer(map);
+  const { layer, remove } = useMaptalksVectorLayer(map)
   useMaptalksMarker(layer, {
     coordinates: coords[idx % coords.length] as [number, number],
     options: {
       symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
     },
-  });
-  handles.value.push({ remove });
-  idx++;
+  })
+  handles.value.push({ remove })
+  idx++
 }
 
 function removeAll() {
-  handles.value.forEach((h) => h.remove());
-  handles.value = [];
+  handles.value.forEach((h) => h.remove())
+  handles.value = []
 }
+
+const status = computed(() => (map.value ? '地图已创建（可动态增删图层）' : '加载中…'))
 </script>

@@ -12,42 +12,45 @@
       >
       <UBadge color="primary" variant="subtle">图层数 {{ handles.length }}</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const handles = ref<{ remove: () => void }[]>([]);
+const handles = ref<{ remove: () => void }[]>([])
 const coords = [
   [121.4957, 31.2453],
   [121.5057, 31.2553],
   [121.5157, 31.2453],
   [121.5057, 31.2353],
-];
-let idx = 0;
+]
+let idx = 0
 
 function add() {
   // useMaptalksLayer 工厂：直接 new VectorLayer 并添加 Marker
   const { layer, remove } = useMaptalksLayer(
     map,
     (mt) => new mt.VectorLayer(`demo-layer-${Date.now()}`),
-  );
+  )
   useMaptalksGeometry(
     layer,
     (mt) =>
       new mt.Marker(coords[idx % coords.length] as [number, number], {
         symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 14, markerHeight: 14 },
       }),
-  );
-  handles.value.push({ remove });
-  idx++;
+  )
+  handles.value.push({ remove })
+  idx++
 }
 
 function removeAll() {
-  handles.value.forEach((h) => h.remove());
-  handles.value = [];
+  handles.value.forEach((h) => h.remove())
+  handles.value = []
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可动态增删图层）' : '加载中…'))
 </script>
