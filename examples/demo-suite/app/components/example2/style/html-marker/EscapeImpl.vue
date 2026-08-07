@@ -22,9 +22,9 @@ let uimRef: { setContent(c: string): void; on(e: string, h: () => void): void } 
 watch(() => toValue(map), async (m) => {
   if (!m) return
   const mt = await import('maptalks-gl')
-  // 原生 ui.UIMarker 与模块建模不兼容（addTo 参数为原生 Map），窄类型 cast 逃生舱
+  // 原生 ui.UIMarker 与模块建模不兼容（addTo 参数为原生 Map），窄类型 cast 逃生舱；断言不含 undefined（下方 typeof 守卫兜底）
   const Ctor = (mt as unknown as Record<string, unknown>).ui as Record<string, unknown>
-  const UIMarker = Ctor?.UIMarker as new (c: unknown, o: Record<string, unknown>) => { setContent(c: string): void; addTo(t: unknown): unknown; show(): unknown; remove(): void; on(e: string, h: () => void): void } | undefined
+  const UIMarker = Ctor?.UIMarker as new (c: unknown, o: Record<string, unknown>) => { setContent(c: string): void; addTo(t: unknown): unknown; show(): unknown; remove(): void; on(e: string, h: () => void): void }
   if (typeof UIMarker !== 'function') return
   const uim = new UIMarker([121.5057, 31.2453], {
     content: `<div style="font:30px bold sans-serif;color:#34495e;text-shadow:2px 0 #fff">${text.value}</div>`,
