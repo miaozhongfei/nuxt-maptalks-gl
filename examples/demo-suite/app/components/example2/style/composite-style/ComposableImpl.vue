@@ -1,24 +1,27 @@
 <template>
-  <div
-    ref="el"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
 useMaptalksLineString(layer, {
   coordinates: [[121.49, 31.235], [121.5057, 31.2453], [121.52, 31.252]],
   options: { symbol: { lineColor: '#2563eb', lineWidth: 3 } },
-});
+})
 useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
   options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 12, markerHeight: 12 } },
-});
+})
 // 组合样式 Marker（同心圆波纹）
 useMaptalksMarker(layer, {
   coordinates: [121.5457, 31.2453],
@@ -29,5 +32,7 @@ useMaptalksMarker(layer, {
     { markerType: 'ellipse', markerFill: '#0096cd', markerFillOpacity: 0.3, markerWidth: 130, markerHeight: 130, markerLineWidth: 0 },
     { markerType: 'ellipse', markerFill: '#0096cd', markerFillOpacity: 0.2, markerWidth: 172, markerHeight: 172, markerLineWidth: 0 },
   ] },
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（组合样式）' : '加载中…'))
 </script>
