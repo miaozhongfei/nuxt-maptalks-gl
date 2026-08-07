@@ -31,15 +31,17 @@ watch(
   (l) => {
     if (!l || swipeSetup) return
     swipeSetup = true
-    r = l.getRenderer() as SwipeRenderer
-    const orig = r.getCanvasImage.bind(r)
+    // 局部 const 供劫持闭包使用（顶层 r 在闭包内收窄失效会报可能为 null）
+    const rendererApi = l.getRenderer() as SwipeRenderer
+    r = rendererApi
+    const orig = rendererApi.getCanvasImage.bind(rendererApi)
     const swipeCanvas = document.createElement('canvas')
-    r.getCanvasImage = function () {
+    rendererApi.getCanvasImage = function () {
       const img = orig()
       if (!img?.image) return img
-      const w = r.canvas.width * (swipeVal.value / 100)
-      const h = r.canvas.height
-      swipeCanvas.width = r.canvas.width
+      const w = rendererApi.canvas.width * (swipeVal.value / 100)
+      const h = rendererApi.canvas.height
+      swipeCanvas.width = rendererApi.canvas.width
       swipeCanvas.height = h
       const ctx = swipeCanvas.getContext('2d')!
       ctx.clearRect(0, 0, swipeCanvas.width, h)

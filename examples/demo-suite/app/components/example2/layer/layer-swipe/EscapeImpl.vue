@@ -18,7 +18,6 @@ type SwipeRenderer = {
   getCanvasImage: () => { image?: CanvasImageSource | null } | undefined
   setToRedraw: () => void
 }
-let r: SwipeRenderer | null = null
 
 watch(
   () => el.value,
@@ -40,15 +39,15 @@ watch(
         return
       }
       // 原生类型未声明 getRenderer（模块建模已含）——逃生舱断言
-      r = renderer as SwipeRenderer
-      const orig = r.getCanvasImage.bind(r)
+      const rendererApi = renderer as SwipeRenderer
+      const orig = rendererApi.getCanvasImage.bind(rendererApi)
       const swipeCanvas = document.createElement('canvas')
-      r.getCanvasImage = function () {
+      rendererApi.getCanvasImage = function () {
         const img = orig()
         if (!img?.image) return img
-        const w = r.canvas.width * (swipeVal.value / 100)
-        const h = r.canvas.height
-        swipeCanvas.width = r.canvas.width
+        const w = rendererApi.canvas.width * (swipeVal.value / 100)
+        const h = rendererApi.canvas.height
+        swipeCanvas.width = rendererApi.canvas.width
         swipeCanvas.height = h
         const ctx = swipeCanvas.getContext('2d')!
         ctx.clearRect(0, 0, swipeCanvas.width, h)
@@ -57,7 +56,7 @@ watch(
         return img
       }
 
-      watch(swipeVal, () => r?.setToRedraw?.())
+      watch(swipeVal, () => rendererApi.setToRedraw?.())
     }
     trySetup()
   },
