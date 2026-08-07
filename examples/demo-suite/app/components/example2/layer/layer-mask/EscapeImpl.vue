@@ -41,7 +41,8 @@ watch(
       if (maskMarker) {
         maskMarker.setCoordinates?.(coord)
       } else {
-        maskMarker = new mt.Marker(coord, {
+        // e.coordinate 运行时即原生 Coordinate——断言还原（{x,y} 缺类方法无法直接匹配 MarkerCoordinatesType）
+        maskMarker = new mt.Marker(coord as unknown as mt.Coordinate, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
         // 窄类型非原生 Mask——逃生舱断言
