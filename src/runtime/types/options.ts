@@ -439,8 +439,8 @@ export interface MaptalksTileLayerOptions {
 export interface MaptalksVectorTileLayerOptions {
   /** 矢量瓦片 URL 模板 */
   urlTemplate?: string;
-  /** MapLibre 风格规范对象（控制矢量切片的渲染方式） */
-  style?: Record<string, unknown> | string;
+  /** 矢量样式：style 规则数组（[{filter, renderPlugin, symbol}]，@maptalks/vt 主推写法）或对象 / 样式地址 */
+  style?: string | Record<string, unknown> | Array<Record<string, unknown>>;
   /** 图层不透明度 */
   opacity?: number;
   /** 图层层级 */
