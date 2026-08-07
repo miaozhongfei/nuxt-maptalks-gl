@@ -1,14 +1,17 @@
 <template>
-  <div
-    ref="el"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 let chartDispose: (() => void) | null = null
@@ -38,8 +41,9 @@ watch(
         { name: 'Jane', data: [1, 0, 3, null, 3, 1, 2, 1] },
       ],
     })
-    chartDispose = () => chartDom.innerHTML = ''
+    chartDispose = () => { chartDom.innerHTML = '' }
 
+    // 原生 ui.UIMarker 与模块建模不兼容，窄类型 cast 逃生舱
     const uim = new (mt as unknown as { ui: { UIMarker: new (c: [number, number], o: Record<string, unknown>) => { addTo: (m: unknown) => void; remove: () => void } } }).ui.UIMarker(
       [121.5057, 31.2453],
       { content: chartDom, draggable: true, single: false },
@@ -56,4 +60,6 @@ onBeforeUnmount(() => {
   }
   chartDispose?.()
 })
+
+const status = computed(() => (isReady.value ? '地图已创建（Highcharts 图表）' : '加载中…'))
 </script>

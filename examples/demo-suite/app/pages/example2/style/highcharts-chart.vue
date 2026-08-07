@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="Highcharts 面积图，挂在 UIMarker 上（对应官网 5.32）。"
+    description="Highcharts 面积图，挂在 UIMarker 上（对应官网 5.32）"
     :tabs="tabs"
   />
 </template>
