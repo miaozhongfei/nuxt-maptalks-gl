@@ -17,16 +17,16 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 // 面要素填充与线要素描边的矢量瓦片样式规则
 const vtStyle = [
   {
-    // 面要素填充
+    // 面要素填充（@maptalks/vt 规则格式：symbol 顶层）
     filter: ['==', '$type', 'Polygon'],
     renderPlugin: { type: 'fill', dataConfig: { type: 'fill' } },
-    options: { symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 } },
+    symbol: { polygonFill: '#60a5fa', polygonOpacity: 0.6 },
   },
   {
     // 线要素描边
     filter: ['==', '$type', 'LineString'],
     renderPlugin: { type: 'line', dataConfig: { type: 'line' } },
-    options: { symbol: { lineColor: '#1e3a8a', lineWidth: 1 } },
+    symbol: { lineColor: '#1e3a8a', lineWidth: 1 },
   },
 ]
 // VectorTileLayer 加载 MVT 矢量瓦片并用 style 规则渲染
