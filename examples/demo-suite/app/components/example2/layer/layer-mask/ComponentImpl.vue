@@ -39,13 +39,14 @@ watch(
     maskBound = true
     mv.on('mousemove', (e) => {
       const ev = e as { coordinate?: { x: number; y: number } }
-      // coordinate 可能缺省——先守卫再使用（同时收窄给 new Marker 的坐标参数）
-      if (!ev.coordinate) return
+      // coordinate 可能缺省——先提取 const 再守卫（属性收窄进异步闭包会失效，const 变量收窄保留）
+      const coord = ev.coordinate
+      if (!coord) return
       if (maskMarker) {
-        maskMarker.setCoordinates?.(ev.coordinate)
+        maskMarker.setCoordinates?.(coord)
       } else {
         import('maptalks-gl').then((mt) => {
-          maskMarker = new mt.Marker(ev.coordinate, {
+          maskMarker = new mt.Marker(coord, {
             symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
           })
           // exposed layer 是 Ref——toValue 解包；原生 Marker 与建模 MaptalksGeometry 逆变不兼容——断言

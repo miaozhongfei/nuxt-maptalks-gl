@@ -35,12 +35,13 @@ watch(
     layer.addTo(m as never)
     m.on('mousemove', (e) => {
       const ev = e as { coordinate?: { x: number; y: number } }
-      // coordinate 可能缺省——先守卫再使用（同时收窄给 new Marker 的坐标参数）
-      if (!ev.coordinate) return
+      // coordinate 可能缺省——先提取 const 再守卫（属性收窄进异步闭包会失效，const 变量收窄保留）
+      const coord = ev.coordinate
+      if (!coord) return
       if (maskMarker) {
-        maskMarker.setCoordinates?.(ev.coordinate)
+        maskMarker.setCoordinates?.(coord)
       } else {
-        maskMarker = new mt.Marker(ev.coordinate, {
+        maskMarker = new mt.Marker(coord, {
           symbol: { markerType: 'ellipse', markerWidth: 200, markerHeight: 200 },
         })
         // 窄类型非原生 Mask——逃生舱断言
