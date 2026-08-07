@@ -59,7 +59,7 @@ function showOnly(kind: string) {
 // 重置：清空图层后加回原始 collection
 function reset() {
   const l = layerRef
-  if (!l) return
+  if (!l || !collectionRef) return
   l.clear()
   l.addGeometry(collectionRef)
   current.value = '全部'
