@@ -161,7 +161,6 @@ export type {
   UseMaptalksToolReturn,
   UseMaptalksVectorLayerBaseOpts,
   UseMaptalksVectorLayerOpts,
-  UseMaptalksVectorLayerReturn,
   UseMaptalksVectorTileLayerOpts,
   UseMaptalksWMSLayerOpts,
   UseMaptalksZoomOpts,

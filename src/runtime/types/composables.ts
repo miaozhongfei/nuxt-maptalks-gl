@@ -132,30 +132,6 @@ export interface UseMaptalksLayerReturn<T extends MaptalksLayer = MaptalksLayer>
   remove: () => void;
 }
 
-/**
- * `useMaptalksVectorLayer` 的返回（窄类型，含几何增删方法）。
- *
- * @description VectorLayer 独有 `addGeometry` / `removeGeometry` / `getGeometries` / `clear` 等方法，
- * 下游 geometry preset 依赖此类型。基类 `UseMaptalksLayerReturn` 仅暴露图层通用方法。
- * @template T - 图层具体类型，默认 MaptalksVectorLayer
- *
- * @example
- * const { layer, update, remove } = useMaptalksVectorLayer(map);
- * layer.value?.addGeometry(geo);
- */
-export interface UseMaptalksVectorLayerReturn<T extends MaptalksVectorLayer = MaptalksVectorLayer> {
-  /** VectorLayer 实例（创建前为 null） */
-  layer: ShallowRef<T | null>;
-  /** 显示图层 */
-  show: () => void;
-  /** 隐藏图层 */
-  hide: () => void;
-  /** 命令式应用一组图层选项 */
-  update: (options: Record<string, unknown>) => void;
-  /** 命令式移除并销毁图层 */
-  remove: () => void;
-}
-
 // ───────────────────────────────── useMaptalksLayerControl ─────────────────────────────────
 
 /**

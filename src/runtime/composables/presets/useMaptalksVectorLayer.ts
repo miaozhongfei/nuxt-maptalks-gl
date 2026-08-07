@@ -5,8 +5,8 @@ import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
   MaptalksVectorLayer,
+  UseMaptalksLayerReturn,
   UseMaptalksVectorLayerOpts,
-  UseMaptalksVectorLayerReturn,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -17,11 +17,11 @@ let vectorSeq = 0;
  * 预设：矢量图层（VectorLayer，承载几何），= useMaptalksLayer 包一层 + 自动 id + 窄返回类型。
  *
  * @description 创建一个 VectorLayer 并纳管；几何经 useMaptalksMarker/LineString/Polygon 加到它上面。
- * 返回类型窄化为 UseMaptalksVectorLayerReturn（含 addGeometry 等），下游 geometry preset 可直接消费。
+ * 返回 UseMaptalksLayerReturn<MaptalksVectorLayer>（addGeometry 等专属方法经泛型 T 在 layer.value 可见）。
  * 生命周期（addLayer / dispose）复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksVectorLayerOpts} [opts] - id / 选项 / 自动销毁
- * @returns {UseMaptalksVectorLayerReturn<MaptalksVectorLayer>} `{ layer, update, remove }`
+ * @returns {UseMaptalksLayerReturn<MaptalksVectorLayer>} `{ layer, update, remove }`
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -30,7 +30,7 @@ let vectorSeq = 0;
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksVectorLayerOpts = {},
-): UseMaptalksVectorLayerReturn<MaptalksVectorLayer> {
+): UseMaptalksLayerReturn<MaptalksVectorLayer> {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;
   const result = useMaptalksLayer(

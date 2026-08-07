@@ -190,5 +190,4 @@ export type {
   UseMaptalksSourceReturn,
   UseMaptalksSyncReturn,
   UseMaptalksToolReturn,
-  UseMaptalksVectorLayerReturn,
 } from '../types';
