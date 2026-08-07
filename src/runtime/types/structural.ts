@@ -1319,8 +1319,8 @@ export interface MaptalksUIMarker extends MaptalksClass {
   setContent(content: string | HTMLElement): this;
   /** 获取内容 */
   getContent(): string | HTMLElement;
-  /** 获取 DOM 元素 */
-  getDom(): HTMLElement;
+  /** 获取 DOM 元素（原生命名 getDOM——UIComponent 基类公共方法） */
+  getDOM(): HTMLElement;
   /** 绑定事件 */
   on?(eventTypes: string, handler: MaptalksEventHandler): this;
   /** 解绑事件 */
