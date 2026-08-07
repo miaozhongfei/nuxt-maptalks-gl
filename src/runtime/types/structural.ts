@@ -141,8 +141,8 @@ export interface MaptalksMap extends MaptalksClass {
   getPrjExtent(): unknown;
   /** 获取当前中心坐标 */
   getCenter(): MaptalksCoordinate;
-  /** 设置中心坐标 */
-  setCenter(center: [number, number] | Record<string, number>, padding?: Record<string, number>): this;
+  /** 设置中心坐标（接受原生 Coordinate 实例——getCenter 往返用法） */
+  setCenter(center: MaptalksCoordinate | [number, number] | Record<string, number>, padding?: Record<string, number>): this;
   /** 获取当前缩放级别 */
   getZoom(): number;
   /** 设置缩放级别 */
