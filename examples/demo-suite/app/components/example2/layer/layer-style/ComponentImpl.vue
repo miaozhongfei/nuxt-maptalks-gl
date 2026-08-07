@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.4854, 31.2285]"
       :zoom="14"
       base-layer="osm"
@@ -20,27 +21,27 @@
     <div class="flex items-center gap-2 mt-3">
       <UButton size="xs" color="primary" @click="() => applyDiffStyle()">按 count 应用差异样式</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 let initialStyleSet = false
 
-onMounted(() => {
-  watch(
-    () => vlRef.value?.layer,
-    (l) => {
-      if (!l || initialStyleSet) return
-      initialStyleSet = true
-      ;(l as any)?.setStyle?.({ filter: ['count', '>=', 0], symbol: getSymbol('#747474') })
-    },
-    { immediate: true },
-  )
-})
+watch(
+  () => toValue(vlRef.value?.layer),
+  (l) => {
+    if (!l || initialStyleSet) return
+    initialStyleSet = true
+    l.setStyle?.({ filter: ['count', '>=', 0], symbol: getSymbol('#747474') })
+  },
+  { immediate: true },
+)
 
 function applyDiffStyle() {
-  ;(vlRef.value?.layer as any)?.setStyle?.([
+  toValue(vlRef.value?.layer)?.setStyle?.([
     { filter: ['==', 'count', 100], symbol: getSymbol('#1bbc9b') },
     { filter: ['==', 'count', 200], symbol: getSymbol('rgb(216,115,149)') },
     { filter: ['==', 'count', 300], symbol: getSymbol('rgb(135,196,240)') },
@@ -71,4 +72,6 @@ const polyData = [
     options: { properties: { count: 300 } },
   },
 ]
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可按 count 批量换样式）' : '加载中…'))
 </script>

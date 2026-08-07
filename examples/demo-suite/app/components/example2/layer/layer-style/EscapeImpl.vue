@@ -4,12 +4,13 @@
     <div class="flex items-center gap-2 mt-3">
       <UButton size="xs" color="primary" @click="() => applyDiffStyle()">按 count 应用差异样式</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const { layer } = useMaptalksVectorLayer(map)
@@ -33,7 +34,7 @@ watch(
   (l) => {
     if (!l || initialStyleSet) return
     initialStyleSet = true
-    ;(l as any)?.setStyle?.({ filter: ['count', '>=', 0], symbol: getSymbol('#747474') })
+    l.setStyle?.({ filter: ['count', '>=', 0], symbol: getSymbol('#747474') })
   },
 )
 
@@ -45,10 +46,12 @@ function getSymbol(color: string) {
 }
 
 function applyDiffStyle() {
-  ;(toValue(layer) as any)?.setStyle?.([
+  toValue(layer)?.setStyle?.([
     { filter: ['==', 'count', 100], symbol: getSymbol('#1bbc9b') },
     { filter: ['==', 'count', 200], symbol: getSymbol('rgb(216,115,149)') },
     { filter: ['==', 'count', 300], symbol: getSymbol('rgb(135,196,240)') },
   ])
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可按 count 批量换样式）' : '加载中…'))
 </script>
