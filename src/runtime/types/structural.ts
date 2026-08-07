@@ -537,6 +537,16 @@ export interface MaptalksGeometry extends MaptalksClass {
   getLength(): number;
   /** 读取地理面积（㎡） */
   getArea(): number;
+  /** 读取海拔（数值或数组——逐点海拔） */
+  getAltitude(): number | number[] | number[][];
+  /** 是否带海拔 */
+  hasAltitude(): boolean;
+  /** 设置海拔（米） */
+  setAltitude(alt: number): this;
+  /** 读取最小海拔 */
+  getMinAltitude(): number;
+  /** 读取最大海拔 */
+  getMaxAltitude(): number;
   /** 绑定事件 */
   on(events: string, handler: MaptalksEventHandler): MaptalksGeometry;
   /** 解绑事件 */

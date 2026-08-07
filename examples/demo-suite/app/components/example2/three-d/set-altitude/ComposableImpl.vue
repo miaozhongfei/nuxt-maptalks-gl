@@ -25,10 +25,9 @@ const { geometry } = useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
   options: { properties: { altitude: 500 }, symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } },
 })
-// 滑块变化时窄转型调用 setAltitude 动态更新 Marker 高度（setAltitude 未建模，cast 兜底）
-type HasSetAltitude = { setAltitude(altitude: number): void }
+// 滑块变化时 setAltitude 动态更新 Marker 高度（基类已建模）
 watch(altitude, (v) => {
-  (geometry.value as HasSetAltitude | null)?.setAltitude(v)
+  geometry.value?.setAltitude(v)
 })
 
 const status = computed(() => (isReady.value ? '地图已创建（滑块调高度）' : '加载中…'))
