@@ -4,12 +4,13 @@
     <div class="flex items-center gap-2 mt-3">
       <UButton size="xs" color="primary" @click="() => filterGeos()">筛选 count >= 200</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const { layer } = useMaptalksVectorLayer(map)
@@ -29,6 +30,8 @@ polyData.forEach((item) => {
 })
 
 function filterGeos() {
-  ;(toValue(layer) as any)?.filter?.(['>=', 'count', 200])?.forEach((f: any) => f.updateSymbol([{ polygonFill: 'rgb(216,115,149)' }]))
+  toValue(layer)?.filter?.(['>=', 'count', 200])?.forEach((f) => f.updateSymbol([{ polygonFill: 'rgb(216,115,149)' }]))
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可按属性筛选）' : '加载中…'))
 </script>

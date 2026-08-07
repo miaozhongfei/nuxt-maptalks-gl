@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.4854, 31.2285]"
       :zoom="14"
       base-layer="osm"
@@ -20,14 +21,17 @@
     <div class="flex items-center gap-2 mt-3">
       <UButton size="xs" color="primary" @click="() => filterGeos()">筛选 count >= 200</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 
+// exposed layer 是 Ref——toValue 解包后调 filter（已建模）链式 updateSymbol
 function filterGeos() {
-  ;(vlRef.value?.layer as any)?.filter?.(['>=', 'count', 200])?.forEach((f: any) => f.updateSymbol([{ polygonFill: 'rgb(216,115,149)' }]))
+  toValue(vlRef.value?.layer)?.filter?.(['>=', 'count', 200])?.forEach((f) => f.updateSymbol([{ polygonFill: 'rgb(216,115,149)' }]))
 }
 
 const polyData = [
@@ -47,4 +51,6 @@ const polyData = [
     options: { symbol: [{ polygonFill: '#747474', polygonOpacity: 0.5, lineColor: '#000', lineWidth: 2 }, { textName: '{count}', textSize: 40, textFill: '#fff' }], properties: { count: 300 } },
   },
 ]
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可按属性筛选）' : '加载中…'))
 </script>
