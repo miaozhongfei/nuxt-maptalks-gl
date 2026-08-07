@@ -1,18 +1,21 @@
 <template>
-  <MaptalksMap
-    ref="mapCmp"
-    base-layer="osm"
-    :center="[121.5057, 31.2453]"
-    :zoom="13"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <MaptalksMap
+      ref="mc"
+      base-layer="osm"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const { layer } = useMaptalksVectorLayer(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+const { layer } = useMaptalksVectorLayer(map)
 // 文本框 TextBox
 useMaptalksTextBox(layer, {
   content: '文本框 TextBox',
@@ -22,8 +25,10 @@ useMaptalksTextBox(layer, {
   options: {
     draggable: true,
     textStyle: {
-      wrap: true, // auto wrap text
-      padding: [12, 8], // padding of textbox
+      // auto wrap text
+      wrap: true,
+      // padding of textbox
+      padding: [12, 8],
       verticalAlignment: 'top',
       horizontalAlignment: 'right',
       symbol: {
@@ -44,5 +49,7 @@ useMaptalksTextBox(layer, {
       markerLineWidth: 1,
     },
   },
-});
+})
+
+const status = computed(() => (map.value ? '地图已创建（TextBox 文本框）' : '加载中…'))
 </script>

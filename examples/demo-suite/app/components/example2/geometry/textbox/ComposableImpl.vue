@@ -1,16 +1,19 @@
 <template>
-  <div
-    ref="el"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
 // 文本框 TextBox
 useMaptalksTextBox(layer, {
   content: '文本框 TextBox',
@@ -20,8 +23,10 @@ useMaptalksTextBox(layer, {
   options: {
     draggable: true,
     textStyle: {
-      wrap: true, // auto wrap text
-      padding: [12, 8], // padding of textbox
+      // auto wrap text
+      wrap: true,
+      // padding of textbox
+      padding: [12, 8],
       verticalAlignment: 'top',
       horizontalAlignment: 'right',
       symbol: {
@@ -42,5 +47,7 @@ useMaptalksTextBox(layer, {
       markerLineWidth: 1,
     },
   },
-});
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（TextBox 文本框）' : '加载中…'))
 </script>
