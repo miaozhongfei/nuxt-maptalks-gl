@@ -33,9 +33,7 @@ watch(
     const layer = new mt.VectorLayer('vector', markers)
     // 原生 VectorLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
     layer.addTo(m as never)
-    // map 的 on 未建模（MaptalksClass 索引签名不可调用）——逃生舱断言（1.12 events 同款）
-    const raw = m as unknown as { on: (t: string, fn: (e: unknown) => void) => void }
-    raw.on('mousemove', (e) => {
+    m.on('mousemove', (e) => {
       const ev = e as { coordinate?: { x: number; y: number } }
       if (maskMarker) {
         maskMarker.setCoordinates(ev.coordinate)

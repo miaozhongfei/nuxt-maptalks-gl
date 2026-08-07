@@ -35,20 +35,19 @@ useMaptalksTileLayer(magMap, {
   },
 })
 
-// 逃生舱：原生 mousemove + setCenterAndZoom（官网 1.16 同款套路；on 未建模 cast 兜底，其余已建模）
+// 逃生舱：原生 mousemove + setCenterAndZoom（官网 1.16 同款套路；on 已建模）
 watch(
   [() => toValue(mainMap), () => toValue(magMap)],
   ([main, mag]) => {
     if (!main || !mag) return
-    const rawMain = main as unknown as { on: (t: string, fn: (e: unknown) => void) => void }
-    rawMain.on('mousemove', (e) => {
+    main.on('mousemove', (e) => {
       const ev = e as { coordinate?: unknown; containerPoint?: { x: number; y: number } }
       if (!ev.coordinate || !ev.containerPoint) return
       visible.value = true
       pos.value = { x: ev.containerPoint.x - 90, y: ev.containerPoint.y - 90 }
       mag.setCenterAndZoom(ev.coordinate, main.getZoom() + 2)
     })
-    rawMain.on('mouseout', () => {
+    main.on('mouseout', () => {
       visible.value = false
     })
   },

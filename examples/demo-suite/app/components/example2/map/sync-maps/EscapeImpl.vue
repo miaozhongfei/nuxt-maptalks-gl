@@ -51,9 +51,7 @@ function disableSync() { syncEnabled.value = false }
 
 let lock = false
 function bind(src: MtMap, dst: MtMap) {
-  // on 未建模（仅索引逃生舱），cast 兜底；其余同步方法均已建模
-  const s = src as unknown as { on: (t: string, fn: () => void) => void }
-  s.on('moving moveend zooming zoomend rotate pitch', () => {
+  src.on('moving moveend zooming zoomend rotate pitch', () => {
     // 单向模式下跳过从图→主图的同步（即 src 为从图时不做任何事）
     if (!isDualMode.value && src !== toValue(mapA)) return
     if (lock || !syncEnabled.value) return

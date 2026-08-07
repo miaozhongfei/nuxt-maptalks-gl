@@ -21,19 +21,18 @@ const logs = ref<string[]>([])
 function push(line: string) {
   logs.value = [`${new Date().toLocaleTimeString()} ${line}`, ...logs.value].slice(0, 8)
 }
-// 逃生舱：原生 map.on 直接监听（on 未建模，cast 兜底；地图销毁时监听随实例一并释放）
+// 逃生舱：原生 map.on 直接监听（on 已建模；地图销毁时监听随实例一并释放）
 watch(
   () => toValue(map),
   (m) => {
     if (!m) return
-    const raw = m as unknown as { on: (t: string, fn: (e: unknown) => void) => void }
-    raw.on('click', (e) => {
+    m.on('click', (e) => {
       const ev = e as { coordinate?: { x: number; y: number } }
       push(`原生 click @ ${ev.coordinate?.x.toFixed(4)}, ${ev.coordinate?.y.toFixed(4)}`)
     })
-    raw.on('dblclick', () => push('原生 dblclick'))
-    raw.on('zoomend', () => push('原生 zoomend'))
-    raw.on('moveend', () => push('原生 moveend'))
+    m.on('dblclick', () => push('原生 dblclick'))
+    m.on('zoomend', () => push('原生 zoomend'))
+    m.on('moveend', () => push('原生 moveend'))
   },
 )
 

@@ -33,9 +33,7 @@ watch(
     if (!mv || maskBound) return
     maskBound = true
     const mt = await import('maptalks-gl')
-    // map 的 on 未建模（MaptalksClass 索引签名不可调用）——逃生舱断言（1.12 events 同款）
-    const raw = mv as unknown as { on: (t: string, fn: (e: unknown) => void) => void }
-    raw.on('mousemove', (e) => {
+    mv.on('mousemove', (e) => {
       const ev = e as { coordinate?: { x: number; y: number } }
       if (maskMarker) {
         maskMarker.setCoordinates(ev.coordinate)
