@@ -16,7 +16,7 @@
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
 
-// 曲线构造器窄化类型（ArcCurve 等未建模，cast 逃生舱）
+// 曲线构造器类型（已建模——必选成员直接使用）
 type CurveCtor = new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry
 
 // 圆弧：两点 + arcDegree 弧度
@@ -52,15 +52,12 @@ function addCubic(layer: MaptalksVectorLayer, CubicBezierCurve: CurveCtor): void
   }))
 }
 
-// 桥接 + 一体工厂：同一矢量图层创建三种曲线
+// 桥接 + 一体工厂：同一矢量图层创建三种曲线（构造器已建模，直接使用）
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v')
-  const ArcCurve = (mt as unknown as { ArcCurve: CurveCtor }).ArcCurve
-  const QuadBezierCurve = (mt as unknown as { QuadBezierCurve: CurveCtor }).QuadBezierCurve
-  const CubicBezierCurve = (mt as unknown as { CubicBezierCurve: CurveCtor }).CubicBezierCurve
-  addArc(layer, ArcCurve)
-  addQuad(layer, QuadBezierCurve)
-  addCubic(layer, CubicBezierCurve)
+  addArc(layer, mt.ArcCurve)
+  addQuad(layer, mt.QuadBezierCurve)
+  addCubic(layer, mt.CubicBezierCurve)
   return layer
 })
 

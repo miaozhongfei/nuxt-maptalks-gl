@@ -14,7 +14,7 @@ const el = ref<HTMLElement | null>(null)
 const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-// 曲线构造器窄化类型（ArcCurve 等未建模，cast 逃生舱）
+// 曲线构造器类型（已建模——必选成员直接使用）
 type CurveCtor = new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry
 
 // 圆弧：两点 + arcDegree 弧度
@@ -50,16 +50,12 @@ function addCubic(layer: MaptalksVectorLayer, CubicBezierCurve: CurveCtor): void
   }))
 }
 
-// 一体工厂：同一矢量图层创建三种曲线
+// 一体工厂：同一矢量图层创建三种曲线（构造器已建模，直接使用）
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v')
-  // 窄化 cast 取未声明的构造器（ArcCurve / QuadBezierCurve / CubicBezierCurve）
-  const ArcCurve = (mt as unknown as { ArcCurve: CurveCtor }).ArcCurve
-  const QuadBezierCurve = (mt as unknown as { QuadBezierCurve: CurveCtor }).QuadBezierCurve
-  const CubicBezierCurve = (mt as unknown as { CubicBezierCurve: CurveCtor }).CubicBezierCurve
-  addArc(layer, ArcCurve)
-  addQuad(layer, QuadBezierCurve)
-  addCubic(layer, CubicBezierCurve)
+  addArc(layer, mt.ArcCurve)
+  addQuad(layer, mt.QuadBezierCurve)
+  addCubic(layer, mt.CubicBezierCurve)
   return layer
 })
 

@@ -1080,6 +1080,12 @@ export interface MaptalksGLNamespace {
   ) => MaptalksMultiLineStringGeometry;
   /** MultiPolygon 构造器 */
   MultiPolygon: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPolygonGeometry;
+  /** ArcCurve 圆弧曲线构造器（两点 + arcDegree 弧度） */
+  ArcCurve: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** QuadBezierCurve 二次贝塞尔曲线构造器（起点 + 控制点 + 终点） */
+  QuadBezierCurve: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** CubicBezierCurve 三次贝塞尔曲线构造器（起点 + 两控制点 + 终点） */
+  CubicBezierCurve: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** GeoJSON 工具命名空间 */
   GeoJSON: {
     toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[];
