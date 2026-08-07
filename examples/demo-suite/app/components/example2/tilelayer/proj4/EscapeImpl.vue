@@ -31,11 +31,12 @@ onMounted(async () => {
   const projection = {
     code: 'proj4-merc',
     project: (c: { toArray: () => number[] }) => {
-      const pc = proj.forward(c.toArray())
+      // proj4 forward 入参数组长度即返回长度，断言为二元组消除索引 undefined
+      const pc = proj.forward(c.toArray()) as [number, number]
       return new mt.Coordinate(pc[0], pc[1])
     },
     unproject: (pc: { toArray: () => number[] }) => {
-      const c = proj.inverse(pc.toArray())
+      const c = proj.inverse(pc.toArray()) as [number, number]
       return new mt.Coordinate(c[0], c[1])
     },
     measure: 'EPSG:4326',
