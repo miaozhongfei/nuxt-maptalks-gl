@@ -1,7 +1,7 @@
 <template>
   <div>
     <MaptalksMap
-      ref="mapCmp"
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
       :zoom="13"
@@ -12,18 +12,19 @@
     <ul class="text-xs font-mono mt-3 space-y-1">
       <li v-for="(line, i) in logs" :key="i" class="text-muted">{{ line }}</li>
     </ul>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-const { layer } = useMaptalksVectorLayer(map);
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
+const { layer } = useMaptalksVectorLayer(map)
 
-const logs = ref<string[]>([]);
+const logs = ref<string[]>([])
 // 环形日志：只保留最近 8 条
 function push(name: string) {
-  logs.value = [`${new Date().toLocaleTimeString()} ${name}`, ...logs.value].slice(0, 8);
+  logs.value = [`${new Date().toLocaleTimeString()} ${name}`, ...logs.value].slice(0, 8)
 }
 // 预设 events 选项直绑原生事件
 useMaptalksMarker(layer, {
@@ -35,5 +36,7 @@ useMaptalksMarker(layer, {
     mouseenter: () => push('mouseenter'),
     mouseout: () => push('mouseout'),
   },
-});
+})
+
+const status = computed(() => (map.value ? '地图已创建（几何事件监听中）' : '加载中…'))
 </script>
