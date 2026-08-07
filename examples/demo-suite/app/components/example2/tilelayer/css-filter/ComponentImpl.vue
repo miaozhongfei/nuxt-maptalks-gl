@@ -9,8 +9,13 @@
     >
       <MaptalksTileLayer :options="tileOptions" />
     </MaptalksMap>
+    <div class="flex items-center gap-3 mt-3">
+      <UButton size="sm" @click="applyFilter('sepia(90%) invert(90%)')">暗色反转</UButton>
+      <UButton size="sm" @click="applyFilter('grayscale(100%)')">灰度</UButton>
+      <UButton size="sm" @click="applyFilter('none')">无滤镜</UButton>
+    </div>
     <p class="text-sm mt-2 text-muted">
-      cssFilter: 'sepia(90%) invert(90%)' 静态暗色反转风格
+      当前滤镜：{{ current }}
     </p>
     <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
@@ -18,11 +23,17 @@
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const tileOptions = {
+// cssFilter 响应式：按钮切换时经组件 options 联动图层 config 热更新
+const tileOptions = ref({
   urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
   subdomains: ['b', 'c', 'd'],
-  // cssFilter 静态叠加 sepia+invert 实现暗色反转风格
   cssFilter: 'sepia(90%) invert(90%)',
+})
+const current = ref('暗色反转')
+
+function applyFilter(v: string) {
+  tileOptions.value.cssFilter = v
+  current.value = v === 'none' ? '无' : v
 }
 
 const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（cssFilter 滤镜）' : '加载中…'))
