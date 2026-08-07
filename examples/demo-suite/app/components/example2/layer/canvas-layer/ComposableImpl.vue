@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <div
       ref="el"
@@ -30,8 +30,8 @@ useMaptalksLayer(map, (mt) => {
     ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
     this.completeRender()
   }
-  // drawOnInteracting 未建模——逃生舱断言（官网 6.14 同款：交互时也重绘）
-  ;(cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting =
+  // drawOnInteracting 未建模——逃生舱断言（与 draw 同签名；官网 6.14 同款：交互时也重绘）
+  ;(cl as unknown as { drawOnInteracting: (context: CanvasRenderingContext2D, ...params: unknown[]) => void }).drawOnInteracting =
     cl.draw
   return cl
 })
