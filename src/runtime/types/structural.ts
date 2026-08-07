@@ -1088,6 +1088,14 @@ export interface MaptalksGLNamespace {
   Geometry: {
     fromJSON(geometryJSON: Record<string, unknown>): MaptalksGeometry | MaptalksGeometry[];
   };
+  /** GeometryCollection 构造器（多个几何组合为一个整体统一管理） */
+  GeometryCollection: new (geometries: MaptalksGeometry[], options?: Record<string, unknown>) => MaptalksGeometry;
+  /** ParticleLayer 粒子图层构造器（自定义 getParticles 驱动粒子动画） */
+  ParticleLayer: new (id: string | number, options?: Record<string, unknown>) => MaptalksParticleLayer;
+  /** CanvasLayer 自定义 Canvas 图层构造器（onDraw 逐帧绘制） */
+  CanvasLayer: new (id: string | number, options?: Record<string, unknown>) => MaptalksCanvasLayer;
+  /** CanvasTileLayer 瓦片图层构造器（Canvas 渲染器绘制瓦片） */
+  CanvasTileLayer: new (id: string | number, options?: Record<string, unknown>) => MaptalksCanvasTileLayer;
   /** DrawTool 构造器 */
   DrawTool: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** Circle 构造器 */

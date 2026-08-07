@@ -13,11 +13,10 @@
 const el = ref<HTMLElement | null>(null)
 const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
-// GeometryCollection 工厂：集合内混装 点/线/面 三种子几何（GeometryCollection 未建模，cast 兜底）
+// GeometryCollection 工厂：集合内混装 点/线/面 三种子几何（构造器已建模）
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v')
-  const GC = (mt as unknown as { GeometryCollection: new (geos: unknown[], o?: Record<string, unknown>) => MaptalksGeometry }).GeometryCollection
-  const collection = new GC([
+  const collection = new mt.GeometryCollection([
     new mt.Marker([121.5057, 31.2453], {
       symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
     }),
