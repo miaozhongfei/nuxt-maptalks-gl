@@ -247,10 +247,12 @@ export interface MaptalksMap extends MaptalksClass {
   containerPointToViewPoint(point: unknown): unknown;
   /** 视口点→容器点 */
   viewPointToContainerPoint(point: unknown): unknown;
+  /** 地理坐标→容器像素点（官网 Map API；返回原生 Point，add 等按需断言） */
+  coordinateToContainerPoint(coordinate: unknown, zoom?: number): unknown;
   /** 容器范围→地理范围 */
   containerToExtent(extent: unknown): unknown;
-  /** 距离→屏幕像素 */
-  distanceToPixel(distance: number, zoom?: number): number;
+  /** 距离→屏幕像素（返回 Point 结构——官网示例用 pxLen.width 取水平像素） */
+  distanceToPixel(distance: number, zoom?: number): { x: number; y: number; width: number; height: number };
   /** 屏幕像素→距离 */
   pixelToDistance(pixel: number, zoom?: number): number;
   /** 距离→容器点距 */

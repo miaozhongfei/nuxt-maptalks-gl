@@ -1,15 +1,16 @@
 <template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-let m: any = null
+let m: MaptalksMap | null = null
 watch(() => toValue(map), (mv) => { if (!m && mv) m = mv })
 
 const { layer: vl } = useMaptalksVectorLayer(map)
@@ -25,10 +26,12 @@ useMaptalksCircle(vl, {
 
 useMaptalksLayer(map, (mt) => {
   const pl = new mt.ParticleLayer('p', { forceRenderOnMoving: true })
+  // getParticles 未建模——逃生舱断言（粒子回调：t 为帧序号，返回粒子数组）
   ;(pl as unknown as { getParticles: (t: number) => Array<{ point: unknown; r: number; color: string }> }).getParticles = (t: number) => {
     if (!m) return []
     const center = m.getCenter()
-    const point = m.coordinateToContainerPoint(center)
+    // coordinateToContainerPoint 建模返回 unknown——Point.add 按需窄断言
+    const point = m.coordinateToContainerPoint(center) as { add: (x: number, y: number) => unknown }
     const angle = (t / 16 % 360) * Math.PI / 180
     const pxLen = m.distanceToPixel(1000, 1000)
     const r = pxLen.width
@@ -38,4 +41,6 @@ useMaptalksLayer(map, (mt) => {
   }
   return pl
 })
+
+const status = computed(() => (isReady.value ? '地图已创建（粒子沿圆周运动）' : '加载中…'))
 </script>
