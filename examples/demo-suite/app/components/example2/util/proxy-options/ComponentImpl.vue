@@ -26,12 +26,12 @@
         图层可见
       </label>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-// Vue template ref 会自动 unwrap defineExpose 暴露的 shallowRef，.layer 直接是实例
 const blRef = ref<MaptalksTileLayerExposed | null>(null)
 const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
 
@@ -39,24 +39,27 @@ const opacity = ref(1)
 let crossOn = false
 
 function toggleCross(e: Event) {
-  const m = mc.value?.map
+  // exposed map 是 Ref——toValue 解包取实例
+  const m = toValue(mc.value?.map)
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  ;m.options.centerCross = crossOn
+  m.options.centerCross = crossOn
 }
 
 function setOpacity(e: Event) {
-  // 转型：ref?.layer 在 TS 中是 ShallowRef，但 Vue template ref 已自动 unwrap
-  const bl = (blRef.value as unknown as { layer: MaptalksTileLayer | null } | null)?.layer
+  // exposed layer 是 Ref——toValue 解包；options 是 maptalks Proxy——直接赋值即触发 config
+  const bl = toValue(blRef.value?.layer)
   if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  ;bl.options.opacity = v
+  bl.options.opacity = v
 }
 
 function toggleVisible(e: Event) {
-  const l = (vlRef.value as unknown as { layer: MaptalksVectorLayer | null } | null)?.layer
+  const l = toValue(vlRef.value?.layer)
   if (!l) return
-  ;l.options.visible = (e.target as HTMLInputElement).checked
+  l.options.visible = (e.target as HTMLInputElement).checked
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（Proxy options 直接赋值生效）' : '加载中…'))
 </script>

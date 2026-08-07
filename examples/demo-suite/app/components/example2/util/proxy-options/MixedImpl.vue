@@ -21,12 +21,13 @@
         图层可见
       </label>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 // 组合：组件创建地图，composable 创建瓦片底图和矢量图层
 const { layer: baseLayer } = useMaptalksTileLayer(map, { source: 'osm' })
 const { layer: vectorLayer } = useMaptalksVectorLayer(map, { id: 'v' })
@@ -39,7 +40,8 @@ function toggleCross(e: Event) {
   const m = toValue(map)
   if (!m) return
   crossOn = (e.target as HTMLInputElement).checked
-  ;m.options.centerCross = crossOn
+  // options 是 maptalks Proxy——直接赋值即触发 config
+  m.options.centerCross = crossOn
 }
 
 function setOpacity(e: Event) {
@@ -47,12 +49,14 @@ function setOpacity(e: Event) {
   if (!bl) return
   const v = Number((e.target as HTMLInputElement).value)
   opacity.value = v
-  ;bl.options.opacity = v
+  bl.options.opacity = v
 }
 
 function toggleVisible(e: Event) {
   const vl = toValue(vectorLayer)
   if (!vl) return
-  ;vl.options.visible = (e.target as HTMLInputElement).checked
+  vl.options.visible = (e.target as HTMLInputElement).checked
 }
+
+const status = computed(() => (map.value ? '地图已创建（Proxy options 直接赋值生效）' : '加载中…'))
 </script>
