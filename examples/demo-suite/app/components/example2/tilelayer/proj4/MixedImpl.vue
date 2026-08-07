@@ -24,12 +24,12 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 const proj = proj4('EPSG:4326', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs')
 const projection = {
   code: 'proj4-merc',
-  project: (c: { toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
-    const pc = proj.forward(c.toArray?.() ?? [c.x as never, c.y as never]) as [number, number]
+  project: (c: { x: number; y: number; toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
+    const pc = proj.forward(c.toArray?.() ?? [c.x, c.y]) as [number, number]
     return new c.constructor(pc[0], pc[1])
   },
-  unproject: (pc: { toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
-    const c = proj.inverse(pc.toArray?.() ?? [pc.x as never, pc.y as never]) as [number, number]
+  unproject: (pc: { x: number; y: number; toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
+    const c = proj.inverse(pc.toArray?.() ?? [pc.x, pc.y]) as [number, number]
     return new pc.constructor(c[0], c[1])
   },
   measure: 'EPSG:4326',

@@ -20,16 +20,16 @@ const el = ref<HTMLElement | null>(null)
 // proj4 EPSG:3857 投影定义（Web Mercator）
 const proj = proj4('EPSG:4326', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs')
 
-// 自定义 projection 对象：c.constructor 获取 Coordinate 类，无需提前 import（回调入参为原生 Coordinate，x 不在类型内走逃生舱断言）
+// 自定义 projection 对象：c.constructor 获取 Coordinate 类，无需提前 import（回调入参为原生 Coordinate——x/y 为坐标字段）
 const projection = {
   code: 'proj4-merc',
-  project: (c: { toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
+  project: (c: { x: number; y: number; toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
     // proj4 forward 入参数组长度即返回长度，断言为二元组消除索引 undefined
-    const pc = proj.forward(c.toArray?.() ?? [c.x as never, c.y as never]) as [number, number]
+    const pc = proj.forward(c.toArray?.() ?? [c.x, c.y]) as [number, number]
     return new c.constructor(pc[0], pc[1])
   },
-  unproject: (pc: { toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
-    const c = proj.inverse(pc.toArray?.() ?? [pc.x as never, pc.y as never]) as [number, number]
+  unproject: (pc: { x: number; y: number; toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
+    const c = proj.inverse(pc.toArray?.() ?? [pc.x, pc.y]) as [number, number]
     return new pc.constructor(c[0], c[1])
   },
   // tell projection how to measure distances
