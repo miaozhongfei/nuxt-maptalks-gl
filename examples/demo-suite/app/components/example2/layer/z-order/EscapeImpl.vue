@@ -52,7 +52,7 @@ watch(
       new mt.VectorLayer('3', [rect3]),
       new mt.VectorLayer('2', [rect2]),
       new mt.VectorLayer('1', [rect1]),
-    ] as MaptalksLayer[])
+    ] as unknown as MaptalksLayer[])
   },
 )
 
