@@ -657,6 +657,24 @@ export interface MaptalksTileLayer extends MaptalksLayer {
   getTiles(): unknown[];
   /** 按坐标获取瓦片 URL */
   getTileUrl(x: number, y: number, z: number): string;
+  /** 丢弃缓存强制重新拉取当前视野瓦片（频繁调用有性能风险） */
+  forceReload(): this;
+  /** 获取瓦片像素尺寸 */
+  getTileSize(id?: string): { width: number; height: number };
+  /** 清空图层（移除全部瓦片） */
+  clear(): this;
+  /** 获取瓦片图层空间参考 */
+  getSpatialReference(): Record<string, unknown>;
+  /** 获取可用最大缩放级别（options.maxAvailableZoom 或空间参考 maxZoom） */
+  getMaxAvailableZoom(): number;
+  /** 获取图层 polygon offset 计数 */
+  getPolygonOffsetCount(): number;
+  /** 获取图层基础 polygon offset */
+  getPolygonOffset(): number;
+  /** 设置图层基础 polygon offset（由 GroupGLLayer 调用） */
+  setPolygonOffset(offset: number): this;
+  /** 获取渲染器 */
+  getRenderer(): unknown;
   /** 逃生舱口 */
   [key: string]: unknown;
 }

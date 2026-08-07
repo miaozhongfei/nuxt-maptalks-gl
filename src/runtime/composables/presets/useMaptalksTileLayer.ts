@@ -6,6 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
+  MaptalksTileLayer,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksTileLayerOpts,
@@ -42,7 +43,7 @@ function buildTileOptions(
  * 图层创建会等待源解析完成；否则按 `options` 直接创建。其余生命周期复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @returns {UseMaptalksLayerReturn<MaptalksTileLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -54,7 +55,7 @@ function buildTileOptions(
 export function useMaptalksTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksTileLayerOpts = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+): UseMaptalksLayerReturn<MaptalksTileLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   tileSeq += 1;
   const id = opts.id ?? `maptalks-tile-${tileSeq}`;

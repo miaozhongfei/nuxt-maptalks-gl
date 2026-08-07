@@ -27,9 +27,9 @@ const { layer } = useMaptalksTileLayer(map, {
 })
 const count = ref(0)
 
-// forceReload 丢缓存重拉当前视野瓦片（forceReload 未建模，cast 兜底）
+// forceReload 丢缓存重拉当前视野瓦片（layer 类型已收窄为 MaptalksTileLayer）
 function reload() {
-  (toValue(layer) as unknown as { forceReload?: () => void } | null)?.forceReload?.()
+  toValue(layer)?.forceReload()
   count.value += 1
 }
 

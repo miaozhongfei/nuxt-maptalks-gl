@@ -14,19 +14,21 @@
 </template>
 
 <script setup lang="ts">
+import type { MaptalksTileLayer } from '@lacqjs/nuxt-maptalks-gl'
+
 const el = ref<HTMLElement | null>(null)
 const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
 
-let tileRef: { forceReload: () => void } | null = null
+// 逃生舱：工厂 new 原生 TileLayer，保存 tileRef 引用供 forceReload 直调（工厂返回推断为 MaptalksTileLayer）
+let tileRef: MaptalksTileLayer | null = null
 const count = ref(0)
 
-// 逃生舱：工厂 new 原生 TileLayer，保存 tileRef 引用供 forceReload 直调（forceReload 未建模，cast 兜底）
 useMaptalksLayer(map, (mt) => {
   const l = new mt.TileLayer('base', {
     urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     subdomains: ['b', 'c', 'd'],
   })
-  tileRef = l as unknown as { forceReload: () => void }
+  tileRef = l
   return l
 })
 

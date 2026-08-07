@@ -1,5 +1,5 @@
 ﻿import { toValue } from 'vue';
-import type { MaybeRefOrGetter, ShallowRef } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
@@ -21,7 +21,7 @@ let vectorSeq = 0;
  * 生命周期（addLayer / dispose）复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksVectorLayerOpts} [opts] - id / 选项 / 自动销毁
- * @returns {UseMaptalksVectorLayerReturn} `{ layer, update, remove }`
+ * @returns {UseMaptalksVectorLayerReturn<MaptalksVectorLayer>} `{ layer, update, remove }`
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -30,7 +30,7 @@ let vectorSeq = 0;
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksVectorLayerOpts = {},
-): UseMaptalksVectorLayerReturn {
+): UseMaptalksVectorLayerReturn<MaptalksVectorLayer> {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;
   const result = useMaptalksLayer(
@@ -45,7 +45,8 @@ export function useMaptalksVectorLayer(
     { options: opts.options, autoDispose: opts.autoDispose },
   );
   return {
-    layer: result.layer as ShallowRef<MaptalksVectorLayer | null>,
+    // 工厂返回 VectorLayer，useMaptalksLayer 泛型推断后无需 cast
+    layer: result.layer,
     show: () => result.layer.value?.show?.(),
     hide: () => result.layer.value?.hide?.(),
     update: result.update,

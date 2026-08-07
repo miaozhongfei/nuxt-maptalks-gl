@@ -6,6 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
+  MaptalksWMSLayer,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksWMSLayerOpts,
@@ -49,7 +50,7 @@ function buildWMSOptions(
  * 时图层创建等待源解析完成；否则按 `options` 直接创建。构造器缺失（WMSTileLayer/WMSLayer 均无）抛 `layer-failed`。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @returns {UseMaptalksLayerReturn<MaptalksWMSLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -66,7 +67,7 @@ function buildWMSOptions(
 export function useMaptalksWMSLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksWMSLayerOpts = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+): UseMaptalksLayerReturn<MaptalksWMSLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   wmsSeq += 1;
   const id = opts.id ?? `maptalks-wms-${wmsSeq}`;

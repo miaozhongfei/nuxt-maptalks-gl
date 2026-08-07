@@ -7,6 +7,7 @@ import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksDefaults,
   MaptalksEventHandler,
+  MaptalksGroupGLLayer,
   MaptalksLayer,
   MaptalksMap,
   MaptalksGroupGLLayerOptions,
@@ -86,7 +87,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  * GroupGLLayer。子图层经 `options.layers` 传入。不依赖数据源，地图就绪即创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksGroupGLLayerOpts} [opts] - 子图层 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn} 图层句柄
+ * @returns {UseMaptalksLayerReturn<MaptalksGroupGLLayer>} 图层句柄
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -96,7 +97,7 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
 export function useMaptalksGroupGLLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksGroupGLLayerOpts = {},
-): UseMaptalksLayerReturn {
+): UseMaptalksLayerReturn<MaptalksGroupGLLayer> {
   const publicConfig = useRuntimeConfig().public as unknown as {
     maptalksGl?: ResolvedModuleOptions;
   };

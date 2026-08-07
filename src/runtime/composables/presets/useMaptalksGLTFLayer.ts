@@ -5,6 +5,7 @@ import { MaptalksError } from '../../core/errors';
 import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
+  MaptalksGLTFLayer,
   MaptalksMap,
   ResolvedSource,
   UseMaptalksLayerReturn,
@@ -43,7 +44,7 @@ function buildGltfOptions(
  * 通过返回的 `layer.value` 原生 API 添加。传入 `source` 时等待源解析完成再创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @returns {UseMaptalksLayerReturn<MaptalksGLTFLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -53,7 +54,7 @@ function buildGltfOptions(
 export function useMaptalksGLTFLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksGLTFLayerOpts = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+): UseMaptalksLayerReturn<MaptalksGLTFLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   gltfSeq += 1;
   const id = opts.id ?? `maptalks-gltf-${gltfSeq}`;

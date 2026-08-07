@@ -114,13 +114,14 @@ export interface UseMaptalksLayerOpts {
  * `useMaptalksLayer` 与各预设的返回。
  *
  * @description 暴露响应式图层实例与命令式更新 / 移除方法。
+ * @template T - 图层具体类型，默认 MaptalksLayer
  *
  * @example
  * const { layer, update, remove } = useMaptalksLayer(map, factory);
  */
-export interface UseMaptalksLayerReturn {
+export interface UseMaptalksLayerReturn<T extends MaptalksLayer = MaptalksLayer> {
   /** 图层实例（创建前为 null） */
-  layer: ShallowRef<MaptalksLayer | null>;
+  layer: ShallowRef<T | null>;
   /** 显示图层 */
   show: () => void;
   /** 隐藏图层 */
@@ -136,14 +137,15 @@ export interface UseMaptalksLayerReturn {
  *
  * @description VectorLayer 独有 `addGeometry` / `removeGeometry` / `getGeometries` / `clear` 等方法，
  * 下游 geometry preset 依赖此类型。基类 `UseMaptalksLayerReturn` 仅暴露图层通用方法。
+ * @template T - 图层具体类型，默认 MaptalksVectorLayer
  *
  * @example
  * const { layer, update, remove } = useMaptalksVectorLayer(map);
  * layer.value?.addGeometry(geo);
  */
-export interface UseMaptalksVectorLayerReturn {
+export interface UseMaptalksVectorLayerReturn<T extends MaptalksVectorLayer = MaptalksVectorLayer> {
   /** VectorLayer 实例（创建前为 null） */
-  layer: ShallowRef<MaptalksVectorLayer | null>;
+  layer: ShallowRef<T | null>;
   /** 显示图层 */
   show: () => void;
   /** 隐藏图层 */

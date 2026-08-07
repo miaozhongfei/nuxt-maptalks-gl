@@ -6,6 +6,7 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
+  MaptalksVectorTileLayer,
   ResolvedSource,
   UseMaptalksLayerReturn,
   UseMaptalksVectorTileLayerOpts,
@@ -42,7 +43,7 @@ function buildVectorOptions(
  * 传入 `source` 时等待源解析完成再创建；否则按 `options` 直接创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项（含 style）/ 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @returns {UseMaptalksLayerReturn<MaptalksVectorTileLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -54,7 +55,7 @@ function buildVectorOptions(
 export function useMaptalksVectorTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksVectorTileLayerOpts = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+): UseMaptalksLayerReturn<MaptalksVectorTileLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   vtSeq += 1;
   const id = opts.id ?? `maptalks-vt-${vtSeq}`;
