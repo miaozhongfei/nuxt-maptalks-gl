@@ -5,6 +5,7 @@
       <USlider v-model="altitude" :min="0" :max="800" :step="50" class="w-72" />
     </div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       :pitch="55"
@@ -19,9 +20,13 @@
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const altitude = ref(500);
+const mc = ref<MaptalksMapExposed | null>(null)
+const altitude = ref(500)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（滑块调高度）' : '加载中…'))
 </script>
