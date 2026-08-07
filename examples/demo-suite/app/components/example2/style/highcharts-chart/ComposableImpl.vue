@@ -16,6 +16,7 @@ onMounted(async () => {
   const Highcharts = await import('highcharts')
   const chartDom = document.createElement('div')
   chartDom.style.cssText = 'min-width:300px;height:300px;margin:0 auto;'
+  // Highcharts 深嵌套 Options 在 Volar 重载解析下严格（chartDom 的 DOM lang 属性与 Options.lang 冲突），逃生舱断言
   Highcharts.default.chart(chartDom, {
     chart: { backgroundColor: 'rgba(255,255,255,0.8)', type: 'area', spacingBottom: 30 },
     title: { text: 'Fruit consumption *' },
@@ -30,7 +31,7 @@ onMounted(async () => {
       { name: 'John', data: [0, 1, 4, 4, 5, 2, 3, 7] },
       { name: 'Jane', data: [1, 0, 3, null, 3, 1, 2, 1] },
     ],
-  })
+  } as never)
   chartDispose = () => { chartDom.innerHTML = '' }
 
   useMaptalksUIMarker(map, {
