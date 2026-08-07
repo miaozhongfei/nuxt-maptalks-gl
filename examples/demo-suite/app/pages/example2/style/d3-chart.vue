@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="D3 四叉树 + 画刷交互可视化，挂在 UIMarker 上（对应官网 5.30）。"
+    description="D3 四叉树 + 画刷交互可视化，挂在 UIMarker 上（对应官网 5.30）"
     :tabs="tabs"
   />
 </template>
