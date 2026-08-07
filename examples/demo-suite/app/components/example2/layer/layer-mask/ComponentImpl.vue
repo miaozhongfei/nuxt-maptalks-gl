@@ -39,8 +39,10 @@ watch(
     maskBound = true
     mv.on('mousemove', (e) => {
       const ev = e as { coordinate?: { x: number; y: number } }
+      // coordinate 可能缺省——先守卫再使用（同时收窄给 new Marker 的坐标参数）
+      if (!ev.coordinate) return
       if (maskMarker) {
-        maskMarker.setCoordinates(ev.coordinate)
+        maskMarker.setCoordinates?.(ev.coordinate)
       } else {
         import('maptalks-gl').then((mt) => {
           maskMarker = new mt.Marker(ev.coordinate, {
