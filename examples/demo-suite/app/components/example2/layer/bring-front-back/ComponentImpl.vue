@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -24,13 +25,17 @@
       <UButton size="xs" color="primary" variant="soft" @click="() => { blueRef?.layer?.bringToFront?.() }">蓝层置顶</UButton>
       <UButton size="xs" color="error" variant="soft" @click="() => { redRef?.layer?.bringToFront?.() }">红层置顶</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const blueRef = ref<MaptalksVectorLayerExposed | null>(null)
 const redRef = ref<MaptalksVectorLayerExposed | null>(null)
 
 const blueCoords = [[[121.495, 31.252], [121.51, 31.252], [121.51, 31.238], [121.495, 31.238]]]
 const redCoords = [[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]]
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可置顶图层）' : '加载中…'))
 </script>

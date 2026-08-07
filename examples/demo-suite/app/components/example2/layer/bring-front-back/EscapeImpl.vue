@@ -2,19 +2,20 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" color="primary" variant="soft" @click="() => blueToFront()">蓝层置顶</UButton>
-      <UButton size="xs" color="error" variant="soft" @click="() => redToFront()">红层置顶</UButton>
+      <UButton size="xs" color="primary" variant="soft" @click="blueToFront">蓝层置顶</UButton>
+      <UButton size="xs" color="error" variant="soft" @click="redToFront">红层置顶</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-let blueLayer: any = null
-let redLayer: any = null
+let blueLayer: { bringToFront?: () => unknown } | null = null
+let redLayer: { bringToFront?: () => unknown } | null = null
 
 function blueToFront() { blueLayer?.bringToFront?.() }
 function redToFront() { redLayer?.bringToFront?.() }
@@ -30,10 +31,13 @@ watch(
     const redPoly = new mt.Polygon([[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]], { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.8, lineColor: '#b91c1c', lineWidth: 2 } })
     bluePoly.addTo(blueLayer)
     redPoly.addTo(redLayer)
-    blueLayer.addTo(m as any)
-    redLayer.addTo(m as any)
+    // 原生 VectorLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
+    blueLayer.addTo(m as never)
+    redLayer.addTo(m as never)
   },
 )
 
 onBeforeUnmount(() => { blueLayer = null; redLayer = null })
+
+const status = computed(() => (isReady.value ? '地图已创建（可置顶图层）' : '加载中…'))
 </script>

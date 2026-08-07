@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="bringToFront / bringToBack 调整图层叠加顺序（对应官网 6.4）。"
+    description="bringToFront / bringToBack 调整图层叠加顺序（对应官网 6.4）"
     :tabs="tabs"
   />
 </template>

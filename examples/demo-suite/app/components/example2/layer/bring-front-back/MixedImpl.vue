@@ -12,12 +12,13 @@
       <UButton size="xs" color="primary" variant="soft" @click="bringBlueFront">蓝层置顶</UButton>
       <UButton size="xs" color="error" variant="soft" @click="bringRedFront">红层置顶</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { layer: blueLayer } = useMaptalksVectorLayer(map)
 useMaptalksPolygon(blueLayer, {
@@ -33,4 +34,6 @@ useMaptalksPolygon(redLayer, {
 
 function bringBlueFront() { blueLayer.value?.bringToFront?.() }
 function bringRedFront() { redLayer.value?.bringToFront?.() }
+
+const status = computed(() => (map.value ? '地图已创建（可置顶图层）' : '加载中…'))
 </script>
