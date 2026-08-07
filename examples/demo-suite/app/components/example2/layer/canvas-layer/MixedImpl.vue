@@ -8,19 +8,22 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const mc = ref<MaptalksMapExposed | null>(null);
+const mc = ref<MaptalksMapExposed | null>(null)
 
 watch(
-  () => mc.value?.map,
+  // exposed map 是 Ref——toValue 解包取实例（mv.getSize 依赖）
+  () => toValue(mc.value?.map),
   async (mv) => {
-    if (!mv) return;
-    const mt = await import('maptalks-gl');
-    const cl = new mt.CanvasLayer('c', { forceRenderOnMoving: true, forceRenderOnZooming: true });
-    cl.prepareToDraw = () => ['Hello', 'maptalks'];
+    if (!mv) return
+    const mt = await import('maptalks-gl')
+    const cl = new mt.CanvasLayer('c', { forceRenderOnMoving: true, forceRenderOnZooming: true })
+    cl.prepareToDraw = () => ['Hello', 'maptalks']
+    // this 为原生 CanvasLayer 实例（completeRender 未建模）——保留 this: any 逃生舱
     cl.draw = function (
       this: any,
       ctx: CanvasRenderingContext2D,
@@ -28,18 +31,22 @@ watch(
       p1: string,
       p2: string,
     ) {
-      const size = mv.getSize();
-      const str = `${p1}, ${p2}`;
-      ctx.fillStyle = '#f00';
-      ctx.font = 'bolder 50px sans-serif';
-      const metrics = ctx.measureText(str);
-      ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2);
-      this.completeRender();
-    };
-    (cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting =
-      cl.draw;
-    cl.addTo(mv as any);
+      const size = mv.getSize()
+      const str = `${p1}, ${p2}`
+      ctx.fillStyle = '#f00'
+      ctx.font = 'bolder 50px sans-serif'
+      const metrics = ctx.measureText(str)
+      ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
+      this.completeRender()
+    }
+    // drawOnInteracting 未建模——逃生舱断言（官网 6.14 同款：交互时也重绘）
+    ;(cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting =
+      cl.draw
+    // 原生 CanvasLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
+    cl.addTo(mv as never)
   },
   { immediate: true },
-);
+)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（CanvasLayer 自定义画板）' : '加载中…'))
 </script>
