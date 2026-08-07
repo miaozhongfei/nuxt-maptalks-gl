@@ -47,11 +47,12 @@ watch(
       .copy()
       .translate(0.006, 0.006)
       .updateSymbol([{ polygonFill: 'rgb(135,196,240)' }, { textName: 'Layer 1' }])
+    // 原生 VectorLayer 的 addTo 参数为原生 Map，与模块建模 MaptalksLayer 的 addTo(map: MaptalksMap) 逆变不兼容——逃生舱断言
     m.addLayer([
       new mt.VectorLayer('3', [rect3]),
       new mt.VectorLayer('2', [rect2]),
       new mt.VectorLayer('1', [rect1]),
-    ])
+    ] as MaptalksLayer[])
   },
 )
 
