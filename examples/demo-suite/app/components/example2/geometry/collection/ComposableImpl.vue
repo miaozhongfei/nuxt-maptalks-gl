@@ -1,20 +1,22 @@
 <template>
-  <div
-    ref="el"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
-
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-// GeometryCollection 工厂：集合内混装 点/线/面 三种子几何
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+// GeometryCollection 工厂：集合内混装 点/线/面 三种子几何（GeometryCollection 未建模，cast 兜底）
 useMaptalksLayer(map, (mt) => {
-  const layer = new mt.VectorLayer('v');
-  const GC = (mt as unknown as { GeometryCollection: new (geos: unknown[], o?: Record<string, unknown>) => MaptalksGeometry }).GeometryCollection;
+  const layer = new mt.VectorLayer('v')
+  const GC = (mt as unknown as { GeometryCollection: new (geos: unknown[], o?: Record<string, unknown>) => MaptalksGeometry }).GeometryCollection
   const collection = new GC([
     new mt.Marker([121.5057, 31.2453], {
       symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
@@ -25,8 +27,11 @@ useMaptalksLayer(map, (mt) => {
     new mt.Polygon([[[121.495, 31.238], [121.515, 31.238], [121.515, 31.252], [121.495, 31.252], [121.495, 31.238]]], {
       symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 },
     }),
-  ]);
-  (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(collection);
-  return layer;
-});
+  ])
+  // addGeometry 已建模，直接挂载集合
+  layer.addGeometry(collection)
+  return layer
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（GeometryCollection 集合）' : '加载中…'))
 </script>
