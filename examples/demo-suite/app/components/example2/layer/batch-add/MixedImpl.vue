@@ -8,12 +8,13 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { layer } = useMaptalksVectorLayer(map)
 
@@ -60,4 +61,6 @@ useMaptalksPolygon(layer, {
   coordinates: [holeOuter, holeInner],
   options: { symbol: { lineColor: '#ea580c', lineWidth: 2, polygonFill: '#f97316', polygonOpacity: 0.5 } },
 })
+
+const status = computed(() => (map.value ? '地图已创建（批量图形已添加）' : '加载中…'))
 </script>

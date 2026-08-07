@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       base-layer="osm"
@@ -26,10 +27,13 @@
         />
       </MaptalksVectorLayer>
     </MaptalksMap>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+
 const markerOptions = { symbol: { textFaceName: '"microsoft yahei",arial,sans-serif', textName: '陆家嘴', textFill: '#34495e', textHorizontalAlignment: 'right', textSize: 40 } }
 const lineCoords = [[121.5057, 31.2453], [121.5117, 31.2503]] as [number, number][]
 const lineOptions = { symbol: { lineColor: '#1bbc9b', lineWidth: 3 } }
@@ -60,4 +64,6 @@ const polyCoords = [
   [121.5057 - 0.018, 31.2453 - 0.001],
   [121.5057 - 0.018, 31.2453 + 0.004],
 ] as [number, number][]
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（批量图形已添加）' : '加载中…'))
 </script>
