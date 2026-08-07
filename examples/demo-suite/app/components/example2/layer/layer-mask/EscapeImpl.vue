@@ -26,7 +26,8 @@ watch(
     const min = extent.getMin()
     const w = extent.getWidth()
     const h = extent.getHeight()
-    const markers: mt.Marker[] = []
+    // evolving array：push 后自动推断原生 Marker 类型（import 命名空间在类型位置不可用）
+    const markers = []
     for (let i = 0; i < 100; i++) {
       markers.push(new mt.Marker([min.x + Math.random() * w, min.y + Math.random() * h]))
     }
