@@ -23,7 +23,7 @@ watch(
     const mt = await import('maptalks-gl')
     const cl = new mt.CanvasLayer('c', { forceRenderOnMoving: true, forceRenderOnZooming: true })
     cl.prepareToDraw = () => ['Hello', 'maptalks']
-    // this 为原生 CanvasLayer 实例（completeRender 未建模）——保留 this: any 逃生舱
+    // 原生 draw 类型声明仅 (context: unknown)，运行时 maptalks 实际传 4+ 参数（官网 6.14 同款）——整体逃生舱断言
     cl.draw = function (
       this: any,
       ctx: CanvasRenderingContext2D,
@@ -38,7 +38,7 @@ watch(
       const metrics = ctx.measureText(str)
       ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
       this.completeRender()
-    }
+    } as unknown as typeof cl.draw
     // drawOnInteracting 未建模——逃生舱断言（官网 6.14 同款：交互时也重绘）
     ;(cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting =
       cl.draw
