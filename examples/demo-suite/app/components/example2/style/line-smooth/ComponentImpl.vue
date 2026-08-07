@@ -1,32 +1,42 @@
 <template>
-  <MaptalksMap
-    :center="[121.5057, 31.2453]"
-    :zoom="13"
-    base-layer="osm"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  >
-    <MaptalksVectorLayer>
-      <!-- Polygon 原始（红色对比） -->
-      <MaptalksPolygon
-        :coordinates="[[[121.475, 31.253], [121.47, 31.245], [121.478, 31.24], [121.485, 31.248], [121.475, 31.253]]]"
-        :options="{ symbol: { lineColor: '#f00', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: 10 } }"
-      />
-      <!-- Polygon 平滑 -->
-      <MaptalksPolygon
-        :coordinates="[[[121.475, 31.253], [121.47, 31.245], [121.478, 31.24], [121.485, 31.248], [121.475, 31.253]]]"
-        :options="{ smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } }"
-      />
-      <!-- LineString 原始（红色对比） -->
-      <MaptalksLineString
-        :coordinates="[[121.49, 31.253], [121.485, 31.245], [121.493, 31.24], [121.50, 31.248]]"
-        :options="{ symbol: { lineColor: '#f00', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: 10 } }"
-      />
-      <!-- LineString 平滑 -->
-      <MaptalksLineString
-        :coordinates="[[121.49, 31.253], [121.485, 31.245], [121.493, 31.24], [121.50, 31.248]]"
-        :options="{ smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } }"
-      />
-    </MaptalksVectorLayer>
-  </MaptalksMap>
+  <div>
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    >
+      <MaptalksVectorLayer>
+        <!-- Polygon 原始（红色对比） -->
+        <MaptalksPolygon
+          :coordinates="[[[121.475, 31.253], [121.47, 31.245], [121.478, 31.24], [121.485, 31.248], [121.475, 31.253]]]"
+          :options="{ symbol: { lineColor: '#f00', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: 10 } }"
+        />
+        <!-- Polygon 平滑 -->
+        <MaptalksPolygon
+          :coordinates="[[[121.475, 31.253], [121.47, 31.245], [121.478, 31.24], [121.485, 31.248], [121.475, 31.253]]]"
+          :options="{ smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } }"
+        />
+        <!-- LineString 原始（红色对比） -->
+        <MaptalksLineString
+          :coordinates="[[121.49, 31.253], [121.485, 31.245], [121.493, 31.24], [121.50, 31.248]]"
+          :options="{ symbol: { lineColor: '#f00', shadowBlur: 10, shadowOffsetX: 10, shadowOffsetY: 10 } }"
+        />
+        <!-- LineString 平滑 -->
+        <MaptalksLineString
+          :coordinates="[[121.49, 31.253], [121.485, 31.245], [121.493, 31.24], [121.50, 31.248]]"
+          :options="{ smoothness: 0.5, symbol: { lineColor: '#34495e', lineWidth: 3 } }"
+        />
+      </MaptalksVectorLayer>
+    </MaptalksMap>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
+
+<script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（曲线平滑对比）' : '加载中…'))
+</script>
