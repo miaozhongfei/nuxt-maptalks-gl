@@ -62,8 +62,8 @@ watch(collisionOn, (checked) => {
       collision: checked,
     })
   })
-  // getRenderer 建模返回 unknown——draw 强制重绘逃生舱断言（renderer 结构未建模）
-  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
+  // getRenderer 已建模返回 unknown——renderer 的 draw 强制重绘逃生舱断言（内部结构未建模）
+  ;(l.getRenderer() as { draw(): void }).draw()
 })
 
 const status = computed(() => (isReady.value ? '地图已创建（可切换碰撞避让）' : '加载中…'))

@@ -366,6 +366,12 @@ export interface MaptalksLayer extends MaptalksClass {
   isLoaded(): boolean;
   /** 是否 Canvas 渲染 */
   isCanvasRender(): boolean;
+  /**
+   * 获取内部渲染器（公开运行时方法——无下划线的 getRenderer，`_getRenderer` 才是私有）。
+   * 官网 API 因源码无 JSDoc 未收录（与 setAltitude 同机制），demo 实证（6.13 collision 切换后 draw 强制重绘）。
+   * 返回 unknown：renderer 内部结构未建模，用时按需断言（如 `(l.getRenderer() as { draw(): void }).draw()`）。
+   */
+  getRenderer(): unknown;
   /** 准备加载（子类重写），返回 false 终止加载 */
   onLoad(): boolean;
   /** 获取图层 ID */
@@ -711,8 +717,6 @@ export interface MaptalksTileLayer extends MaptalksLayer {
   getPolygonOffset(): number;
   /** 设置图层基础 polygon offset（由 GroupGLLayer 调用） */
   setPolygonOffset(offset: number): this;
-  /** 获取渲染器 */
-  getRenderer(): unknown;
   /** 逃生舱口 */
   [key: string]: unknown;
 }
