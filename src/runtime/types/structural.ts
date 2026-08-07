@@ -595,8 +595,8 @@ export interface MaptalksGeometry extends MaptalksClass {
  * const geo = layer.getGeometryById(100);
  */
 export interface MaptalksVectorLayer extends MaptalksLayer {
-  /** 添加一个或多个几何 */
-  addGeometry(geo: MaptalksGeometry | MaptalksGeometry[]): this;
+  /** 添加一个或多个几何（多参或数组均合法——对齐原生 addGeometry(...geometries)） */
+  addGeometry(...geometries: Array<MaptalksGeometry | MaptalksGeometry[]>): this;
   /** 移除一个几何 */
   removeGeometry(geo: MaptalksGeometry): this;
   /** 读取全部几何 */
@@ -1086,6 +1086,18 @@ export interface MaptalksGLNamespace {
   QuadBezierCurve: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
   /** CubicBezierCurve 三次贝塞尔曲线构造器（起点 + 两控制点 + 终点） */
   CubicBezierCurve: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksGeometry;
+  /** ConnectorLine 连接线构造器（连接两个几何的直连线） */
+  ConnectorLine: new (
+    a: MaptalksGeometry,
+    b: MaptalksGeometry,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
+  /** ArcConnectorLine 弧线连接构造器（连接两个几何的弧线） */
+  ArcConnectorLine: new (
+    a: MaptalksGeometry,
+    b: MaptalksGeometry,
+    options?: Record<string, unknown>,
+  ) => MaptalksGeometry;
   /** GeoJSON 工具命名空间 */
   GeoJSON: {
     toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[];
