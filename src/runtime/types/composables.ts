@@ -51,7 +51,6 @@ import type {
   MaptalksLayer,
   MaptalksMap,
   MaptalksMapTool,
-  MaptalksVectorLayer,
   MaptalksViewLike,
 } from './structural';
 
