@@ -6,12 +6,7 @@
       :zoom="13"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
-    >
-      <!-- 底图不用 base-layer：maptalks-gl 0.124.4 的 Layer._getLayerList 按 getLayers().slice(+!!getBaseLayer())
-           取图层列表，但 getLayers() 实际不含 baseLayer——有 baseLayer 时错位跳掉第一个普通图层，
-           bringToFront/bringToBack 判定列表唯一而直接 no-op。改用普通 TileLayer（无 baseLayer 时列表完整）置顶才生效。 -->
-      <MaptalksTileLayer source="osm" />
-    </MaptalksMap>
+    />
     <div class="flex items-center gap-2 mt-3">
       <UButton size="xs" color="primary" variant="soft" @click="bringBlueFront">蓝层置顶</UButton>
       <UButton size="xs" color="error" variant="soft" @click="bringRedFront">红层置顶</UButton>
@@ -23,6 +18,11 @@
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
+
+// 底图不走模板子组件：模板子组件在 MaptalksMap 挂载后才添加图层，会排在 script 创建的 VectorLayer 之后盖住图形
+// （同时不用 base-layer：maptalks-gl 0.124.4 的 _getLayerList 按 getLayers().slice(+!!getBaseLayer()) 取列表，
+// 但 getLayers() 实际不含 baseLayer——有 baseLayer 时错位跳掉第一个普通图层，bringToFront/bringToBack 判定唯一 no-op）
+useMaptalksTileLayer(map, { source: 'osm' })
 
 const { layer: blueLayer } = useMaptalksVectorLayer(map)
 useMaptalksPolygon(blueLayer, {
