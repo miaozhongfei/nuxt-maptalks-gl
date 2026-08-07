@@ -9,14 +9,15 @@
       <UButton size="sm" @click="swapContent">替换内容</UButton>
       <span class="text-sm text-muted">当前内容: {{ text }}</span>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const text = ref('HTML Marker');
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const text = ref('HTML Marker')
 const { uiMarker } = useMaptalksUIMarker(map, {
   options: () => ({
     coordinates: [121.5057, 31.2453],
@@ -24,8 +25,10 @@ const { uiMarker } = useMaptalksUIMarker(map, {
     draggable: true,
   }),
   events: { click: () => alert('UIMarker 被点击了！') },
-});
+})
 function swapContent() {
-  text.value = text.value === 'HTML Marker' ? '内容已替换！' : 'HTML Marker';
+  text.value = text.value === 'HTML Marker' ? '内容已替换！' : 'HTML Marker'
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（HTML 标注）' : '加载中…'))
 </script>
