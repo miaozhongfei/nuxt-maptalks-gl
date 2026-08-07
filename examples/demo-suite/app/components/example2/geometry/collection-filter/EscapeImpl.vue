@@ -28,7 +28,7 @@ useMaptalksLayer(map, (mt) =>
   }),
 )
 const current = ref<string>('全部')
-let collectionRef: MaptalksGeometry | null = null
+let collectionRef: MaptalksGeometryCollectionGeometry | null = null
 let layerRef: MaptalksVectorLayer | null = null
 // 一体工厂：6 个 Marker 组成 GeometryCollection（properties 交替 kind: a / b，构造器已建模）
 useMaptalksLayer(map, (mt) => {
@@ -48,9 +48,9 @@ useMaptalksLayer(map, (mt) => {
   layer.addGeometry(collection)
   return layer
 })
-// filter 表达式：['==', 'kind', 'a'] 筛选 kind=a 的子几何（GeometryCollection 专属 filter 未建模，cast 兜底）
+// filter 表达式：['==', 'kind', 'a'] 筛选 kind=a 的子几何（窄类型已建模 filter）
 function showOnly(kind: string) {
-  const col = collectionRef as unknown as { filter: (exp: unknown[]) => { getGeometries: () => MaptalksGeometry[] } } | null
+  const col = collectionRef
   const l = layerRef
   if (!col || !l) return
   const filtered = col.filter(['==', 'kind', kind])

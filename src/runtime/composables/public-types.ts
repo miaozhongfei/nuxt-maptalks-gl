@@ -23,6 +23,7 @@ export type {
   MaptalksError,
   MaptalksEventHandler,
   MaptalksGeometry,
+  MaptalksGeometryCollectionGeometry,
   MaptalksInfoWindow,
   MaptalksInstanceRef,
   MaptalksLabelGeometry,

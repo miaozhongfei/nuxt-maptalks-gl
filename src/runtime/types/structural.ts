@@ -586,6 +586,34 @@ export interface MaptalksGeometry extends MaptalksClass {
 }
 
 /**
+ * GeometryCollection 几何集合实例（extends Geometry）。
+ *
+ * @description 集合专属方法：批量设置/读取子几何、条件过滤、遍历、判空。
+ * 编辑与菜单等通用能力继承自 MaptalksGeometry。
+ *
+ * @example
+ * const col: MaptalksGeometryCollectionGeometry = new mt.GeometryCollection([m1, m2]);
+ * const filtered = col.filter(['==', 'kind', 'a']);
+ */
+export interface MaptalksGeometryCollectionGeometry extends MaptalksGeometry {
+  /** 批量设置集合内几何 */
+  setGeometries(geometries: MaptalksGeometry[]): this;
+  /** 读取集合内全部几何 */
+  getGeometries(): MaptalksGeometry[];
+  /** 条件过滤（表达式数组或回调函数），返回新集合 */
+  filter(
+    fn?: Array<unknown> | ((geo: MaptalksGeometry, index: number) => boolean),
+    context?: unknown,
+  ): MaptalksGeometryCollectionGeometry;
+  /** 遍历集合内每个几何 */
+  forEach(fn: (geo: MaptalksGeometry, index: number) => void, context?: unknown): this;
+  /** 集合是否为空 */
+  isEmpty(): boolean;
+  /** 读取屏幕像素范围（out 缓冲参数——原生签名） */
+  getContainerExtent(out?: unknown): Record<string, unknown>;
+}
+
+/**
  * maptalks 矢量图层实例的结构化建模（extends Layer）。
  *
  * @description 在 Layer 基础上补充几何增删、样式筛选、动画展示等方法。
@@ -1107,7 +1135,7 @@ export interface MaptalksGLNamespace {
     fromJSON(geometryJSON: Record<string, unknown>): MaptalksGeometry | MaptalksGeometry[];
   };
   /** GeometryCollection 构造器（多个几何组合为一个整体统一管理） */
-  GeometryCollection: new (geometries: MaptalksGeometry[], options?: Record<string, unknown>) => MaptalksGeometry;
+  GeometryCollection: new (geometries: MaptalksGeometry[], options?: Record<string, unknown>) => MaptalksGeometryCollectionGeometry;
   /** ParticleLayer 粒子图层构造器（自定义 getParticles 驱动粒子动画） */
   ParticleLayer: new (id: string | number, options?: Record<string, unknown>) => MaptalksParticleLayer;
   /** CanvasLayer 自定义 Canvas 图层构造器（onDraw 逐帧绘制） */

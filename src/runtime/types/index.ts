@@ -19,6 +19,7 @@ export type {
   MaptalksEllipseGeometry,
   MaptalksEventHandler,
   MaptalksGeometry,
+  MaptalksGeometryCollectionGeometry,
   MaptalksGLNamespace,
   MaptalksGLTFLayer,
   MaptalksGroupGLLayer,
