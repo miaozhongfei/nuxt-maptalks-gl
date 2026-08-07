@@ -91,6 +91,7 @@ function removeMenu(
  *   events: { showend: () => console.log('菜单已显示') },
  * })
  */
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 export function useMaptalksMenu(
   target: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksMenuOpts = {},

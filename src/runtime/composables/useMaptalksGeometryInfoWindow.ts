@@ -189,6 +189,7 @@ function buildRest(opts: UseMaptalksGeometryInfoWindowOpts): Record<string, unkn
  * @param {ShallowRef<NativeInfoWindow | null>} infoWindow - 原生实例同步的目标 ref
  * @returns {void} 无返回值（副作用由 watch 完成）
  */
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 function setupGeometryIW(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
   opts: UseMaptalksGeometryInfoWindowOpts,

@@ -90,6 +90,7 @@ function removeMenu(
  *   options: { width: 160, items: [{ item: '放大', click: () => map.value?.zoomIn() }] },
  * })
  */
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 export function useMaptalksGeometryMenu(
   geometry: MaybeRefOrGetter<MaptalksGeometry | null>,
   opts: UseMaptalksGeometryMenuOpts = {},

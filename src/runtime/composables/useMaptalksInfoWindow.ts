@@ -117,6 +117,7 @@ function removeIW(
   }
   infoWindow.value = null;
 }
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 export function useMaptalksInfoWindow(
   map: MaybeRefOrGetter<MaptalksMap | null>,
   opts: UseMaptalksInfoWindowOpts = {},

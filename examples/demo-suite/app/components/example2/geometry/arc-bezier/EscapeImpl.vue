@@ -21,6 +21,7 @@ useMaptalksLayer(
     }),
 );
 // 圆弧和贝塞尔曲线一体工厂：三种曲线（ArcCurve / QuadBezierCurve / CubicBezierCurve）
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v');
   // 窄化 cast 取未声明的构造器（ArcCurve / QuadBezierCurve / CubicBezierCurve）

@@ -126,6 +126,7 @@ async function createLayerInto<T extends MaptalksLayer>(
  * @example
  * const handle = bindLayer(() => map.value, factory, {});
  */
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 function bindLayer<T extends MaptalksLayer>(
   getMap: () => MaptalksMap | null,
   factory: (mt: MaptalksGLNamespace) => T,

@@ -12,6 +12,7 @@ const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
 useMaptalksTileLayer(map, { source: 'osm' });
 // 圆弧和贝塞尔曲线一体工厂：三种曲线（ArcCurve / QuadBezierCurve / CubicBezierCurve）
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v');
   const ArcCurve = (

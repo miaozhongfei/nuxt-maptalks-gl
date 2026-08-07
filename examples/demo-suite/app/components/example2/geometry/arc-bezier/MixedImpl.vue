@@ -14,6 +14,7 @@
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);
 // 桥接 + 圆弧和贝塞尔曲线一体工厂
+// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('v');
   const ArcCurve = (
