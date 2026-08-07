@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="8"
       base-layer="osm"
@@ -41,28 +42,32 @@
       <input type="checkbox" v-model="collisionOn" class="w-4 h-4" />
       <span class="text-sm">collision</span>
     </label>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const vlRef = ref<MaptalksVectorLayerExposed | null>(null);
-const collisionOn = ref(true);
+const mc = ref<MaptalksMapExposed | null>(null)
+const vlRef = ref<MaptalksVectorLayerExposed | null>(null)
+const collisionOn = ref(true)
 
 watch(collisionOn, (checked) => {
-  const l = vlRef.value!.layer!;
-  // l.getGeometries().forEach((m) => {
-  //   (m as unknown as { options: Record<string, boolean> }).options.collision = checked;
-  // });
+  // exposed layer 是 Ref——toValue 解包；切换时逐图形 config 并强制重绘
+  const l = toValue(vlRef.value?.layer)
+  if (!l) return
   l.getGeometries().forEach((m) => {
     m.config({
       collision: checked,
-    });
-  });
-  (l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw();
-});
+    })
+  })
+  // getRenderer 建模返回 unknown——draw 强制重绘逃生舱断言（renderer 结构未建模）
+  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
+})
 
 const randomMarkers = Array.from(
   { length: 100 },
   () => [121.49 + Math.random() * 0.03, 31.22 + Math.random() * 0.05] as [number, number],
-);
+)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可切换碰撞避让）' : '加载中…'))
 </script>

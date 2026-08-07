@@ -9,39 +9,37 @@
       <input type="checkbox" v-model="collisionOn" class="w-4 h-4" />
       <span class="text-sm">collision</span>
     </label>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ShallowRef } from 'vue';
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 8 });
-useMaptalksTileLayer(map, { source: 'osm' });
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 8 })
+useMaptalksTileLayer(map, { source: 'osm' })
 
-const collisionOn = ref(true);
+const collisionOn = ref(true)
 
+// 原生 VectorLayer 构造赋建模 MaptalksVectorLayer 逆变不兼容——工厂内断言（useMaptalksLayer 泛型显式化）
 const { layer } = useMaptalksLayer(
   map,
-  (mt) =>
-    new mt.VectorLayer('collision-layer', {
-      collision: true,
-      collisionDelay: 250,
-      forceRenderOnMoving: true,
-      forceRenderOnZooming: true,
-      forceRenderOnRotating: true,
-    }),
-);
-
-const vl = layer as ShallowRef<MaptalksVectorLayer | null>;
+  (mt) => new mt.VectorLayer('collision-layer', {
+    collision: true,
+    collisionDelay: 250,
+    forceRenderOnMoving: true,
+    forceRenderOnZooming: true,
+    forceRenderOnRotating: true,
+  }) as unknown as MaptalksVectorLayer,
+)
 
 const randomMarkers = Array.from(
   { length: 100 },
   () => [121.49 + Math.random() * 0.03, 31.22 + Math.random() * 0.05] as [number, number],
-);
+)
 
 randomMarkers.forEach((c, i) => {
   useMaptalksGeometry(
-    vl,
+    layer,
     (mt) =>
       new mt.Marker(c, {
         symbol: {
@@ -56,19 +54,20 @@ randomMarkers.forEach((c, i) => {
         },
         id: String(i),
       }),
-  );
-});
+  )
+})
 
 watch(collisionOn, (checked) => {
-  const l = toValue(vl)!;
-  // l.getGeometries().forEach((m) => {
-  //   (m as unknown as { options: Record<string, boolean> }).options.collision = checked;
-  // });
+  const l = toValue(layer)
+  if (!l) return
   l.getGeometries().forEach((m) => {
     m.config({
       collision: checked,
-    });
-  });
-  (l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw();
-});
+    })
+  })
+  // getRenderer 建模返回 unknown——draw 强制重绘逃生舱断言（renderer 结构未建模）
+  ;(l as unknown as { getRenderer(): { draw(): void } }).getRenderer().draw()
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（可切换碰撞避让）' : '加载中…'))
 </script>
