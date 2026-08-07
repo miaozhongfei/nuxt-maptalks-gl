@@ -5,18 +5,19 @@
       <UButton size="xs" color="primary" @click="() => sort321()">排序 3→2→1（bringToFront）</UButton>
       <UButton size="xs" color="primary" @click="() => sort123()">排序 1→2→3（setZIndex）</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.4854, 31.2285], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const { layer } = useMaptalksVectorLayer(map)
-let r3: any = null
-let r2: any = null
-let r1: any = null
+let r3: { bringToFront?: () => unknown; bringToBack?: () => unknown; setZIndex?: (z: number) => unknown } | null = null
+let r2: { bringToFront?: () => unknown; bringToBack?: () => unknown; setZIndex?: (z: number) => unknown } | null = null
+let r1: { bringToFront?: () => unknown; bringToBack?: () => unknown; setZIndex?: (z: number) => unknown } | null = null
 
 watch(
   () => toValue(layer),
@@ -35,18 +36,23 @@ watch(
       [[121.4724, 31.237], [121.485, 31.237], [121.485, 31.246], [121.4724, 31.246]],
       { symbol: [{ lineColor: '#34495e', lineWidth: 3, polygonFill: 'rgb(135,196,240)', polygonOpacity: 1 }, { textName: '1', textWeight: 'bold', textSize: 30, textFill: '#fff' }] },
     )
-    ;(l as any).addGeometry?.([r3, r2, r1])
+    // 原生 Polygon 数组赋建模 MaptalksGeometry 逆变不兼容——断言（6.5 同款）
+    l.addGeometry?.([r3, r2, r1] as unknown as MaptalksGeometry[])
   },
 )
 
 function sort321() {
-  ;(r3 as any)?.bringToFront?.()
-  ;(r1 as any)?.bringToBack?.()
+  r3?.bringToFront?.()
+  r1?.bringToBack?.()
 }
 
 function sort123() {
-  ;(r1 as any)?.setZIndex?.(3)
-  ;(r2 as any)?.setZIndex?.(2)
-  ;(r3 as any)?.setZIndex?.(1)
+  r1?.setZIndex?.(3)
+  r2?.setZIndex?.(2)
+  r3?.setZIndex?.(1)
 }
+
+onBeforeUnmount(() => { r3 = null; r2 = null; r1 = null })
+
+const status = computed(() => (isReady.value ? '地图已创建（可调图形 z-index）' : '加载中…'))
 </script>
