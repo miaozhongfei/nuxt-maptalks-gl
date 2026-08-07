@@ -26,8 +26,8 @@ useMaptalksCircle(vl, {
 
 useMaptalksLayer(map, (mt) => {
   const pl = new mt.ParticleLayer('p', { forceRenderOnMoving: true })
-  // getParticles 未建模——逃生舱断言（粒子回调：t 为帧序号，返回粒子数组）
-  ;(pl as unknown as { getParticles: (t: number) => Array<{ point: unknown; r: number; color: string }> }).getParticles = (t: number) => {
+  // getParticles 已建模（官网接口方法）——直接赋值；t 为毫秒时间，返回粒子数组
+  pl.getParticles = (t: number) => {
     if (!m) return []
     const center = m.getCenter()
     // coordinateToContainerPoint 建模返回 unknown——Point.add 按需窄断言

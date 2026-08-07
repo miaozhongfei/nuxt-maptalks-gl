@@ -785,8 +785,26 @@ export interface MaptalksGLTFLayer extends MaptalksLayer {
  * CanvasLayer 自定义 Canvas 图层实例（extends Layer）。
  */
 export interface MaptalksCanvasLayer extends MaptalksLayer {
+  /**
+   * 可选的首次绘制前准备回调——返回值展开为 draw 的后续参数（官网签名 prepareToDraw(context)）
+   */
+  prepareToDraw?(context: CanvasRenderingContext2D): unknown[];
   /** 触发重新渲染 */
   render(): this;
+  /** 重新绘制 */
+  redraw(): this;
+  /** 启动动画 */
+  play(): this;
+  /** 暂停动画 */
+  pause(): this;
+  /** 动画是否播放中 */
+  isPlaying(): boolean;
+  /** 清空画布 */
+  clearCanvas(): this;
+  /** 请求地图重渲染 */
+  requestMapToRender(): this;
+  /** 完成本次渲染（通知渲染器） */
+  completeRender(): this;
   /** 获取 Canvas 2D 上下文 */
   getContext(): CanvasRenderingContext2D | null;
   /**
@@ -804,15 +822,19 @@ export interface MaptalksCanvasLayer extends MaptalksLayer {
 }
 
 /**
- * ParticleLayer 粒子图层实例（extends Layer）。
+ * ParticleLayer 粒子图层实例（extends CanvasLayer——官网继承关系）。
  */
-export interface MaptalksParticleLayer extends MaptalksLayer {
+export interface MaptalksParticleLayer extends MaptalksCanvasLayer {
   /** 设置粒子数据 */
   setData(data: unknown): this;
   /** 获取粒子数据 */
   getData(): unknown;
   /** 更新粒子配置 */
   setOptions(opts: Record<string, unknown>): this;
+  /**
+   * 粒子位置计算回调（子类重写）——t 为当前毫秒时间，返回粒子数组（官网 ParticleLayer 接口方法；demo 实证 6.15）
+   */
+  getParticles?(t: number): Array<{ point: unknown; r: number; color: string }>;
   /** 逃生舱口 */
   [key: string]: unknown;
 }

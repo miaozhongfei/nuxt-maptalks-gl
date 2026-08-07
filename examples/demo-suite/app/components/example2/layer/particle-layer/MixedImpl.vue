@@ -36,7 +36,7 @@ watch(
     }).addTo(vl);
 
     const pl = new mt.ParticleLayer('p', { forceRenderOnMoving: true });
-    // getParticles 未建模——逃生舱断言（粒子回调：t 为帧序号，返回粒子数组）
+    // 原生类型未声明 getParticles（官网接口方法，模块建模已含）——逃生舱断言
     (
       pl as unknown as {
         getParticles: (t: number) => Array<{ point: unknown; r: number; color: string }>;
