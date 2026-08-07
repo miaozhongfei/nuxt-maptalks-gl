@@ -31,7 +31,7 @@
       color="primary"
       variant="soft"
       class="mt-2"
-      @click="vec?.layer?.setOpacity?.(0.5)"
+      @click="() => { vec?.layer?.setOpacity?.(0.5) }"
       >设置透明度 0.5（defineExpose 直调）</UButton
     >
     <p class="text-xs text-muted mt-1">{{ status }}</p>
