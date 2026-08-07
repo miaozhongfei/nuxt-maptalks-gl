@@ -24,11 +24,12 @@ const proj = proj4('EPSG:4326', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +l
 const projection = {
   code: 'proj4-merc',
   project: (c: { toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
-    const pc = proj.forward(c.toArray?.() ?? [c.x as never, c.y as never])
+    // proj4 forward 入参数组长度即返回长度，断言为二元组消除索引 undefined
+    const pc = proj.forward(c.toArray?.() ?? [c.x as never, c.y as never]) as [number, number]
     return new c.constructor(pc[0], pc[1])
   },
   unproject: (pc: { toArray?: () => number[]; constructor: new (x: number, y: number) => unknown }) => {
-    const c = proj.inverse(pc.toArray?.() ?? [pc.x as never, pc.y as never])
+    const c = proj.inverse(pc.toArray?.() ?? [pc.x as never, pc.y as never]) as [number, number]
     return new pc.constructor(c[0], c[1])
   },
   // tell projection how to measure distances
