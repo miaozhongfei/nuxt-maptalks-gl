@@ -100,7 +100,7 @@ export interface UseMaptalksReturn {
  */
 export interface UseMaptalksLayerOpts {
   /** 响应式图层选项，变化时按图层能力（setStyle/config/setOptions）应用 */
-  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  options?: MaybeRefOrGetter<object | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 `true` */
@@ -430,16 +430,16 @@ export interface UseMaptalksGeometryOpts {
   coordinates?: MaybeRefOrGetter<unknown>;
   /** 响应式 symbol（透传，含静态对象、组合 symbol 数组、zoom-stops 数组） */
   symbol?: MaybeRefOrGetter<
-    Record<string, unknown> | Array<Record<string, unknown>> | Array<[number, Record<string, unknown>]> | undefined
+    object | object[] | [number, object][] | undefined
   >;
   /** 响应式业务属性 */
-  properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  properties?: MaybeRefOrGetter<object | undefined>;
   /** 事件名 → 处理器（自动 on/off） */
   events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;
   /** 选项整体变化时触发全量重建（remove + recreate），对标 useMaptalksInfoWindow 的 options 重建机制 */
-  options?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  options?: MaybeRefOrGetter<object | undefined>;
   /** 几何 id（统一从预设选项中声明） */
   id?: string | number;
   /** 响应式可见性：false 隐藏几何但不销毁 */
@@ -537,7 +537,7 @@ export type UseMaptalksVectorLayerOpts = Omit<UseMaptalksVectorLayerBaseOpts, 'o
  */
 export interface GeometryPresetBase {
   /** 响应式 properties */
-  properties?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  properties?: MaybeRefOrGetter<object | undefined>;
   /** 事件名 → 处理器 */
   events?: Record<string, MaptalksEventHandler>;
   /** 几何 id */
@@ -697,7 +697,7 @@ export interface UseMaptalksGeoJSONOpts {
   /** 响应式 GeoJSON 数据 */
   data: MaybeRefOrGetter<GeoJSONData>;
   /** 统一应用到所有几何的 symbol（可选）；仅在 data 重建时应用，独立改 symbol 不重新应用 */
-  symbol?: MaybeRefOrGetter<Record<string, unknown> | undefined>;
+  symbol?: MaybeRefOrGetter<object | undefined>;
   /** 作用域销毁时是否自动移除，默认 true */
   autoDispose?: boolean;
 }

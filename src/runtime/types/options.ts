@@ -1071,9 +1071,9 @@ export type MaptalksDrawToolOptions = Record<string, unknown>
  */
 export interface MaptalksGeometryBaseOptions {
   /** 渲染样式（支持普通对象、组合 symbol 数组、zoom-stops 数组） */
-  symbol?: Record<string, unknown> | Array<Record<string, unknown>> | Array<[number, Record<string, unknown>]>;
+  symbol?: object | object[] | [number, object][];
   /** 自定义业务属性 */
-  properties?: Record<string, unknown>;
+  properties?: object;
   /** 是否可见 */
   visible?: boolean;
   /** 不透明度（0–1） */

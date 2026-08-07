@@ -138,7 +138,8 @@ function bindLayer<T extends MaptalksLayer>(
     creating: false,
   };
   const getEnabled = () => toValue(options.enabled ?? true);
-  const getOptions = () => toValue(options.options);
+  // public 类型已放宽为 object，内部按 Record 处理（构造选项语义）——桥接断言
+  const getOptions = () => toValue(options.options) as Record<string, unknown> | undefined;
 
   const stopGate = watch(
     () => [getMap(), getEnabled()] as const,

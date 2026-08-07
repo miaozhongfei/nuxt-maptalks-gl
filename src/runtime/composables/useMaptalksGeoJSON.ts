@@ -38,7 +38,7 @@ interface GeoJSONState {
 async function loadGeoJSONInto(
   getLayer: () => MaptalksVectorLayer | null,
   getData: () => GeoJSONData | undefined,
-  getSymbol: () => Record<string, unknown> | undefined,
+  getSymbol: () => object | undefined,
   state: GeoJSONState,
 ): Promise<void> {
   const layer = getLayer();

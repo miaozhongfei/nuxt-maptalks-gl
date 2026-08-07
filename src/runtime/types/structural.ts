@@ -473,8 +473,8 @@ export interface MaptalksGeometry extends MaptalksClass {
   getSymbolHash(): string;
   /** 部分更新 symbol */
   updateSymbol(props: Record<string, unknown> | Array<unknown>): MaptalksGeometry;
-  /** 设置业务属性 */
-  setProperties(props: Record<string, unknown>): MaptalksGeometry;
+  /** 设置业务属性（原生签名接受任意对象） */
+  setProperties(props: object): MaptalksGeometry;
   /** 读取业务属性 */
   getProperties(): Record<string, unknown>;
   /** 读取几何 ID */
