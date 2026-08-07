@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="ECharts 南丁格尔玫瑰图，挂在 UIMarker 上（对应官网 5.31）。"
+    description="ECharts 南丁格尔玫瑰图，挂在 UIMarker 上（对应官网 5.31）"
     :tabs="tabs"
   />
 </template>

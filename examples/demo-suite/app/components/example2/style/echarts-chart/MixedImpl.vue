@@ -1,12 +1,13 @@
 <template>
   <div>
     <MaptalksMap ref="mc" :center="[121.5057, 31.2453]" :zoom="13" base-layer="osm" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const mc = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 let chartDispose: (() => void) | null = null
 
@@ -40,4 +41,6 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => { chartDispose?.() })
+
+const status = computed(() => (map.value ? '地图已创建（ECharts 图表）' : '加载中…'))
 </script>
