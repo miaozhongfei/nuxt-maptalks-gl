@@ -792,6 +792,11 @@ export interface MaptalksCanvasLayer extends MaptalksLayer {
    * 实际调用形如 draw(context, view, ...prepareToDraw 结果)
    */
   draw?(context: CanvasRenderingContext2D, ...params: unknown[]): void;
+  /**
+   * 交互中（拖动/缩放）的重绘回调（可选——未设置则交互中不重绘）。与 draw 同签名。
+   * 官网 API 因源码无 JSDoc 未收录（与 getRenderer 同机制），demo 实证（6.14 交互时跟随重绘）
+   */
+  drawOnInteracting?(context: CanvasRenderingContext2D, ...params: unknown[]): void;
   /** 逃生舱口 */
   [key: string]: unknown;
 }

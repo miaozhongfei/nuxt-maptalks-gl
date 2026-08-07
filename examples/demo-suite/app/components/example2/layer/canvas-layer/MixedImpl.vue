@@ -35,9 +35,8 @@ watch(
       ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
       this.completeRender()
     }
-    // drawOnInteracting 未建模——逃生舱断言（与 draw 同签名；官网 6.14 同款：交互时也重绘）
-    ;(cl as unknown as { drawOnInteracting: (context: CanvasRenderingContext2D, ...params: unknown[]) => void }).drawOnInteracting =
-      cl.draw
+    // 交互中（拖动/缩放）复用同一绘制逻辑（drawOnInteracting 已建模）
+    cl.drawOnInteracting = cl.draw
     // 原生 CanvasLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
     cl.addTo(mv as never)
   },
