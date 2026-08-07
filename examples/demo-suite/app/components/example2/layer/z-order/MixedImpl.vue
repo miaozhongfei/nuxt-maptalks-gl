@@ -9,9 +9,10 @@
       style="height: 480px"
     />
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" @click="() => sort321()">排序 3,2,1（3 在顶层）</UButton>
-      <UButton size="xs" @click="() => sort123()">排序 1,2,3（1 在顶层）</UButton>
+      <UButton size="xs" @click="sort321">排序 3,2,1（3 在顶层）</UButton>
+      <UButton size="xs" @click="sort123">排序 1,2,3（1 在顶层）</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -34,7 +35,7 @@ const layer1Symbol = [
 ]
 
 const mc = ref<MaptalksMapExposed | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { layer: layer1 } = useMaptalksVectorLayer(map, { id: '1' })
 useMaptalksPolygon(layer1, {
@@ -56,4 +57,6 @@ useMaptalksPolygon(layer3, {
 
 function sort321() { toValue(map)?.sortLayers?.(['1', '2', '3']) }
 function sort123() { toValue(map)?.sortLayers?.(['3', '2', '1']) }
+
+const status = computed(() => (map.value ? '地图已创建（可调整图层顺序）' : '加载中…'))
 </script>

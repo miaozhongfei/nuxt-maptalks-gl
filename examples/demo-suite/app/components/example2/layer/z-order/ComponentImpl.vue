@@ -19,17 +19,19 @@
       </MaptalksVectorLayer>
     </MaptalksMap>
     <div class="flex items-center gap-2 mt-3">
-      <UButton size="xs" @click="() => sort321()">排序 3,2,1（3 在顶层）</UButton>
-      <UButton size="xs" @click="() => sort123()">排序 1,2,3（1 在顶层）</UButton>
+      <UButton size="xs" @click="sort321">排序 3,2,1（3 在顶层）</UButton>
+      <UButton size="xs" @click="sort123">排序 1,2,3（1 在顶层）</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 
-function sort321() { mc.value?.map?.sortLayers?.(['1', '2', '3']) }
-function sort123() { mc.value?.map?.sortLayers?.(['3', '2', '1']) }
+// 模板外访问 exposed 的 map 是 Ref——用 toValue 解包取实例
+function sort321() { toValue(mc.value?.map)?.sortLayers?.(['1', '2', '3']) }
+function sort123() { toValue(mc.value?.map)?.sortLayers?.(['3', '2', '1']) }
 
 const layer3Coords = [[[121.4807, 31.2418], [121.4975, 31.2418], [121.4975, 31.2508], [121.4807, 31.2508]]]
 const layer2Coords = [[[121.4867, 31.2478], [121.5035, 31.2478], [121.5035, 31.2568], [121.4867, 31.2568]]]
@@ -47,4 +49,6 @@ const layer1Symbol = [
   { lineColor: '#34495e', lineWidth: 3, polygonFill: 'rgb(135,196,240)', polygonOpacity: 1 },
   { textName: 'Layer 1', textWeight: 'bold', textSize: 30, textFill: '#fff' },
 ]
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可调整图层顺序）' : '加载中…'))
 </script>
