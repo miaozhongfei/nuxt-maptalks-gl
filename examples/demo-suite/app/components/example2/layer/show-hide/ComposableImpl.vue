@@ -7,12 +7,13 @@
       <UButton size="xs" color="primary" variant="solid" @click="toggle">切换</UButton>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const { layer, show, hide } = useMaptalksVectorLayer(map)
@@ -25,4 +26,6 @@ const visible = ref(true)
 function toggle() { visible.value = !visible.value; if (visible.value) show(); else hide() }
 function doHide() { visible.value = false; hide() }
 function doShow() { visible.value = true; show() }
+
+const status = computed(() => (isReady.value ? '地图已创建（可显隐图层）' : '加载中…'))
 </script>

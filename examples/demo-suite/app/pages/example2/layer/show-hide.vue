@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="直接使用 layer 的 show/hide 控制图层显隐（对应官网 6.2）。"
+    description="直接使用 layer 的 show/hide 控制图层显隐（对应官网 6.2）"
     :tabs="tabs"
   />
 </template>

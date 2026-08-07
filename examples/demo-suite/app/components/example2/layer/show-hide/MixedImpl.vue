@@ -14,12 +14,13 @@
       <UButton size="xs" color="primary" variant="solid" @click="toggle">切换</UButton>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const mc = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null)
-const map = computed(() => mc.value?.map ?? null)
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { layer, show, hide } = useMaptalksVectorLayer(map)
 useMaptalksMarker(layer, {
@@ -31,4 +32,6 @@ const visible = ref(true)
 function toggle() { visible.value = !visible.value; if (visible.value) show(); else hide() }
 function doHide() { visible.value = false; hide() }
 function doShow() { visible.value = true; show() }
+
+const status = computed(() => (map.value ? '地图已创建（可显隐图层）' : '加载中…'))
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       base-layer="osm"
       :center="[121.5057, 31.2453]"
       :zoom="13"
@@ -27,24 +28,28 @@
       <UButton size="xs" color="primary" variant="solid" @click="toggle">切换</UButton>
       <UBadge color="primary" variant="subtle">{{ visible ? '可见' : '隐藏' }}</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const vec = ref<{ show: () => void; hide: () => void } | null>(null);
-const visible = ref(true);
+const mc = ref<MaptalksMapExposed | null>(null)
+const vec = ref<MaptalksVectorLayerExposed | null>(null)
+const visible = ref(true)
 
 function toggle() {
-  visible.value = !visible.value;
-  if (visible.value) vec.value?.show();
-  else vec.value?.hide();
+  visible.value = !visible.value
+  if (visible.value) vec.value?.show()
+  else vec.value?.hide()
 }
 function doHide() {
-  visible.value = false;
-  vec.value?.hide();
+  visible.value = false
+  vec.value?.hide()
 }
 function doShow() {
-  visible.value = true;
-  vec.value?.show();
+  visible.value = true
+  vec.value?.show()
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可显隐图层）' : '加载中…'))
 </script>
