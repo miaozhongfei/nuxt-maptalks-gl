@@ -85,8 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue';
-import type { MaptalksLayer } from '@lacqjs/nuxt-maptalks-gl';
+
 
 const center: [number, number] = [121.4737, 31.2304];
 const MODEL_URL =

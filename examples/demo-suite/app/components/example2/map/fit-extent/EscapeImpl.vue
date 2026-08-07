@@ -22,8 +22,8 @@ const el = ref<HTMLElement | null>(null)
 const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 11 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-// 逃生舱：工厂 new 原生 VectorLayer + Polygon，保存 poly 引用（逃生舱宽松类型）
-let poly: any = null
+// 逃生舱：工厂 new 原生 VectorLayer + Polygon，保存 poly 引用（构造器已必选建模，类型自动导入）
+let poly: MaptalksPolygonGeometry | null = null
 useMaptalksLayer(map, (mt) => {
   const layer = new mt.VectorLayer('fit-v')
   const p = new mt.Polygon(

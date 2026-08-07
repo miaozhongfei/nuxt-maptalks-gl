@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksError, MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl';
+import type { MaptalksMap as MtMap } from '@lacqjs/nuxt-maptalks-gl'
 
 // 上海人民广场，作为所有示例地图的中心
 const center: [number, number] = [121.4737, 31.2304];

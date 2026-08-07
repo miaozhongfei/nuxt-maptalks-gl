@@ -94,7 +94,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksCoordinate } from '@lacqjs/nuxt-maptalks-gl';
 
 const center: [number, number] = [121.4737, 31.2304];
 

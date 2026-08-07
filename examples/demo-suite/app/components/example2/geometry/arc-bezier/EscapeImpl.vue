@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksGeometry } from '@lacqjs/nuxt-maptalks-gl';
 
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });

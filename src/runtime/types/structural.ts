@@ -1046,72 +1046,72 @@ export interface MaptalksGLNamespace {
   /** 瓦片图层构造器（maptalks-gl 核心，始终存在） */
   TileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksTileLayer;
   /** 矢量瓦片图层构造器 */
-  VectorTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksVectorTileLayer;
+  VectorTileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksVectorTileLayer;
   /** WMS 图层构造器（OGC WMS 服务，与 TileLayer 同构：id + options） */
-  WMSLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksWMSLayer;
+  WMSLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksWMSLayer;
   /** WMS 图层构造器的 maptalks-gl 实际导出名（maptalks 核心导出为 WMSTileLayer） */
-  WMSTileLayer?: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
+  WMSTileLayer: new (id: string | number, options: Record<string, unknown>) => MaptalksLayer;
   /** GroupTileLayer 构造器（瓦片图层组，可作底图并供 LayerSwitcher 列选子图层） */
-  GroupTileLayer?: new (id: string | number, layers: MaptalksLayer[], options?: Record<string, unknown>) => MaptalksLayer;
+  GroupTileLayer: new (id: string | number, layers: MaptalksLayer[], options?: Record<string, unknown>) => MaptalksLayer;
   /** GroupGLLayer 构造器（承载 GL 图层与光照/后处理） */
-  GroupGLLayer?: new (
+  GroupGLLayer: new (
     id: string | number,
     layers: MaptalksLayer[],
     options?: Record<string, unknown>,
   ) => MaptalksGroupGLLayer;
   /** GLTFLayer 构造器 */
-  GLTFLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksGLTFLayer;
+  GLTFLayer: new (id: string | number, options?: Record<string, unknown>) => MaptalksGLTFLayer;
   /** VectorLayer 构造器（承载几何） */
-  VectorLayer?: new (id: string | number, options?: Record<string, unknown>) => MaptalksVectorLayer;
+  VectorLayer: new (id: string | number, options?: Record<string, unknown>) => MaptalksVectorLayer;
   /** ImageLayer 构造器 */
-  ImageLayer?: new (id: string | number, images?: Array<{ url: string; extent: unknown; opacity?: number }>, options?: Record<string, unknown>) => MaptalksImageLayer;
+  ImageLayer: new (id: string | number, images?: Array<{ url: string; extent: unknown; opacity?: number }>, options?: Record<string, unknown>) => MaptalksImageLayer;
   /** Marker 构造器 */
-  Marker?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMarkerGeometry;
+  Marker: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMarkerGeometry;
   /** LineString 构造器 */
-  LineString?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksLineStringGeometry;
+  LineString: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksLineStringGeometry;
   /** Polygon 构造器 */
-  Polygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksPolygonGeometry;
+  Polygon: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksPolygonGeometry;
   /** MultiPoint 构造器 */
-  MultiPoint?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPointGeometry;
+  MultiPoint: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPointGeometry;
   /** MultiLineString 构造器 */
-  MultiLineString?: new (
+  MultiLineString: new (
     coordinates: unknown,
     options?: Record<string, unknown>,
   ) => MaptalksMultiLineStringGeometry;
   /** MultiPolygon 构造器 */
-  MultiPolygon?: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPolygonGeometry;
+  MultiPolygon: new (coordinates: unknown, options?: Record<string, unknown>) => MaptalksMultiPolygonGeometry;
   /** GeoJSON 工具命名空间 */
-  GeoJSON?: {
+  GeoJSON: {
     toGeometry(geojson: unknown, ...args: unknown[]): MaptalksGeometry | MaptalksGeometry[];
   };
   /** Geometry 基类（静态 fromJSON 反序列化为独立几何副本，可 addTo 任意图层） */
-  Geometry?: {
+  Geometry: {
     fromJSON(geometryJSON: Record<string, unknown>): MaptalksGeometry | MaptalksGeometry[];
   };
   /** DrawTool 构造器 */
-  DrawTool?: new (options: Record<string, unknown>) => MaptalksDrawTool;
+  DrawTool: new (options: Record<string, unknown>) => MaptalksDrawTool;
   /** Circle 构造器 */
-  Circle?: new (
+  Circle: new (
     center: unknown,
     radius: number,
     options?: Record<string, unknown>,
   ) => MaptalksCircleGeometry;
   /** Rectangle 构造器 */
-  Rectangle?: new (
+  Rectangle: new (
     coord: unknown,
     width: number,
     height: number,
     options?: Record<string, unknown>,
   ) => MaptalksRectangleGeometry;
   /** Ellipse 构造器 */
-  Ellipse?: new (
+  Ellipse: new (
     center: unknown,
     width: number,
     height: number,
     options?: Record<string, unknown>,
   ) => MaptalksEllipseGeometry;
   /** Sector 构造器 */
-  Sector?: new (
+  Sector: new (
     center: unknown,
     radius: number,
     startAngle: number,
@@ -1119,13 +1119,13 @@ export interface MaptalksGLNamespace {
     options?: Record<string, unknown>,
   ) => MaptalksSectorGeometry;
   /** Label 构造器 */
-  Label?: new (
+  Label: new (
     content: string,
     coord: unknown,
     options?: Record<string, unknown>,
   ) => MaptalksLabelGeometry;
   /** TextBox 构造器 */
-  TextBox?: new (
+  TextBox: new (
     content: string,
     coord: unknown,
     width: number,
@@ -1133,30 +1133,30 @@ export interface MaptalksGLNamespace {
     options?: Record<string, unknown>,
   ) => MaptalksTextBoxGeometry;
   /** 控件命名空间 */
-  control?: {
+  control: {
     /** 缩放控件构造器 */
-    Zoom?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Zoom: new (options?: Record<string, unknown>) => MaptalksControl;
     /** 比例尺控件构造器 */
-    Scale?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Scale: new (options?: Record<string, unknown>) => MaptalksControl;
     /** 归属控件构造器 */
-    Attribution?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Attribution: new (options?: Record<string, unknown>) => MaptalksControl;
     /** Toolbar 工具条控件构造器（items 按钮列表 + children 子菜单） */
-    Toolbar?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Toolbar: new (options?: Record<string, unknown>) => MaptalksControl;
     /** Panel 面板控件构造器（内容/关闭按钮/可拖拽） */
-    Panel?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Panel: new (options?: Record<string, unknown>) => MaptalksControl;
     /** Overview 鹰眼控件构造器（内嵌小地图 + 展开/收起） */
-    Overview?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Overview: new (options?: Record<string, unknown>) => MaptalksControl;
     /** LayerSwitcher 图层选择控件构造器（hover 展开图层面板） */
-    LayerSwitcher?: new (options?: Record<string, unknown>) => MaptalksControl;
+    LayerSwitcher: new (options?: Record<string, unknown>) => MaptalksControl;
     /** 罗盘控件构造器 */
-    Compass?: new (options?: Record<string, unknown>) => MaptalksControl;
+    Compass: new (options?: Record<string, unknown>) => MaptalksControl;
   };
   /** DistanceTool 测量工具构造器 */
-  DistanceTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
+  DistanceTool: new (options?: Record<string, unknown>) => MaptalksMapTool;
   /** AreaTool 测量工具构造器 */
-  AreaTool?: new (options?: Record<string, unknown>) => MaptalksMapTool;
+  AreaTool: new (options?: Record<string, unknown>) => MaptalksMapTool;
   /** InfoWindow 弹出框构造器 */
-  ui?: { InfoWindow?: new (options?: Record<string, unknown>) => MaptalksInfoWindow; UIMarker?: new (coord: unknown, options?: Record<string, unknown>) => MaptalksUIMarker; Menu?: new (options?: Record<string, unknown>) => MaptalksMenu; };
+  ui: { InfoWindow: new (options?: Record<string, unknown>) => MaptalksInfoWindow; UIMarker: new (coord: unknown, options?: Record<string, unknown>) => MaptalksUIMarker; Menu: new (options?: Record<string, unknown>) => MaptalksMenu; };
   /** 逃生舱口：访问任意未建模的导出 */
   [key: string]: unknown;
 }

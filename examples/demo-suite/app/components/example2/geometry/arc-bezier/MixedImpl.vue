@@ -10,7 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksGeometry } from '@lacqjs/nuxt-maptalks-gl';
 
 const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
 const map = computed(() => mapCmp.value?.map ?? null);

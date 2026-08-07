@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksLayer } from '@lacqjs/nuxt-maptalks-gl';
 const el = ref<HTMLElement | null>(null);
 const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 2 });
 // 面要素填充与线要素描边的矢量瓦片样式规则

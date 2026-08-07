@@ -7,7 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksGeometry } from '@lacqjs/nuxt-maptalks-gl';
 
 const SOURCE: [number, number] = [121.49, 31.24];
 const TARGET: [number, number] = [121.52, 31.252];
