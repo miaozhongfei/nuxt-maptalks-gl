@@ -4,10 +4,13 @@
       ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
-      base-layer="osm"
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     >
+      <!-- 底图不用 base-layer：maptalks-gl 0.124.4 的 Layer._getLayerList 按 getLayers().slice(+!!getBaseLayer())
+           取图层列表，但 getLayers() 实际不含 baseLayer——有 baseLayer 时错位跳掉第一个普通图层，
+           bringToFront/bringToBack 判定列表唯一而直接 no-op。改用普通 TileLayer（无 baseLayer 时列表完整）置顶才生效。 -->
+      <MaptalksTileLayer source="osm" />
       <MaptalksVectorLayer ref="blueRef">
         <MaptalksPolygon
           :coordinates="blueCoords"
