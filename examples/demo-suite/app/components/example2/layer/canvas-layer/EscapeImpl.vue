@@ -33,8 +33,8 @@ watch(
       ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
       this.completeRender()
     }
-    // 交互中（拖动/缩放）复用同一绘制逻辑（drawOnInteracting 已建模）
-    cl.drawOnInteracting = cl.draw
+    // 原生类型未声明 drawOnInteracting（与 draw 平级的可选回调，模块建模已含）——逃生舱断言
+    ;(cl as unknown as { drawOnInteracting: (context: CanvasRenderingContext2D, ...params: unknown[]) => void }).drawOnInteracting = cl.draw
     // 原生 CanvasLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
     cl.addTo(mv as never)
   },
