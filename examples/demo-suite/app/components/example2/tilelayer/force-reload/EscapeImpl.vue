@@ -14,29 +14,27 @@
 </template>
 
 <script setup lang="ts">
-import type { MaptalksTileLayer } from '@lacqjs/nuxt-maptalks-gl'
-
-const el = ref<HTMLElement | null>(null)
-const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const el = ref<HTMLElement | null>(null);
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 });
 
 // 逃生舱：工厂 new 原生 TileLayer，保存 tileRef 引用供 forceReload 直调（工厂返回推断为 MaptalksTileLayer）
-let tileRef: MaptalksTileLayer | null = null
-const count = ref(0)
+let tileRef: MaptalksTileLayer | null = null;
+const count = ref(0);
 
 useMaptalksLayer(map, (mt) => {
   const l = new mt.TileLayer('base', {
     urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     subdomains: ['b', 'c', 'd'],
-  })
-  tileRef = l
-  return l
-})
+  });
+  tileRef = l;
+  return l;
+});
 
 // forceReload 丢缓存重拉当前视野瓦片
 function reload() {
-  tileRef?.forceReload()
-  count.value += 1
+  tileRef?.forceReload();
+  count.value += 1;
 }
 
-const status = computed(() => (isReady.value ? '地图已创建（可强制重载瓦片）' : '加载中…'))
+const status = computed(() => (isReady.value ? '地图已创建（可强制重载瓦片）' : '加载中…'));
 </script>

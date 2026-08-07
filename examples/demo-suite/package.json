@@ -12,6 +12,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@iconify-json/lucide": "^1.2.121",
     "@lacqjs/nuxt-maptalks-gl": "workspace:*",
     "@nuxt/ui": "^4.9.0",
     "@turf/turf": "^7.3.5",
