@@ -25,15 +25,18 @@ watch(
   async (m) => {
     if (!m) return
     const mt = await import('maptalks-gl')
-    blueLayer = new mt.VectorLayer('blue')
-    redLayer = new mt.VectorLayer('red')
+    // 原生图层先存局部变量：geometry.addTo(layer) 需要原生 OverlayLayer 类型，直接对窄引用调用会丢成员
+    const blue = new mt.VectorLayer('blue')
+    const red = new mt.VectorLayer('red')
     const bluePoly = new mt.Polygon([[[121.495, 31.252], [121.51, 31.252], [121.51, 31.238], [121.495, 31.238]]], { symbol: { polygonFill: '#2563eb', polygonOpacity: 0.8, lineColor: '#1d4ed8', lineWidth: 2 } })
     const redPoly = new mt.Polygon([[[121.5, 31.25], [121.515, 31.25], [121.515, 31.24], [121.5, 31.24]]], { symbol: { polygonFill: '#dc2626', polygonOpacity: 0.8, lineColor: '#b91c1c', lineWidth: 2 } })
-    bluePoly.addTo(blueLayer)
-    redPoly.addTo(redLayer)
+    bluePoly.addTo(blue)
+    redPoly.addTo(red)
+    blueLayer = blue
+    redLayer = red
     // 原生 VectorLayer.addTo 参数为原生 Map，与模块建模不兼容——逃生舱断言
-    blueLayer.addTo(m as never)
-    redLayer.addTo(m as never)
+    blue.addTo(m as never)
+    red.addTo(m as never)
   },
 )
 
