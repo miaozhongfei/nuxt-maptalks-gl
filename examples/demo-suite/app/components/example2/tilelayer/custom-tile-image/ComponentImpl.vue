@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       class="relative rounded border border-default overflow-hidden"
@@ -11,16 +12,20 @@
     <p class="text-sm text-muted mt-2">
       urlTemplate 函数逐瓦片编程：按坐标奇偶混搭两套底图（对应官网 2.20）。组件 tab 无法拦截 renderercreate 添加水印，切换至其他 tab 查看水印效果。
     </p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const tileOptions = {
   urlTemplate: (x: number, y: number, z: number) => {
-    const light = `https://b.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`;
-    const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`;
-    return (x + y) % 2 === 0 ? light : dark;
+    const light = `https://b.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`
+    const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`
+    return (x + y) % 2 === 0 ? light : dark
   },
   attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
-};
+}
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（奇偶混搭底图）' : '加载中…'))
 </script>
