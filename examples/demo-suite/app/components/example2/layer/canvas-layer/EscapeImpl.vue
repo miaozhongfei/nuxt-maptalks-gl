@@ -21,22 +21,18 @@ watch(
     const mt = await import('maptalks-gl')
     const cl = new mt.CanvasLayer('c', { forceRenderOnMoving: true, forceRenderOnZooming: true })
     cl.prepareToDraw = () => ['Hello', 'maptalks']
-    // 原生 draw 类型声明仅 (context: unknown)，运行时 maptalks 实际传 4+ 参数（官网 6.14 同款）——整体逃生舱断言
-    cl.draw = function (
-      this: any,
-      ctx: CanvasRenderingContext2D,
-      _view: unknown,
-      p1: string,
-      p2: string,
-    ) {
+    // draw 官网签名 draw(context, params..)——rest 形式对齐（运行时传 context + view + prepareToDraw 结果）
+    cl.draw = function (this: any, ctx: CanvasRenderingContext2D, ...params: unknown[]) {
       const size = mv.getSize()
+      // 跳过第 2 参 view，取 prepareToDraw 返回的 p1/p2
+      const [, p1, p2] = params as [unknown, string, string]
       const str = `${p1}, ${p2}`
       ctx.fillStyle = '#f00'
       ctx.font = 'bolder 50px sans-serif'
       const metrics = ctx.measureText(str)
       ctx.fillText(str, size.width / 2 - metrics.width / 2, size.height / 2)
       this.completeRender()
-    } as unknown as typeof cl.draw
+    }
     // drawOnInteracting 未建模——逃生舱断言（官网 6.14 同款：交互时也重绘）
     ;(cl as unknown as { drawOnInteracting: (...args: unknown[]) => void }).drawOnInteracting =
       cl.draw

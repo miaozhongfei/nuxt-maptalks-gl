@@ -787,8 +787,11 @@ export interface MaptalksCanvasLayer extends MaptalksLayer {
   render(): this;
   /** 获取 Canvas 2D 上下文 */
   getContext(): CanvasRenderingContext2D | null;
-  /** 绘制回调（子类重写） */
-  draw?(context: unknown): void;
+  /**
+   * 绘制回调（子类重写）。官网签名 draw(context, params..)——params 为 prepareToDraw 返回值展开的变长参数，
+   * 实际调用形如 draw(context, view, ...prepareToDraw 结果)
+   */
+  draw?(context: CanvasRenderingContext2D, ...params: unknown[]): void;
   /** 逃生舱口 */
   [key: string]: unknown;
 }
