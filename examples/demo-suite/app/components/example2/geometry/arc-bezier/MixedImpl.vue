@@ -1,94 +1,68 @@
 <template>
-  <MaptalksMap
-    ref="mapCmp"
-    :center="[121.5057, 31.2453]"
-    :zoom="13"
-    base-layer="osm"
-    class="relative rounded border border-default overflow-hidden"
-    style="height: 480px"
-  />
+  <div>
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="13"
+      base-layer="osm"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+const map = computed(() => toValue(mc.value?.map) ?? null)
 
-const mapCmp = ref<{ map: ReturnType<typeof useMaptalks>['map'] } | null>(null);
-const map = computed(() => mapCmp.value?.map ?? null);
-// 桥接 + 圆弧和贝塞尔曲线一体工厂
-// oxlint-disable-next-line max-lines-per-function —— 逻辑行超 50（预存），后续适配时重构
+// 曲线构造器窄化类型（ArcCurve 等未建模，cast 逃生舱）
+type CurveCtor = new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry
+
+// 圆弧：两点 + arcDegree 弧度
+function addArc(layer: MaptalksVectorLayer, ArcCurve: CurveCtor): void {
+  layer.addGeometry(new ArcCurve([[121.49, 31.238], [121.52, 31.252]], {
+    symbol: { lineColor: '#2563eb', lineWidth: 3, arcDegree: 90 },
+  }))
+}
+
+// 二次贝塞尔：起点 + 控制点 + 终点
+function addQuad(layer: MaptalksVectorLayer, QuadBezierCurve: CurveCtor): void {
+  layer.addGeometry(new QuadBezierCurve([[121.488, 31.246], [121.503, 31.258], [121.518, 31.246]], {
+    symbol: { lineColor: '#7c3aed', lineWidth: 3 },
+  }))
+}
+
+// 三次贝塞尔：起点 + 两控制点 + 终点（组合 symbol：线 + 顶点标记 + 文字）
+function addCubic(layer: MaptalksVectorLayer, CubicBezierCurve: CurveCtor): void {
+  layer.addGeometry(new CubicBezierCurve([[121.49, 31.232], [121.5, 31.242], [121.512, 31.228], [121.522, 31.24]], {
+    symbol: [
+      { lineColor: '#dc2626', lineWidth: 3, arcDegree: 90 },
+      { markerType: 'ellipse', markerWidth: 8, markerHeight: 8, markerFill: '#f00', markerPlacement: 'vertex' },
+      {
+        textName: 'Cubic\nBézier',
+        textFill: '#f00',
+        textWeight: 'bold',
+        textHaloColor: '#fff',
+        textHaloRadius: 3,
+        textSize: 20,
+        textWrapCharacter: '\n',
+      },
+    ],
+  }))
+}
+
+// 桥接 + 一体工厂：同一矢量图层创建三种曲线
 useMaptalksLayer(map, (mt) => {
-  const layer = new mt.VectorLayer('v');
-  const ArcCurve = (
-    mt as unknown as { ArcCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry }
-  ).ArcCurve;
-  const QuadBezierCurve = (
-    mt as unknown as {
-      QuadBezierCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry;
-    }
-  ).QuadBezierCurve;
-  const CubicBezierCurve = (
-    mt as unknown as {
-      CubicBezierCurve: new (c: unknown, o?: Record<string, unknown>) => MaptalksGeometry;
-    }
-  ).CubicBezierCurve;
-  (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(
-    new ArcCurve(
-      [
-        [121.49, 31.238],
-        [121.52, 31.252],
-      ],
-      {
-        symbol: { lineColor: '#2563eb', lineWidth: 3, arcDegree: 90 },
-      },
-    ),
-  );
-  (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(
-    new QuadBezierCurve(
-      [
-        [121.488, 31.246],
-        [121.503, 31.258],
-        [121.518, 31.246],
-      ],
-      {
-        symbol: { lineColor: '#7c3aed', lineWidth: 3 },
-      },
-    ),
-  );
-  (layer as unknown as { addGeometry: (g: unknown) => void }).addGeometry(
-    new CubicBezierCurve(
-      [
-        [121.49, 31.232],
-        [121.5, 31.242],
-        [121.512, 31.228],
-        [121.522, 31.24],
-      ],
-      {
-        // symbol: { lineColor: '#dc2626', lineWidth: 3 },
-        symbol: [
-          {
-            lineColor: '#dc2626',
-            lineWidth: 3,
-            arcDegree: 90,
-          },
-          {
-            markerType: 'ellipse',
-            markerWidth: 8,
-            markerHeight: 8,
-            markerFill: '#f00',
-            markerPlacement: 'vertex',
-          },
-          {
-            textName: 'Cubic\nBézier',
-            textFill: '#f00',
-            textWeight: 'bold',
-            textHaloColor: '#fff',
-            textHaloRadius: 3,
-            textSize: 20,
-            textWrapCharacter: '\n',
-          },
-        ],
-      },
-    ),
-  );
-  return layer;
-});
+  const layer = new mt.VectorLayer('v')
+  const ArcCurve = (mt as unknown as { ArcCurve: CurveCtor }).ArcCurve
+  const QuadBezierCurve = (mt as unknown as { QuadBezierCurve: CurveCtor }).QuadBezierCurve
+  const CubicBezierCurve = (mt as unknown as { CubicBezierCurve: CurveCtor }).CubicBezierCurve
+  addArc(layer, ArcCurve)
+  addQuad(layer, QuadBezierCurve)
+  addCubic(layer, CubicBezierCurve)
+  return layer
+})
+
+const status = computed(() => (map.value ? '地图已创建（三种曲线）' : '加载中…'))
 </script>
