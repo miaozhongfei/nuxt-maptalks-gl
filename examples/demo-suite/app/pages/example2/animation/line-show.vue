@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="LineString.animateShow 逐段绘制线条——hide 后 animateShow 揭示路径（对应官网 9.5）。"
+    description="LineString.animateShow 逐段绘制线条——hide 后 animateShow 揭示路径（对应官网 9.5）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>
