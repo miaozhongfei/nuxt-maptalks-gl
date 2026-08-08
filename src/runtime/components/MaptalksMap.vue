@@ -67,6 +67,11 @@ function buildOpts(): UseMaptalksOpts {
   if (props.bearing !== undefined) o.bearing = props.bearing
   if (props.minZoom !== undefined) o.minZoom = props.minZoom
   if (props.maxZoom !== undefined) o.maxZoom = props.maxZoom
+  // 交互开关必须在构造时生效：仅靠下方 watch config 时初始值无变化不会触发（如 8.1 全 false 禁用）
+  if (props.draggable !== undefined) o.draggable = props.draggable
+  if (props.dragPitch !== undefined) o.dragPitch = props.dragPitch
+  if (props.dragRotate !== undefined) o.dragRotate = props.dragRotate
+  if (props.zoomable !== undefined) o.zoomable = props.zoomable
   return o
 }
 
