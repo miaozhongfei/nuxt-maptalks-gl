@@ -13,7 +13,7 @@
           <MaptalksMarker
             v-for="(c, i) in MARKERS"
             :key="'o1' + i"
-            :ref="(el: MaptalksMarkerExposed | null) => (oldSRefs[i] = el)"
+            :ref="(el: Element | ComponentPublicInstance | null) => (oldSRefs[i] = el as MaptalksMarkerExposed | null)"
             :coordinates="c"
             :options="{ symbol: MKR_SYM }"
           />
@@ -58,7 +58,7 @@
           <MaptalksMarker
             v-for="(c, i) in MARKERS"
             :key="'o2' + i"
-            :ref="(el: MaptalksMarkerExposed | null) => (oldCRefs[i] = el)"
+            :ref="(el: Element | ComponentPublicInstance | null) => (oldCRefs[i] = el as MaptalksMarkerExposed | null)"
             :coordinates="c"
             :options="{ symbol: MKR_SYM }"
           />
