@@ -47,6 +47,11 @@ const show4 = ref(true)
 const count3 = ref(0)
 const newContent4 = ref('')
 
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const mc3 = ref<MaptalksMapExposed | null>(null)
+const mc4 = ref<MaptalksMapExposed | null>(null)
+
 const opts1: MaptalksInfoWindowOptions = {
   title: '简单 HTML',
   content: '<div style="padding:8px;color:#2563eb;font-weight:600">自定义 HTML 字符串内容</div>',
