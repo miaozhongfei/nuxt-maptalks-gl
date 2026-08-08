@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksZoom——4 个官网布局 Zoom 控件（zoomLevel 开关 × 位置）（对应官网 10.14）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -27,4 +28,6 @@ useMaptalksZoom(map, { options: zOpts1 })
 useMaptalksZoom(map, { options: zOpts2 })
 useMaptalksZoom(map, { options: zOpts3 })
 useMaptalksZoom(map, { options: zOpts4 })
+
+const status = computed(() => (map.value ? '地图已创建（Zoom 控件可用）' : '加载中…'))
 </script>
