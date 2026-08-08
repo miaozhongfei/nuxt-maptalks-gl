@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="LineString 几何编辑：startEdit()/endEdit() 切换顶点拖拽模式（对应官网 8.8）。"
+    description="LineString 几何编辑：startEdit()/endEdit() 切换顶点拖拽模式（对应官网 8.8）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

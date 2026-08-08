@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -41,9 +42,13 @@
         >结束编辑</UButton
       >
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const lRef = ref<MaptalksLineStringExposed | null>(null);
+const mc = ref<MaptalksMapExposed | null>(null)
+const lRef = ref<MaptalksLineStringExposed | null>(null)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可编辑 LineString）' : '加载中…'))
 </script>
