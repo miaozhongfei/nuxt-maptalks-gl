@@ -12,12 +12,14 @@
       <UButton size="sm" variant="outline" @click="moveRight">平移</UButton>
       <UButton size="sm" variant="outline" @click="moveBack">复位</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
 const { layer } = useMaptalksVectorLayer(map)
 const { geometry } = useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
@@ -28,4 +30,6 @@ const translateOffset: [number, number] = [0.02, 0]
 
 function moveRight() { toValue(geometry)?.bringToFront()?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true }) }
 function moveBack() { toValue(geometry)?.bringToFront()?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true }) }
+
+const status = computed(() => (map.value ? '地图已创建（Geometry 平移动画）' : '加载中…'))
 </script>

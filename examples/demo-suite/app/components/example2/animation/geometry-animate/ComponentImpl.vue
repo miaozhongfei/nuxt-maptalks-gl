@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -19,17 +20,22 @@
       <UButton size="sm" variant="outline" @click="moveRight">平移</UButton>
       <UButton size="sm" variant="outline" @click="moveBack">复位</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const mRef = ref<MaptalksMarkerExposed | null>(null)
 const translateOffset: [number, number] = [0.02, 0]
 
+// exposed geometry 是 Ref——toValue 解包后链式 bringToFront().animate
 function moveRight() {
-  mRef.value?.geometry?.bringToFront()?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true })
+  toValue(mRef.value?.geometry)?.bringToFront()?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true })
 }
 function moveBack() {
-  mRef.value?.geometry?.bringToFront()?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true })
+  toValue(mRef.value?.geometry)?.bringToFront()?.animate?.({ translate: [-translateOffset[0], 0] }, { duration: 2000, focus: true })
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（Geometry 平移动画）' : '加载中…'))
 </script>
