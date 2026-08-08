@@ -9,6 +9,7 @@
       <UButton size="sm" variant="outline" @click="start">开始</UButton>
       <UButton size="sm" variant="outline" @click="stop">停止</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -18,7 +19,7 @@ import { bearing, point } from '@turf/turf'
 import { COORDINATES, MARKER_FILE } from './constants'
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: COORDINATES[0], zoom: 14, pitch: 60 })
+const { map, isReady } = useMaptalks(el, { center: COORDINATES[0], zoom: 14, pitch: 60 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
@@ -52,12 +53,14 @@ function start() {
     { duration: 30000, easing: 'linear' },
     (...args: unknown[]) => {
       if (stopped.value) return
+      // animateShow 帧回调第二参为当前坐标（原生签名未建模——窄断言）
       const coord = args[1] as { x: number; y: number }
       const mk = toValue(markerGeo)
       if (!mk) return
       mk.setCoordinates(coord)
+      // 用户交互中不跟随（isInteracting 豁免）
       if (!m.isInteracting()) {
-        m.setCenter(coord as any)
+        m.setCenter(coord)
         m.setZoom(16)
         if (preCoord) {
           const b = bearing(point([preCoord.x, preCoord.y]), point([coord.x, coord.y]))
@@ -78,4 +81,6 @@ function stop() {
 }
 
 onBeforeUnmount(() => { stop() })
+
+const status = computed(() => (isReady.value ? '地图已创建（相机跟随 Marker）' : '加载中…'))
 </script>
