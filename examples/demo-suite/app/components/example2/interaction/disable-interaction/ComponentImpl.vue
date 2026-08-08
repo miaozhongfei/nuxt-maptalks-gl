@@ -15,9 +15,12 @@
       />
       <UBadge variant="subtle" class="absolute top-3 right-3 z-10">交互已禁用</UBadge>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（七个交互选项全部禁用）' : '加载中…'))
 </script>
