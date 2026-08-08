@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -18,10 +19,13 @@
       </MaptalksVectorLayer>
     </MaptalksMap>
     <UBadge variant="subtle" class="mt-2">已选中: {{ selected }}</UBadge>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+
 const normSymbol = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 16, markerHeight: 16 }
 const hlSymbol = { markerType: 'ellipse', markerFill: '#22c55e', markerWidth: 20, markerHeight: 20 }
 
@@ -39,4 +43,6 @@ function onSelect(i: number) {
   points.forEach((p, idx) => { p.highlighted = idx === i })
   selected.value = points[i]?.props.name ?? '?'
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（点击点选图形）' : '加载中…'))
 </script>

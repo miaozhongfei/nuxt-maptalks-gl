@@ -6,12 +6,13 @@
       style="height: 480px"
     />
     <UBadge variant="subtle" class="mt-2">已选中: {{ selected }}</UBadge>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 // 逃生舱：工厂模式创建 VectorLayer + 5 个 Marker
@@ -38,6 +39,7 @@ useMaptalksEvents(map, {
   click: (e: unknown) => {
     const coord = (e as { coordinate: { x: number; y: number } })?.coordinate
     if (!coord) return
+    // forEach 回调参数 MaptalksGeometry 与窄类型逆变不兼容——逃生舱断言
     const l = toValue(layer) as unknown as { forEach: (cb: (g: MGeo) => void) => void } | null
     l?.forEach((g) => g.setSymbol(normSymbol))
     const m = toValue(map)
@@ -51,4 +53,6 @@ useMaptalksEvents(map, {
     })
   },
 })
+
+const status = computed(() => (isReady.value ? '地图已创建（点击点选图形）' : '加载中…'))
 </script>
