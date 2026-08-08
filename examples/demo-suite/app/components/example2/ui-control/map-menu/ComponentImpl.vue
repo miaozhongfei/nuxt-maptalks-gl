@@ -75,72 +75,78 @@
       </MaptalksMap>
       <p class="text-xs text-muted mt-1">新封装：&lt;MaptalksMenu&gt; slot——自定义 HTML。</p>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 // —— 旧 API：map.setMenu({ items }) ——
-const mc1 = ref<MaptalksMapExposed | null>(null);
+const mc1 = ref<MaptalksMapExposed | null>(null)
 watch(
-  () => mc1.value?.map,
+  // exposed map 是 Ref——toValue 解包取实例
+  () => toValue(mc1.value?.map),
   (m) => {
-    if (!m) return;
+    if (!m) return
     m.setMenu({
       width: 160,
       items: [
         { item: '放大', click: () => m.zoomIn() },
         { item: '缩小', click: () => m.zoomOut() },
       ],
-    });
+    })
   },
-);
+)
 
 // —— 新封装：MaptalksMenu 组件标准模式 ——
-const mc2 = ref<MaptalksMapExposed | null>(null);
+const mc2 = ref<MaptalksMapExposed | null>(null)
 const menuOpts2: MaptalksMenuOptions = {
   width: 160,
   items: [
     { item: '放大', click: () => toValue(mc2.value?.map)?.zoomIn() },
     { item: '缩小', click: () => toValue(mc2.value?.map)?.zoomOut() },
   ],
-};
+}
 
 // —— 旧 API：map.setMenu({ custom: true }) ——
-const mc3 = ref<MaptalksMapExposed | null>(null);
+const mc3 = ref<MaptalksMapExposed | null>(null)
 const customEl3 = customMenuEl(
   () => toValue(mc3.value?.map)?.zoomIn(),
   () => toValue(mc3.value?.map)?.zoomOut(),
-);
+)
 watch(
-  () => mc3.value?.map,
+  // exposed map 是 Ref——toValue 解包取实例
+  () => toValue(mc3.value?.map),
   (m) => {
-    if (!m) return;
-    m.setMenu({ custom: true, items: customEl3 } as any);
+    if (!m) return
+    // custom 模式 items 为 HTMLElement（建模 items 为条目数组）——逃生舱断言
+    m.setMenu({ custom: true, items: customEl3 } as any)
   },
-);
+)
 
 // —— 新封装：MaptalksMenu slot 模式 ——
-const mc4 = ref<MaptalksMapExposed | null>(null);
-const menuOpts4: MaptalksMenuOptions = { custom: true };
+const mc4 = ref<MaptalksMapExposed | null>(null)
+const menuOpts4: MaptalksMenuOptions = { custom: true }
 
 function customMenuEl(
   zoomIn: (() => void) | undefined,
   zoomOut: (() => void) | undefined,
 ): HTMLElement | null {
-  if (typeof document === 'undefined') return null;
-  const d = document.createElement('div');
-  d.style.cssText = 'padding:2px;min-width:120px';
-  const b1 = document.createElement('button');
-  b1.textContent = '放大';
+  if (typeof document === 'undefined') return null
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:2px;min-width:120px'
+  const b1 = document.createElement('button')
+  b1.textContent = '放大'
   b1.style.cssText =
-    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px';
-  b1.addEventListener('click', () => zoomIn?.());
-  const b2 = document.createElement('button');
-  b2.textContent = '缩小';
+    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px'
+  b1.addEventListener('click', () => zoomIn?.())
+  const b2 = document.createElement('button')
+  b2.textContent = '缩小'
   b2.style.cssText =
-    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px';
-  b2.addEventListener('click', () => zoomOut?.());
-  d.append(b1, b2);
-  return d;
+    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px'
+  b2.addEventListener('click', () => zoomOut?.())
+  d.append(b1, b2)
+  return d
 }
+
+const status = computed(() => (toValue(mc1.value?.map) ? '地图已创建（右键菜单可用）' : '加载中…'))
 </script>
