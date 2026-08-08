@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="14"
       base-layer="osm"
@@ -34,22 +35,27 @@
       <UButton size="sm" variant="outline" @click="startEdit">开始编辑</UButton>
       <UButton size="sm" variant="outline" @click="endEdit">结束编辑</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const cRef = ref<MaptalksCircleExposed | null>(null)
 const eRef = ref<MaptalksEllipseExposed | null>(null)
 const rRef = ref<MaptalksRectangleExposed | null>(null)
 
+// exposed geometry 是 Ref——toValue 解包后调 startEdit/endEdit
 function startEdit() {
-  cRef.value?.geometry?.startEdit?.()
-  eRef.value?.geometry?.startEdit?.()
-  rRef.value?.geometry?.startEdit?.()
+  toValue(cRef.value?.geometry)?.startEdit?.()
+  toValue(eRef.value?.geometry)?.startEdit?.()
+  toValue(rRef.value?.geometry)?.startEdit?.()
 }
 function endEdit() {
-  cRef.value?.geometry?.endEdit?.()
-  eRef.value?.geometry?.endEdit?.()
-  rRef.value?.geometry?.endEdit?.()
+  toValue(cRef.value?.geometry)?.endEdit?.()
+  toValue(eRef.value?.geometry)?.endEdit?.()
+  toValue(rRef.value?.geometry)?.endEdit?.()
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可编辑形状）' : '加载中…'))
 </script>

@@ -12,6 +12,7 @@
       <UButton size="sm" variant="outline" @click="startEdit">开始编辑</UButton>
       <UButton size="sm" variant="outline" @click="endEdit">结束编辑</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -49,4 +50,6 @@ function endEdit() {
   toValue(gEllipse)?.endEdit?.()
   toValue(gRect)?.endEdit?.()
 }
+
+const status = computed(() => (map.value ? '地图已创建（可编辑形状）' : '加载中…'))
 </script>

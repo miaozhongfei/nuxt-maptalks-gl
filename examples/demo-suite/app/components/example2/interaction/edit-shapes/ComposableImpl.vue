@@ -9,12 +9,13 @@
       <UButton size="sm" variant="outline" @click="startEdit">开始编辑</UButton>
       <UButton size="sm" variant="outline" @click="endEdit">结束编辑</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 14 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
@@ -46,4 +47,6 @@ function endEdit() {
   toValue(gEllipse)?.endEdit?.()
   toValue(gRect)?.endEdit?.()
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可编辑形状）' : '加载中…'))
 </script>
