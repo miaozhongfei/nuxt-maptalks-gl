@@ -18,9 +18,9 @@ const el = ref<HTMLElement | null>(null)
 const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
-// 逃生舱：工厂模式创建 VectorLayer + Label
+// 逃生舱：工厂模式创建 VectorLayer + Label（显式泛型——startEditText 仅在 MaptalksLabelGeometry 窄类型上）
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry } = useMaptalksGeometry(layer, (mt) =>
+const { geometry } = useMaptalksGeometry<MaptalksLabelGeometry>(layer, (mt) =>
   new mt.Label('label with box', [121.5057, 31.2453], { textSymbol: { textFaceName: 'sans-serif', textFill: '#fff', textSize: 18 }, boxStyle: { padding: [12, 8], symbol: { markerType: 'square', markerFill: '#34495e', markerFillOpacity: 0.9, markerLineColor: '#34495e', markerLineWidth: 1 } } }),
 )
 
