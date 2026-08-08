@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="flyTo 飞行 + animateTo 动画——4 按钮展示两种 API 的 duration / pitch / bearing 控制（对应官网 9.1）。"
+    description="flyTo 飞行 + animateTo 动画——4 按钮展示两种 API 的 duration / pitch / bearing 控制（对应官网 9.1）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>
