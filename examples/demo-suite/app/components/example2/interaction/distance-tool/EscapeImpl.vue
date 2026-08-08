@@ -23,7 +23,8 @@ watch(
   (m) => {
     if (!m) return
     import('maptalks-gl').then((mt) => {
-      const Ctor = (mt as RawMt).DistanceTool
+      // 原生 DistanceTool.addTo(map: Map) 与窄类型签名逆变不兼容——双重断言
+      const Ctor = (mt as unknown as RawMt).DistanceTool
       if (Ctor) new Ctor({}).addTo(m)
     })
   },
