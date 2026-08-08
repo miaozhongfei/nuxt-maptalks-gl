@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksLayerSwitcher——baseLayer 数组声明多底图候选（GroupTileLayer）+ 叠加图层，hover 切换（对应官网 10.19）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -43,4 +44,6 @@ const v2 = useMaptalksVectorLayer(map, { id: 'Circle Markers' })
 useMaptalksMarker(v2.layer, { coordinates: [121.4957, 31.2453], options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 } } })
 useMaptalksMarker(v2.layer, { coordinates: [121.4957, 31.2353], options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 } } })
 useMaptalksMarker(v2.layer, { coordinates: [121.4957, 31.2553], options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 } } })
+
+const status = computed(() => (map.value ? '地图已创建（LayerSwitcher 可用）' : '加载中…'))
 </script>

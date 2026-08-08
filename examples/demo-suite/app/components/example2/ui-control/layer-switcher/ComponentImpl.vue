@@ -1,6 +1,7 @@
 ﻿<template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       :base-layer="blOpts"
@@ -20,10 +21,13 @@
       <MaptalksLayerSwitcherControl :options="lsOpts" />
     </MaptalksMap>
     <p class="text-sm text-muted mt-2">MaptalksMap + MaptalksVectorLayer/MaptalksMarker 声明式图层 + MaptalksLayerSwitcherControl——baseLayer 数组多底图候选，hover 切换（对应官网 10.19）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+
 // LayerSwitcher 配置：右上角 + 底图/图层分组标题
 const lsOpts: MaptalksLayerSwitcherOptions = {
   position: 'top-right',
@@ -42,4 +46,6 @@ const blOpts: Array<string | { id?: string | number; source?: string; options?: 
 // 叠加标记图层样式（LayerSwitcher 的 Layers 分组）
 const MKR_SYM_1 = { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 }
 const MKR_SYM_2 = { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 20, markerHeight: 20 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（LayerSwitcher 可用）' : '加载中…'))
 </script>
