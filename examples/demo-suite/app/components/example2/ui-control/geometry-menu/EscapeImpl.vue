@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grid grid-cols-2 gap-3">
     <div>
       <div
@@ -92,7 +92,7 @@ async function setupMarkers(m: MaptalksMap, mode: 'old-s' | 'new-s' | 'old-c' | 
         ],
       } as any)
       mu.addTo(marker as never)
-      const h = (e: unknown) => { mu.show((e as { coordinate: unknown }).coordinate) }
+      const h = (e: unknown) => { mu.show((e as { coordinate: unknown }).coordinate as never) }
       marker.on('contextmenu', h)
     } else if (mode === 'old-c') {
       marker.setMenu({
@@ -111,7 +111,7 @@ async function setupMarkers(m: MaptalksMap, mode: 'old-s' | 'new-s' | 'old-c' | 
         ),
       } as any)
       mu.addTo(marker as never)
-      const h = (e: unknown) => { mu.show((e as { coordinate: unknown }).coordinate) }
+      const h = (e: unknown) => { mu.show((e as { coordinate: unknown }).coordinate as never) }
       marker.on('contextmenu', h)
     }
   }
