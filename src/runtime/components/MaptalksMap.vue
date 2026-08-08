@@ -52,7 +52,14 @@ const props = withDefaults(defineProps<{
   options?: MaptalksMapOptions
   /** 底图：源名（字符串）/ 内联源对象 / 多底图候选数组（自动打包 GroupTileLayer，第一项可见其余隐藏） */
   baseLayer?: string | { source?: string; options?: Record<string, unknown> } | Array<string | { id?: string | number; source?: string; options?: Record<string, unknown> }>
-}>(), { options: () => ({}) })
+}>(), {
+  options: () => ({}),
+  // boolean 交互开关：未传时保持 undefined（Vue 布尔 cast 会把未传转 false——误禁交互）
+  draggable: undefined,
+  dragPitch: undefined,
+  dragRotate: undefined,
+  zoomable: undefined,
+})
 
 const emit = defineEmits<{ ready: [map: MaptalksMap]; error: [err: MaptalksError] }>()
 
