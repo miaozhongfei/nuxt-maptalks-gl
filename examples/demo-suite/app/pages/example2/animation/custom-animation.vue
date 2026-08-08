@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="maptalks.animation.Animation.animate() 通用 tween 引擎——符号属性动画 + play/cancel 控制（对应官网 9.7）。"
+    description="maptalks.animation.Animation.animate() 通用 tween 引擎——符号属性动画 + play/cancel 控制（对应官网 9.7）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

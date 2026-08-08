@@ -12,12 +12,14 @@
       <UButton size="sm" variant="outline" @click="startAnim">开始</UButton>
       <UButton size="sm" variant="outline" @click="stopAnim">停止</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
 const { layer } = useMaptalksVectorLayer(map)
 const { geometry } = useMaptalksMarker(layer, {
   coordinates: [121.5057, 31.2453],
@@ -33,9 +35,12 @@ async function startAnim() {
   player = mt.animation.Animation.animate(
     { symbol: { markerWidth: 80, markerHeight: 80 } },
     { duration: 1000, easing: 'out' },
-    (frame: any) => { if (frame.styles) geo.updateSymbol(frame.styles.symbol) },
+    // 帧结构仅取 styles.symbol（原生动画引擎的逐帧插值结果）
+    (frame: { styles?: { symbol?: object } }) => { if (frame.styles?.symbol) geo.updateSymbol(frame.styles.symbol) },
   )
   player.play()
 }
 function stopAnim() { player?.cancel(); player = null }
+
+const status = computed(() => (map.value ? '地图已创建（自定义动画可启停）' : '加载中…'))
 </script>

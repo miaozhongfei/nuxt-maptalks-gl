@@ -9,12 +9,13 @@
       <UButton size="sm" variant="outline" @click="startAnim">开始</UButton>
       <UButton size="sm" variant="outline" @click="stopAnim">停止</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 const { geometry } = useMaptalksMarker(layer, {
@@ -31,9 +32,12 @@ async function startAnim() {
   player = mt.animation.Animation.animate(
     { symbol: { markerWidth: 80, markerHeight: 80 } },
     { duration: 1000, easing: 'out' },
-    (frame: any) => { if (frame.styles) geo.updateSymbol(frame.styles.symbol) },
+    // 帧结构仅取 styles.symbol（原生动画引擎的逐帧插值结果）
+    (frame: { styles?: { symbol?: object } }) => { if (frame.styles?.symbol) geo.updateSymbol(frame.styles.symbol) },
   )
   player.play()
 }
 function stopAnim() { player?.cancel(); player = null }
+
+const status = computed(() => (isReady.value ? '地图已创建（自定义动画可启停）' : '加载中…'))
 </script>
