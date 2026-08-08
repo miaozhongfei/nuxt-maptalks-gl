@@ -97,7 +97,7 @@ function formEl(search: (v: string) => void): HTMLElement | null {
   return d
 }
 
-function flyToCoord(m: MaptalksMap | null, s: string) {
+function flyToCoord(m: MaptalksMap | null | undefined, s: string) {
   const parts = s.split(',').map(Number)
   if (parts.length === 2 && !isNaN(parts[0] as number) && !isNaN(parts[1] as number))
     m?.flyTo({ center: parts as [number, number], zoom: 16 })

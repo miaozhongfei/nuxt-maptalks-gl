@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grid grid-cols-2 gap-3">
     <div>
       <div
@@ -85,7 +85,7 @@ function formEl(search: (v: string) => void): HTMLElement | null {
   return d
 }
 
-function parseCoordAndFly(m: MaptalksMap, s: string) {
+function parseCoordAndFly(m: MaptalksMap | null | undefined, s: string) {
   const parts = s.split(',').map(Number)
   if (parts.length === 2 && !isNaN(parts[0] as number) && !isNaN(parts[1] as number)) {
     m.flyTo({ center: parts as [number, number], zoom: 16 })
