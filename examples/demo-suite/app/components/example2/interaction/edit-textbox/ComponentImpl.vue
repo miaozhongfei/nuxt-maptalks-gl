@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -32,12 +33,17 @@
       <UButton size="sm" variant="outline" @click="startEdit">开始编辑</UButton>
       <UButton size="sm" variant="outline" @click="endEdit">结束编辑</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const tRef = ref<MaptalksTextBoxExposed | null>(null)
 
-function startEdit() { tRef.value?.geometry?.startEdit?.() }
-function endEdit() { tRef.value?.geometry?.endEdit?.() }
+// exposed geometry 是 Ref——toValue 解包后调 startEdit/endEdit
+function startEdit() { toValue(tRef.value?.geometry)?.startEdit?.() }
+function endEdit() { toValue(tRef.value?.geometry)?.endEdit?.() }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可编辑文本框）' : '加载中…'))
 </script>
