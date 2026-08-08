@@ -12,6 +12,7 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">useMaptalksUIMarker——options getter 响应式重建（对应官网 10.8）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -20,7 +21,7 @@ const hAlign = ref<'middle' | 'left' | 'right'>('middle')
 const vAlign = ref<'middle' | 'top' | 'bottom'>('middle')
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 // 锚点参照：5×5 椭圆 Marker
@@ -39,4 +40,6 @@ useMaptalksUIMarker(map, {
     coordinates: [121.5057, 31.2453],
   }),
 })
+
+const status = computed(() => (isReady.value ? '地图已创建（UIMarker 对齐可切换）' : '加载中…'))
 </script>

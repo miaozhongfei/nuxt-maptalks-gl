@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -25,10 +26,12 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">UIMarker 组件——computed options 响应式重建（对应官网 10.8）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const hAlign = ref<'middle' | 'left' | 'right'>('middle')
 const vAlign = ref<'middle' | 'top' | 'bottom'>('middle')
 
@@ -38,4 +41,6 @@ const uimOpts = computed<MaptalksUIMarkerOptions>(() => ({
   horizontalAlignment: hAlign.value,
   verticalAlignment: vAlign.value,
 }))
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（UIMarker 对齐可切换）' : '加载中…'))
 </script>

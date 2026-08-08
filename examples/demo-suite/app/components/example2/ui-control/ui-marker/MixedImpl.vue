@@ -19,6 +19,7 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksUIMarker——options getter 响应式重建（对应官网 10.8）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -44,4 +45,6 @@ useMaptalksUIMarker(map, {
     coordinates: [121.5057, 31.2453],
   }),
 })
+
+const status = computed(() => (map.value ? '地图已创建（UIMarker 对齐可切换）' : '加载中…'))
 </script>
