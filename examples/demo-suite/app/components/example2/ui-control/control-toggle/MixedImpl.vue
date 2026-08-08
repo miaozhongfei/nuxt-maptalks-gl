@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksZoom/useMaptalksToolbar——show/hide/remove 三操作（Remove 为销毁语义，Show 仅恢复隐藏）（对应官网 10.18）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -29,4 +30,6 @@ useMaptalksToolbar(map, {
     ],
   },
 })
+
+const status = computed(() => (map.value ? '地图已创建（控件切换可用）' : '加载中…'))
 </script>

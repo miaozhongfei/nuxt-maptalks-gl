@@ -1,14 +1,17 @@
 ﻿<template>
   <div>
-    <MaptalksMap :center="[121.5057, 31.2453]" :zoom="13" base-layer="osm" class="relative rounded border border-default overflow-hidden" style="height: 480px">
+    <MaptalksMap ref="mc" :center="[121.5057, 31.2453]" :zoom="13" base-layer="osm" class="relative rounded border border-default overflow-hidden" style="height: 480px">
       <MaptalksZoomControl v-if="zoomMounted" ref="zoomRef" :options="zOpts" />
       <MaptalksToolbarControl :options="tbOpts" />
     </MaptalksMap>
     <p class="text-sm text-muted mt-2">MaptalksMap + MaptalksZoomControl/MaptalksToolbarControl——Show/Hide/Remove 三操作（Remove 后 Show 经 v-if 重建复活）（对应官网 10.18）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+
 // Zoom 控件：左上 + 级别文字
 const zOpts: MaptalksZoomOptions = { position: 'top-left', zoomLevel: true }
 
@@ -38,4 +41,6 @@ const tbOpts: MaptalksToolbarOptions = {
     { item: 'Remove', click: () => { doRemove() } },
   ],
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（控件切换可用）' : '加载中…'))
 </script>
