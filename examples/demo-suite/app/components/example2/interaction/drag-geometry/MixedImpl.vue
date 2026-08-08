@@ -8,6 +8,7 @@
       class="relative rounded border border-default overflow-hidden"
       style="height: 480px"
     />
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -29,4 +30,6 @@ useMaptalksPolygon(layer, {
   coordinates: [[[121.49, 31.238], [121.49, 31.252], [121.52, 31.252], [121.52, 31.238], [121.49, 31.238]]],
   options: { draggable: true, symbol: { polygonFill: '#2563eb', fillOpacity: 0.3, lineColor: '#1e40af', lineWidth: 2 } },
 })
+
+const status = computed(() => (map.value ? '地图已创建（图形可拖拽）' : '加载中…'))
 </script>
