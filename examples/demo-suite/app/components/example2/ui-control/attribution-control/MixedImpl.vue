@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksAttribution——2 个官网布局版权控件（默认位置/自定义位置 × content）（对应官网 10.17）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -23,4 +24,6 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 
 useMaptalksAttribution(map, { options: aOpts1 })
 useMaptalksAttribution(map, { options: aOpts2 })
+
+const status = computed(() => (map.value ? '地图已创建（版权控件可用）' : '加载中…'))
 </script>
