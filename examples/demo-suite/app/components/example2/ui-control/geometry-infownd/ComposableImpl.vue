@@ -31,6 +31,7 @@
         <UButton size="xs" @click="doUpdate4">更新内容</UButton>
       </div>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -42,7 +43,7 @@ const MKR_SYM_4 = { markerType: 'ellipse' as const, markerFill: '#10b981', marke
 
 // —— 左上：字符串内容 ——
 const el1 = ref<HTMLElement | null>(null)
-const { map: map1 } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
+const { map: map1, isReady } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map1, { source: 'osm' })
 const vLayer1 = useMaptalksVectorLayer(map1)
 const mk1 = useMaptalksMarker(vLayer1.layer, { coordinates: [121.5057, 31.2453], options: { symbol: MKR_SYM_1 } })
@@ -59,11 +60,18 @@ const mk2 = useMaptalksMarker(vLayer2.layer, { coordinates: [121.5057, 31.2453],
 let count2 = 0
 function counterEl(): HTMLElement | null {
   if (typeof document === 'undefined') return null
-  const d = document.createElement('div'); d.style.cssText = 'padding:8px;min-width:140px'
-  const lbl = document.createElement('div'); lbl.textContent = '计数器：0'; lbl.style.cssText = 'font-size:14px;margin-bottom:6px'
-  const btn = document.createElement('button'); btn.textContent = '点击 +1'
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:8px;min-width:140px'
+  const lbl = document.createElement('div')
+  lbl.textContent = '计数器：0'
+  lbl.style.cssText = 'font-size:14px;margin-bottom:6px'
+  const btn = document.createElement('button')
+  btn.textContent = '点击 +1'
   btn.style.cssText = 'padding:2px 10px;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer'
-  btn.addEventListener('click', () => { count2++; lbl.textContent = `计数器：${count2}` })
+  btn.addEventListener('click', () => {
+    count2++
+    lbl.textContent = `计数器：${count2}`
+  })
   d.append(lbl, btn)
   return d
 }
@@ -103,4 +111,6 @@ function doUpdate4() {
   // 更新 content4 → options 响应式变化 → composable 的 content watcher → setContent 增量更新
   content4.value = `<div style="padding:8px">${newContent4.value}</div>`
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（图形信息窗可用）' : '加载中…'))
 </script>

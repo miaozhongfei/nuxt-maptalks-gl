@@ -31,6 +31,7 @@
         <UButton size="xs" @click="doUpdate4">更新内容</UButton>
       </div>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -57,11 +58,18 @@ const mk2 = useMaptalksMarker(vLayer2.layer, { coordinates: [121.5057, 31.2453],
 let count2 = 0
 function counterEl(): HTMLElement | null {
   if (typeof document === 'undefined') return null
-  const d = document.createElement('div'); d.style.cssText = 'padding:8px;min-width:140px'
-  const lbl = document.createElement('div'); lbl.textContent = '计数器：0'; lbl.style.cssText = 'font-size:14px;margin-bottom:6px'
-  const btn = document.createElement('button'); btn.textContent = '点击 +1'
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:8px;min-width:140px'
+  const lbl = document.createElement('div')
+  lbl.textContent = '计数器：0'
+  lbl.style.cssText = 'font-size:14px;margin-bottom:6px'
+  const btn = document.createElement('button')
+  btn.textContent = '点击 +1'
   btn.style.cssText = 'padding:2px 10px;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer'
-  btn.addEventListener('click', () => { count2++; lbl.textContent = `计数器：${count2}` })
+  btn.addEventListener('click', () => {
+    count2++
+    lbl.textContent = `计数器：${count2}`
+  })
   d.append(lbl, btn)
   return d
 }
@@ -98,4 +106,6 @@ function doUpdate4() {
   if (!newContent4.value) return
   content4.value = `<div style="padding:8px">${newContent4.value}</div>`
 }
+
+const status = computed(() => (map1.value ? '地图已创建（图形信息窗可用）' : '加载中…'))
 </script>

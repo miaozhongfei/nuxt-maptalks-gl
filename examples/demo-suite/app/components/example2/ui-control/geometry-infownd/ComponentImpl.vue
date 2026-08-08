@@ -60,6 +60,7 @@
         <UButton size="xs" @click="doUpdate4">更新内容</UButton>
       </div>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -97,4 +98,6 @@ function doUpdate4() {
   // 更新 opts.content → useMaptalksGeometryInfoWindow 的 content watcher → setContent 增量更新
   opts4.value = { ...opts4.value, content: `<div style="padding:8px">${newContent.value}</div>` }
 }
+
+const status = computed(() => (toValue(miw1.value?.infoWindow) ? '地图已创建（图形信息窗可用）' : '加载中…'))
 </script>
