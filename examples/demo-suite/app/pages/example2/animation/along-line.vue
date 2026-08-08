@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="animate({ translate }) 沿箭头线平移动画 + setCoordinates 重置（对应官网 9.3）。"
+    description="animate({ translate }) 沿箭头线平移动画 + setCoordinates 重置（对应官网 9.3）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

@@ -9,18 +9,19 @@
       <UButton size="sm" variant="outline" @click="startMove">开始</UButton>
       <UButton size="sm" variant="outline" @click="resetMarker">重置</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const el = ref<HTMLElement | null>(null);
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 });
-useMaptalksTileLayer(map, { source: 'osm' });
-const { layer } = useMaptalksVectorLayer(map);
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+useMaptalksTileLayer(map, { source: 'osm' })
+const { layer } = useMaptalksVectorLayer(map)
 
-const center: [number, number] = [121.5057, 31.2453];
-const translateOffset: [number, number] = [0.025, 0.018];
-const endPt: [number, number] = [center[0] + translateOffset[0], center[1] + translateOffset[1]];
+const center: [number, number] = [121.5057, 31.2453]
+const translateOffset: [number, number] = [0.025, 0.018]
+const endPt: [number, number] = [center[0] + translateOffset[0], center[1] + translateOffset[1]]
 
 useMaptalksLineString(layer, {
   coordinates: [center, endPt],
@@ -29,20 +30,22 @@ useMaptalksLineString(layer, {
     arrowPlacement: 'vertex-last',
     symbol: { lineColor: '#dc2626', lineWidth: 4 },
   },
-});
+})
 const { geometry: markerGeo } = useMaptalksMarker(layer, {
   coordinates: center,
   options: {
     symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 },
   },
-});
+})
 
 function startMove() {
   toValue(markerGeo)
     ?.bringToFront()
-    .animate?.({ translate: translateOffset }, { duration: 2000, focus: true });
+    ?.animate?.({ translate: translateOffset }, { duration: 2000, focus: true })
 }
 function resetMarker() {
-  toValue(markerGeo)?.setCoordinates(center);
+  toValue(markerGeo)?.setCoordinates(center)
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（沿线平移动画）' : '加载中…'))
 </script>
