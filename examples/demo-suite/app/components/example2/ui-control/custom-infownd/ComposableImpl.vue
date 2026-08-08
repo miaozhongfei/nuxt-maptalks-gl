@@ -22,6 +22,7 @@
         <UButton size="xs" @click="doUpdate4">更新内容</UButton>
       </div>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -37,7 +38,7 @@ const RICH_HTML = [
 
 // —— 左上：简单 HTML ——
 const el1 = ref<HTMLElement | null>(null)
-const { map: map1 } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
+const { map: map1, isReady } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map1, { source: 'osm' })
 const show1 = ref(true)
 const { show: showIW1, hide: hideIW1 } = useMaptalksInfoWindow(map1, {
@@ -72,11 +73,18 @@ useMaptalksTileLayer(map3, { source: 'osm' })
 let count3 = 0
 function counterEl(): HTMLElement | null {
   if (typeof document === 'undefined') return null
-  const d = document.createElement('div'); d.style.cssText = 'padding:8px;min-width:140px'
-  const lbl = document.createElement('div'); lbl.textContent = '计数器：0'; lbl.style.cssText = 'font-size:14px;margin-bottom:6px'
-  const btn = document.createElement('button'); btn.textContent = '点击 +1'
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:8px;min-width:140px'
+  const lbl = document.createElement('div')
+  lbl.textContent = '计数器：0'
+  lbl.style.cssText = 'font-size:14px;margin-bottom:6px'
+  const btn = document.createElement('button')
+  btn.textContent = '点击 +1'
   btn.style.cssText = 'padding:2px 10px;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer'
-  btn.addEventListener('click', () => { count3++; lbl.textContent = `计数器：${count3}` })
+  btn.addEventListener('click', () => {
+    count3++
+    lbl.textContent = `计数器：${count3}`
+  })
   d.append(lbl, btn)
   return d
 }
@@ -100,4 +108,6 @@ function doUpdate4() {
   // 更新 content4 → options getter 重求值 → content watcher setContent 增量，弹框保持打开
   content4.value = `<div style="padding:8px">${newContent4.value}</div>`
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（自定义信息窗可用）' : '加载中…'))
 </script>
