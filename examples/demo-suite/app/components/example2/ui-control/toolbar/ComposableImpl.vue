@@ -3,6 +3,7 @@
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <p class="text-sm mt-2">点击测试：<b>{{ lastClicked }}</b></p>
     <p class="text-sm text-muted mt-1">useMaptalks + useMaptalksToolbar——4 个官网布局 Toolbar（位置/方向/子菜单）（对应官网 10.11）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -32,10 +33,12 @@ const tbOpts3: MaptalksToolbarOptions = { position: 'top-right', vertical: true,
 const tbOpts4: MaptalksToolbarOptions = { position: { top: 120, left: 20 }, vertical: true, reverseMenu: true, items: baseItems() }
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 useMaptalksToolbar(map, { options: tbOpts1 })
 useMaptalksToolbar(map, { options: tbOpts2 })
 useMaptalksToolbar(map, { options: tbOpts3 })
 useMaptalksToolbar(map, { options: tbOpts4 })
+
+const status = computed(() => (isReady.value ? '地图已创建（Toolbar 控件可用）' : '加载中…'))
 </script>

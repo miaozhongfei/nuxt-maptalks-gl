@@ -10,6 +10,7 @@
     />
     <p class="text-sm mt-2">点击测试：<b>{{ lastClicked }}</b></p>
     <p class="text-sm text-muted mt-1">MaptalksMap ref + useMaptalksToolbar——4 个官网布局 Toolbar（位置/方向/子菜单）（对应官网 10.11）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -46,4 +47,6 @@ useMaptalksToolbar(map, { options: tbOpts1 })
 useMaptalksToolbar(map, { options: tbOpts2 })
 useMaptalksToolbar(map, { options: tbOpts3 })
 useMaptalksToolbar(map, { options: tbOpts4 })
+
+const status = computed(() => (map.value ? '地图已创建（Toolbar 控件可用）' : '加载中…'))
 </script>
