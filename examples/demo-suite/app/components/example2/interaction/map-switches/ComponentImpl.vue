@@ -27,12 +27,13 @@
         <USwitch v-model="dblClick" @update:model-value="v => toggle('doubleClickZoom', v)" /> 双击
       </label>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
-// draggable / zoomable 走组件 prop（声明式响应）
+// draggable / zoomable 走组件 prop（声明式响应——构造时生效 + 运行时 watch 同步）
 const draggable = ref(true)
 const zoomable = ref(true)
 // 组件未单独声明 prop 的 3 项走 map.config() 直调
@@ -41,7 +42,9 @@ const touchZoom = ref(true)
 const dblClick = ref(true)
 
 function toggle(key: 'scrollWheelZoom' | 'touchZoom' | 'doubleClickZoom', v: boolean) {
-  // template ref 运行时已 unwrap，toValue() 处理 TS 类型中残留的 ShallowRef
+  // exposed map 是 Ref——toValue 解包取实例后 config
   toValue(mc.value?.map)?.config({ [key]: v })
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可实时开关交互）' : '加载中…'))
 </script>

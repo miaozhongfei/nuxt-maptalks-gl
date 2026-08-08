@@ -27,6 +27,7 @@
         <USwitch v-model="dblClick" @update:model-value="v => t('doubleClickZoom', v)" /> 双击
       </label>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -43,4 +44,6 @@ const dblClick = ref(true)
 function t(key: string, v: boolean) {
   toValue(map)?.config({ [key]: v })
 }
+
+const status = computed(() => (map.value ? '地图已创建（可实时开关交互）' : '加载中…'))
 </script>

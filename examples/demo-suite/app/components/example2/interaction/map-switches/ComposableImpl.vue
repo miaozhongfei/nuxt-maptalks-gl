@@ -18,12 +18,13 @@
         <USwitch v-model="dblClick" @update:model-value="v => t('doubleClickZoom', v)" /> 双击
       </label>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const draggable = ref(true)
@@ -35,4 +36,6 @@ const dblClick = ref(true)
 function t(key: string, v: boolean) {
   toValue(map)?.config({ [key]: v })
 }
+
+const status = computed(() => (isReady.value ? '地图已创建（可实时开关交互）' : '加载中…'))
 </script>
