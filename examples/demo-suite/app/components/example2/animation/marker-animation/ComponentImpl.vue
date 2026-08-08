@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -20,13 +21,18 @@
       <UButton size="sm" variant="outline" @click="shrink">变小</UButton>
       <UButton size="sm" variant="outline" @click="reset">重置</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
 const mRef = ref<MaptalksMarkerExposed | null>(null)
 
-function grow() { mRef.value?.geometry?.animate?.({ symbol: { markerWidth: 40, markerHeight: 40 } }, { duration: 1500 }) }
-function shrink() { mRef.value?.geometry?.animate?.({ symbol: { markerWidth: 20, markerHeight: 20 } }, { duration: 1500 }) }
-function reset() { mRef.value?.geometry?.updateSymbol({ markerWidth: 20, markerHeight: 20 }) }
+// exposed geometry 是 Ref——toValue 解包后调 animate/updateSymbol（已建模）
+function grow() { toValue(mRef.value?.geometry)?.animate?.({ symbol: { markerWidth: 40, markerHeight: 40 } }, { duration: 1500 }) }
+function shrink() { toValue(mRef.value?.geometry)?.animate?.({ symbol: { markerWidth: 20, markerHeight: 20 } }, { duration: 1500 }) }
+function reset() { toValue(mRef.value?.geometry)?.updateSymbol({ markerWidth: 20, markerHeight: 20 }) }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（Marker 变形动画）' : '加载中…'))
 </script>
