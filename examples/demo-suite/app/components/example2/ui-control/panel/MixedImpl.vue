@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksPanel——2 个官网布局面板（文本可拖拽 / 自定义 HTML）（对应官网 10.12）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -34,4 +35,6 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 
 useMaptalksPanel(map, { options: pOpts1 })
 useMaptalksPanel(map, { options: pOpts2 })
+
+const status = computed(() => (map.value ? '地图已创建（Panel 可用）' : '加载中…'))
 </script>
