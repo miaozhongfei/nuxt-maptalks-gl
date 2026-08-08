@@ -936,6 +936,8 @@ export interface UseMaptalksToolReturn {
 export interface UseMaptalksDrawToolOpts extends UseMaptalksToolOpts<MaptalksDrawToolOptions> {
   /** 初始绘制模式，默认 'Point' */
   mode?: string;
+  /** 初始是否启用绘制，默认 true（对齐原生 addTo() 即启用语义） */
+  enabled?: boolean;
 }
 
 /**

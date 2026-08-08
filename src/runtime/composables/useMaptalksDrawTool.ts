@@ -108,7 +108,7 @@ function bindDrawTool(
  * DrawTool 生命周期管理：创建 / 启停 / 模式切换，绘制结果以响应式 ref 暴露，自动 dispose。
  *
  * @description 地图就绪后创建 DrawTool 并 addTo(map)；`enabled`/`mode` 为双向 ref，写入即生效；
- * 监听 `drawend` 把结果写入 `result`；作用域销毁时 disable + remove。初始不自动启用绘制。
+ * 监听 `drawend` 把结果写入 `result`；作用域销毁时 disable + remove。初始默认启用绘制（`enabled: false` 可关闭）。
  * 若当前 maptalks-gl 未导出 DrawTool，则抛出 MaptalksError。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
  * @param {UseMaptalksDrawToolOpts} [options] - 初始模式与 DrawTool 选项
@@ -124,7 +124,8 @@ export function useMaptalksDrawTool(
   options: UseMaptalksDrawToolOpts = {},
 ): UseMaptalksDrawToolReturn {
   const tool = shallowRef<MaptalksDrawTool | null>(null);
-  const enabled = ref(false);
+  // 默认启用（对齐原生 MapTool.addTo 内部自动 enable 的语义，dist 源码实证）
+  const enabled = ref(options.enabled ?? true);
   const mode = ref(options.mode ?? 'Point');
   const result = shallowRef<unknown>(null);
 
