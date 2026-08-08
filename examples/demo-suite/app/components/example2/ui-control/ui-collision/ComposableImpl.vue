@@ -12,6 +12,7 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">useMaptalksUIMarker 循环 21 个——options getter 共享开关 ref，响应式重建（对应官网 10.9）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -30,7 +31,7 @@ const collisionOn = ref(true)
 const fadeInOn = ref(true)
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.49, 31.245], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.49, 31.245], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const COLORS = ['#dc2626', '#2563eb', '#10b981']
@@ -47,4 +48,6 @@ MARKERS.forEach((m, idx) => {
     }),
   })
 })
+
+const status = computed(() => (isReady.value ? '地图已创建（UI 碰撞可切换）' : '加载中…'))
 </script>

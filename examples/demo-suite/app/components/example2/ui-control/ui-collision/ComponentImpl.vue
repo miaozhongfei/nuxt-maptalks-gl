@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.49, 31.245]"
       :zoom="13"
       base-layer="osm"
@@ -26,10 +27,13 @@
       </div>
     </div>
     <p class="text-sm text-muted mt-2">MaptalksUIMarker 组件——碰撞开关响应式重建，簇内重叠时按权重隐藏低优先级（对应官网 10.9）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+
 // 3 个密集簇：每簇 7 个坐标相近的 UIMarker（簇间分离）
 const CLUSTERS: [number, number][][] = [
   Array.from({ length: 7 }, (_, i) => [121.5057 + i * 0.001, 31.2453 + (i % 3) * 0.001] as [number, number]),
@@ -53,4 +57,6 @@ function mkOpts(m: { label: string; weight: number }, idx: number): MaptalksUIMa
     collisionFadeIn: fadeInOn.value,
   }
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（UI 碰撞可切换）' : '加载中…'))
 </script>
