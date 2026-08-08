@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="Polygon.animateShow 逐面绘制多边形——hide 后 animateShow 揭示区域（对应官网 9.6）。"
+    description="Polygon.animateShow 逐面绘制多边形——hide 后 animateShow 揭示区域（对应官网 9.6）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

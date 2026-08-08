@@ -9,12 +9,14 @@
       style="height: 480px"
     />
     <UButton size="sm" variant="outline" class="mt-3" @click="animateShow">animateShow 展示</UButton>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
+// 组合：组件创建地图，computed 桥接 map 供 composable 使用
 const { layer } = useMaptalksVectorLayer(map)
 
 const ring = [[[121.49, 31.255], [121.52, 31.255], [121.52, 31.238], [121.49, 31.238], [121.49, 31.255]]] as [number, number][][]
@@ -28,4 +30,6 @@ function animateShow() {
   geo?.hide()
   geo?.animateShow({ duration: 1500, easing: 'out' })
 }
+
+const status = computed(() => (map.value ? '地图已创建（可逐面揭示区域）' : '加载中…'))
 </script>
