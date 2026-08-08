@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 400px" />
     <div class="mt-3 flex items-center gap-6">
@@ -50,7 +50,7 @@ watch(
         collisionBufferSize: 2,
         collisionWeight: mk.weight,
         collisionFadeIn: true,
-      }) as unknown as { options: Record<string, unknown> }
+      }) as unknown as { options: Record<string, unknown>; addTo: (m: MaptalksMap) => void }
       uim.addTo(m as never)
       return uim
     })
