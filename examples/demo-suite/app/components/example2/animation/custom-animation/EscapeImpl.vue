@@ -36,7 +36,7 @@ async function startAnim() {
     { symbol: { markerWidth: 80, markerHeight: 80 } },
     { duration: 1000, easing: 'out' },
     // 帧结构仅取 styles.symbol（原生动画引擎的逐帧插值结果）
-    (frame: { styles?: { symbol?: object } }) => { if (frame.styles?.symbol) geo.updateSymbol(frame.styles.symbol) },
+    (frame: { styles?: { symbol?: Record<string, unknown> } }) => { if (frame.styles?.symbol) geo.updateSymbol(frame.styles.symbol) },
   )
   player.play()
 }
