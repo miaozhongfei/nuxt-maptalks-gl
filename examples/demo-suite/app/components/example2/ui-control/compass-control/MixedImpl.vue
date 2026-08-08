@@ -11,6 +11,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksCompass——4 个官网布局指北针控件（pitch/bearing 旋转展示）（对应官网 10.15）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -29,4 +30,6 @@ useMaptalksCompass(map, { options: cOpts1 })
 useMaptalksCompass(map, { options: cOpts2 })
 useMaptalksCompass(map, { options: cOpts3 })
 useMaptalksCompass(map, { options: cOpts4 })
+
+const status = computed(() => (map.value ? '地图已创建（指北针可用）' : '加载中…'))
 </script>
