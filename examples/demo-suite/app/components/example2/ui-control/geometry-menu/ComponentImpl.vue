@@ -13,7 +13,7 @@
           <MaptalksMarker
             v-for="(c, i) in MARKERS"
             :key="'o1' + i"
-            :ref="(el: any) => (oldSRefs[i] = el)"
+            :ref="(el: MaptalksMarkerExposed | null) => (oldSRefs[i] = el)"
             :coordinates="c"
             :options="{ symbol: MKR_SYM }"
           />
@@ -58,7 +58,7 @@
           <MaptalksMarker
             v-for="(c, i) in MARKERS"
             :key="'o2' + i"
-            :ref="(el: any) => (oldCRefs[i] = el)"
+            :ref="(el: MaptalksMarkerExposed | null) => (oldCRefs[i] = el)"
             :coordinates="c"
             :options="{ symbol: MKR_SYM }"
           />
@@ -117,28 +117,27 @@
         新封装：&lt;MaptalksGeometryMenu slot&gt;——自定义 HTML。
       </p>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { watchEffect } from 'vue';
-
 const MARKERS: [number, number][] = [
   [121.5057, 31.2453],
   [121.508, 31.2453],
   [121.502, 31.2453],
-];
+]
 const MKR_SYM = {
   markerType: 'ellipse' as const,
   markerFill: '#f59e0b',
   markerWidth: 14,
   markerHeight: 14,
-};
+}
 
-const mc1 = ref<MaptalksMapExposed | null>(null);
-const mc2 = ref<MaptalksMapExposed | null>(null);
-const mc3 = ref<MaptalksMapExposed | null>(null);
-const mc4 = ref<MaptalksMapExposed | null>(null);
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const mc3 = ref<MaptalksMapExposed | null>(null)
+const mc4 = ref<MaptalksMapExposed | null>(null)
 
 const menuStd: MaptalksMenuOptions = {
   width: 160,
@@ -146,48 +145,49 @@ const menuStd: MaptalksMenuOptions = {
     {
       item: '放大',
       click: () => {
-        toValue(mc2.value?.map)?.zoomIn();
+        toValue(mc2.value?.map)?.zoomIn()
       },
     },
     {
       item: '缩小',
       click: () => {
-        toValue(mc2.value?.map)?.zoomOut();
+        toValue(mc2.value?.map)?.zoomOut()
       },
     },
   ],
-};
-const menuCust: MaptalksMenuOptions = { custom: true };
+}
+const menuCust: MaptalksMenuOptions = { custom: true }
 
-const oldSRefs = reactive<(MaptalksMarkerExposed | null)[]>([]);
-const oldCRefs = reactive<(MaptalksMarkerExposed | null)[]>([]);
+const oldSRefs = reactive<(MaptalksMarkerExposed | null)[]>([])
+const oldCRefs = reactive<(MaptalksMarkerExposed | null)[]>([])
 
 function customEl(zoomIn: () => void, zoomOut: () => void): HTMLElement | null {
-  if (typeof document === 'undefined') return null;
-  const d = document.createElement('div');
-  d.style.cssText = 'padding:2px;min-width:120px';
-  const b1 = document.createElement('button');
-  b1.textContent = '放大';
+  if (typeof document === 'undefined') return null
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:2px;min-width:120px'
+  const b1 = document.createElement('button')
+  b1.textContent = '放大'
   b1.style.cssText =
-    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px';
-  b1.addEventListener('click', zoomIn);
-  const b2 = document.createElement('button');
-  b2.textContent = '缩小';
+    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px'
+  b1.addEventListener('click', zoomIn)
+  const b2 = document.createElement('button')
+  b2.textContent = '缩小'
   b2.style.cssText =
-    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px';
-  b2.addEventListener('click', zoomOut);
-  d.append(b1, b2);
-  return d;
+    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px'
+  b2.addEventListener('click', zoomOut)
+  d.append(b1, b2)
+  return d
 }
 
-// flush: 'post' 延迟到 DOM 更新后，确保 defineExpose 已将 geometry ShallowRef 解包
+// flush: 'post' 延迟到 DOM 更新后，确保 v-for ref 收集完成
 watchEffect(
   () => {
-    const m = toValue(mc1.value?.map);
-    const refs = oldSRefs.filter(Boolean) as MaptalksMarkerExposed[];
-    if (!m || refs.length < 3) return;
+    const m = toValue(mc1.value?.map)
+    const refs = oldSRefs.filter(Boolean) as MaptalksMarkerExposed[]
+    if (!m || refs.length < 3) return
     refs.forEach((r) => {
-      const g = r.geometry;
+      // exposed geometry 是 Ref——toValue 解包
+      const g = toValue(r.geometry)
       if (g)
         g.setMenu?.({
           width: 160,
@@ -195,29 +195,32 @@ watchEffect(
             { item: '放大', click: () => m.zoomIn() },
             { item: '缩小', click: () => m.zoomOut() },
           ],
-        });
-    });
+        })
+    })
   },
   { flush: 'post' },
-);
+)
 
 watchEffect(
   () => {
-    const m = toValue(mc3.value?.map);
-    const refs = oldCRefs.filter(Boolean) as MaptalksMarkerExposed[];
-    if (!m || refs.length < 3) return;
+    const m = toValue(mc3.value?.map)
+    const refs = oldCRefs.filter(Boolean) as MaptalksMarkerExposed[]
+    if (!m || refs.length < 3) return
     refs.forEach((r) => {
-      const g = r.geometry;
+      const g = toValue(r.geometry)
       if (g)
+        // custom 模式 items 为 HTMLElement（建模 items 为条目数组）——逃生舱断言
         g.setMenu?.({
           custom: true,
           items: customEl(
             () => m.zoomIn(),
             () => m.zoomOut(),
           ),
-        } as any);
-    });
+        } as any)
+    })
   },
   { flush: 'post' },
-);
+)
+
+const status = computed(() => (toValue(mc1.value?.map) ? '地图已创建（图形右键菜单可用）' : '加载中…'))
 </script>
