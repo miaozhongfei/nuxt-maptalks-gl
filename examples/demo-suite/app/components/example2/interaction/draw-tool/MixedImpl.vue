@@ -18,6 +18,7 @@
       <UButton size="xs" variant="outline" @click="disable">禁用</UButton>
       <UButton size="xs" variant="outline" @click="enable">启用</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -32,4 +33,6 @@ function switchMode(m: string) {
   setMode(m)
   enable()
 }
+
+const status = computed(() => (map.value ? '地图已创建（选择模式绘制图形）' : '加载中…'))
 </script>

@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="DrawTool 绘制——5 模式按钮切换 Point/LineString/Polygon/Circle/Rectangle（对应官网 8.5）。"
+    description="DrawTool 绘制——5 模式按钮切换 Point/LineString/Polygon/Circle/Rectangle（对应官网 8.5）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

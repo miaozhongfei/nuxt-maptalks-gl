@@ -11,12 +11,13 @@
       <UButton size="xs" variant="outline" @click="disable">禁用</UButton>
       <UButton size="xs" variant="outline" @click="enable">启用</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 
 const modes = ['Point', 'LineString', 'Polygon', 'Circle', 'Rectangle'] as const
@@ -33,7 +34,8 @@ watch(
   (m) => {
     if (!m) return
     import('maptalks-gl').then((mt) => {
-      const Ctor = (mt as RawMt).DrawTool
+      // 原生 DrawTool.addTo(map: Map) 与窄类型签名逆变不兼容——双重断言
+      const Ctor = (mt as unknown as RawMt).DrawTool
       if (!Ctor) return
       dt = new Ctor({ mode: mode.value })
       dt.addTo(m)
@@ -51,4 +53,6 @@ function switchMode(m: string) {
 
 function enable() { dt?.enable() }
 function disable() { dt?.disable() }
+
+const status = computed(() => (isReady.value ? '地图已创建（选择模式绘制图形）' : '加载中…'))
 </script>
