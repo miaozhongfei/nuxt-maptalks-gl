@@ -2,6 +2,7 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <p class="text-sm text-muted mt-2">useMaptalks + useMaptalksScale——3 个官网布局比例尺（maxWidth × 米制/英制）（对应官网 10.16）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -12,9 +13,11 @@ const sOpts2: MaptalksScaleOptions = { position: 'top-right', maxWidth: 150, met
 const sOpts3: MaptalksScaleOptions = { position: 'bottom-right', maxWidth: 200, metric: false, imperial: true }
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 useMaptalksScale(map, { options: sOpts1 })
 useMaptalksScale(map, { options: sOpts2 })
 useMaptalksScale(map, { options: sOpts3 })
+
+const status = computed(() => (isReady.value ? '地图已创建（比例尺可用）' : '加载中…'))
 </script>

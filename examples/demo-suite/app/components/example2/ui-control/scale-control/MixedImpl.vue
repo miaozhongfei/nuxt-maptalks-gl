@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksScale——3 个官网布局比例尺（maxWidth × 米制/英制）（对应官网 10.16）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -25,4 +26,6 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 useMaptalksScale(map, { options: sOpts1 })
 useMaptalksScale(map, { options: sOpts2 })
 useMaptalksScale(map, { options: sOpts3 })
+
+const status = computed(() => (map.value ? '地图已创建（比例尺可用）' : '加载中…'))
 </script>
