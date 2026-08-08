@@ -1,6 +1,7 @@
 <template>
   <div>
     <MaptalksMap
+      ref="mc"
       :center="[121.5057, 31.2453]"
       :zoom="13"
       base-layer="osm"
@@ -53,9 +54,13 @@
         >结束编辑</UButton
       >
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const pRef = ref<MaptalksPolygonExposed | null>(null);
+const mc = ref<MaptalksMapExposed | null>(null)
+const pRef = ref<MaptalksPolygonExposed | null>(null)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可编辑 Polygon）' : '加载中…'))
 </script>
