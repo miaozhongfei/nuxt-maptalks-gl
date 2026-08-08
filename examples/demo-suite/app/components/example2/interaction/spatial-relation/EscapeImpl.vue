@@ -6,12 +6,13 @@
       style="height: 480px"
     />
     <UBadge variant="subtle" class="mt-2">点击坐标: {{ status }}</UBadge>
+    <p class="text-xs text-muted mt-1">{{ mapStatus }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
 
@@ -36,4 +37,6 @@ useMaptalksEvents(map, {
     status.value = toValue(polygon)?.containsPoint(ev.containerPoint) ? '内' : '外'
   },
 })
+
+const mapStatus = computed(() => (isReady.value ? '地图已创建（点击检测空间关系）' : '加载中…'))
 </script>

@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <UBadge variant="subtle" class="mt-2">点击坐标: {{ status }}</UBadge>
+    <p class="text-xs text-muted mt-1">{{ mapStatus }}</p>
   </div>
 </template>
 
@@ -34,4 +35,6 @@ useMaptalksEvents(map, {
     status.value = toValue(polygon)?.containsPoint(ev.containerPoint) ? '内' : '外'
   },
 })
+
+const mapStatus = computed(() => (map.value ? '地图已创建（点击检测空间关系）' : '加载中…'))
 </script>

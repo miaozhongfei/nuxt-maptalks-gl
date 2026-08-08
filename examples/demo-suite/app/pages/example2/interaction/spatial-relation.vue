@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="polygon.containsPoint() 空间判断——点击地图检测是否在矩形内（对应官网 8.15）。"
+    description="polygon.containsPoint() 空间判断——点击地图检测是否在矩形内（对应官网 8.15）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

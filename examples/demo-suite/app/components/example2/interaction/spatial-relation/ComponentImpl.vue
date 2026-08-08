@@ -19,6 +19,7 @@
       </MaptalksVectorLayer>
     </MaptalksMap>
     <UBadge variant="subtle" class="mt-2">点击坐标: {{ status }}</UBadge>
+    <p class="text-xs text-muted mt-1">{{ mapStatus }}</p>
   </div>
 </template>
 
@@ -34,8 +35,11 @@ const status = ref('点击地图')
 useMaptalksEvents(map, {
   click: (e: unknown) => {
     const ev = e as { containerPoint: { x: number; y: number } }
-    const inside = pRef.value?.geometry?.containsPoint(ev.containerPoint)
+    // exposed geometry 是 Ref——toValue 解包后调 containsPoint（已建模）
+    const inside = toValue(pRef.value?.geometry)?.containsPoint(ev.containerPoint)
     status.value = inside ? '内' : '外'
   },
 })
+
+const mapStatus = computed(() => (map.value ? '地图已创建（点击检测空间关系）' : '加载中…'))
 </script>
