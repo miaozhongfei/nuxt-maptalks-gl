@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grid grid-cols-2 gap-3">
     <div>
       <div
@@ -70,14 +70,14 @@ watch(
       content: '<div style="padding:8px">字符串 InfoWindow</div>',
     } as any)
     iw.addTo(m as never)
-    iw.show([121.5057, 31.2453])
+    iw.show([121.5057, 31.2453] as never)
     iw1 = iw
   },
   { immediate: true },
 )
 function toggle1() {
   show1.value = !show1.value
-  if (show1.value) iw1?.show([121.5057, 31.2453])
+  if (show1.value) iw1?.show([121.5057, 31.2453] as never)
   else iw1?.hide()
 }
 
@@ -114,14 +114,14 @@ watch(
     const iw = new mt.ui.InfoWindow({ title: '自定义内容', custom: true } as any)
     iw.addTo(m as never)
     iw.setContent(counterEl() ?? '')
-    iw.show([121.5057, 31.2453])
+    iw.show([121.5057, 31.2453] as never)
     iw2 = iw
   },
   { immediate: true },
 )
 function toggle2() {
   show2.value = !show2.value
-  if (show2.value) iw2?.show([121.5057, 31.2453])
+  if (show2.value) iw2?.show([121.5057, 31.2453] as never)
   else iw2?.hide()
 }
 
@@ -147,7 +147,7 @@ watch(
       events3.value.unshift(`showend ${new Date().toLocaleTimeString()}`)
     })
     iw.addTo(m as never)
-    iw.show([121.5057, 31.2453])
+    iw.show([121.5057, 31.2453] as never)
   },
   { immediate: true },
 )
@@ -186,7 +186,7 @@ watch(
     d.append(lbl, inp, btn)
     iw.addTo(m as never)
     iw.setContent(d)
-    iw.show([121.5057, 31.2453])
+    iw.show([121.5057, 31.2453] as never)
   },
   { immediate: true },
 )
