@@ -18,7 +18,7 @@
         class="mt-1"
         @click="
           () => {
-            show1 = !show1;
+            show1 = !show1
           }
         "
         >{{ show1 ? '隐藏' : '显示' }}</UButton
@@ -47,7 +47,7 @@
               color="primary"
               @click="
                 () => {
-                  count++;
+                  count++
                 }
               "
               >点击 +1</UButton
@@ -64,7 +64,7 @@
         class="mt-1"
         @click="
           () => {
-            show2 = !show2;
+            show2 = !show2
           }
         "
         >{{ show2 ? '隐藏' : '显示' }}</UButton
@@ -117,42 +117,45 @@
         <div v-for="(e, i) in events4" :key="i">{{ e }}</div>
       </div>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const show1 = ref(true);
-const show2 = ref(true);
-const show3 = ref(true);
-const show4 = ref(true);
-const count = ref(0);
-const searchText = ref('');
-const events3 = ref<string[]>([]);
-const events4 = ref<string[]>([]);
+const show1 = ref(true)
+const show2 = ref(true)
+const show3 = ref(true)
+const show4 = ref(true)
+const count = ref(0)
+const searchText = ref('')
+const events3 = ref<string[]>([])
+const events4 = ref<string[]>([])
 
 const opts1: MaptalksInfoWindowOptions = {
   title: '字符串内容',
   content: '<div style="padding:8px">字符串 InfoWindow</div>',
-};
+}
 const opts3: MaptalksInfoWindowOptions = {
   title: '事件日志',
   content: '<div style="padding:8px">查看下方事件日志</div>',
-};
+}
 
 function onShowStart() {
-  events3.value.unshift(`showstart ${new Date().toLocaleTimeString()}`);
+  events3.value.unshift(`showstart ${new Date().toLocaleTimeString()}`)
 }
 function onShowEnd() {
-  events3.value.unshift(`showend ${new Date().toLocaleTimeString()}`);
+  events3.value.unshift(`showend ${new Date().toLocaleTimeString()}`)
 }
 
-const mc4 = ref<MaptalksMapExposed | null>(null);
+const mc4 = ref<MaptalksMapExposed | null>(null)
 function doFly4() {
-  const parts = searchText.value.split(',').map(Number) as [number, number];
-  const m = toValue(mc4.value?.map);
+  const parts = searchText.value.split(',').map(Number) as [number, number]
+  const m = toValue(mc4.value?.map)
   if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) && m) {
-    m.flyTo({ center: parts, zoom: 16 });
-    events4.value.unshift(`flyTo ${parts.join(',')} ${new Date().toLocaleTimeString()}`);
+    m.flyTo({ center: parts, zoom: 16 })
+    events4.value.unshift(`flyTo ${parts.join(',')} ${new Date().toLocaleTimeString()}`)
   }
 }
+
+const status = computed(() => (toValue(mc4.value?.map) ? '地图已创建（信息窗可用）' : '加载中…'))
 </script>
