@@ -15,6 +15,7 @@
       <UButton size="sm" variant="outline" @click="() => { control?.minimize() }">收起鹰眼</UButton>
     </div>
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksOverview——鹰眼小地图 + maxmize/minimize 按钮（对应官网 10.13）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -27,4 +28,6 @@ const mc = ref<MaptalksMapExposed | null>(null)
 const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { control } = useMaptalksOverview(map, { options: ovOpts })
+
+const status = computed(() => (map.value ? '地图已创建（鹰眼可用）' : '加载中…'))
 </script>

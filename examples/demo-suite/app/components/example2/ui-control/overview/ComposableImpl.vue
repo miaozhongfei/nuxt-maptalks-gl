@@ -12,7 +12,7 @@
         variant="outline"
         @click="
           () => {
-            control?.maxmize();
+            control?.maxmize()
           }
         "
         >展开鹰眼</UButton
@@ -22,7 +22,7 @@
         variant="outline"
         @click="
           () => {
-            control?.minimize();
+            control?.minimize()
           }
         "
         >收起鹰眼</UButton
@@ -31,6 +31,7 @@
     <p class="text-sm text-muted mt-2">
       useMaptalks + useMaptalksOverview——鹰眼小地图 + maxmize/minimize 按钮（对应官网 10.13）。
     </p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -40,11 +41,13 @@ const ovOpts: MaptalksOverviewOptions = {
   position: 'bottom-right',
   size: [150, 110],
   maximize: true,
-};
+}
 
-const el = ref<HTMLElement | null>(null);
+const el = ref<HTMLElement | null>(null)
 // baseLayer 走 useMaptalks 参数（setBaseLayer）——Overview 鹰眼需 getBaseLayer() 复制底图
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 45, baseLayer: 'osm' });
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, pitch: 45, baseLayer: 'osm' })
 // control 为窄类型 MaptalksOverviewControl，maxmize/minimize 直接可用
-const { control } = useMaptalksOverview(map, { options: ovOpts });
+const { control } = useMaptalksOverview(map, { options: ovOpts })
+
+const status = computed(() => (isReady.value ? '地图已创建（鹰眼可用）' : '加载中…'))
 </script>
