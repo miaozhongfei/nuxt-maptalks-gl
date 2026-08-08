@@ -90,6 +90,7 @@ export type {
   MaptalksSectorOptions,
   MaptalksTextBoxOptions,
   MaptalksTileLayerOptions,
+  MaptalksToolbarItem,
   MaptalksToolbarOptions,
   MaptalksUIMarkerOptions,
   MaptalksVectorLayerOptions,
