@@ -87,90 +87,95 @@
         新封装 + slot：&lt;MaptalksMenu slot&gt; + UInput/UButton 双向绑定。
       </p>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 function simpleEl(zoomIn: () => void, zoomOut: () => void): HTMLElement | null {
-  if (typeof document === 'undefined') return null;
-  const d = document.createElement('div');
-  d.style.cssText = 'padding:2px;min-width:120px';
-  const b1 = document.createElement('button');
-  b1.textContent = '放大';
+  if (typeof document === 'undefined') return null
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:2px;min-width:120px'
+  const b1 = document.createElement('button')
+  b1.textContent = '放大'
   b1.style.cssText =
-    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px';
-  b1.addEventListener('click', zoomIn);
-  const b2 = document.createElement('button');
-  b2.textContent = '缩小';
+    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px'
+  b1.addEventListener('click', zoomIn)
+  const b2 = document.createElement('button')
+  b2.textContent = '缩小'
   b2.style.cssText =
-    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px';
-  b2.addEventListener('click', zoomOut);
-  d.append(b1, b2);
-  return d;
+    'display:block;width:100%;padding:4px 12px;border:none;background:none;cursor:pointer;text-align:left;font-size:14px'
+  b2.addEventListener('click', zoomOut)
+  d.append(b1, b2)
+  return d
 }
 
 function formEl(search: (v: string) => void): HTMLElement | null {
-  if (typeof document === 'undefined') return null;
-  const d = document.createElement('div');
-  d.style.cssText = 'padding:4px;min-width:180px';
-  const lbl = document.createElement('div');
-  lbl.textContent = '输入坐标（如 121.5,31.2）：';
-  lbl.style.cssText = 'font-size:12px;margin-bottom:4px;color:#666';
-  const inp = document.createElement('input');
+  if (typeof document === 'undefined') return null
+  const d = document.createElement('div')
+  d.style.cssText = 'padding:4px;min-width:180px'
+  const lbl = document.createElement('div')
+  lbl.textContent = '输入坐标（如 121.5,31.2）：'
+  lbl.style.cssText = 'font-size:12px;margin-bottom:4px;color:#666'
+  const inp = document.createElement('input')
   inp.style.cssText =
-    'width:100%;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:13px;margin-bottom:4px;box-sizing:border-box';
-  const btn = document.createElement('button');
-  btn.textContent = '搜索';
+    'width:100%;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:13px;margin-bottom:4px;box-sizing:border-box'
+  const btn = document.createElement('button')
+  btn.textContent = '搜索'
   btn.style.cssText =
-    'width:100%;padding:3px 0;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer';
+    'width:100%;padding:3px 0;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:3px;font-size:13px;cursor:pointer'
   btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    search(inp.value);
-  });
-  d.append(lbl, inp, btn);
-  return d;
+    e.stopPropagation()
+    search(inp.value)
+  })
+  d.append(lbl, inp, btn)
+  return d
 }
 
-function flyToCoord(m: any, s: string) {
-  const parts = s.split(',').map(Number);
+function flyToCoord(m: MaptalksMap | null, s: string) {
+  const parts = s.split(',').map(Number)
   if (parts.length === 2 && !isNaN(parts[0] as number) && !isNaN(parts[1] as number))
-    m.flyTo({ center: parts, zoom: 16 });
+    m?.flyTo({ center: parts as [number, number], zoom: 16 })
 }
 
-const mc1 = ref<MaptalksMapExposed | null>(null);
-const mc2 = ref<MaptalksMapExposed | null>(null);
-const mc3 = ref<MaptalksMapExposed | null>(null);
-const mc4 = ref<MaptalksMapExposed | null>(null);
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const mc3 = ref<MaptalksMapExposed | null>(null)
+const mc4 = ref<MaptalksMapExposed | null>(null)
 
-const menuSimple: MaptalksMenuOptions = { custom: true };
-const menuCust: MaptalksMenuOptions = { custom: true };
+const menuSimple: MaptalksMenuOptions = { custom: true }
+const menuCust: MaptalksMenuOptions = { custom: true }
 
 // —— 旧 API + 简单 DOM ——
 watch(
-  () => mc1.value?.map,
+  // exposed map 是 Ref——toValue 解包取实例
+  () => toValue(mc1.value?.map),
   (m) => {
     if (m)
+      // custom 模式 items 为 HTMLElement（建模 items 为条目数组）——逃生舱断言
       m.setMenu({
         custom: true,
         items: simpleEl(
           () => m.zoomIn(),
           () => m.zoomOut(),
         ),
-      } as any);
+      } as any)
   },
-);
+)
 
 // —— 旧 API + 复杂表单 ——
 watch(
-  () => mc3.value?.map,
+  () => toValue(mc3.value?.map),
   (m) => {
-    if (m) m.setMenu({ custom: true, items: formEl((v) => flyToCoord(m, v)) } as any);
+    if (m) m.setMenu({ custom: true, items: formEl((v) => flyToCoord(m, v)) } as any)
   },
-);
+)
 
 // —— Slot 模式的搜索（用 v-model 的双向绑定）——
-const searchText = ref('');
+const searchText = ref('')
 function doSearch4() {
-  flyToCoord(toValue(mc4.value?.map), searchText.value);
+  flyToCoord(toValue(mc4.value?.map), searchText.value)
 }
+
+const status = computed(() => (toValue(mc1.value?.map) ? '地图已创建（自定义右键菜单可用）' : '加载中…'))
 </script>
