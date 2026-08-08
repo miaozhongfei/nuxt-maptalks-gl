@@ -12,6 +12,7 @@
       <UButton size="sm" variant="outline" @click="startEdit">开始编辑</UButton>
       <UButton size="sm" variant="outline" @click="endEdit">结束编辑</UButton>
     </div>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -26,6 +27,8 @@ const { geometry } = useMaptalksLabel(layer, {
   options: { textSymbol: { textFaceName: 'sans-serif', textFill: '#fff', textSize: 18 }, boxStyle: { padding: [12, 8], symbol: { markerType: 'square', markerFill: '#34495e', markerFillOpacity: 0.9, markerLineColor: '#34495e', markerLineWidth: 1 } } },
 })
 
-function startEdit() { (toValue(geometry) as any)?.startEditText?.() }
-function endEdit() { (toValue(geometry) as any)?.endEditText?.() }
+function startEdit() { toValue(geometry)?.startEditText?.() }
+function endEdit() { toValue(geometry)?.endEditText?.() }
+
+const status = computed(() => (map.value ? '地图已创建（可内联编辑文字）' : '加载中…'))
 </script>

@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="Label 内联文字编辑：startEditText()/endEditText() 切换文本编辑模式（对应官网 8.12）。"
+    description="Label 内联文字编辑：startEditText()/endEditText() 切换文本编辑模式（对应官网 8.12）"
     :tabs="tabs"
   />
 </template>
@@ -17,5 +17,5 @@ const tabs: DemoTab[] = [
   { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
   { key: 'escape', label: '逃生舱', comp: EscapeImpl },
-];
+]
 </script>

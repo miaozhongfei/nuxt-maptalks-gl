@@ -1606,6 +1606,10 @@ export interface MaptalksLabelGeometry extends MaptalksGeometry {
   getTextSymbol(): Record<string, unknown>;
   /** 设置 Label 文字符号 */
   setTextSymbol(symbol: Record<string, unknown>): this;
+  /** 开始内联编辑文字（官网 Label API；demo 实证 8.12） */
+  startEditText?(): MaptalksLabelGeometry;
+  /** 结束内联编辑文字 */
+  endEditText?(): MaptalksLabelGeometry;
 }
 
 /**
