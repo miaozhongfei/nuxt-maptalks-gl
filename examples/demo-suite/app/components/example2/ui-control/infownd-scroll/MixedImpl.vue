@@ -16,6 +16,7 @@
       <MaptalksMap ref="mc4" :center="[121.5057, 31.2453]" :zoom="13" base-layer="osm" class="relative rounded border border-default overflow-hidden" style="height: 280px" />
       <p class="text-xs text-muted mt-1">enableScrollbar:true——光标悬停内容区时滚轮滚内容、地图不缩放。</p>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -68,4 +69,6 @@ const mc4 = ref<MaptalksMapExposed | null>(null)
 const map4 = computed(() => toValue(mc4.value?.map) ?? null)
 const { show: showIW4 } = useMaptalksInfoWindow(map4, { options: { title: 'enableScrollbar', content: LONG_TEXT, enableScrollbar: true } })
 onMounted(() => { showIW4([121.5057, 31.2453]) })
+
+const status = computed(() => (map1.value ? '地图已创建（信息窗内容可滚动）' : '加载中…'))
 </script>

@@ -16,6 +16,7 @@
       <div ref="el4" class="relative rounded border border-default overflow-hidden" style="height: 280px" />
       <p class="text-xs text-muted mt-1">enableScrollbar:true——光标悬停内容区时滚轮滚内容、地图不缩放。</p>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -47,7 +48,7 @@ const MIXED_HTML = [
 
 // —— 左上：长文本列表 ——
 const el1 = ref<HTMLElement | null>(null)
-const { map: map1 } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
+const { map: map1, isReady } = useMaptalks(el1, { center: [121.5057, 31.2453], zoom: 13 })
 useMaptalksTileLayer(map1, { source: 'osm' })
 const { show: showIW1 } = useMaptalksInfoWindow(map1, { options: { title: '长文本列表', content: LONG_TEXT } })
 onMounted(() => { showIW1([121.5057, 31.2453]) })
@@ -72,4 +73,6 @@ const { map: map4 } = useMaptalks(el4, { center: [121.5057, 31.2453], zoom: 13 }
 useMaptalksTileLayer(map4, { source: 'osm' })
 const { show: showIW4 } = useMaptalksInfoWindow(map4, { options: { title: 'enableScrollbar', content: LONG_TEXT, enableScrollbar: true } })
 onMounted(() => { showIW4([121.5057, 31.2453]) })
+
+const status = computed(() => (isReady.value ? '地图已创建（信息窗内容可滚动）' : '加载中…'))
 </script>

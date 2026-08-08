@@ -24,6 +24,7 @@
       </MaptalksMap>
       <p class="text-xs text-muted mt-1">enableScrollbar:true——光标悬停内容区时滚轮滚内容、地图不缩放。</p>
     </div>
+    <p class="text-xs text-muted col-span-2">{{ status }}</p>
   </div>
 </template>
 
@@ -53,8 +54,15 @@ const MIXED_HTML = [
   '</div>',
 ].join('')
 
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const mc3 = ref<MaptalksMapExposed | null>(null)
+const mc4 = ref<MaptalksMapExposed | null>(null)
+
 const opts1: MaptalksInfoWindowOptions = { title: '长文本列表', content: LONG_TEXT }
 const opts2: MaptalksInfoWindowOptions = { title: '长表格', content: TABLE_HTML }
 const opts3: MaptalksInfoWindowOptions = { title: '混合内容', content: MIXED_HTML }
 const opts4: MaptalksInfoWindowOptions = { title: 'enableScrollbar', content: LONG_TEXT, enableScrollbar: true }
+
+const status = computed(() => (toValue(mc1.value?.map) ? '地图已创建（信息窗内容可滚动）' : '加载中…'))
 </script>
