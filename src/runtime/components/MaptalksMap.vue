@@ -109,4 +109,27 @@ watch(
   () => props.zoomable,
   (v) => { if (v !== undefined && map.value) map.value.config({ zoomable: v }) },
 )
+// 相机类 prop 运行时同步——单向（prop → 地图），地图交互不回写 prop 避免循环
+watch(
+  () => props.center,
+  (v) => { if (v && map.value) map.value.setCenter(v) },
+)
+watch(
+  () => props.zoom,
+  (v) => { if (v !== undefined && map.value) map.value.setZoom(v, { animation: false }) },
+)
+watch(
+  () => props.pitch,
+  (v) => { if (v !== undefined && map.value) map.value.setPitch(v) },
+)
+watch(
+  () => props.bearing,
+  (v) => { if (v !== undefined && map.value) map.value.setBearing(v) },
+)
+// options 运行时变化 → config 应用（深 watch；name/baseLayer 构造时定，不加运行时同步）
+watch(
+  () => props.options,
+  (o) => { if (map.value) map.value.config(o as Record<string, unknown>) },
+  { deep: true },
+)
 </script>
