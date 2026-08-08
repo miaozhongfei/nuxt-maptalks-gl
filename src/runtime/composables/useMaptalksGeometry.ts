@@ -166,11 +166,29 @@ function bindExtraProps(
 }
 
 /**
+ * options 重建比较的剥离版本。
+ *
+ * @description symbol/properties 已由 bindGeometryUpdates 单独响应式（setSymbol/setProperties），
+ * 比较时排除——避免 hover 高亮这类 symbol 切换触发全量重建（重建会使 maptalks hover 状态机持有已 remove 的旧实例，mouseout 丢失）。
+ * @param {unknown} opts - 待比较的 options 对象
+ * @returns {unknown} 剥离 symbol/properties 后的其余字段
+ *
+ * @example
+ * const same = dequal(optionsComparable(a), optionsComparable(b));
+ */
+function optionsComparable(opts: unknown): unknown {
+  if (!opts || typeof opts !== 'object') return opts;
+  const { symbol: _symbol, properties: _properties, ...rest } = opts as Record<string, unknown>;
+  return rest;
+}
+
+/**
  * 监听 options 整体变化 → remove + recreate（对标 useMaptalksInfoWindow 的 options 重建机制）。
  *
  * @description 仅在 options.options 存在时生效；通过 dequal 深比较过滤引用变化但内容不变的情况，
  * 避免父组件 re-render 导致内联对象字面量产生新引用 → 不必要的全量 remove + addGeometry。
- * 内容确实变化时才重建几何。
+ * symbol/properties 经 optionsComparable 剥离后不参与比较（走 bindGeometryUpdates 响应式）。
+ * 其余内容确实变化时才重建几何。
  * @param {() => MaptalksVectorLayer | null} getLayer - 取矢量图层
  * @param {(mt: MaptalksGLNamespace) => MaptalksGeometry} factory - 几何工厂
  * @param {UseMaptalksGeometryOpts} options - 响应式选项
@@ -190,7 +208,7 @@ function bindOptionsRebuild(
     (opts) => {
       // 首次触发仅初始化 prevOpts，不重建（模板内联 :options 产生新引用但内容未变时，避免无谓 remove + create）
       if (prevOpts === undefined) { prevOpts = opts as Record<string, unknown>; return; }
-      if (dequal(opts, prevOpts)) return;
+      if (dequal(optionsComparable(opts), optionsComparable(prevOpts))) return;
       prevOpts = opts as Record<string, unknown> | undefined;
       const geo = state.geometry.value;
       if (geo) {
