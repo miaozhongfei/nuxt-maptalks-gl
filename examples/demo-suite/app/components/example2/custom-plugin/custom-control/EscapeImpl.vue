@@ -20,6 +20,7 @@ watch(
   async (m) => {
     if (!m || status.value.includes('已添加')) return
     const mt: any = await import('maptalks-gl')
+    if (!mt.control?.Control) return
     // 官网 13.1 同款：自定义控件类 + mergeOptions 默认项 + buildOn 返回 DOM
     // 显式构造器透传 options（Volar 对父类构造器签名解析差异，as never 兜底）
     class MyControl extends mt.control.Control {
