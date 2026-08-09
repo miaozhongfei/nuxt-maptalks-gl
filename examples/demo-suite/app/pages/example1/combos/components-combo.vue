@@ -13,7 +13,7 @@
           <UBadge color="neutral" variant="outline">组合</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 520px" baseLayer="osm">
+      <MaptalksMap ref="mc" :center="center" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 520px" baseLayer="osm">
         <!-- 矢量图层 + 多种几何 -->
         <MaptalksVectorLayer>
           <MaptalksMarker
@@ -42,7 +42,7 @@
         <MaptalksAttributionControl :options="{ position: 'bottom-right' }" />
         <!-- 测距工具 -->
         <MaptalksDistanceTool />
-        <!-- 信息框（点击地图弹出） -->
+        <!-- 信息框（点击地图弹出，经 useMaptalksEvents 绑定 click 打开） -->
         <MaptalksInfoWindow :coordinates="clickCoord" :visible="showIWC">
           <div style="padding: 6px 12px">
             <strong style="color: #2563eb">组件组合信息框</strong>
@@ -55,13 +55,27 @@
           一张地图上同时展示了：Tile 底图 + VectorLayer + Marker/LineString/Polygon/Circle/TextBox +
           Zoom/Scale/Compass/Attribution 控件 + DistanceTool + InfoWindow。操作：直接在地图上画测距，点击任意位置打开信息框。
         </div>
+        <div class="text-xs text-muted mt-1">{{ status }}</div>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
-const clickCoord = ref<[number, number]>([121.4737, 31.2304]);
-const showIWC = ref(false);
+const mc = ref<MaptalksMapExposed | null>(null)
+const center: [number, number] = [121.4737, 31.2304]
+const clickCoord = ref<[number, number]>([121.4737, 31.2304])
+const showIWC = ref(false)
+
+// 点击地图任意位置 → 更新坐标并打开信息框（补齐信息框交互，声明式组件只负责展示）
+const map = computed(() => toValue(mc.value?.map) ?? null)
+useMaptalksEvents(map, {
+  click: (e: unknown) => {
+    const ev = e as { coordinate: { x: number; y: number } }
+    clickCoord.value = [ev.coordinate.x, ev.coordinate.y]
+    showIWC.value = true
+  },
+})
+
+const status = computed(() => (map.value ? '地图已创建（点击地图打开信息框）' : '加载中…'))
 </script>

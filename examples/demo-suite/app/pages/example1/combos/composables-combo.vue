@@ -23,6 +23,7 @@
           <div class="flex gap-2 flex-wrap">
             <UButton size="sm" @click="cam.animateTo({ center: [121.5057, 31.2453], zoom: 14 })">飞行到陆家嘴</UButton>
             <UButton size="sm" color="neutral" @click="showIW">在中心显示信息框</UButton>
+            <span class="text-xs text-muted">{{ status }}</span>
           </div>
         </div>
       </template>
@@ -31,32 +32,41 @@
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
-const el = ref<HTMLElement | null>(null);
+const center: [number, number] = [121.4737, 31.2304]
+const el = ref<HTMLElement | null>(null)
 
 // 地图
-const { map } = useMaptalks(el, { center, zoom: 12 });
+const { map, isReady } = useMaptalks(el, { center, zoom: 12 })
 // 底图
-useMaptalksTileLayer(map, { source: 'osm' });
+useMaptalksTileLayer(map, { source: 'osm' })
 // 矢量图层
-const { layer } = useMaptalksVectorLayer(map);
+const { layer } = useMaptalksVectorLayer(map)
 // 多种几何
-useMaptalksMarker(layer, { coordinates: center, options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } } });
-useMaptalksLineString(layer, { coordinates: [[121.45, 31.22], [121.48, 31.24]], options: { symbol: { lineColor: '#dc2626', lineWidth: 3 } } });
-useMaptalksPolygon(layer, { coordinates: [[[121.45, 31.23], [121.48, 31.23], [121.48, 31.25], [121.45, 31.25], [121.45, 31.23]]], options: { symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 } } });
-useMaptalksCircle(layer, { coordinates: [121.5, 31.23], radius: 700, options: { symbol: { polygonFill: '#6366f1', polygonOpacity: 0.3, lineColor: '#4f46e5', lineWidth: 2 } } });
-useMaptalksTextBox(layer, { content: '编组合', coordinates: [121.51, 31.26], width: 100, height: 36 });
+useMaptalksMarker(layer, { coordinates: center, options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } } })
+useMaptalksLineString(layer, { coordinates: [[121.45, 31.22], [121.48, 31.24]], options: { symbol: { lineColor: '#dc2626', lineWidth: 3 } } })
+useMaptalksPolygon(layer, { coordinates: [[[121.45, 31.23], [121.48, 31.23], [121.48, 31.25], [121.45, 31.25], [121.45, 31.23]]], options: { symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 } } })
+useMaptalksCircle(layer, { coordinates: [121.5, 31.23], radius: 700, options: { symbol: { polygonFill: '#6366f1', polygonOpacity: 0.3, lineColor: '#4f46e5', lineWidth: 2 } } })
+useMaptalksTextBox(layer, { content: '编组合', coordinates: [121.51, 31.26], width: 100, height: 36 })
 // 控件
-useMaptalksZoom(map, { options: { position: 'top-left' } });
-useMaptalksScale(map, { options: { position: 'bottom-left' } });
-useMaptalksCompass(map, { options: { position: 'top-right' } });
-useMaptalksAttribution(map, { options: { position: 'bottom-right' } });
+useMaptalksZoom(map, { options: { position: 'top-left' } })
+useMaptalksScale(map, { options: { position: 'bottom-left' } })
+useMaptalksCompass(map, { options: { position: 'top-right' } })
+useMaptalksAttribution(map, { options: { position: 'bottom-right' } })
 // 相机
-const cam = useMaptalksCamera(map);
+const cam = useMaptalksCamera(map)
 // 事件
-const lastClick = ref('（点地图）');
-useMaptalksEvents(map, { click: (e) => { const ev = e as { coordinate: { x: number; y: number } }; lastClick.value = `[${ev.coordinate.x.toFixed(4)}, ${ev.coordinate.y.toFixed(4)}]`; } });
+const lastClick = ref('（点地图）')
+useMaptalksEvents(map, {
+  click: (e) => {
+    const ev = e as { coordinate: { x: number; y: number } }
+    lastClick.value = `[${ev.coordinate.x.toFixed(4)}, ${ev.coordinate.y.toFixed(4)}]`
+  },
+})
 // 信息框
-const { show } = useMaptalksInfoWindow(map, { options: () => ({ title: '信息框', content: '<div style="padding:8px">纯 composable 组合的信息框</div>' }) });
-function showIW() { show(center); }
+const { show } = useMaptalksInfoWindow(map, { options: () => ({ title: '信息框', content: '<div style="padding:8px">纯 composable 组合的信息框</div>' }) })
+function showIW() {
+  show(center)
+}
+
+const status = computed(() => (isReady.value ? '地图已创建（全家桶可用）' : '加载中…'))
 </script>
