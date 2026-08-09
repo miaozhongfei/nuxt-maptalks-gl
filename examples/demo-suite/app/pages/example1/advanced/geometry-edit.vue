@@ -33,7 +33,8 @@ const { map: map1, isReady: ready1 } = useMaptalks(el1, { center, zoom: 13 })
 useMaptalksTileLayer(map1, { source: 'osm' })
 const { layer: drawVec } = useMaptalksVectorLayer(map1)
 
-const { enabled, mode, setMode: dtSetMode, result } = useMaptalksDrawTool(map1, { once: false })
+// 原生 DrawTool 无 once 选项（旧代码误解字段），默认每次绘制完继续保留工具
+const { enabled, mode, setMode: dtSetMode, result } = useMaptalksDrawTool(map1)
 const btnMode = ref<string | null>(null)
 function setMode(m: string | null) {
   btnMode.value = m
