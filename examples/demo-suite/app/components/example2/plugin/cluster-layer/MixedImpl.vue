@@ -25,7 +25,7 @@ watch(
   map,
   async (m) => {
     if (!m || ClusterLayerCtor.value) return
-    const mod: any = await import('maptalks.markercluster')
+    const mod: any = await import('maptalks.markercluster' as string)
     ClusterLayerCtor.value = mod.ClusterLayer
     const mt: any = await import('maptalks-gl')
     const cx = 121.5057

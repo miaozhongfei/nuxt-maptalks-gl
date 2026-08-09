@@ -18,8 +18,8 @@ watch(
   () => toValue(map),
   async (m) => {
     if (!m || ThreeLayerCtor.value) return
-    THREE.value = await import('three')
-    const mod: any = await import('maptalks.three')
+    THREE.value = await import('three' as string)
+    const mod: any = await import('maptalks.three' as string)
     ThreeLayerCtor.value = mod.ThreeLayer
   },
   { immediate: true },

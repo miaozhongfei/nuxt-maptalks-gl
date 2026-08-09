@@ -29,10 +29,10 @@ watch(
     if (!m || MapboxglLayerCtor.value) return
     // mapbox-gl v1 每帧校验 token（无效 token 仅 fire 错误不影响渲染），静默避免控制台噪音；
     // carto 公共样式为自定义 URL 实际不消费 token，占位即可
-    const mapboxgl: any = await import('mapbox-gl')
+    const mapboxgl: any = await import('mapbox-gl' as string)
     mapboxgl.accessToken = 'pk.placeholder'
     mapboxgl.Map.prototype['_silenceAuthErrors'] = true
-    const mod: any = await import('maptalks.mapboxgl')
+    const mod: any = await import('maptalks.mapboxgl' as string)
     if (!mod?.MapboxglLayer) return
     MapboxglLayerCtor.value = mod.MapboxglLayer
   },

@@ -33,7 +33,7 @@ watch(
   map,
   async (m) => {
     if (!m || HeatLayerCtor.value) return
-    const mod: any = await import('maptalks.heatmap')
+    const mod: any = await import('maptalks.heatmap' as string)
     HeatLayerCtor.value = mod.HeatLayer
   },
   { immediate: true },

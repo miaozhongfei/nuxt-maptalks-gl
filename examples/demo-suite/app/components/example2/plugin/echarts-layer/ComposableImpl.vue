@@ -32,7 +32,7 @@ watch(
   () => toValue(map),
   async (m) => {
     if (!m || E3LayerCtor.value) return
-    const mod: any = await import('maptalks.e3')
+    const mod: any = await import('maptalks.e3' as string)
     E3LayerCtor.value = mod.E3Layer
   },
   { immediate: true },
