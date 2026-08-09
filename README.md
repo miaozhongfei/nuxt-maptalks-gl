@@ -63,11 +63,9 @@ export default defineNuxtConfig({
 </template>
 
 <script setup lang="ts">
-// 命令式创建地图，自动加载 maptalks-gl 并做 SSR 守卫
+// 命令式创建地图，自动加载 maptalks-gl 并做 SSR 守卫；baseLayer 指定 OSM 栅格底图
 const el = ref<HTMLElement | null>(null)
-const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
-// 添加 OSM 栅格底图
-useMaptalksTileLayer(map, { source: 'osm' })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 </script>
 ```
 
