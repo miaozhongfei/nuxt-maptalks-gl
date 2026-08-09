@@ -22,11 +22,12 @@
           :default-size="18"
           :min-size="14"
           :max-size="28"
+          :ui="{ root: 'min-h-0' }"
         >
           <UNavigationMenu orientation="vertical" :items="activeGroups" />
         </UDashboardSidebar>
 
-        <UDashboardPanel id="main">
+        <UDashboardPanel id="main" :ui="{ root: 'min-h-0' }">
           <template #header>
             <UDashboardNavbar title="@lacqjs/nuxt-maptalks-gl 示例合集" />
           </template>
