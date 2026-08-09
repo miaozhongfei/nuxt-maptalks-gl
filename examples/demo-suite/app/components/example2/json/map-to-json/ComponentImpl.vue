@@ -17,6 +17,7 @@
     </div>
     <pre v-if="result" class="text-xs mt-2 p-3 rounded border border-default overflow-auto max-h-64">{{ result }}</pre>
     <p class="text-sm text-muted mt-2">MaptalksMap + MaptalksVectorLayer + MaptalksMarker——map.toJSON() 序列化整图（含图层与图形，对应官网 11.3）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -34,4 +35,6 @@ function exportJson() {
   if (!json) return
   result.value = JSON.stringify(json, null, 2)
 }
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（可导出 JSON）' : '加载中…'))
 </script>
