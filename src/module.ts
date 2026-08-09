@@ -19,21 +19,9 @@ import { createLogger } from './runtime/utils/logger';
 import { createValidateNestingPlugin } from './vite-plugins/validate-component-nesting';
 
 export type { ModuleOptions };
-export type {
-  ResolvedModuleOptions,
-  MaptalksSource,
-  PublicSource,
-  SignedSource,
-  ResolvedSource,
-  MaptalksMap,
-  MaptalksLayer,
-  MaptalksGeometry,
-  MaptalksGLNamespace,
-  MaptalksCoordinate,
-  MaptalksViewLike,
-  MaptalksDefaults,
-  MaptalksErrorCode,
-} from './runtime/types';
+// 一键转发 types/index.ts（barrel）全部类型导出：新增类型无需在模块入口手动维护；
+// 与上方具名导出重名的符号（ModuleOptions）按 TS 规则本地优先自动跳过
+export type * from './runtime/types';
 export { MaptalksError };
 
 /** maptalks-gl 自带样式表的产物路径（确切路径以安装版本 dist 为准，见 spec §14） */
@@ -123,9 +111,8 @@ export default defineNuxtModule<ModuleOptions>().with({
     addVitePlugin(createValidateNestingPlugin());
 
     // 自动导入 composables 与预设（按官网 API 分类组织：map/layer/geometry/geo/control/maptool/ui/basic-types）
-    // addImportsDir 仅扫描列出的叶子目录；public-types.ts 保留顶层以维持类型全局注入
+    // addImportsDir 仅扫描列出的叶子目录；types/ 一并扫描，类型全局可用（无需 public-types.ts 中转）
     addImportsDir([
-      resolver.resolve('./runtime/composables'),
       resolver.resolve('./runtime/composables/map'),
       resolver.resolve('./runtime/composables/layer'),
       resolver.resolve('./runtime/composables/geometry'),
@@ -134,6 +121,7 @@ export default defineNuxtModule<ModuleOptions>().with({
       resolver.resolve('./runtime/composables/maptool'),
       resolver.resolve('./runtime/composables/ui'),
       resolver.resolve('./runtime/composables/basic-types'),
+      resolver.resolve('./runtime/types'),
     ]);
     // 自动导入声明式组件（MaptalksMap / MaptalksTileLayer 等；组件按官网 API 分类存子目录，
     // pathPrefix: false 保证组件名不受目录层级影响，仍是 MaptalksXxx）
