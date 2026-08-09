@@ -20,6 +20,7 @@ watch(
   async (m) => {
     if (!m || tool) return
     const mt: any = await import('maptalks-gl')
+    if (!mt.MapTool || !mt.control?.Toolbar) return
     // 自定义 MapTool 子类（官网 13.3 核心）：onEnable 建图层、onDisable 移除、getEvents 绑定 click/contextmenu
     class CustomTool extends mt.MapTool {
       private _markerLayer: any = null
