@@ -18,6 +18,7 @@ watch(
     if (!m) return
     // 插件 README 用法：new E3Layer(id, ecOptions)——echarts options 直接传入构造
     const { E3Layer }: any = await import('maptalks.e3' as string)
+    if (!E3Layer) return
     const cx = 121.5057
     const cy = 31.2453
     // scatter 数据 [lng, lat, value]（插件自动改写 series.coordinateSystem 与 animation）

@@ -41,6 +41,7 @@ watch(
   async (m) => {
     if (!m || E3LayerCtor.value) return
     const mod: any = await import('maptalks.e3' as string)
+    if (!mod?.E3Layer) return
     E3LayerCtor.value = mod.E3Layer
   },
   { immediate: true },
