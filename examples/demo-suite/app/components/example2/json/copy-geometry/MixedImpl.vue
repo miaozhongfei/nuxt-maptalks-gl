@@ -27,6 +27,7 @@
     </div>
     <UButton size="sm" class="mt-3" @click="copyGeometry">复制几何 - B</UButton>
     <p class="text-sm text-muted mt-2">A 图 Rectangle 经 Geometry.fromJSON 复制到 B 图的空 v 图层——Marker 留在 A（对应官网 11.7）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -53,4 +54,6 @@ async function copyGeometry() {
   const copy = await fromJSON(toJSON())
   copy?.addTo(lb)
 }
+
+const status = computed(() => (rectGeo.value && vB.value ? 'A/B 地图已创建（可复制几何）' : '加载中…'))
 </script>

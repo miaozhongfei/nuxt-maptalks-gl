@@ -6,6 +6,7 @@
     </div>
     <UButton size="sm" class="mt-3" @click="copyGeometry">复制几何 - B</UButton>
     <p class="text-sm text-muted mt-2">A 图 Rectangle 经 Geometry.fromJSON 复制到 B 图的空 v 图层——Marker 留在 A（对应官网 11.7）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -13,7 +14,7 @@
 const elA = ref<HTMLElement | null>(null)
 const elB = ref<HTMLElement | null>(null)
 // A：底图 + v 图层（Marker + Rectangle 1000×800，对齐官网 11.7）
-const { map: mapA } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { map: mapA, isReady: readyA } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 const { layer: vA } = useMaptalksVectorLayer(mapA, { id: 'v' })
 useMaptalksMarker(vA, {
   coordinates: [121.5057, 31.2453],
@@ -26,7 +27,7 @@ const { geometry: rectGeo } = useMaptalksRectangle(vA, {
   options: { symbol: { polygonFill: '#1bbc9b' } },
 })
 // B：底图 + 空 v 图层（复制目标）
-const { map: mapB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { map: mapB, isReady: readyB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 const { layer: vB } = useMaptalksVectorLayer(mapB, { id: 'v' })
 // rect 几何序列化：toJSON + 静态 Geometry.fromJSON 重建独立副本
 const { toJSON, fromJSON } = useMaptalksGeometrySerialize(rectGeo)
@@ -36,4 +37,6 @@ async function copyGeometry() {
   const copy = await fromJSON(toJSON())
   copy?.addTo(lb)
 }
+
+const status = computed(() => (readyA.value && readyB.value ? 'A/B 地图已创建（可复制几何）' : '加载中…'))
 </script>
