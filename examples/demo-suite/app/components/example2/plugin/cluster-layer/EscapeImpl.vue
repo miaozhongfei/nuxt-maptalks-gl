@@ -18,6 +18,7 @@ watch(
     if (!m) return
     // 插件 README 用法：ClusterLayer(id, data, options)——data 为 Marker 数组
     const { ClusterLayer }: any = await import('maptalks.markercluster' as string)
+    if (!ClusterLayer) return
     const mt: any = await import('maptalks-gl')
     const cx = 121.5057
     const cy = 31.2453
