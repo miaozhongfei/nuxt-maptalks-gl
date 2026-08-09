@@ -140,6 +140,7 @@ watch(
     if (!m || layer) return
     try {
       const mt: any = await import('maptalks-gl')
+      if (!mt.Layer) return
       mtModule = mt
       layer = createHelloLayer(m, mt)
       status.value = 'HelloLayer 已添加（自定义 Layer + dom renderer）'
