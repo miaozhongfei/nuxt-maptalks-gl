@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksVectorLayer + useMaptalksGeoJSON——Feature（含 properties）转换为 Marker（对应官网 11.1）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -26,4 +27,6 @@ const map = computed(() => toValue(mc.value?.map) ?? null)
 
 const { layer } = useMaptalksVectorLayer(map, { id: 'v' })
 useMaptalksGeoJSON(layer, { data: geojson })
+
+const status = computed(() => (map.value ? '地图已创建（Marker 已转换）' : '加载中…'))
 </script>
