@@ -145,8 +145,8 @@ const miwC = ref<{ show: () => void; hide: () => void } | null>(null)
 const cmpAutoClose = ref(true)
 const map3 = computed(() => toValue(mc3.value?.map) ?? null)
 
-// 同 composable 页 bindCloseBtn 模式
-function bindCloseBtn(miw: typeof miwA) {
+// 同 composable 页 bindCloseBtn 模式（模板调用自动解包 ref，参数为解包后的实例）
+function bindCloseBtn(miw: { show: () => void; hide: () => void } | null) {
   setTimeout(() => {
     // innerHTML 让按钮在隐藏 wrapper + 面板两处 DOM，取 visible 的（offsetParent !== null）
     for (const el of document.querySelectorAll('.mt-miw-close')) {
