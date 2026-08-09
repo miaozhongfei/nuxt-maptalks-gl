@@ -2,6 +2,7 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <p class="text-sm text-muted mt-2">useMaptalksLayer 通用原语 + maptalks.mapboxgl 插件构造器——MapboxglLayer GL 栅格图层（对应官网 12.1）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -10,7 +11,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 
 // 插件构造器按需加载（maptalks.mapboxgl 的 MapboxglLayer，extends maptalks.Layer 与 maptalks-gl 同源）
 const MapboxglLayerCtor = ref<any>(null)
@@ -24,6 +25,7 @@ watch(
     mapboxgl.accessToken = 'pk.placeholder'
     mapboxgl.Map.prototype['_silenceAuthErrors'] = true
     const mod: any = await import('maptalks.mapboxgl')
+    if (!mod?.MapboxglLayer) return
     MapboxglLayerCtor.value = mod.MapboxglLayer
   },
   { immediate: true },
@@ -35,4 +37,6 @@ const { layer } = useMaptalksLayer(
   () => new MapboxglLayerCtor.value('mbgl', { glOptions: { style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' } }),
   { enabled: MapboxglLayerCtor },
 )
+
+const status = computed(() => (isReady.value && MapboxglLayerCtor.value ? '地图已创建（MapboxglLayer 已加载）' : '加载中…'))
 </script>

@@ -9,6 +9,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksLayer 通用原语 + maptalks.mapboxgl 插件——MapboxglLayer GL 栅格图层（对应官网 12.1）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -32,6 +33,7 @@ watch(
     mapboxgl.accessToken = 'pk.placeholder'
     mapboxgl.Map.prototype['_silenceAuthErrors'] = true
     const mod: any = await import('maptalks.mapboxgl')
+    if (!mod?.MapboxglLayer) return
     MapboxglLayerCtor.value = mod.MapboxglLayer
   },
   { immediate: true },
@@ -43,4 +45,6 @@ const { layer } = useMaptalksLayer(
   () => new MapboxglLayerCtor.value('mbgl', { glOptions: { style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' } }),
   { enabled: MapboxglLayerCtor },
 )
+
+const status = computed(() => (map.value && MapboxglLayerCtor.value ? '地图已创建（MapboxglLayer 已加载）' : '加载中…'))
 </script>

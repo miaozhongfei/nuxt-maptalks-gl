@@ -2,6 +2,7 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <p class="text-sm text-muted mt-2">逃生舱——插件 README 原生用法：import maptalks.mapboxgl → new MapboxglLayer(...).addTo(map)（对应官网 12.1）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -10,8 +11,9 @@
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const el = ref<HTMLElement | null>(null)
-const { map } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 
+const pluginReady = ref(false)
 watch(
   () => toValue(map),
   async (m) => {
@@ -23,10 +25,14 @@ watch(
     mapboxgl.Map.prototype['_silenceAuthErrors'] = true
     // 插件 README 用法：import 插件模块后直接用其导出的 MapboxglLayer 类（extends maptalks.Layer）
     const { MapboxglLayer }: any = await import('maptalks.mapboxgl')
+    if (!MapboxglLayer) return
     new MapboxglLayer('mbgl', {
       glOptions: { style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' },
     }).addTo(m as never)
+    pluginReady.value = true
   },
   { immediate: true },
 )
+
+const status = computed(() => (isReady.value && pluginReady.value ? '地图已创建（MapboxglLayer 已加载）' : '加载中…'))
 </script>
