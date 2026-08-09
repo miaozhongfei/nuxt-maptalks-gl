@@ -35,7 +35,7 @@ watch(
       const arc = new mt.ArcCurve([[121.47, 31.23], [121.51, 31.25]], {
         symbol: { lineColor: '#2563eb', lineWidth: 3, arcDegree: 90 },
       })
-      arc.addTo(layer)
+      arc.addTo(layer as unknown as Parameters<typeof arc.addTo>[0])
     } catch {
       // 原生模块加载失败时静默（逃生舱失败不拖垮页面）
     }
@@ -57,7 +57,7 @@ watch(
         [new mt.Coordinate(121.47, 31.23), new mt.Coordinate(121.49, 31.25), new mt.Coordinate(121.51, 31.24), new mt.Coordinate(121.48, 31.22)],
         { symbol: { lineColor: '#dc2626', lineWidth: 3 } },
       )
-      curve.addTo(layer)
+      curve.addTo(layer as unknown as Parameters<typeof curve.addTo>[0])
     } catch {
       // 原生模块加载失败时静默（逃生舱失败不拖垮页面）
     }
