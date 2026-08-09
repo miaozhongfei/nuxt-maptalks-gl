@@ -7,7 +7,7 @@
       <!-- 卡片 1：custom slot 带按钮 -->
       <UCard>
         <template #header><h2 class="font-semibold">custom · 按钮测试</h2></template>
-        <MaptalksMap ref="mapCmp1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
+        <MaptalksMap ref="mc1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#2563eb',markerWidth:24,markerHeight:24} }">
               <MaptalksGeometryInfoWindow :options="{ title: '', custom: true }">
@@ -33,13 +33,13 @@
             </MaptalksMarker>
           </MaptalksVectorLayer>
         </MaptalksMap>
-        <template #footer><span class="text-sm text-muted">点 Marker 弹出，点按钮计数。</span></template>
+        <template #footer><span class="text-sm text-muted">点 Marker 弹出，点按钮计数。</span><span class="text-xs text-muted ml-2">{{ status1 }}</span></template>
       </UCard>
 
       <!-- 卡片 2：默认 chrome（无 custom） -->
       <UCard>
         <template #header><h2 class="font-semibold">默认 chrome · title 测试</h2></template>
-        <MaptalksMap ref="mapCmp2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
+        <MaptalksMap ref="mc2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height:350px" baseLayer="osm">
           <MaptalksVectorLayer>
             <MaptalksMarker :coordinates="[121.47,31.23]" :options="{ symbol: {markerType:'ellipse',markerFill:'#16a34a',markerWidth:24,markerHeight:24} }">
               <MaptalksGeometryInfoWindow :options="{ title: '南门店', width: 200, height: 120 }">
@@ -48,92 +48,99 @@
             </MaptalksMarker>
           </MaptalksVectorLayer>
         </MaptalksMap>
-        <template #footer><span class="text-sm text-muted">内置 chrome（标题栏）+ slot 内容。</span></template>
+        <template #footer><span class="text-sm text-muted">内置 chrome（标题栏）+ slot 内容。</span><span class="text-xs text-muted ml-2">{{ status2 }}</span></template>
       </UCard>
     </div>
 
     <UCard class="mt-4">
       <template #header><h2 class="font-semibold">useMaptalksGeometryInfoWindow（composable）· 原生 DOM 按钮</h2></template>
       <div ref="el3" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-      <template #footer><span class="text-sm text-muted">composable 直调。点 Marker 弹出，👍计数，关闭按钮。</span></template>
+      <template #footer><span class="text-sm text-muted">composable 直调。点 Marker 弹出，👍计数，关闭按钮。</span><span class="text-xs text-muted ml-2">{{ status3 }}</span></template>
     </UCard>
 
     <UCard class="mt-4">
       <template #header><h2 class="font-semibold">useMaptalksGeometryInfoWindow · 响应式改内容</h2></template>
       <div ref="el4" class="relative rounded border border-default overflow-hidden" style="height:350px" />
-      <template #footer><div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="changeMIWContent()">改内容</UButton><span class="text-sm text-muted">当前内容：{{ miwContent4 }}</span></div></template>
+      <template #footer><div class="flex gap-2 items-center"><UButton size="sm" color="primary" @click="changeMIWContent()">改内容</UButton><span class="text-sm text-muted">当前内容：{{ miwContent4 }}</span><span class="text-xs text-muted ml-2">{{ status4 }}</span></div></template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
-const countA = ref(0);
-const countB = ref(0);
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const center: [number, number] = [121.4737, 31.2304]
+const countA = ref(0)
+const countB = ref(0)
 
 // 卡片 3：useMaptalksGeometryInfoWindow composable 直调
-const el3 = ref<HTMLElement | null>(null);
-const { map: map3 } = useMaptalks(el3, { center, zoom: 13 });
-useMaptalksTileLayer(map3, { source: 'osm' });
-const { layer: vec3 } = useMaptalksVectorLayer(map3);
+const el3 = ref<HTMLElement | null>(null)
+const { map: map3, isReady: ready3 } = useMaptalks(el3, { center, zoom: 13 })
+useMaptalksTileLayer(map3, { source: 'osm' })
+const { layer: vec3 } = useMaptalksVectorLayer(map3)
 
-const countC = ref(0);
-const countD = ref(0);
+const countC = ref(0)
+const countD = ref(0)
 
 function buildMIWDom(label: string, color: string, coord: [number, number], count: Ref<number>): HTMLElement | string {
-  if (typeof document === 'undefined') return '';
-  const el = document.createElement('div');
-  el.style.minWidth = '160px';
-  el.style.borderRadius = '4px';
-  el.style.overflow = 'hidden';
-  el.style.boxShadow = '0 1px 6px rgba(0,0,0,0.12)';
+  if (typeof document === 'undefined') return ''
+  const el = document.createElement('div')
+  el.style.minWidth = '160px'
+  el.style.borderRadius = '4px'
+  el.style.overflow = 'hidden'
+  el.style.boxShadow = '0 1px 6px rgba(0,0,0,0.12)'
   el.innerHTML =
     `<div style="background:${color};color:#fff;padding:4px 10px;font-size:13px;font-weight:600">${label}</div>
     <div style="background:#fff;padding:4px 8px;font-size:12px;color:#374151">[${coord[0].toFixed(5)}, ${coord[1].toFixed(5)}]</div>
     <div style="padding:4px 8px;display:flex;gap:4px;background:#fff">
       <button class="miw-like" style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px">👍 0</button>
       <button class="miw-reset" style="background:#e5e7eb;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:13px">重置</button>
-    </div>`;
+    </div>`
   el.querySelector('.miw-like')?.addEventListener('click', () => {
-    count.value++;
-    const b = el.querySelector('.miw-like');
-    if (b) b.textContent = `👍 ${count.value}`;
-  });
+    count.value++
+    const b = el.querySelector('.miw-like')
+    if (b) b.textContent = `👍 ${count.value}`
+  })
   el.querySelector('.miw-reset')?.addEventListener('click', () => {
-    count.value = 0;
-    const b = el.querySelector('.miw-like');
-    if (b) b.textContent = `👍 ${count.value}`;
-  });
-  return el;
+    count.value = 0
+    const b = el.querySelector('.miw-like')
+    if (b) b.textContent = `👍 ${count.value}`
+  })
+  return el
 }
 
 const gC = useMaptalksMarker(vec3, {
   coordinates: [121.47, 31.23],
   options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 24, markerHeight: 24 } },
-}).geometry;
-useMaptalksGeometryInfoWindow(gC, { options: { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) } });
+}).geometry
+useMaptalksGeometryInfoWindow(gC, { options: { title: '', custom: true, content: buildMIWDom('东门店', '#2563eb', [121.47, 31.23], countC) } })
 
 const gD = useMaptalksMarker(vec3, {
   coordinates: [121.5, 31.24],
   options: { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 } },
-}).geometry;
-useMaptalksGeometryInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } });
+}).geometry
+useMaptalksGeometryInfoWindow(gD, { options: { title: '', custom: true, content: buildMIWDom('西门店', '#dc2626', [121.5, 31.24], countD) } })
 
 // 卡片 4：响应式改内容
-const el4 = ref<HTMLElement | null>(null);
-const { map: map4 } = useMaptalks(el4, { center, zoom: 13 });
-useMaptalksTileLayer(map4, { source: 'osm' });
-const { layer: vec4 } = useMaptalksVectorLayer(map4);
-const miwContent4 = ref('初始内容');
+const el4 = ref<HTMLElement | null>(null)
+const { map: map4, isReady: ready4 } = useMaptalks(el4, { center, zoom: 13 })
+useMaptalksTileLayer(map4, { source: 'osm' })
+const { layer: vec4 } = useMaptalksVectorLayer(map4)
+const miwContent4 = ref('初始内容')
 const gE = useMaptalksMarker(vec4, {
   coordinates: [121.47, 31.23],
   options: { symbol: { markerType: 'ellipse', markerFill: '#8b5cf6', markerWidth: 24, markerHeight: 24 } },
-}).geometry;
-useMaptalksGeometryInfoWindow(gE, { options: () => ({ title: '', custom: true, content: miwContent4.value }) });
+}).geometry
+useMaptalksGeometryInfoWindow(gE, { options: () => ({ title: '', custom: true, content: miwContent4.value }) })
 function changeMIWContent() {
   miwContent4.value = `<div style="padding:10px;min-width:140px;text-align:center">
     <strong style="color:#8b5cf6">改内容测试</strong>
     <p style="font-size:12px;color:#6b7280;margin:4px 0">${new Date().toLocaleTimeString()}</p>
-  </div>`;
+  </div>`
 }
+
+const status1 = computed(() => (toValue(mc1.value?.map) ? '地图已创建' : '加载中…'))
+const status2 = computed(() => (toValue(mc2.value?.map) ? '地图已创建' : '加载中…'))
+const status3 = computed(() => (ready3.value ? '地图已创建' : '加载中…'))
+const status4 = computed(() => (ready4.value ? '地图已创建' : '加载中…'))
 </script>
