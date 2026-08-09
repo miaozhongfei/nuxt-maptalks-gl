@@ -70,7 +70,7 @@ async function setupCluster(m: unknown, pts: [number, number][], ClusterLayer: u
 }
 
 function setupThree(m: unknown, pts: [number, number][], ThreeLayer: unknown) {
-  const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; toBox: (coord: [number, number], opts: Record<string, unknown>, mat: THREE.Material) => unknown; addMesh: (ms: unknown[]) => void; redraw?: () => void } & Record<string, unknown>)('three', { forceRenderOnMoving: true, forceRenderOnRotating: true })
+  const layer = new (ThreeLayer as new (id: string, opts?: Record<string, unknown>) => { addTo: (m: unknown) => void; prepareToDraw?: (gl: unknown, scene: unknown, camera: unknown) => void; toBox: (coord: [number, number], opts: Record<string, unknown>, mat: any) => unknown; addMesh: (ms: unknown[]) => void; redraw?: () => void } & Record<string, unknown>)('three', { forceRenderOnMoving: true, forceRenderOnRotating: true })
   layer.prepareToDraw = function (_gl: unknown, scene: unknown, _camera: unknown) {
     const s = scene as { add: (o: unknown) => void }
     const light = new THREE.DirectionalLight(0xffffff)
@@ -82,7 +82,7 @@ function setupThree(m: unknown, pts: [number, number][], ThreeLayer: unknown) {
   // addMesh 必须在场景就绪后调用；否则 getScene() 返回 null 会抛 TypeError
   ;(layer as Record<string, unknown>).onCanvasCreate = function () {
     const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 })
-    const boxes = pts.slice(0, 10).map(pt => (layer as unknown as { toBox: (c: [number, number], o: Record<string, unknown>, m: THREE.Material) => THREE.Object3D }).toBox(pt as [number, number], { height: 200, radius: 100, topColor: '#ff4444' }, mat))
+    const boxes = pts.slice(0, 10).map(pt => (layer as unknown as { toBox: (c: [number, number], o: Record<string, unknown>, m: any) => any }).toBox(pt as [number, number], { height: 200, radius: 100, topColor: '#ff4444' }, mat))
     layer.addMesh(boxes)
   }
 }
