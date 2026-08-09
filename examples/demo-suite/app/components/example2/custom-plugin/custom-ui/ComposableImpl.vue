@@ -74,7 +74,9 @@ function toggleUi() {
   // maptalks-gl 的 UIComponent.hide 兼容问题（display 不生效），DOM 直操作兜底
   // 限定 .maptalks-ui 面板内查找——textContent 全匹配会误中图层容器等祖先元素（隐藏整个地图）
   const uiPanel = document.querySelector('.maptalks-ui')
-  const dom = uiPanel ? [...uiPanel.children].find(d => d.textContent === 'Hello, MyUI') : null
+  const dom = uiPanel
+    ? [...uiPanel.children].find((d): d is HTMLElement => d.textContent === 'Hello, MyUI')
+    : null
   if (!dom) return
   dom.style.display = uiVisible.value ? 'none' : 'block'
   uiVisible.value = !uiVisible.value
