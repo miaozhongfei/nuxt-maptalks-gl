@@ -74,7 +74,7 @@ useMaptalksTileLayer(map2, { source: 'osm' })
 const { show: show2c, hide: hide2c } = useMaptalksInfoWindow(map2, { options: { animation: 'scale', content: '<div style="padding:8px 12px">animation: scale</div>' } })
 
 // 卡片 3：组件 无 options
-const coord3 = ref<[number, number] | null>(null)
+const coord3 = ref<[number, number] | undefined>(undefined)
 const vis3 = ref(false)
 function show3() {
   coord3.value = [121.4737, 31.2304]
@@ -85,7 +85,7 @@ function hide3() {
 }
 
 // 卡片 4：组件 带 animation
-const coord4 = ref<[number, number] | null>(null)
+const coord4 = ref<[number, number] | undefined>(undefined)
 const vis4 = ref(false)
 function show4() {
   coord4.value = [121.4737, 31.2304]
