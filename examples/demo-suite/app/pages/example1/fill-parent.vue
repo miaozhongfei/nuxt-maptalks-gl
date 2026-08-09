@@ -30,7 +30,7 @@
         :style="{ height: boxHeight + 'px', width: '100%', resize: 'both', minHeight: '200px', minWidth: '260px' }"
       >
         <!-- 地图不写固定高度：MaptalksMap 根节点自带 height:100%/width:100%，填满上面的父容器 -->
-        <MaptalksMap :center="center" :zoom="11" class="relative w-full h-full" baseLayer="osm">
+        <MaptalksMap ref="mc" :center="center" :zoom="11" class="relative w-full h-full" baseLayer="osm">
           <MaptalksZoomControl :options="{ position: 'top-left' }" />
           <MaptalksScaleControl :options="{ position: 'bottom-left' }" />
         </MaptalksMap>
@@ -40,13 +40,17 @@
         <span class="text-sm text-muted">
           关键：<strong>父容器</strong>有确定高度即可，地图用 100% 填充；父容器缩放时地图自动跟随，无需手动处理。
         </span>
+        <span class="text-xs text-muted ml-2">{{ status }}</span>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
+const mc = ref<MaptalksMapExposed | null>(null)
+const center: [number, number] = [121.4737, 31.2304]
 // 父容器高度（可切换/可拖拽），地图用 height:100% 跟随
-const boxHeight = ref(460);
+const boxHeight = ref(460)
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（跟随父容器缩放）' : '加载中…'))
 </script>

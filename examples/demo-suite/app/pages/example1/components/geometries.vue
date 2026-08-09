@@ -15,7 +15,7 @@
           <UBadge color="neutral" variant="outline">官网 3.1~3.3 / 3.10</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
+      <MaptalksMap ref="mc1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 点标记：@click 演示事件回传 -->
           <MaptalksMarker
@@ -43,6 +43,7 @@
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">点击事件：{{ lastClick || '（点击蓝色圆点试试）' }}</span>
+        <span class="text-xs text-muted ml-2">{{ status1 }}</span>
       </template>
     </UCard>
 
@@ -55,7 +56,7 @@
           <UBadge color="neutral" variant="outline">官网 3.8</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.49, 31.235]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
+      <MaptalksMap ref="mc2" :center="[121.49, 31.235]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 圆：中心 + 半径（米） -->
           <MaptalksCircle
@@ -87,6 +88,9 @@
           />
         </MaptalksVectorLayer>
       </MaptalksMap>
+      <template #footer>
+        <span class="text-xs text-muted">{{ status2 }}</span>
+      </template>
     </UCard>
 
     <!-- 第 3 组：Multi 系列 / 文本框 / GeoJSON -->
@@ -98,7 +102,7 @@
           <UBadge color="neutral" variant="outline">官网 3.5~3.7 / 3.11</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.47, 31.24]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
+      <MaptalksMap ref="mc3" :center="[121.47, 31.24]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 多点 -->
           <MaptalksMultiPoint
@@ -134,14 +138,18 @@
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">GeoJSON 数据源含 2 个点要素，与其它几何共用一个矢量图层。</span>
+        <span class="text-xs text-muted ml-2">{{ status3 }}</span>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
-const lastClick = ref('');
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const mc3 = ref<MaptalksMapExposed | null>(null)
+const center: [number, number] = [121.4737, 31.2304]
+const lastClick = ref('')
 
 // 演示用 GeoJSON FeatureCollection（两个点要素）
 const geojson = {
@@ -150,5 +158,9 @@ const geojson = {
     { type: 'Feature', geometry: { type: 'Point', coordinates: [121.51, 31.24] }, properties: { name: 'A' } },
     { type: 'Feature', geometry: { type: 'Point', coordinates: [121.52, 31.25] }, properties: { name: 'B' } },
   ],
-};
+}
+
+const status1 = computed(() => (toValue(mc1.value?.map) ? '地图已创建' : '加载中…'))
+const status2 = computed(() => (toValue(mc2.value?.map) ? '地图已创建' : '加载中…'))
+const status3 = computed(() => (toValue(mc3.value?.map) ? '地图已创建' : '加载中…'))
 </script>

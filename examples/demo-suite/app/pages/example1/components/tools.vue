@@ -15,12 +15,13 @@
           <UBadge color="neutral" variant="outline">官网 8.3</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
+      <MaptalksMap ref="mc1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
         <!-- 在地图上依次点击测距，双击结束；@measure 返回测量结果 -->
         <MaptalksDistanceTool @measure="onDistance" />
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">操作：地图上依次单击画线、双击结束。{{ distanceMsg }}</span>
+        <span class="text-xs text-muted ml-2">{{ status1 }}</span>
       </template>
     </UCard>
 
@@ -33,28 +34,34 @@
           <UBadge color="neutral" variant="outline">官网 8.4</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
+      <MaptalksMap ref="mc2" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 320px" baseLayer="osm">
         <!-- 在地图上依次点击画多边形测面积，双击结束 -->
         <MaptalksAreaTool @measure="onArea" />
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">操作：地图上依次单击画多边形、双击结束。{{ areaMsg }}</span>
+        <span class="text-xs text-muted ml-2">{{ status2 }}</span>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
-const distanceMsg = ref('');
-const areaMsg = ref('');
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const center: [number, number] = [121.4737, 31.2304]
+const distanceMsg = ref('')
+const areaMsg = ref('')
 
 // 测距完成回调（结果结构由 maptalks 提供，这里仅提示已测量）
 function onDistance() {
-  distanceMsg.value = '（已完成一次测距）';
+  distanceMsg.value = '（已完成一次测距）'
 }
 // 测面完成回调
 function onArea() {
-  areaMsg.value = '（已完成一次测面）';
+  areaMsg.value = '（已完成一次测面）'
 }
+
+const status1 = computed(() => (toValue(mc1.value?.map) ? '地图已创建（测距可用）' : '加载中…'))
+const status2 = computed(() => (toValue(mc2.value?.map) ? '地图已创建（测面可用）' : '加载中…'))
 </script>
