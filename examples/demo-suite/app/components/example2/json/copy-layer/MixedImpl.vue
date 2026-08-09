@@ -27,6 +27,7 @@
     </div>
     <UButton size="sm" class="mt-3" @click="copyLayer">复制图层 v0 - B</UButton>
     <p class="text-sm text-muted mt-2">A 图 v0（Marker）经 Layer.fromJSON 复制到 B 图——v1（Rectangle）留在 A（对应官网 11.6）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -55,4 +56,6 @@ async function copyLayer() {
   mb.getLayer('v0')?.remove()
   copy.addTo(mb)
 }
+
+const status = computed(() => (mapB.value && v0Layer.value ? 'A/B 地图已创建（可复制图层）' : '加载中…'))
 </script>

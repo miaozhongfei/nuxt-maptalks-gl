@@ -6,6 +6,7 @@
     </div>
     <UButton size="sm" class="mt-3" @click="copyLayer">复制图层 v0 - B</UButton>
     <p class="text-sm text-muted mt-2">A 图 v0（Marker）经 Layer.fromJSON 复制到 B 图——v1（Rectangle）留在 A（对应官网 11.6）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -13,8 +14,8 @@
 const elA = ref<HTMLElement | null>(null)
 const elB = ref<HTMLElement | null>(null)
 // A：底图 + v0(Marker) + v1(Rectangle) 两层（对齐官网 11.6）
-const { map: mapA } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
-const { map: mapB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { map: mapA, isReady: readyA } = useMaptalks(elA, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+const { map: mapB, isReady: readyB } = useMaptalks(elB, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 const { layer: v0 } = useMaptalksVectorLayer(mapA, { id: 'v0' })
 useMaptalksMarker(v0, {
   coordinates: [121.5057, 31.2453],
@@ -38,4 +39,6 @@ async function copyLayer() {
   mb.getLayer('v0')?.remove()
   copy.addTo(mb)
 }
+
+const status = computed(() => (readyA.value && readyB.value ? 'A/B 地图已创建（可复制图层）' : '加载中…'))
 </script>
