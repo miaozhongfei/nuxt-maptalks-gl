@@ -6,6 +6,8 @@
  * @description 每个图层/几何类型有手写展平的 Options 接口（含所有原生字段 + 中文注释）。
  */
 
+import type { MaybeRefOrGetter } from 'vue';
+
 import type { MaptalksLayer } from './structural';
 
 // ───────────────────────────────── Map ─────────────────────────────────
@@ -225,8 +227,8 @@ export interface MaptalksMapOptions {
 export interface MaptalksInfoWindowOptions {
   /** 信息框标题，可用空字符串隐藏内置标题栏 */
   title?: string | HTMLElement;
-  /** 弹出框内容（HTML 字符串或 DOM 元素），支持响应式 getter */
-  content?: string | HTMLElement;
+  /** 弹出框内容（HTML 字符串或 DOM 元素），支持响应式 getter/ref（模块运行时 toValue 处理） */
+  content?: MaybeRefOrGetter<string | HTMLElement>;
   /** 宽度 */
   width?: number | string;
   /** 高度（像素） */

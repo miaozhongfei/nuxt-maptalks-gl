@@ -27,8 +27,8 @@ const logger = createLogger('nuxt-maptalks-gl');
 interface GeometryInfoWindowOptions {
   /** 弹框标题（字符串或 DOM） */
   title?: string | HTMLElement;
-  /** 弹框内容（字符串或 DOM） */
-  content?: string | HTMLElement;
+  /** 弹框内容（字符串或 DOM），支持响应式 getter/ref（模块运行时 toValue 处理） */
+  content?: MaybeRefOrGetter<string | HTMLElement>;
   /** 弹框宽度（px） */
   width?: number;
   /** 弹框高度（px） */
