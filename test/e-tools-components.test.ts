@@ -4,8 +4,8 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import MaptalksAreaTool from '../src/runtime/components/MaptalksAreaTool.vue';
-import MaptalksDistanceTool from '../src/runtime/components/MaptalksDistanceTool.vue';
+import MaptalksAreaTool from '../src/runtime/components/maptool/MaptalksAreaTool.vue';
+import MaptalksDistanceTool from '../src/runtime/components/maptool/MaptalksDistanceTool.vue';
 import { MAP_KEY } from '../src/runtime/core/map-context';
 import type { MaptalksMap } from '../src/runtime/types';
 
@@ -14,10 +14,10 @@ const { distanceTool, areaTool } = vi.hoisted(() => ({
   areaTool: vi.fn(),
 }));
 
-vi.mock('../src/runtime/composables/useMaptalksDistanceTool', () => ({
+vi.mock('../src/runtime/composables/maptool/useMaptalksDistanceTool', () => ({
   useMaptalksDistanceTool: distanceTool,
 }));
-vi.mock('../src/runtime/composables/useMaptalksAreaTool', () => ({
+vi.mock('../src/runtime/composables/maptool/useMaptalksAreaTool', () => ({
   useMaptalksAreaTool: areaTool,
 }));
 

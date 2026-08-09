@@ -4,7 +4,7 @@ import { defineComponent, h, shallowRef } from 'vue';
 
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 
-import { useMaptalks } from '../src/runtime/composables/useMaptalks';
+import { useMaptalks } from '../src/runtime/composables/map/useMaptalks';
 import { mapRegistry } from '../src/runtime/core/registry';
 import type { UseMaptalksOpts, UseMaptalksReturn } from '../src/runtime/types';
 

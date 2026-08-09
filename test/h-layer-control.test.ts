@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { effectScope, nextTick, shallowRef } from 'vue';
 import type { Ref } from 'vue';
 
-import { useMaptalksLayerControl } from '../src/runtime/composables/useMaptalksLayerControl';
+import { useMaptalksLayerControl } from '../src/runtime/composables/layer/useMaptalksLayerControl';
 import type { MaptalksLayer } from '../src/runtime/types';
 
 /** 构造带 spy 方法的假图层，用于断言命令式调用与 watch 联动 */

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, nextTick, shallowRef } from 'vue';
 
-import { useMaptalksEvents } from '../src/runtime/composables/useMaptalksEvents';
+import { useMaptalksEvents } from '../src/runtime/composables/map/useMaptalksEvents';
 import type { MaptalksMap } from '../src/runtime/types';
 
 /** 假地图，带 on/off spy */

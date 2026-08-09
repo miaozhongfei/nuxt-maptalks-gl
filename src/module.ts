@@ -122,13 +122,25 @@ export default defineNuxtModule<ModuleOptions>().with({
     tuneOptimizeDeps(_nuxt);
     addVitePlugin(createValidateNestingPlugin());
 
-    // 自动导入 composables 与预设（addImportsDir 仅扫描顶层目录，故显式传入 presets 子目录）
+    // 自动导入 composables 与预设（按官网 API 分类组织：map/layer/geometry/geo/control/maptool/ui/basic-types）
+    // addImportsDir 仅扫描列出的叶子目录；public-types.ts 保留顶层以维持类型全局注入
     addImportsDir([
       resolver.resolve('./runtime/composables'),
-      resolver.resolve('./runtime/composables/presets'),
+      resolver.resolve('./runtime/composables/map'),
+      resolver.resolve('./runtime/composables/layer'),
+      resolver.resolve('./runtime/composables/geometry'),
+      resolver.resolve('./runtime/composables/geo'),
+      resolver.resolve('./runtime/composables/control'),
+      resolver.resolve('./runtime/composables/maptool'),
+      resolver.resolve('./runtime/composables/ui'),
+      resolver.resolve('./runtime/composables/basic-types'),
     ]);
-    // 自动导入声明式组件（MaptalksMap / MaptalksTileLayer 等）
-    addComponentsDir({ path: resolver.resolve('./runtime/components') });
+    // 自动导入声明式组件（MaptalksMap / MaptalksTileLayer 等；组件按官网 API 分类存子目录，
+    // pathPrefix: false 保证组件名不受目录层级影响，仍是 MaptalksXxx）
+    addComponentsDir({
+      path: resolver.resolve('./runtime/components'),
+      pathPrefix: false,
+    });
 
     // 自动导入服务端签名助手（用户在 server route 中无需手动 import）
     addServerImportsDir(resolver.resolve('./runtime/server/utils'));

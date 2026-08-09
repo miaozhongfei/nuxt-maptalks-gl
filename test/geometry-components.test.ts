@@ -4,10 +4,10 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import MaptalksLineString from '../src/runtime/components/MaptalksLineString.vue';
-import MaptalksMarker from '../src/runtime/components/MaptalksMarker.vue';
-import MaptalksPolygon from '../src/runtime/components/MaptalksPolygon.vue';
-import MaptalksVectorLayer from '../src/runtime/components/MaptalksVectorLayer.vue';
+import MaptalksLineString from '../src/runtime/components/geometry/MaptalksLineString.vue';
+import MaptalksMarker from '../src/runtime/components/geometry/MaptalksMarker.vue';
+import MaptalksPolygon from '../src/runtime/components/geometry/MaptalksPolygon.vue';
+import MaptalksVectorLayer from '../src/runtime/components/layer/MaptalksVectorLayer.vue';
 import { GEOMETRY_LAYER_KEY, MAP_KEY } from '../src/runtime/core/map-context';
 import type { MaptalksMap, MaptalksVectorLayer as MVL } from '../src/runtime/types';
 
@@ -18,16 +18,16 @@ const { vl, marker, line, poly } = vi.hoisted(() => ({
   poly: vi.fn(),
 }));
 
-vi.mock('../src/runtime/composables/presets/useMaptalksVectorLayer', () => ({
+vi.mock('../src/runtime/composables/layer/useMaptalksVectorLayer', () => ({
   useMaptalksVectorLayer: vl,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksMarker', () => ({
+vi.mock('../src/runtime/composables/geometry/useMaptalksMarker', () => ({
   useMaptalksMarker: marker,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksLineString', () => ({
+vi.mock('../src/runtime/composables/geometry/useMaptalksLineString', () => ({
   useMaptalksLineString: line,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksPolygon', () => ({
+vi.mock('../src/runtime/composables/geometry/useMaptalksPolygon', () => ({
   useMaptalksPolygon: poly,
 }));
 

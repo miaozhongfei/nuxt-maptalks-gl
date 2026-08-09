@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksLayer } from '../src/runtime/composables/useMaptalksLayer';
+import { useMaptalksLayer } from '../src/runtime/composables/layer/useMaptalksLayer';
 import { layerRegistry } from '../src/runtime/core/registry';
 import type { MaptalksLayer, MaptalksMap } from '../src/runtime/types';
 

@@ -4,8 +4,8 @@ import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { describe, expect, it, vi } from 'vitest';
 import { defineComponent, h, shallowRef } from 'vue';
 
-import { useMaptalksLabel } from '../src/runtime/composables/presets/useMaptalksLabel';
-import { useMaptalksTextBox } from '../src/runtime/composables/presets/useMaptalksTextBox';
+import { useMaptalksLabel } from '../src/runtime/composables/geometry/useMaptalksLabel';
+import { useMaptalksTextBox } from '../src/runtime/composables/geometry/useMaptalksTextBox';
 import type { MaptalksVectorLayer } from '../src/runtime/types';
 
 const { mt } = vi.hoisted(() => ({

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, nextTick, shallowRef } from 'vue';
 
-import { useMaptalksSync } from '../src/runtime/composables/useMaptalksSync';
+import { useMaptalksSync } from '../src/runtime/composables/map/useMaptalksSync';
 import { mapRegistry } from '../src/runtime/core/registry';
 import type { MaptalksMap } from '../src/runtime/types';
 

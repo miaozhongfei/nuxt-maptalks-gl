@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksInfoWindow } from '../src/runtime/composables/useMaptalksInfoWindow';
+import { useMaptalksInfoWindow } from '../src/runtime/composables/ui/useMaptalksInfoWindow';
 import type { MaptalksMap } from '../src/runtime/types';
 
 function createFakeInfoWindow() {

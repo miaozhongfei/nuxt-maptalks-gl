@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useMaptalksCoordinate } from '../src/runtime/composables/useMaptalksCoordinate';
+import { useMaptalksCoordinate } from '../src/runtime/composables/basic-types/useMaptalksCoordinate';
 import type { MaptalksCoordinate, MaptalksMap } from '../src/runtime/types';
 
 describe('useMaptalksCoordinate', () => {

@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import MaptalksInfoWindow from '../src/runtime/components/MaptalksInfoWindow.vue';
+import MaptalksInfoWindow from '../src/runtime/components/ui/MaptalksInfoWindow.vue';
 import { MAP_KEY } from '../src/runtime/core/map-context';
 import type { MaptalksMap } from '../src/runtime/types';
 
@@ -25,7 +25,7 @@ const mockUseIW = {
   remove: vi.fn(),
 };
 
-vi.mock('../src/runtime/composables/useMaptalksInfoWindow', () => ({
+vi.mock('../src/runtime/composables/ui/useMaptalksInfoWindow', () => ({
   useMaptalksInfoWindow: vi.fn(() => mockUseIW),
 }));
 

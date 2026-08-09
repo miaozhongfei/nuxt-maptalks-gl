@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksAreaTool } from '../src/runtime/composables/useMaptalksAreaTool';
-import { useMaptalksDistanceTool } from '../src/runtime/composables/useMaptalksDistanceTool';
+import { useMaptalksAreaTool } from '../src/runtime/composables/maptool/useMaptalksAreaTool';
+import { useMaptalksDistanceTool } from '../src/runtime/composables/maptool/useMaptalksDistanceTool';
 import type { MaptalksMap } from '../src/runtime/types';
 
 function createFakeTool() {

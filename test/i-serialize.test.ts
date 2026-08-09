@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import { useMaptalksSerialize } from '../src/runtime/composables/useMaptalksSerialize';
+import { useMaptalksSerialize } from '../src/runtime/composables/map/useMaptalksSerialize';
 import type { MaptalksMap } from '../src/runtime/types';
 
 describe('useMaptalksSerialize', () => {
