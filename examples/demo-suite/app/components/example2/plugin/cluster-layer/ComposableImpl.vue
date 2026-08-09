@@ -17,14 +17,16 @@ watch(
   () => toValue(map),
   async (m) => {
     if (!m || ClusterLayerCtor.value) return
-    const mod: any = await import('maptalks.markercluster' as string)
-    if (!mod?.ClusterLayer) return
-    ClusterLayerCtor.value = mod.ClusterLayer
+    // 先加载 maptalks-gl 生成 Marker 数据（enabled 门控触发工厂时会同步读取 markers.value）
     const mt: any = await import('maptalks-gl')
     const cx = 121.5057
     const cy = 31.2453
     // README 用法：ClusterLayer(id, data, options)——data 为 Marker 数组
     markers.value = Array.from({ length: 100 }, () => new mt.Marker([cx + (Math.random() - 0.5) * 0.05, cy + (Math.random() - 0.5) * 0.05]))
+    // 最后再设构造器：enabled 置真时工厂读到的 markers 已填充，避免空数据建图层
+    const mod: any = await import('maptalks.markercluster' as string)
+    if (!mod?.ClusterLayer) return
+    ClusterLayerCtor.value = mod.ClusterLayer
   },
   { immediate: true },
 )
