@@ -1,6 +1,6 @@
 <template>
   <Example2DemoShell
-    description="用 JSON 复制地图——A 图（底图 + Marker）toJSON 后复制到空容器 B，3 种实现（Composable/组合/逃生舱）（对应官网 11.5）。"
+    description="用 JSON 复制地图——A 图（底图 + Marker）toJSON 后复制到空容器 B，3 种实现（Composable/组合/逃生舱）（对应官网 11.5）"
     :tabs="tabs"
   />
 </template>
@@ -10,7 +10,10 @@ import type { DemoTab } from '~/data/example2-menu'
 import ComposableImpl from '~/components/example2/json/copy-map/ComposableImpl.vue'
 import MixedImpl from '~/components/example2/json/copy-map/MixedImpl.vue'
 import EscapeImpl from '~/components/example2/json/copy-map/EscapeImpl.vue'
-const tabs: DemoTab[] = [{ key: 'composable', label: 'Composable', comp: ComposableImpl },
+
+const tabs: DemoTab[] = [
+  { key: 'composable', label: 'Composable', comp: ComposableImpl },
   { key: 'mixed', label: '组合', comp: MixedImpl },
-  { key: 'escape', label: '逃生舱', comp: EscapeImpl }]
+  { key: 'escape', label: '逃生舱', comp: EscapeImpl },
+]
 </script>

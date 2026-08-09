@@ -23,6 +23,7 @@
     </div>
     <UButton size="sm" class="mt-3" @click="copyMap">复制地图 A - B</UButton>
     <p class="text-sm text-muted mt-2">A（底图 + Marker）toJSON 后复制到 B——B 为空图，复制后对齐 A（对应官网 11.5）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
   </div>
 </template>
 
@@ -43,4 +44,6 @@ function copyMap() {
   const json = toA()
   fromB(json)
 }
+
+const status = computed(() => (mapA.value && mapB.value ? 'A/B 地图已创建（可复制）' : '加载中…'))
 </script>
