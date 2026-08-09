@@ -82,43 +82,43 @@
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
+const center: [number, number] = [121.4737, 31.2304]
 
 // 1) useMaptalks：命令式创建命名地图 'suite-core'
-const elCore = ref<HTMLElement | null>(null);
+const elCore = ref<HTMLElement | null>(null)
 const { map: coreMap, isReady: coreReady, error: coreError } = useMaptalks(elCore, {
   center,
   zoom: 11,
   name: 'suite-core',
-});
+})
 // 给命名地图加个底图，让它可见
-useMaptalksTileLayer(coreMap, { source: 'osm' });
+useMaptalksTileLayer(coreMap, { source: 'osm' })
 
 // 2) useMaptalksLayer：通用图层原语（逃生舱），factory 直接 new 任意图层
-const elLayer = ref<HTMLElement | null>(null);
-const { map: layerMap } = useMaptalks(elLayer, { center, zoom: 11 });
+const elLayer = ref<HTMLElement | null>(null)
+const { map: layerMap } = useMaptalks(elLayer, { center, zoom: 11 })
 const { layer: escapeLayer } = useMaptalksLayer(layerMap, (mt) => {
   return new mt.TileLayer('escape-tile', {
     urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     subdomains: ['b', 'c', 'd'],
     attribution: '© OpenStreetMap contributors, © CARTO',
-  });
-});
+  })
+})
 
 // 3) useMaptalksSource：解析 secure 签名源（经服务端 /api/maptalks/sign 换取带 token 的 URL）
-const elSecure = ref<HTMLElement | null>(null);
-const { map: secureMap } = useMaptalks(elSecure, { center, zoom: 11 });
-useMaptalksTileLayer(secureMap, { source: 'secure' });
-const { source: secureSource, pending: srcPending, error: srcError } = useMaptalksSource('secure');
+const elSecure = ref<HTMLElement | null>(null)
+const { map: secureMap } = useMaptalks(elSecure, { center, zoom: 11 })
+useMaptalksTileLayer(secureMap, { source: 'secure' })
+const { source: secureSource, pending: srcPending, error: srcError } = useMaptalksSource('secure')
 // 从解析结果里取签名 URL 展示
 const resolvedUrl = computed(() => {
-  const s = secureSource.value as { urlTemplate?: string } | null;
-  return s?.urlTemplate ?? '';
-});
+  const s = secureSource.value as { urlTemplate?: string } | null
+  return s?.urlTemplate ?? ''
+})
 
 // 4) useMaptalksInstance：按名获取上面注册的命名地图（不拥有其生命周期）
-const coreInstance = useMaptalksInstance('suite-core');
+const coreInstance = useMaptalksInstance('suite-core')
 // useMaptalksRegistry：枚举所有命名实例
-const registry = useMaptalksRegistry();
-const registryNames = computed(() => Array.from(registry.instances.keys()));
+const registry = useMaptalksRegistry()
+const registryNames = computed(() => Array.from(registry.instances.keys()))
 </script>

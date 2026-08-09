@@ -35,6 +35,7 @@
             <UButton size="sm" :color="slaveLocked ? 'error' : 'neutral'" variant="soft" @click="toggleSlaveLock">
               {{ slaveLocked ? '解锁从图交互' : '禁用从图交互' }}
             </UButton>
+            <span class="text-xs text-muted">{{ statusSync }}</span>
           </div>
           <span class="text-sm text-muted">
             {{ syncMode === 'mutual' ? '双向：拖动/缩放任一张地图，另一张跟随。' : '主从：仅左图（sync-master）驱动右图，右图变化不影响左图。' }}
@@ -61,6 +62,7 @@
             <UButton size="sm" @click="doExport">导出为 PNG</UButton>
             <UButton size="sm" color="neutral" @click="doSerialize">序列化为 JSON</UButton>
             <span class="text-sm text-muted">{{ jsonMsg }}</span>
+            <span class="text-xs text-muted ml-2">{{ statusC }}</span>
           </div>
           <div class="flex gap-2 flex-wrap items-center">
             <span class="text-sm text-muted">矢量图层控制：</span>
@@ -76,77 +78,80 @@
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
+const center: [number, number] = [121.4737, 31.2304]
 
 // —— 卡片 1：双图同步 ——
-const elA = ref<HTMLElement | null>(null);
-const elB = ref<HTMLElement | null>(null);
+const elA = ref<HTMLElement | null>(null)
+const elB = ref<HTMLElement | null>(null)
 // 左图命名 'sync-master'，master-slave 模式用它当主图（用注册表名传 master，异步就绪后自动解析）
-const { map: mapA } = useMaptalks(elA, { center, zoom: 11, name: 'sync-master' });
-const { map: mapB } = useMaptalks(elB, { center: [121.51, 31.245], zoom: 11 });
-useMaptalksTileLayer(mapA, { source: 'osm' });
-useMaptalksTileLayer(mapB, { source: 'osm' });
+const { map: mapA, isReady: readyA } = useMaptalks(elA, { center, zoom: 11, name: 'sync-master' })
+const { map: mapB, isReady: readyB } = useMaptalks(elB, { center: [121.51, 31.245], zoom: 11 })
+useMaptalksTileLayer(mapA, { source: 'osm' })
+useMaptalksTileLayer(mapB, { source: 'osm' })
 
 // 同步模式可切换：mutual（双向）/ master-slave（仅左图驱动右图）。
 // composable 的 mode 在创建时固定，故用 effectScope 承载，切换模式时销毁旧实例重建。
-const syncMode = ref<'mutual' | 'master-slave'>('mutual');
-let syncScope: ReturnType<typeof effectScope> | null = null;
-const currentSync = shallowRef<ReturnType<typeof useMaptalksSync> | null>(null);
+const syncMode = ref<'mutual' | 'master-slave'>('mutual')
+let syncScope: ReturnType<typeof effectScope> | null = null
+const currentSync = shallowRef<ReturnType<typeof useMaptalksSync> | null>(null)
 /** 按当前模式（重新）创建同步实例 */
 function setupSync() {
-  syncScope?.stop();
-  syncScope = effectScope();
+  syncScope?.stop()
+  syncScope = effectScope()
   syncScope.run(() => {
-    currentSync.value = useMaptalksSync([mapA, mapB], { mode: syncMode.value, master: 'sync-master' });
-  });
+    currentSync.value = useMaptalksSync([mapA, mapB], { mode: syncMode.value, master: 'sync-master' })
+  })
 }
-watch(syncMode, setupSync);
-setupSync();
-onScopeDispose(() => syncScope?.stop());
+watch(syncMode, setupSync)
+setupSync()
+onScopeDispose(() => syncScope?.stop())
 /** 启用同步 */
 function enableSync() {
-  currentSync.value?.enable();
+  currentSync.value?.enable()
 }
 /** 停用同步 */
 function disableSync() {
-  currentSync.value?.disable();
+  currentSync.value?.disable()
 }
 
 // 模拟官网「主从」交互锁：禁用从图（右图）的用户交互，只让它被动跟随
-const slaveLocked = ref(false);
+const slaveLocked = ref(false)
 /** 切换从图交互开关（config 修改 draggable/scrollWheelZoom/dblClickZoom） */
 function toggleSlaveLock() {
-  slaveLocked.value = !slaveLocked.value;
-  const m = mapB.value as unknown as { config(opts: Record<string, boolean>): void } | null;
+  slaveLocked.value = !slaveLocked.value
+  const m = mapB.value as unknown as { config(opts: Record<string, boolean>): void } | null
   m?.config({
     draggable: !slaveLocked.value,
     scrollWheelZoom: !slaveLocked.value,
     dblClickZoom: !slaveLocked.value,
-  });
+  })
 }
 
 // —— 卡片 2：序列化 + 导出 + 图层控制 ——
-const elC = ref<HTMLElement | null>(null);
-const { map: mapC } = useMaptalks(elC, { center, zoom: 12 });
-useMaptalksTileLayer(mapC, { source: 'osm' });
-const { layer: vecLayer } = useMaptalksVectorLayer(mapC);
+const elC = ref<HTMLElement | null>(null)
+const { map: mapC, isReady: readyC } = useMaptalks(elC, { center, zoom: 12 })
+useMaptalksTileLayer(mapC, { source: 'osm' })
+const { layer: vecLayer } = useMaptalksVectorLayer(mapC)
 useMaptalksMarker(vecLayer, {
   coordinates: center,
   options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 22, markerHeight: 22 } },
-});
+})
 
-const { toJSON } = useMaptalksSerialize(mapC);
-const { download } = useMaptalksExport(mapC);
-const ctrl = useMaptalksLayerControl(vecLayer);
+const { toJSON } = useMaptalksSerialize(mapC)
+const { download } = useMaptalksExport(mapC)
+const ctrl = useMaptalksLayerControl(vecLayer)
 
-const jsonMsg = ref('');
+const jsonMsg = ref('')
 /** 导出当前地图视图为 PNG 并下载 */
 function doExport() {
-  download('demo-suite-map.png');
+  download('demo-suite-map.png')
 }
 /** 序列化地图为 JSON，展示大小 */
 function doSerialize() {
-  const json = toJSON();
-  jsonMsg.value = json ? `已序列化，JSON 长度约 ${JSON.stringify(json).length} 字符` : '序列化失败';
+  const json = toJSON()
+  jsonMsg.value = json ? `已序列化，JSON 长度约 ${JSON.stringify(json).length} 字符` : '序列化失败'
 }
+
+const statusSync = computed(() => (readyA.value && readyB.value ? '双图已就绪（可同步）' : '加载中…'))
+const statusC = computed(() => (readyC.value ? '地图已创建（可导出/序列化）' : '加载中…'))
 </script>
