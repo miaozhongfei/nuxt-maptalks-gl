@@ -60,10 +60,10 @@ watch(
       const mt = await import('maptalks-gl')
       const mk = new mt.Marker([121.4737, 31.2304], { symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 14, markerHeight: 14 } })
       mk.setAltitude(500)
-      mk.addTo(layer as Parameters<typeof mk.addTo>[0])
+      mk.addTo(layer as unknown as Parameters<typeof mk.addTo>[0])
       const mk2 = new mt.Marker([121.475, 31.231], { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 12, markerHeight: 12 } })
       mk2.setAltitude(300)
-      mk2.addTo(layer as Parameters<typeof mk2.addTo>[0])
+      mk2.addTo(layer as unknown as Parameters<typeof mk2.addTo>[0])
     } catch {
       // 原生模块加载失败时静默（逃生舱失败不拖垮页面）
     }

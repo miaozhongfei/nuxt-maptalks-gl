@@ -84,7 +84,7 @@ watch(
         symbol: { markerType: 'ellipse', markerFill: '#dc2626', markerWidth: 24, markerHeight: 24 },
         draggable: true,
       })
-      mk.addTo(layer as Parameters<typeof mk.addTo>[0])
+      mk.addTo(layer as unknown as Parameters<typeof mk.addTo>[0])
     } catch {
       // 原生模块加载失败时静默（逃生舱失败不拖垮页面）
     }
