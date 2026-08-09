@@ -18,6 +18,7 @@ watch(
     if (!m) return
     // 插件 README ES6 用法：import 插件模块后用其导出的 HeatLayer 类（extends maptalks.Layer）
     const { HeatLayer }: any = await import('maptalks.heatmap' as string)
+    if (!HeatLayer) return
     const cx = 121.5057
     const cy = 31.2453
     // 200 个随机点，README 格式 [[lng, lat, value]]
