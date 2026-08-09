@@ -48,8 +48,8 @@ useMaptalksLineString(layer, { coordinates: [[121.45, 31.22], [121.48, 31.24]], 
 useMaptalksPolygon(layer, { coordinates: [[[121.45, 31.23], [121.48, 31.23], [121.48, 31.25], [121.45, 31.25], [121.45, 31.23]]], options: { symbol: { polygonFill: '#22c55e', polygonOpacity: 0.35, lineColor: '#16a34a', lineWidth: 2 } } })
 
 // 控件
-useMaptalksZoom(mixMap, { position: 'top-left' })
-useMaptalksScale(mixMap, { position: 'bottom-left' })
+useMaptalksZoom(mixMap, { options: { position: 'top-left' } })
+useMaptalksScale(mixMap, { options: { position: 'bottom-left' } })
 
 // 相机
 const cam = useMaptalksCamera(mixMap)
