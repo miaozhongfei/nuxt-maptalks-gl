@@ -8,6 +8,7 @@
       style="height: 480px"
     />
     <p class="text-sm text-muted mt-2">MaptalksMap ref + useMaptalksSerialize.fromJSON——静态 JSON 直接建图（含底图与 Marker，对应官网 11.4）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
     <pre class="text-xs mt-2 p-3 rounded border border-default overflow-auto max-h-48">{{ jsonSrc }}</pre>
   </div>
 </template>
@@ -53,4 +54,6 @@ watch(
     if (m) fromJSON(JSON.parse(jsonSrc))
   },
 )
+
+const status = computed(() => (map.value ? '地图已创建（JSON 已载入）' : '加载中…'))
 </script>

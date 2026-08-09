@@ -2,6 +2,7 @@
   <div>
     <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
     <p class="text-sm text-muted mt-2">逃生舱——官网原生方式：Map.fromJSON(container, mapJSON) 静态建图（对应官网 11.4）。</p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
     <pre class="text-xs mt-2 p-3 rounded border border-default overflow-auto max-h-48">{{ jsonSrc }}</pre>
   </div>
 </template>
@@ -36,14 +37,17 @@ const jsonSrc = JSON.stringify(
 )
 
 const el = ref<HTMLElement | null>(null)
+const status = ref('加载中…')
 let mapIns: any = null
 
 watch(
   el,
   async (dom) => {
     if (dom && !mapIns) {
-      const mt = await import('maptalks-gl');
-      mapIns = (mt as any).Map.fromJSON(dom, JSON.parse(jsonSrc));
+      const mt = await import('maptalks-gl')
+      if (!mt.Map?.fromJSON) return
+      mapIns = (mt as any).Map.fromJSON(dom, JSON.parse(jsonSrc))
+      status.value = '地图已创建（JSON 已载入）'
     }
   },
   { immediate: true },
