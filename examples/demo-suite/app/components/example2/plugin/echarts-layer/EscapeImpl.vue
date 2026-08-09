@@ -30,7 +30,7 @@ watch(
           cy + (Math.random() - 0.5) * 0.3,
           Math.random() * 100,
         ]),
-        symbolSize: (val: number[]) => 5 + val[2] / 10,
+        symbolSize: (val: number[]) => 5 + (val[2] ?? 0) / 10,
         itemStyle: { color: '#f59e0b' },
       }],
     }
