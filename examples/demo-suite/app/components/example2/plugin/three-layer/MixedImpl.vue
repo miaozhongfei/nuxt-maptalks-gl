@@ -30,6 +30,7 @@ watch(
     if (!m || ThreeLayerCtor.value) return
     THREE.value = await import('three' as string)
     const mod: any = await import('maptalks.three' as string)
+    if (!mod?.ThreeLayer) return
     ThreeLayerCtor.value = mod.ThreeLayer
   },
   { immediate: true },

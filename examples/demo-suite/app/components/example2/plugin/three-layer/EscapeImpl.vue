@@ -18,6 +18,7 @@ watch(
     if (!m) return
     // README ES Modules 用法：THREE 从 three 模块导入（非 window.THREE），ThreeLayer 从插件导入
     const { ThreeLayer }: any = await import('maptalks.three' as string)
+    if (!ThreeLayer) return
     const THREE: any = await import('three' as string)
     try {
       const tLayer = new ThreeLayer('three')
