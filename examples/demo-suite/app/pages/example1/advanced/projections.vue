@@ -31,7 +31,6 @@ const center: [number, number] = [121.4737, 31.2304]
 const el1 = ref<HTMLElement | null>(null)
 const { map: map1, isReady: ready1 } = useMaptalks(el1, { center, zoom: 13 })
 useMaptalksTileLayer(map1, { source: 'osm' })
-const { containerPointToCoordinate } = useMaptalksCoordinate(map1)
 
 const screenPt = ref('')
 const geoCoord = ref('')
@@ -52,8 +51,9 @@ useMaptalksLabel(projVec, {
   content: () => {
     const m = toValue(map2)
     if (!m) return '加载中…'
-    const proj = m.getProjection()
-    return `投影: ${proj.code.toUpperCase()}`
+    // getProjection 返回结构未完全建模，断言 code 字段展示投影名
+    const proj = m.getProjection() as { code?: string }
+    return proj.code ? `投影: ${proj.code.toUpperCase()}` : '投影: —'
   },
   coordinates: [121.4737, 31.2304],
   options: { symbol: { textFaceName: 'monospace', textSize: 14, textFill: '#2563eb', textHaloFill: '#fff', textHaloRadius: 2 } },
