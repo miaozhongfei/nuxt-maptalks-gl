@@ -1,9 +1,9 @@
-import { onScopeDispose, ref, toValue, watch } from 'vue';
+﻿import { onScopeDispose, ref, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import type {
   MaptalksLayer,
-  UseMaptalksLayerControlOptions,
+  UseMaptalksLayerControlOpts,
   UseMaptalksLayerControlReturn,
 } from '../types';
 
@@ -55,7 +55,7 @@ function createLayerControls(
  * @description 两条 `immediate` watcher：visible 变化驱动 show/hide，opacity 变化驱动 setOpacity；
  * 图层未就绪或对应选项未传时跳过。
  * @param {() => MaptalksLayer | null} getLayer - 取当前图层实例
- * @param {UseMaptalksLayerControlOptions} options - 响应式联动配置
+ * @param {UseMaptalksLayerControlOpts} options - 响应式联动配置
  * @param {UseMaptalksLayerControlReturn} controls - 命令式控制方法集合
  * @returns {() => void} 停止全部 watcher 的函数
  *
@@ -65,7 +65,7 @@ function createLayerControls(
  */
 function bindReactiveControl(
   getLayer: () => MaptalksLayer | null,
-  options: UseMaptalksLayerControlOptions,
+  options: UseMaptalksLayerControlOpts,
   controls: UseMaptalksLayerControlReturn,
 ): () => void {
   const stopVisible = watch(
@@ -100,7 +100,7 @@ function bindReactiveControl(
  * 或方法缺失时静默 no-op。`toggle` 维护内部可见状态（默认初始可见）并在 show/hide 间翻转。
  * 作用域销毁时自动停止全部 watcher。
  * @param {MaybeRefOrGetter<MaptalksLayer | null>} layer - 图层引用（通常来自 useMaptalksLayer / 预设的 layer）
- * @param {UseMaptalksLayerControlOptions} [options] - 响应式 visible / opacity 联动配置
+ * @param {UseMaptalksLayerControlOpts} [options] - 响应式 visible / opacity 联动配置
  * @returns {UseMaptalksLayerControlReturn} `{ show, hide, toggle, setOpacity, bringToFront, bringToBack }`
  *
  * @example
@@ -116,7 +116,7 @@ function bindReactiveControl(
  */
 export function useMaptalksLayerControl(
   layer: MaybeRefOrGetter<MaptalksLayer | null>,
-  options: UseMaptalksLayerControlOptions = {},
+  options: UseMaptalksLayerControlOpts = {},
 ): UseMaptalksLayerControlReturn {
   const getLayer = () => toValue(layer);
   // 内部可见状态：seed 自 visible 选项（未传按可见），供 toggle 翻转参考

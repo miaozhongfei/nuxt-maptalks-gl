@@ -23,5 +23,5 @@ const cards = [
   { title: 'Composable 单独示例', description: 'use* 逐类演示', to: '/example1/composables/core' },
   { title: '组合示例', description: '组件/composable/混合三种组合', to: '/example1/combos/components-combo' },
   { title: '进阶·逃生舱', description: '原生 API 补官网能力', to: '/example1/advanced/altitude-3d' },
-];
+]
 </script>

@@ -27,6 +27,7 @@
             <UButton size="sm" @click="flyToLujiazui">animateTo 陆家嘴</UButton>
             <UButton size="sm" color="neutral" @click="cam.panBy([120, 0])">panBy 右移</UButton>
             <UButton size="sm" color="neutral" @click="convertCenter">转换中心点为像素</UButton>
+            <span class="text-xs text-muted">{{ statusMain }}</span>
           </div>
         </div>
       </template>
@@ -55,6 +56,7 @@
           <UButton size="sm" color="neutral" @click="draw.setMode('Polygon')">面</UButton>
           <UButton size="sm" color="error" variant="soft" @click="clearDrawn">清空</UButton>
           <span class="text-sm text-muted">模式：{{ draw.mode.value }}，启用：{{ draw.enabled.value }}，已保留：{{ drawnCount }} 个</span>
+          <span class="text-xs text-muted">{{ statusDraw }}</span>
         </div>
       </template>
     </UCard>
@@ -73,6 +75,7 @@
         <div class="flex gap-2 items-center">
           <UButton size="sm" @click="toggleGeo">切换 GeoJSON 数据</UButton>
           <span class="text-sm text-muted">已加载几何数：{{ geoResult.geometries.value.length }}</span>
+          <span class="text-xs text-muted ml-2">{{ statusGeo }}</span>
         </div>
       </template>
     </UCard>
@@ -88,86 +91,85 @@
       <div ref="elGeom" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
       <template #footer>
         <span class="text-sm text-muted">用 factory 手动 new 一个圆形几何，响应式纳管到矢量图层。</span>
+        <span class="text-xs text-muted ml-2">{{ statusGeom }}</span>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { MaptalksCoordinate } from '@lacqjs/nuxt-maptalks-gl';
-
-const center: [number, number] = [121.4737, 31.2304];
+const center: [number, number] = [121.4737, 31.2304]
 
 /** 格式化经纬度显示 */
 function fmt(n: number | undefined): string {
-  return typeof n === 'number' ? n.toFixed(4) : '—';
+  return typeof n === 'number' ? n.toFixed(4) : '—'
 }
 
 // —— 卡片 1：事件 + 相机 + 坐标 ——
-const elMain = ref<HTMLElement | null>(null);
-const { map: mainMap } = useMaptalks(elMain, { center, zoom: 11, pitch: 20 });
-useMaptalksTileLayer(mainMap, { source: 'osm' });
+const elMain = ref<HTMLElement | null>(null)
+const { map: mainMap, isReady: readyMain } = useMaptalks(elMain, { center, zoom: 11, pitch: 20 })
+useMaptalksTileLayer(mainMap, { source: 'osm' })
 
-const cam = useMaptalksCamera(mainMap);
-const lastClick = ref('（点击地图试试）');
+const cam = useMaptalksCamera(mainMap)
+const lastClick = ref('（点击地图试试）')
 // 绑定地图 click 事件，自动解绑
 useMaptalksEvents(mainMap, {
   click: (e) => {
-    const ev = e as { coordinate?: { x: number; y: number } };
-    if (ev.coordinate) lastClick.value = `[${ev.coordinate.x.toFixed(4)}, ${ev.coordinate.y.toFixed(4)}]`;
+    const ev = e as { coordinate?: { x: number; y: number } }
+    if (ev.coordinate) lastClick.value = `[${ev.coordinate.x.toFixed(4)}, ${ev.coordinate.y.toFixed(4)}]`
   },
-});
+})
 
-const coord = useMaptalksCoordinate();
-const centerPixel = ref('（点按钮转换）');
+const coord = useMaptalksCoordinate()
+const centerPixel = ref('（点按钮转换）')
 /** 把地图中心的地理坐标转换为容器内屏幕像素（用 map.getCenter() 拿真正的 Coordinate 对象） */
 function convertCenter() {
-  const m = mainMap.value;
-  if (!m) return;
+  const m = mainMap.value
+  if (!m) return
   // maptalks 的 coordinateToContainerPoint 需要 Coordinate 对象（含 x/y），不能传普通数组
-  const c = (m as unknown as { getCenter(): MaptalksCoordinate }).getCenter();
-  const pt = coord.toContainerPoint(m, c) as { x: number; y: number } | null;
-  if (pt && Number.isFinite(pt.x)) centerPixel.value = `(${Math.round(pt.x)}, ${Math.round(pt.y)}) px`;
+  const c = (m as unknown as { getCenter(): MaptalksCoordinate }).getCenter()
+  const pt = coord.toContainerPoint(m, c) as { x: number; y: number } | null
+  if (pt && Number.isFinite(pt.x)) centerPixel.value = `(${Math.round(pt.x)}, ${Math.round(pt.y)}) px`
 }
 /** 平滑过渡到陆家嘴 */
 function flyToLujiazui() {
-  cam.animateTo({ center: [121.5057, 31.2453], zoom: 14 });
+  cam.animateTo({ center: [121.5057, 31.2453], zoom: 14 })
 }
 
 // —— 卡片 2：绘制工具 ——
-const elDraw = ref<HTMLElement | null>(null);
-const { map: drawMap } = useMaptalks(elDraw, { center, zoom: 12 });
-useMaptalksTileLayer(drawMap, { source: 'osm' });
-const draw = useMaptalksDrawTool(drawMap, { mode: 'Polygon' });
+const elDraw = ref<HTMLElement | null>(null)
+const { map: drawMap, isReady: readyDraw } = useMaptalks(elDraw, { center, zoom: 12 })
+useMaptalksTileLayer(drawMap, { source: 'osm' })
+const draw = useMaptalksDrawTool(drawMap, { mode: 'Polygon' })
 // DrawTool 只负责“画”，画完（双击结束）默认会清除临时图形。
 // 这里用一个矢量图层保留画好的图形：监听 result，把结果复制一份加到图层。
-const { layer: drawLayer } = useMaptalksVectorLayer(drawMap);
-const drawnCount = ref(0);
+const { layer: drawLayer } = useMaptalksVectorLayer(drawMap)
+const drawnCount = ref(0)
 watch(draw.result, (geo) => {
-  const g = geo as { copy?: () => unknown } | null;
-  if (!g || !drawLayer.value) return;
-  const clone = typeof g.copy === 'function' ? g.copy() : g;
-  (drawLayer.value as unknown as { addGeometry(x: unknown): void }).addGeometry(clone);
-  drawnCount.value += 1;
-});
+  const g = geo as { copy?: () => unknown } | null
+  if (!g || !drawLayer.value) return
+  const clone = typeof g.copy === 'function' ? g.copy() : g
+  ;(drawLayer.value as unknown as { addGeometry(x: unknown): void }).addGeometry(clone)
+  drawnCount.value += 1
+})
 /** 清空已画的图形 */
 function clearDrawn() {
-  (drawLayer.value as unknown as { clear?: () => void } | null)?.clear?.();
-  drawnCount.value = 0;
+  ;(drawLayer.value as unknown as { clear?: () => void } | null)?.clear?.()
+  drawnCount.value = 0
 }
 
 // —— 卡片 3：GeoJSON ——
-const elGeo = ref<HTMLElement | null>(null);
-const { map: geoMap } = useMaptalks(elGeo, { center, zoom: 12 });
-useMaptalksTileLayer(geoMap, { source: 'osm' });
-const { layer: geoLayer } = useMaptalksVectorLayer(geoMap);
+const elGeo = ref<HTMLElement | null>(null)
+const { map: geoMap, isReady: readyGeo } = useMaptalks(elGeo, { center, zoom: 12 })
+useMaptalksTileLayer(geoMap, { source: 'osm' })
+const { layer: geoLayer } = useMaptalksVectorLayer(geoMap)
 const geoDataA = {
   type: 'FeatureCollection',
   features: [
     { type: 'Feature', geometry: { type: 'Point', coordinates: [121.47, 31.23] }, properties: {} },
     { type: 'Feature', geometry: { type: 'Point', coordinates: [121.49, 31.24] }, properties: {} },
   ],
-};
+}
 const geoDataB = {
   type: 'FeatureCollection',
   features: [
@@ -177,25 +179,30 @@ const geoDataB = {
       properties: {},
     },
   ],
-};
-const geoData = ref<Record<string, unknown>>(geoDataA);
+}
+const geoData = ref<Record<string, unknown>>(geoDataA)
 const geoResult = useMaptalksGeoJSON(geoLayer, {
   data: () => geoData.value,
   symbol: { markerType: 'ellipse', markerFill: '#f43f5e', markerWidth: 14, markerHeight: 14, lineColor: '#f43f5e', lineWidth: 3 },
-});
+})
 /** 切换 GeoJSON 数据源，观察响应式重载 */
 function toggleGeo() {
-  geoData.value = geoData.value === geoDataA ? geoDataB : geoDataA;
+  geoData.value = geoData.value === geoDataA ? geoDataB : geoDataA
 }
 
 // —— 卡片 4：通用几何原语 ——
-const elGeom = ref<HTMLElement | null>(null);
-const { map: geomMap } = useMaptalks(elGeom, { center, zoom: 13 });
-useMaptalksTileLayer(geomMap, { source: 'osm' });
-const { layer: geomLayer } = useMaptalksVectorLayer(geomMap);
+const elGeom = ref<HTMLElement | null>(null)
+const { map: geomMap, isReady: readyGeom } = useMaptalks(elGeom, { center, zoom: 13 })
+useMaptalksTileLayer(geomMap, { source: 'osm' })
+const { layer: geomLayer } = useMaptalksVectorLayer(geomMap)
 useMaptalksGeometry(geomLayer, (mt) => {
   return new mt.Circle(center, 700, {
     symbol: { polygonFill: '#6366f1', polygonOpacity: 0.35, lineColor: '#4f46e5', lineWidth: 2 },
-  });
-});
+  })
+})
+
+const statusMain = computed(() => (readyMain.value ? '地图已创建' : '加载中…'))
+const statusDraw = computed(() => (readyDraw.value ? '地图已创建（可绘制）' : '加载中…'))
+const statusGeo = computed(() => (readyGeo.value ? '地图已创建（GeoJSON 已加载）' : '加载中…'))
+const statusGeom = computed(() => (readyGeom.value ? '地图已创建（圆形已添加）' : '加载中…'))
 </script>

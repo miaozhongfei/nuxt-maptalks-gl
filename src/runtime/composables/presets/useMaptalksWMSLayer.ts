@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+﻿import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -6,10 +6,10 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeWMSTileLayerOptions,
+  MaptalksWMSLayer,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksWMSLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -47,10 +47,10 @@ function buildWMSOptions(
  * @description 与 useMaptalksTileLayer 同构：接受命名源（按配置解析）或内联源 / 直接选项（逃生舱口）。
  * 与 TileLayer 的差异是 WMS 以 `urlTemplate` 表示服务基址，故 source 的 `url` 会被映射为 `urlTemplate`；
  * WMS 业务参数（layers/styles/format/transparent/version/crs 等）经 `options` 透传。传入 `source`
- * 时图层创建等待源解析完成；否则按 `options` 直接创建。WMSLayer 构造器缺失抛 `layer-failed`。
+ * 时图层创建等待源解析完成；否则按 `options` 直接创建。构造器缺失（WMSTileLayer/WMSLayer 均无）抛 `layer-failed`。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksPresetOptions} [opts] - 数据源 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
+ * @returns {UseMaptalksLayerReturn<MaptalksWMSLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -66,21 +66,22 @@ function buildWMSOptions(
  */
 export function useMaptalksWMSLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeWMSTileLayerOptions> } = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+  opts: UseMaptalksWMSLayerOpts = {},
+): UseMaptalksLayerReturn<MaptalksWMSLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   wmsSeq += 1;
   const id = opts.id ?? `maptalks-wms-${wmsSeq}`;
   // 传入命名/内联源时，等待解析完成再创建；否则立即按选项创建
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildWMSOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildWMSOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,
     (mt) => {
-      const Ctor = mt.WMSLayer;
+      // maptalks-gl 实际导出名为 WMSTileLayer（继承 TileLayer）；保留 WMSLayer 兼容上游可能的别名导出
+      const Ctor = mt.WMSLayer ?? mt.WMSTileLayer;
       if (typeof Ctor !== 'function') {
-        throw new MaptalksError('layer-failed', '当前 maptalks-gl 未导出 WMSLayer');
+        throw new MaptalksError('layer-failed', '当前 maptalks-gl 未导出 WMSTileLayer/WMSLayer');
       }
       return new Ctor(id, layerOptions.value);
     },

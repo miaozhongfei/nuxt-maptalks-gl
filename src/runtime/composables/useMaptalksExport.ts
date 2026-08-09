@@ -1,7 +1,7 @@
-import { toValue } from 'vue';
+﻿import { toValue } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
-import type { MaptalksMap, UseMaptalksExportOptions, UseMaptalksExportReturn } from '../types';
+import type { MaptalksMap, UseMaptalksExportOpts, UseMaptalksExportReturn } from '../types';
 import { createLogger } from '../utils/logger';
 
 /** 日志实例（单例） */
@@ -24,13 +24,13 @@ export function useMaptalksExport(
   map: MaybeRefOrGetter<MaptalksMap | null>,
 ): UseMaptalksExportReturn {
   // 读取 dataURL：map 为 null 返回 null
-  function toDataURL(options: UseMaptalksExportOptions = {}): string | null {
+  function toDataURL(options: UseMaptalksExportOpts = {}): string | null {
     const m = toValue(map);
     return m ? m.toDataURL(options) : null;
   }
 
   // dataURL → Blob：失败 reject 并记录
-  async function toBlob(options: UseMaptalksExportOptions = {}): Promise<Blob | null> {
+  async function toBlob(options: UseMaptalksExportOpts = {}): Promise<Blob | null> {
     const dataUrl = toDataURL(options);
     if (!dataUrl) return null;
     try {
@@ -43,7 +43,7 @@ export function useMaptalksExport(
   }
 
   // 用临时锚点触发浏览器下载
-  function download(filename: string, options: UseMaptalksExportOptions = {}): void {
+  function download(filename: string, options: UseMaptalksExportOpts = {}): void {
     const dataUrl = toDataURL(options);
     if (!dataUrl) return;
     const anchor = document.createElement('a');

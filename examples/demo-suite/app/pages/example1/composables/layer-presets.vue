@@ -15,7 +15,10 @@
         </div>
       </template>
       <div ref="elTile" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
-      <template #footer><span class="text-sm text-muted">命名源 'osm' 栅格底图。</span></template>
+      <template #footer>
+        <span class="text-sm text-muted">命名源 'osm' 栅格底图。</span>
+        <span class="text-xs text-muted ml-2">{{ statusTile }}</span>
+      </template>
     </UCard>
 
     <!-- VectorTileLayer（真实 MVT） -->
@@ -28,7 +31,10 @@
         </div>
       </template>
       <div ref="elVT" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
-      <template #footer><span class="text-sm text-muted">MapLibre 公开 demo 矢量切片，蓝色国界面。</span></template>
+      <template #footer>
+        <span class="text-sm text-muted">MapLibre 公开 demo 矢量切片，蓝色国界面。</span>
+        <span class="text-xs text-muted ml-2">{{ statusVT }}</span>
+      </template>
     </UCard>
 
     <!-- VectorLayer + Marker -->
@@ -41,7 +47,10 @@
         </div>
       </template>
       <div ref="elVec" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
-      <template #footer><span class="text-sm text-muted">矢量图层容器 + 一个 Marker。</span></template>
+      <template #footer>
+        <span class="text-sm text-muted">矢量图层容器 + 一个 Marker。</span>
+        <span class="text-xs text-muted ml-2">{{ statusVec }}</span>
+      </template>
     </UCard>
 
     <!-- WMSLayer（真实 GeoServer） -->
@@ -54,7 +63,10 @@
         </div>
       </template>
       <div ref="elWMS" class="relative rounded border border-default overflow-hidden" style="height: 288px" />
-      <template #footer><span class="text-sm text-muted">ahocevar GeoServer 的 topp:states（美国各州），已定位到美国。</span></template>
+      <template #footer>
+        <span class="text-sm text-muted">ahocevar GeoServer 的 topp:states（美国各州），已定位到美国。</span>
+        <span class="text-xs text-muted ml-2">{{ statusWMS }}</span>
+      </template>
     </UCard>
 
     <!-- GLTFLayer（真实 3D 模型） -->
@@ -66,7 +78,10 @@
         </div>
       </template>
       <div ref="elGLTF" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
-      <template #footer><span class="text-sm text-muted">GLTFLayer + 真实 3D 模型（Duck.glb），倾斜视角观察。</span></template>
+      <template #footer>
+        <span class="text-sm text-muted">GLTFLayer + 真实 3D 模型（Duck.glb），倾斜视角观察。</span>
+        <span class="text-xs text-muted ml-2">{{ statusGLTF }}</span>
+      </template>
     </UCard>
 
     <!-- GroupGLLayer（承载含模型的 GLTFLayer） -->
@@ -79,29 +94,29 @@
         </div>
       </template>
       <div ref="elGroup" class="relative rounded border border-default overflow-hidden" style="height: 320px" />
-      <template #footer><span class="text-sm text-muted">GroupGLLayer 容器中加入含 3D 模型的 GLTFLayer。</span></template>
+      <template #footer>
+        <span class="text-sm text-muted">GroupGLLayer 容器中加入含 3D 模型的 GLTFLayer。</span>
+        <span class="text-xs text-muted ml-2">{{ statusGroup }}</span>
+      </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue';
-import type { MaptalksLayer } from '@lacqjs/nuxt-maptalks-gl';
-
-const center: [number, number] = [121.4737, 31.2304];
+const center: [number, number] = [121.4737, 31.2304]
 const MODEL_URL =
-  'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/Duck/glTF-Binary/Duck.glb';
+  'https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/Duck/glTF-Binary/Duck.glb'
 
 // —— 最小接口断言，避免 any ——
 interface GltfMarkerCtor {
-  new (coord: [number, number], opts: { symbol: Record<string, unknown> }): unknown;
+  new (coord: [number, number], opts: { symbol: Record<string, unknown> }): unknown
 }
 interface GltfLayerInstance {
-  addGeometry(geo: unknown): void;
+  addGeometry(geo: unknown): void
 }
 interface MaptalksNs {
-  GLTFMarker: GltfMarkerCtor;
-  GLTFLayer: new (id: string) => GltfLayerInstance;
+  GLTFMarker: GltfMarkerCtor
+  GLTFLayer: new (id: string) => GltfLayerInstance
 }
 
 /** 监听图层就绪，往 GLTFLayer 加入真实 3D 模型 */
@@ -109,13 +124,17 @@ function addModelToGltf(layerRef: Ref<MaptalksLayer | null>): void {
   watch(
     layerRef,
     async (l) => {
-      if (!l) return;
-      const mt = (await import('maptalks-gl')) as unknown as MaptalksNs;
-      const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scaleX: 200, scaleY: 200, scaleZ: 200 } });
-      (l as unknown as GltfLayerInstance).addGeometry(marker);
+      if (!l) return
+      try {
+        const mt = (await import('maptalks-gl')) as unknown as MaptalksNs
+        const marker = new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scaleX: 200, scaleY: 200, scaleZ: 200 } })
+        ;(l as unknown as GltfLayerInstance).addGeometry(marker)
+      } catch {
+        // 原生模块加载失败时静默（逃生舱失败不拖垮页面）
+      }
     },
     { immediate: true },
-  );
+  )
 }
 
 /** 监听 GroupGLLayer 就绪，往里加一个含模型的 GLTFLayer */
@@ -123,24 +142,28 @@ function addGltfToGroup(layerRef: Ref<MaptalksLayer | null>): void {
   watch(
     layerRef,
     async (l) => {
-      if (!l) return;
-      const mt = (await import('maptalks-gl')) as unknown as MaptalksNs;
-      const gltf = new mt.GLTFLayer('lp-gltf-in-group');
-      gltf.addGeometry(new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scaleX: 200, scaleY: 200, scaleZ: 200 } }));
-      (l as unknown as { addLayer(x: unknown): void }).addLayer(gltf);
+      if (!l) return
+      try {
+        const mt = (await import('maptalks-gl')) as unknown as MaptalksNs
+        const gltf = new mt.GLTFLayer('lp-gltf-in-group')
+        gltf.addGeometry(new mt.GLTFMarker(center, { symbol: { url: MODEL_URL, scaleX: 200, scaleY: 200, scaleZ: 200 } }))
+        ;(l as unknown as { addLayer(x: unknown): void }).addLayer(gltf)
+      } catch {
+        // 原生模块加载失败时静默（逃生舱失败不拖垮页面）
+      }
     },
     { immediate: true },
-  );
+  )
 }
 
 // TileLayer
-const elTile = ref<HTMLElement | null>(null);
-const { map: tileMap } = useMaptalks(elTile, { center, zoom: 11 });
-useMaptalksTileLayer(tileMap, { source: 'osm' });
+const elTile = ref<HTMLElement | null>(null)
+const { map: tileMap, isReady: readyTile } = useMaptalks(elTile, { center, zoom: 11 })
+useMaptalksTileLayer(tileMap, { source: 'osm' })
 
 // VectorTileLayer（真实 MVT）
-const elVT = ref<HTMLElement | null>(null);
-const { map: vtMap } = useMaptalks(elVT, { center: [110, 30], zoom: 2 });
+const elVT = ref<HTMLElement | null>(null)
+const { map: vtMap, isReady: readyVT } = useMaptalks(elVT, { center: [110, 30], zoom: 2 })
 useMaptalksVectorTileLayer(vtMap, {
   options: {
     urlTemplate: 'https://demotiles.maplibre.org/tiles/{z}/{x}/{y}.pbf',
@@ -149,22 +172,22 @@ useMaptalksVectorTileLayer(vtMap, {
       { filter: ['==', '$type', 'LineString'], renderPlugin: { type: 'line', dataConfig: { type: 'line' } }, symbol: { lineColor: '#1e3a8a', lineWidth: 1 } },
     ],
   },
-});
+})
 
 // VectorLayer + Marker
-const elVec = ref<HTMLElement | null>(null);
-const { map: vecMap } = useMaptalks(elVec, { center, zoom: 12 });
-useMaptalksTileLayer(vecMap, { source: 'osm' });
-const { layer: vecLayer } = useMaptalksVectorLayer(vecMap);
+const elVec = ref<HTMLElement | null>(null)
+const { map: vecMap, isReady: readyVec } = useMaptalks(elVec, { center, zoom: 12 })
+useMaptalksTileLayer(vecMap, { source: 'osm' })
+const { layer: vecLayer } = useMaptalksVectorLayer(vecMap)
 useMaptalksMarker(vecLayer, {
   coordinates: center,
-  symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 },
-});
+  options: { symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 20, markerHeight: 20 } },
+})
 
 // WMSLayer（定位到美国以显示 topp:states）
-const elWMS = ref<HTMLElement | null>(null);
-const { map: wmsMap } = useMaptalks(elWMS, { center: [-98, 39], zoom: 3 });
-useMaptalksTileLayer(wmsMap, { source: 'osm' });
+const elWMS = ref<HTMLElement | null>(null)
+const { map: wmsMap, isReady: readyWMS } = useMaptalks(elWMS, { center: [-98, 39], zoom: 3 })
+useMaptalksTileLayer(wmsMap, { source: 'osm' })
 useMaptalksWMSLayer(wmsMap, {
   options: {
     urlTemplate: 'https://ahocevar.com/geoserver/wms',
@@ -172,19 +195,26 @@ useMaptalksWMSLayer(wmsMap, {
     format: 'image/png',
     transparent: true,
   },
-});
+})
 
 // GLTFLayer + 模型
-const elGLTF = ref<HTMLElement | null>(null);
-const { map: gltfMap } = useMaptalks(elGLTF, { center, zoom: 17, pitch: 60 });
-useMaptalksTileLayer(gltfMap, { source: 'osm' });
-const { layer: gltfLayer } = useMaptalksGLTFLayer(gltfMap, { id: 'lp-gltf' });
-addModelToGltf(gltfLayer);
+const elGLTF = ref<HTMLElement | null>(null)
+const { map: gltfMap, isReady: readyGLTF } = useMaptalks(elGLTF, { center, zoom: 17, pitch: 60 })
+useMaptalksTileLayer(gltfMap, { source: 'osm' })
+const { layer: gltfLayer } = useMaptalksGLTFLayer(gltfMap, { id: 'lp-gltf' })
+addModelToGltf(gltfLayer)
 
 // GroupGLLayer + 含模型的 GLTFLayer
-const elGroup = ref<HTMLElement | null>(null);
-const { map: groupMap } = useMaptalks(elGroup, { center, zoom: 17, pitch: 60 });
-useMaptalksTileLayer(groupMap, { source: 'osm' });
-const { layer: groupLayer } = useMaptalksGroupGLLayer(groupMap, { id: 'lp-group' });
-addGltfToGroup(groupLayer);
+const elGroup = ref<HTMLElement | null>(null)
+const { map: groupMap, isReady: readyGroup } = useMaptalks(elGroup, { center, zoom: 17, pitch: 60 })
+useMaptalksTileLayer(groupMap, { source: 'osm' })
+const { layer: groupLayer } = useMaptalksGroupGLLayer(groupMap, { id: 'lp-group' })
+addGltfToGroup(groupLayer)
+
+const statusTile = computed(() => (readyTile.value ? '地图已创建' : '加载中…'))
+const statusVT = computed(() => (readyVT.value ? '地图已创建' : '加载中…'))
+const statusVec = computed(() => (readyVec.value ? '地图已创建' : '加载中…'))
+const statusWMS = computed(() => (readyWMS.value ? '地图已创建' : '加载中…'))
+const statusGLTF = computed(() => (readyGLTF.value ? '地图已创建（3D 模型加载中…）' : '加载中…'))
+const statusGroup = computed(() => (readyGroup.value ? '地图已创建（3D 模型加载中…）' : '加载中…'))
 </script>

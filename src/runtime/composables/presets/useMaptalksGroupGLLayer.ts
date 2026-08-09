@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+﻿import { computed } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { useRuntimeConfig } from '#imports';
@@ -6,25 +6,58 @@ import { useRuntimeConfig } from '#imports';
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksDefaults,
+  MaptalksEventHandler,
+  MaptalksGroupGLLayer,
   MaptalksLayer,
   MaptalksMap,
-  MaptalksNativeGroupGLLayerOptions,
+  MaptalksGroupGLLayerOptions,
   ResolvedModuleOptions,
   UseMaptalksLayerReturn,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
-/** useMaptalksGroupGLLayer 的可选项 */
-export interface UseMaptalksGroupGLLayerOptions {
+/**
+ * useMaptalksGroupGLLayer 的可选项。
+ *
+ * @description 承载子 GL 图层列表、图层 id、透传选项、事件绑定与自动销毁配置。
+ * 子图层经 `layers` 传入（已创建实例），模块从 runtimeConfig 读取默认 sceneConfig（lighting / postProcess）
+ * 并合并到构造选项；用户 `options` 优先级最高。
+ *
+ * @example
+ * const vt = useMaptalksVectorTileLayer(map, { source: 'baseVT' });
+ * const group = useMaptalksGroupGLLayer(map, {
+ *   layers: [vt.layer.value ?? undefined].filter(Boolean) as MaptalksLayer[],
+ *   options: { sceneConfig: { light: { ambient: '#fff' } } },
+ * });
+ */
+export interface UseMaptalksGroupGLLayerBaseOpts {
   /** 图层 id，缺省自动生成 */
-  id?: string;
+  id?: string | number;
   /** 承载的子 GL 图层（已创建实例） */
   layers?: MaptalksLayer[];
   /** 透传给 GroupGLLayer 构造器的额外选项（优先级高于默认 sceneConfig） */
   options?: Record<string, unknown>;
+  /** 事件名 → 处理器（自动 on/off） */
+  events?: Record<string, MaptalksEventHandler>;
   /** 作用域销毁时是否自动移除图层，默认 `true` */
   autoDispose?: boolean;
 }
+
+/**
+ * useMaptalksGroupGLLayer 的 opts 参数。
+ *
+ * @description 对 UseMaptalksGroupGLLayerBaseOpts 的 options 字段做类型收窄：支持
+ * `MaptalksGroupGLLayerOptions` 或响应式 getter。用于 `useMaptalksGroupGLLayer` 的入参类型。
+ *
+ * @example
+ * const opts: UseMaptalksGroupGLLayerOpts = {
+ *   layers: [vtLayer],
+ *   options: { sceneConfig: { light: { ambient: '#fff' } } },
+ * };
+ */
+export type UseMaptalksGroupGLLayerOpts = Omit<UseMaptalksGroupGLLayerBaseOpts, 'options'> & {
+  options?: MaptalksGroupGLLayerOptions | MaybeRefOrGetter<MaptalksGroupGLLayerOptions | undefined>;
+};
 
 /** 自动生成 id 的计数器 */
 let groupSeq = 0;
@@ -53,8 +86,8 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  * @description 从模块默认项读取 lighting / postProcess 组装 sceneConfig，与用户 `options` 合并后创建
  * GroupGLLayer。子图层经 `options.layers` 传入。不依赖数据源，地图就绪即创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksGroupGLLayerOptions} [opts] - 子图层 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn} 图层句柄
+ * @param {UseMaptalksGroupGLLayerOpts} [opts] - 子图层 / id / 额外选项 / 自动销毁
+ * @returns {UseMaptalksLayerReturn<MaptalksGroupGLLayer>} 图层句柄
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -63,8 +96,8 @@ function buildSceneConfig(defaults: MaptalksDefaults): Record<string, unknown> {
  */
 export function useMaptalksGroupGLLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksGroupGLLayerOptions & { options?: Partial<MaptalksNativeGroupGLLayerOptions> } = {},
-): UseMaptalksLayerReturn {
+  opts: UseMaptalksGroupGLLayerOpts = {},
+): UseMaptalksLayerReturn<MaptalksGroupGLLayer> {
   const publicConfig = useRuntimeConfig().public as unknown as {
     maptalksGl?: ResolvedModuleOptions;
   };
@@ -80,7 +113,7 @@ export function useMaptalksGroupGLLayer(
     return { ...base, ...opts.options };
   });
 
-  return useMaptalksLayer(
+  const handle = useMaptalksLayer(
     map,
     (mt) => {
       const Ctor = mt.GroupGLLayer;
@@ -91,4 +124,9 @@ export function useMaptalksGroupGLLayer(
     },
     { options: groupOptions, enabled: true, autoDispose: opts.autoDispose },
   );
+  return {
+    ...handle,
+    show: () => handle.layer.value?.show?.(),
+    hide: () => handle.layer.value?.hide?.(),
+  };
 }

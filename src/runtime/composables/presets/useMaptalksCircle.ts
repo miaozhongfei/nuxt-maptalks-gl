@@ -1,10 +1,12 @@
-import { toValue } from 'vue';
+﻿import { toValue } from 'vue';
+import { buildGeometryOptions } from '../../core/geometry-options';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
+  MaptalksCircleGeometry,
   MaptalksVectorLayer,
-  UseMaptalksCircleOptions,
+  UseMaptalksCircleOpts,
   UseMaptalksGeometryReturn,
 } from '../../types';
 import { useMaptalksGeometry } from '../useMaptalksGeometry';
@@ -13,39 +15,44 @@ import { useMaptalksGeometry } from '../useMaptalksGeometry';
  * 预设：圆（Circle），= useMaptalksGeometry + mt.Circle + radius extraProp。
  *
  * @description 在给定 VectorLayer 上创建并响应式纳管一个 Circle。中心坐标与半径均响应式。
+ * symbol / properties 从 `options` 中提取并响应式绑定；其余原生字段经 `buildGeometryOptions` 一次性传入构造器。
  * Circle 构造器缺失抛 geometry-failed。
  * @param {MaybeRefOrGetter<MaptalksVectorLayer | null>} layer - 矢量图层引用
- * @param {UseMaptalksCircleOptions} opts - 中心坐标 + 半径（必填）+ symbol/properties/events/id/autoDispose
+ * @param {UseMaptalksCircleOpts} opts - 中心坐标 + 半径（必填）+ options（全部原生字段）+ visible + events + id + autoDispose
  * @returns {UseMaptalksGeometryReturn} `{ geometry, remove }`
  *
  * @example
  * const { layer } = useMaptalksVectorLayer(map);
- * const { geometry } = useMaptalksCircle(layer, { coordinates: () => center.value, radius: () => r.value });
+ * const { geometry } = useMaptalksCircle(layer, {
+ *   coordinates: () => center.value,
+ *   radius: () => r.value,
+ *   options: { symbol: { polygonFill: '#1bbc9b' } },
+ * });
  */
 export function useMaptalksCircle(
   layer: MaybeRefOrGetter<MaptalksVectorLayer | null>,
-  opts: UseMaptalksCircleOptions,
-): UseMaptalksGeometryReturn {
-  return useMaptalksGeometry(
+  opts: UseMaptalksCircleOpts,
+): UseMaptalksGeometryReturn<MaptalksCircleGeometry> {
+  return useMaptalksGeometry<MaptalksCircleGeometry>(
     layer,
     (mt) => {
       const Ctor = mt.Circle;
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('geometry-failed', '当前 maptalks-gl 未导出 Circle');
       }
-      return new Ctor(toValue(opts.coordinates), toValue(opts.radius), {
-        symbol: toValue(opts.symbol),
-        properties: toValue(opts.properties),
-        id: opts.id,
-      });
+      return new Ctor(toValue(opts.coordinates), toValue(opts.radius), buildGeometryOptions({ id: opts.id, ...toValue(opts.options) }));
+
     },
     {
       coordinates: opts.coordinates,
-      symbol: opts.symbol,
-      properties: opts.properties,
+      symbol: () => toValue(opts.options)?.symbol as Record<string, unknown> | Array<[number, Record<string, unknown>]> | undefined,
+      properties: () => toValue(opts.options)?.properties as Record<string, unknown> | undefined,
+      visible: opts.visible,
       events: opts.events,
       autoDispose: opts.autoDispose,
-      extraProps: [{ value: opts.radius, apply: (g, v) => g.setRadius?.(v as number) }],
+      id: opts.id,
+      options: opts.options,
+      extraProps: [{ value: opts.radius, apply: (g, v) => (g as MaptalksCircleGeometry).setRadius(v as number) }],
     },
   );
 }

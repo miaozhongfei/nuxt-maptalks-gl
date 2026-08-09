@@ -1,29 +1,72 @@
-<template>
-  <div ref="el" style="height: 100%; width: 100%"><slot /></div>
+﻿<template>
+  <div ref="el" style="height: 100%; width: 100%">
+    <!-- slot 内容挂 Vue 私有隐藏 div：避免 maptalks 地图容器（el）的 DOM 操作破坏 Vue 占位节点
+         （v-if 切换时 patch insertBefore null） -->
+    <div style="display: none"><slot /></div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { provide, ref, shallowRef, watch, nextTick } from 'vue'
+/**
+ * 地图根组件——所有地图功能的起点。
+ *
+ * @description 对 `useMaptalks` 的声明式封装。在页面上渲染地图容器 div，创建 maptalks 地图实例并纳管生命周期。
+ * 通过 provide/inject 将地图实例传递给所有子组件；支持声明式中心点、缩放、旋转等 prop 与运行时同步。
+ * emit `ready`（地图就绪）和 `error`（加载失败）；expose `map` / `isReady` / `error` 供 template ref 访问。
+ *
+ * @example
+ * ```vue
+ * <MaptalksMap ref="mapRef" name="main" :center="[121,31]" :zoom="13" base-layer="osm" @ready="onReady" />
+ * ```
+ */
+import { provide, ref, shallowRef, watch } from 'vue'
 import { useMaptalks } from '../composables/useMaptalks'
 import type { MaptalksError } from '../core/errors'
 import { MAP_KEY } from '../core/map-context'
-import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, MaptalksNativeMapOptions, UseMaptalksOptions } from '../types'
+import type { MaptalksCoordinate, MaptalksMap, MaptalksMapOptions, UseMaptalksOpts } from '../types'
 
 const props = withDefaults(defineProps<{
-  center?: [number, number]; zoom?: number
-  pitch?: number; bearing?: number
-  minZoom?: number; maxZoom?: number
-  draggable?: boolean; dragPitch?: boolean; dragRotate?: boolean; zoomable?: boolean
-  name?: string; options?: Partial<MaptalksMapOptions> & Partial<MaptalksNativeMapOptions>
-  baseLayer?: string | { source?: string; options?: Record<string, unknown> }
-}>(), { options: () => ({}) })
+  /** 地图中心点 [经度, 纬度] */
+  center?: [number, number]
+  /** 缩放级别 */
+  zoom?: number
+  /** 俯仰角（度，0=正视） */
+  pitch?: number
+  /** 旋转角（度，正北为 0） */
+  bearing?: number
+  /** 最小缩放级别 */
+  minZoom?: number
+  /** 最大缩放级别 */
+  maxZoom?: number
+  /** 是否允许拖拽平移 */
+  draggable?: boolean
+  /** 是否允许拖拽修改俯仰角 */
+  dragPitch?: boolean
+  /** 是否允许拖拽修改旋转角 */
+  dragRotate?: boolean
+  /** 是否允许缩放 */
+  zoomable?: boolean
+  /** 地图实例名（多地图场景），默认 'default' */
+  name?: string
+  /** 透传给 maptalks Map 构造器的额外选项 */
+  options?: MaptalksMapOptions
+  /** 底图：源名（字符串）/ 内联源对象 / 多底图候选数组（自动打包 GroupTileLayer，第一项可见其余隐藏） */
+  baseLayer?: string | { source?: string; options?: Record<string, unknown> } | Array<string | { id?: string | number; source?: string; options?: Record<string, unknown> }>
+}>(), {
+  options: () => ({}),
+  // boolean 交互开关：未传时保持 undefined（Vue 布尔 cast 会把未传转 false——误禁交互）
+  draggable: undefined,
+  dragPitch: undefined,
+  dragRotate: undefined,
+  zoomable: undefined,
+})
 
 const emit = defineEmits<{ ready: [map: MaptalksMap]; error: [err: MaptalksError] }>()
 
 const el = ref<HTMLElement | null>(null)
 
-function buildOpts(): UseMaptalksOptions {
-  const o: UseMaptalksOptions = { name: props.name, ...props.options }
+function buildOpts(): UseMaptalksOpts {
+  const o: UseMaptalksOpts = { name: props.name, ...props.options }
   if (props.baseLayer !== undefined) o.baseLayer = props.baseLayer;
   if (props.center !== undefined) o.center = props.center
   if (props.zoom !== undefined) o.zoom = props.zoom
@@ -31,33 +74,69 @@ function buildOpts(): UseMaptalksOptions {
   if (props.bearing !== undefined) o.bearing = props.bearing
   if (props.minZoom !== undefined) o.minZoom = props.minZoom
   if (props.maxZoom !== undefined) o.maxZoom = props.maxZoom
+  // 交互开关必须在构造时生效：仅靠下方 watch config 时初始值无变化不会触发（如 8.1 全 false 禁用）
+  if (props.draggable !== undefined) o.draggable = props.draggable
+  if (props.dragPitch !== undefined) o.dragPitch = props.dragPitch
+  if (props.dragRotate !== undefined) o.dragRotate = props.dragRotate
+  if (props.zoomable !== undefined) o.zoomable = props.zoomable
   return o
 }
 
 const { map, isReady, error } = useMaptalks(el, buildOpts())
 
 provide(MAP_KEY, map)
+/** 暴露 map 实例与状态，供 template ref 访问 */
 defineExpose({ map, isReady, error })
 
 watch(isReady, (v) => { if (v && map.value) emit('ready', map.value) })
 watch(error, (e) => { if (e) emit('error', e) })
 
-// 运行时 prop 同步——nextTick 确保在 Vue DOM 稳定后操作 maptalks
+// 运行时 prop 同步——每一项独立 watch 避免组合数组在异步调度下丢失变更
 watch(
-  () => [props.minZoom, props.maxZoom, props.draggable, props.dragPitch, props.dragRotate, props.zoomable] as const,
-  () => {
-    const m = map.value
-    if (!m) return
-    nextTick(() => {
-      const mn = props.minZoom; if (mn !== undefined) m.setMinZoom(mn)
-      const mx = props.maxZoom; if (mx !== undefined) m.setMaxZoom(mx)
-      const conf: Record<string, boolean> = {}
-      const d = props.draggable; if (d !== undefined) conf.draggable = d
-      const dp = props.dragPitch; if (dp !== undefined) conf.dragPitch = dp
-      const dr = props.dragRotate; if (dr !== undefined) conf.dragRotate = dr
-      const z = props.zoomable; if (z !== undefined) conf.zoomable = z
-      if (Object.keys(conf).length > 0) m.config(conf)
-    })
-  },
+  () => props.minZoom,
+  (v) => { if (v !== undefined && map.value) map.value.setMinZoom(v) },
+)
+watch(
+  () => props.maxZoom,
+  (v) => { if (v !== undefined && map.value) map.value.setMaxZoom(v) },
+)
+watch(
+  () => props.draggable,
+  (v) => { if (v !== undefined && map.value) map.value.config({ draggable: v }) },
+)
+watch(
+  () => props.dragPitch,
+  (v) => { if (v !== undefined && map.value) map.value.config({ dragPitch: v }) },
+)
+watch(
+  () => props.dragRotate,
+  (v) => { if (v !== undefined && map.value) map.value.config({ dragRotate: v }) },
+)
+watch(
+  () => props.zoomable,
+  (v) => { if (v !== undefined && map.value) map.value.config({ zoomable: v }) },
+)
+// 相机类 prop 运行时同步——单向（prop → 地图），地图交互不回写 prop 避免循环
+watch(
+  () => props.center,
+  (v) => { if (v && map.value) map.value.setCenter(v) },
+)
+watch(
+  () => props.zoom,
+  (v) => { if (v !== undefined && map.value) map.value.setZoom(v, { animation: false }) },
+)
+watch(
+  () => props.pitch,
+  (v) => { if (v !== undefined && map.value) map.value.setPitch(v) },
+)
+watch(
+  () => props.bearing,
+  (v) => { if (v !== undefined && map.value) map.value.setBearing(v) },
+)
+// options 运行时变化 → config 应用（深 watch；name/baseLayer 构造时定，不加运行时同步）
+watch(
+  () => props.options,
+  (o) => { if (map.value) map.value.config(o as Record<string, unknown>) },
+  { deep: true },
 )
 </script>

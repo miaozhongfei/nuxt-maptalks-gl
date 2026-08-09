@@ -8,5 +8,5 @@ export const MAP_KEY: InjectionKey<ShallowRef<MaptalksMap | null>> = Symbol('map
 // MaptalksVectorLayer provide(layer) → 几何组件（Marker/LineString/Polygon）inject(layer)
 export const GEOMETRY_LAYER_KEY: InjectionKey<ShallowRef<MaptalksVectorLayer | null>> = Symbol('maptalksVectorLayer')
 
-// MaptalksMarker provide(geometry) → MaptalksMarkerInfoWindow inject(geometry)
-export const MARKER_GEOMETRY_KEY: InjectionKey<ShallowRef<MaptalksGeometry | null>> = Symbol('maptalksMarkerGeometry')
+// MaptalksMarker provide(geometry) → MaptalksGeometryInfoWindow inject(geometry)
+export const GEOMETRY_KEY: InjectionKey<ShallowRef<MaptalksGeometry | null>> = Symbol('maptalksGeometry')

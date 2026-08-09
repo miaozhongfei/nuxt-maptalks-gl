@@ -1,0 +1,68 @@
+<template>
+  <div>
+    <div
+      ref="el"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+    />
+    <p class="text-sm text-muted mt-2">
+      urlTemplate 按 (x+y) 奇偶混搭两套底图 + renderer: 'canvas' 启用逐瓦片图片处理——renderercreate 拦截每张瓦片的 loadTileImage，在 Canvas 上添加 sepia 滤镜和水印。
+    </p>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13 })
+
+let wmCanvas: HTMLCanvasElement | null = null
+function getWmCanvas(): HTMLCanvasElement {
+  if (wmCanvas) return wmCanvas
+  wmCanvas = document.createElement('canvas')
+  return wmCanvas
+}
+
+// 工厂模式：renderercreate 必须在层创建后、添加地图前同步注册监听器——不依赖异步层的 watch
+useMaptalksLayer(map, (mt) => {
+  const tileLayer = new mt.TileLayer('base', {
+    urlTemplate: (x: number, y: number, z: number) => {
+      const light = `https://b.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png`
+      const dark = `https://b.basemaps.cartocdn.com/dark_all/${z}/${x}/${y}.png`
+      return (x + y) % 2 === 0 ? light : dark
+    },
+    renderer: 'canvas',
+    attribution: '&copy; OpenStreetMap contributors, &copy; CARTO',
+  })
+  // 层创建后立即注册 renderercreate——此时渲染器尚未创建，事件不会丢失（on 已建模，renderer 结构未建模 cast 兜底）
+  tileLayer.on('renderercreate', (e) => {
+    const renderer = (e as { renderer: { loadTileImage: (img: HTMLImageElement, url: string) => void } }).renderer
+    renderer.loadTileImage = function (img: HTMLImageElement, url: string) {
+      const remote = new Image()
+      remote.crossOrigin = 'anonymous'
+      remote.addEventListener('load', () => {
+        const c = getWmCanvas()
+        c.width = remote.width
+        c.height = remote.height
+        const ctx = c.getContext('2d')!
+        ctx.clearRect(0, 0, c.width, c.height)
+        ctx.filter = 'sepia(100%) invert(90%)'
+        ctx.drawImage(remote, 0, 0)
+        ctx.filter = 'none'
+        ctx.fillStyle = 'white'
+        ctx.font = '20px serif'
+        ctx.textAlign = 'center'
+        ctx.fillText('hello maptalks', c.width / 2, c.height / 2)
+        ctx.strokeStyle = 'white'
+        ctx.lineWidth = 0.5
+        ctx.strokeRect(0, 0, c.width, c.height)
+        img.src = c.toDataURL('image/jpeg', 0.7)
+      })
+      remote.src = url
+    }
+  })
+  return tileLayer
+})
+
+const status = computed(() => (isReady.value ? '地图已创建（奇偶混搭底图）' : '加载中…'))
+</script>

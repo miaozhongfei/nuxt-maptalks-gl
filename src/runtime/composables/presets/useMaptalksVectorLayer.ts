@@ -1,11 +1,12 @@
+﻿import { toValue } from 'vue';
 import type { MaybeRefOrGetter } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
 import type {
   MaptalksMap,
-  MaptalksNativeVectorLayerOptions,
+  MaptalksVectorLayer,
   UseMaptalksLayerReturn,
-  UseMaptalksVectorLayerOptions,
+  UseMaptalksVectorLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -13,13 +14,14 @@ import { useMaptalksLayer } from '../useMaptalksLayer';
 let vectorSeq = 0;
 
 /**
- * 预设：矢量图层（VectorLayer，承载几何），= useMaptalksLayer 包一层 + 自动 id。
+ * 预设：矢量图层（VectorLayer，承载几何），= useMaptalksLayer 包一层 + 自动 id + 窄返回类型。
  *
  * @description 创建一个 VectorLayer 并纳管；几何经 useMaptalksMarker/LineString/Polygon 加到它上面。
+ * 返回 UseMaptalksLayerReturn<MaptalksVectorLayer>（addGeometry 等专属方法经泛型 T 在 layer.value 可见）。
  * 生命周期（addLayer / dispose）复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksVectorLayerOptions} [opts] - id / 选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn} `{ layer, update, remove }`
+ * @param {UseMaptalksVectorLayerOpts} [opts] - id / 选项 / 自动销毁
+ * @returns {UseMaptalksLayerReturn<MaptalksVectorLayer>} `{ layer, update, remove }`
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -27,19 +29,27 @@ let vectorSeq = 0;
  */
 export function useMaptalksVectorLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksVectorLayerOptions & { options?: Partial<MaptalksNativeVectorLayerOptions> } = {},
-): UseMaptalksLayerReturn {
+  opts: UseMaptalksVectorLayerOpts = {},
+): UseMaptalksLayerReturn<MaptalksVectorLayer> {
   vectorSeq += 1;
   const id = opts.id ?? `maptalks-vector-${vectorSeq}`;
-  return useMaptalksLayer(
+  const result = useMaptalksLayer(
     map,
     (mt) => {
       const Ctor = mt.VectorLayer;
       if (typeof Ctor !== 'function') {
         throw new MaptalksError('layer-failed', '当前 maptalks-gl 未导出 VectorLayer');
       }
-      return new Ctor(id, opts.options);
+      return new Ctor(id, toValue(opts.options));
     },
     { options: opts.options, autoDispose: opts.autoDispose },
   );
+  return {
+    // 工厂返回 VectorLayer，useMaptalksLayer 泛型推断后无需 cast
+    layer: result.layer,
+    show: () => result.layer.value?.show?.(),
+    hide: () => result.layer.value?.hide?.(),
+    update: result.update,
+    remove: result.remove,
+  };
 }

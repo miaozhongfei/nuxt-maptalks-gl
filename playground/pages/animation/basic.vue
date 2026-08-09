@@ -11,5 +11,5 @@ const el = ref<HTMLElement | null>(null)
 const { map } = useMaptalks(el, { center: [121.4737, 31.2304], zoom: 12 })
 useMaptalksTileLayer(map, { source: 'osm' })
 const { layer } = useMaptalksVectorLayer(map)
-const { geometry: marker } = useMaptalksMarker(layer, { coordinates: [121.4737, 31.2304], symbol: { markerType: 'ellipse', markerWidth: 30, markerHeight: 30, markerFill: '#de3333' } })
+const { geometry: marker } = useMaptalksMarker(layer, { coordinates: [121.4737, 31.2304], options: { symbol: { markerType: 'ellipse', markerWidth: 30, markerHeight: 30, markerFill: '#de3333' } } })
 </script>

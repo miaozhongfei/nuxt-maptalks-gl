@@ -15,34 +15,35 @@
           <UBadge color="neutral" variant="outline">官网 3.1~3.3 / 3.10</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
+      <MaptalksMap ref="mc1" :center="center" :zoom="13" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 点标记：@click 演示事件回传 -->
           <MaptalksMarker
             :coordinates="[121.47, 31.23]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 }"
-            @click="lastClick = 'Marker 被点击'"
+            :options="{ symbol: { markerType: 'ellipse', markerFill: '#2563eb', markerWidth: 18, markerHeight: 18 } }"
+            @click="() => { lastClick = 'Marker 被点击' }"
           />
           <!-- 文字标签 -->
           <MaptalksLabel
             content="文字标签"
             :coordinates="[121.485, 31.238]"
-            :symbol="{ textFill: '#dc2626', textSize: 16 }"
+            :options="{ symbol: { textFill: '#dc2626', textSize: 16 } }"
           />
           <!-- 折线 -->
           <MaptalksLineString
             :coordinates="[[121.45, 31.22], [121.47, 31.235], [121.49, 31.22]]"
-            :symbol="{ lineColor: '#dc2626', lineWidth: 3 }"
+            :options="{ symbol: { lineColor: '#dc2626', lineWidth: 3 } }"
           />
           <!-- 多边形（首尾闭合的环） -->
           <MaptalksPolygon
             :coordinates="[[[121.44, 31.25], [121.46, 31.25], [121.46, 31.27], [121.44, 31.27], [121.44, 31.25]]]"
-            :symbol="{ polygonFill: '#22c55e', polygonOpacity: 0.4, lineColor: '#16a34a', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#22c55e', polygonOpacity: 0.4, lineColor: '#16a34a', lineWidth: 2 } }"
           />
         </MaptalksVectorLayer>
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">点击事件：{{ lastClick || '（点击蓝色圆点试试）' }}</span>
+        <span class="text-xs text-muted ml-2">{{ status1 }}</span>
       </template>
     </UCard>
 
@@ -55,27 +56,27 @@
           <UBadge color="neutral" variant="outline">官网 3.8</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.49, 31.235]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
+      <MaptalksMap ref="mc2" :center="[121.49, 31.235]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 圆：中心 + 半径（米） -->
           <MaptalksCircle
             :coordinates="[121.46, 31.24]"
             :radius="800"
-            :symbol="{ polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#3b82f6', polygonOpacity: 0.3, lineColor: '#2563eb', lineWidth: 2 } }"
           />
           <!-- 椭圆：中心 + 宽 + 高（米） -->
           <MaptalksEllipse
             :coordinates="[121.5, 31.25]"
             :width="1600"
             :height="800"
-            :symbol="{ polygonFill: '#a855f7', polygonOpacity: 0.3, lineColor: '#9333ea', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#a855f7', polygonOpacity: 0.3, lineColor: '#9333ea', lineWidth: 2 } }"
           />
           <!-- 矩形：左上角 + 宽 + 高（米） -->
           <MaptalksRectangle
             :coordinates="[121.44, 31.26]"
             :width="1500"
             :height="1000"
-            :symbol="{ polygonFill: '#f59e0b', polygonOpacity: 0.3, lineColor: '#d97706', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#f59e0b', polygonOpacity: 0.3, lineColor: '#d97706', lineWidth: 2 } }"
           />
           <!-- 扇形：中心 + 半径 + 起始角 + 结束角 -->
           <MaptalksSector
@@ -83,10 +84,13 @@
             :radius="1000"
             :start-angle="0"
             :end-angle="90"
-            :symbol="{ polygonFill: '#ef4444', polygonOpacity: 0.35, lineColor: '#dc2626', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#ef4444', polygonOpacity: 0.35, lineColor: '#dc2626', lineWidth: 2 } }"
           />
         </MaptalksVectorLayer>
       </MaptalksMap>
+      <template #footer>
+        <span class="text-xs text-muted">{{ status2 }}</span>
+      </template>
     </UCard>
 
     <!-- 第 3 组：Multi 系列 / 文本框 / GeoJSON -->
@@ -98,17 +102,17 @@
           <UBadge color="neutral" variant="outline">官网 3.5~3.7 / 3.11</UBadge>
         </div>
       </template>
-      <MaptalksMap :center="[121.47, 31.24]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
+      <MaptalksMap ref="mc3" :center="[121.47, 31.24]" :zoom="12" class="relative rounded border border-default overflow-hidden" style="height: 384px" baseLayer="osm">
         <MaptalksVectorLayer>
           <!-- 多点 -->
           <MaptalksMultiPoint
             :coordinates="[[121.45, 31.21], [121.47, 31.21], [121.49, 31.21]]"
-            :symbol="{ markerType: 'ellipse', markerFill: '#0ea5e9', markerWidth: 14, markerHeight: 14 }"
+            :options="{ symbol: { markerType: 'ellipse', markerFill: '#0ea5e9', markerWidth: 14, markerHeight: 14 } }"
           />
           <!-- 多线 -->
           <MaptalksMultiLineString
             :coordinates="[[[121.44, 31.28], [121.46, 31.29]], [[121.47, 31.28], [121.49, 31.29]]]"
-            :symbol="{ lineColor: '#7c3aed', lineWidth: 3 }"
+            :options="{ symbol: { lineColor: '#7c3aed', lineWidth: 3 } }"
           />
           <!-- 多面 -->
           <MaptalksMultiPolygon
@@ -116,7 +120,7 @@
               [[[121.44, 31.22], [121.45, 31.22], [121.45, 31.23], [121.44, 31.23], [121.44, 31.22]]],
               [[[121.46, 31.22], [121.47, 31.22], [121.47, 31.23], [121.46, 31.23], [121.46, 31.22]]],
             ]"
-            :symbol="{ polygonFill: '#14b8a6', polygonOpacity: 0.4, lineColor: '#0d9488', lineWidth: 2 }"
+            :options="{ symbol: { polygonFill: '#14b8a6', polygonOpacity: 0.4, lineColor: '#0d9488', lineWidth: 2 } }"
           />
           <!-- 文本框：内容 + 坐标 + 宽 + 高（像素） -->
           <MaptalksTextBox
@@ -134,14 +138,18 @@
       </MaptalksMap>
       <template #footer>
         <span class="text-sm text-muted">GeoJSON 数据源含 2 个点要素，与其它几何共用一个矢量图层。</span>
+        <span class="text-xs text-muted ml-2">{{ status3 }}</span>
       </template>
     </UCard>
   </div>
 </template>
 
 <script setup lang="ts">
-const center: [number, number] = [121.4737, 31.2304];
-const lastClick = ref('');
+const mc1 = ref<MaptalksMapExposed | null>(null)
+const mc2 = ref<MaptalksMapExposed | null>(null)
+const mc3 = ref<MaptalksMapExposed | null>(null)
+const center: [number, number] = [121.4737, 31.2304]
+const lastClick = ref('')
 
 // 演示用 GeoJSON FeatureCollection（两个点要素）
 const geojson = {
@@ -150,5 +158,9 @@ const geojson = {
     { type: 'Feature', geometry: { type: 'Point', coordinates: [121.51, 31.24] }, properties: { name: 'A' } },
     { type: 'Feature', geometry: { type: 'Point', coordinates: [121.52, 31.25] }, properties: { name: 'B' } },
   ],
-};
+}
+
+const status1 = computed(() => (toValue(mc1.value?.map) ? '地图已创建' : '加载中…'))
+const status2 = computed(() => (toValue(mc2.value?.map) ? '地图已创建' : '加载中…'))
+const status3 = computed(() => (toValue(mc3.value?.map) ? '地图已创建' : '加载中…'))
 </script>

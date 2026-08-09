@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+﻿import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -6,10 +6,10 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeVectorTileLayerOptions,
+  MaptalksVectorTileLayer,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksVectorTileLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -42,8 +42,8 @@ function buildVectorOptions(
  * @description 与 TileLayer 预设同构，面向矢量切片服务（pbf/mvt），可通过 `options.style` 传入样式。
  * 传入 `source` 时等待源解析完成再创建；否则按 `options` 直接创建。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksPresetOptions} [opts] - 数据源 / id / 额外选项（含 style）/ 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项（含 style）/ 自动销毁
+ * @returns {UseMaptalksLayerReturn<MaptalksVectorTileLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -54,13 +54,13 @@ function buildVectorOptions(
  */
 export function useMaptalksVectorTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeVectorTileLayerOptions> } = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+  opts: UseMaptalksVectorTileLayerOpts = {},
+): UseMaptalksLayerReturn<MaptalksVectorTileLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   vtSeq += 1;
   const id = opts.id ?? `maptalks-vt-${vtSeq}`;
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildVectorOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildVectorOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,
@@ -74,5 +74,10 @@ export function useMaptalksVectorTileLayer(
     { options: layerOptions, enabled, autoDispose: opts.autoDispose },
   );
 
-  return { ...handle, error };
+  return {
+    ...handle,
+    error,
+    show: () => handle.layer.value?.show?.(),
+    hide: () => handle.layer.value?.hide?.(),
+  };
 }

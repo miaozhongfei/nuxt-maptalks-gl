@@ -48,7 +48,7 @@ describe('control composables', () => {
   it('Zoom 创建并 addTo', async () => {
     const m = fakeMap();
     const s = effectScope();
-    s.run(() => useMaptalksZoom(shallowRef(m), { position: 'tl' }));
+    s.run(() => useMaptalksZoom(shallowRef(m), { options: { position: 'tl' } }));
     await vi.waitFor(() => expect(controls.Zoom).toHaveBeenCalled());
     const ctrl = controls.Zoom.mock.results[0]?.value;
     expect(ctrl?.addTo).toHaveBeenCalledWith(m);

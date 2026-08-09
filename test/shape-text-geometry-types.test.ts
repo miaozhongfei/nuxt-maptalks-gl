@@ -1,20 +1,19 @@
-import { describe, expectTypeOf, it } from 'vitest';
+﻿import { describe, expectTypeOf, it } from 'vitest';
 
 import type {
-  ShapeCoordinates,
-  UseMaptalksCircleOptions,
-  UseMaptalksLabelOptions,
-  UseMaptalksSectorOptions,
+  UseMaptalksCircleOpts,
+  UseMaptalksLabelOpts,
+  UseMaptalksSectorOpts,
 } from '../src/runtime/types';
 
 describe('形状与文本几何类型', () => {
   it('坐标为单点', () => {
-    expectTypeOf<ShapeCoordinates>().toMatchTypeOf<[number, number] | { x: number; y: number }>();
+    expectTypeOf<[number, number]>().toMatchTypeOf<[number, number] | { x: number; y: number }>();
   });
 
   it('额外属性字段类型正确', () => {
-    expectTypeOf<UseMaptalksCircleOptions['radius']>().not.toBeUndefined();
-    expectTypeOf<UseMaptalksSectorOptions['startAngle']>().not.toBeUndefined();
-    expectTypeOf<UseMaptalksLabelOptions['content']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksCircleOpts['radius']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksSectorOpts['startAngle']>().not.toBeUndefined();
+    expectTypeOf<UseMaptalksLabelOpts['content']>().not.toBeUndefined();
   });
 });

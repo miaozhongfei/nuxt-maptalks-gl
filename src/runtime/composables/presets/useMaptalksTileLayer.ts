@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+﻿import { computed, toValue } from 'vue';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 
 import { MaptalksError } from '../../core/errors';
@@ -6,10 +6,10 @@ import { resolvePresetSource } from '../../core/preset-source';
 import type {
   MaptalksError as MaptalksErrorType,
   MaptalksMap,
-  MaptalksNativeTileLayerOptions,
+  MaptalksTileLayer,
   ResolvedSource,
   UseMaptalksLayerReturn,
-  UseMaptalksPresetOptions,
+  UseMaptalksTileLayerOpts,
 } from '../../types';
 import { useMaptalksLayer } from '../useMaptalksLayer';
 
@@ -42,8 +42,8 @@ function buildTileOptions(
  * @description 接受命名源（按配置解析）或内联源 / 直接选项（逃生舱口）。当传入 `source` 时，
  * 图层创建会等待源解析完成；否则按 `options` 直接创建。其余生命周期复用 useMaptalksLayer。
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用（通常来自 useMaptalks 的 map）
- * @param {UseMaptalksPresetOptions} [opts] - 数据源 / id / 额外选项 / 自动销毁
- * @returns {UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
+ * @param {UseMaptalksPresetOpts} [opts] - 数据源 / id / 额外选项 / 自动销毁
+ * @returns {UseMaptalksLayerReturn<MaptalksTileLayer> & { error: Ref<MaptalksErrorType | null> }} 图层句柄与源解析错误
  *
  * @example
  * const { map } = useMaptalks(el);
@@ -54,14 +54,14 @@ function buildTileOptions(
  */
 export function useMaptalksTileLayer(
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  opts: UseMaptalksPresetOptions & { options?: Partial<MaptalksNativeTileLayerOptions> } = {},
-): UseMaptalksLayerReturn & { error: Ref<MaptalksErrorType | null> } {
+  opts: UseMaptalksTileLayerOpts = {},
+): UseMaptalksLayerReturn<MaptalksTileLayer> & { error: Ref<MaptalksErrorType | null> } {
   const { resolved, error } = resolvePresetSource(opts.source);
   tileSeq += 1;
   const id = opts.id ?? `maptalks-tile-${tileSeq}`;
   // 传入命名/内联源时，等待解析完成再创建；否则立即按选项创建
   const enabled = opts.source ? computed(() => resolved.value !== null) : true;
-  const layerOptions = computed(() => buildTileOptions(resolved.value, opts.options));
+  const layerOptions = computed(() => buildTileOptions(resolved.value, toValue(opts.options)));
 
   const handle = useMaptalksLayer(
     map,
@@ -75,5 +75,10 @@ export function useMaptalksTileLayer(
     { options: layerOptions, enabled, autoDispose: opts.autoDispose },
   );
 
-  return { ...handle, error };
+  return {
+    ...handle,
+    error,
+    show: () => handle.layer.value?.show?.(),
+    hide: () => handle.layer.value?.hide?.(),
+  };
 }
