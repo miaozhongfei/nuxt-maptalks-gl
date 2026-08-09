@@ -151,6 +151,7 @@ watch(
     if (!m || layer) return
     try {
       const mt: any = await import('maptalks-gl')
+      if (!mt.Layer) return
       mtModule = mt
       layer = createHelloLayer(m, mt)
       status.value = 'HelloLayer 已添加（动画图层——文字颜色 300ms 循环）'
