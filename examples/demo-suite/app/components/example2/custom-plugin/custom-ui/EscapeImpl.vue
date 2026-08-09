@@ -20,6 +20,7 @@ watch(
   async (m) => {
     if (!m || ui) return
     const mt: any = await import('maptalks-gl')
+    if (!mt.ui?.UIComponent) return
     // 官网 13.2 同款：自定义 UIComponent 子类 + mergeOptions + addTo(map).show()
     class MyUI extends mt.ui.UIComponent {
       private _coordinate: unknown

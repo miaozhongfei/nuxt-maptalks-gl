@@ -28,6 +28,7 @@ watch(
   async (m) => {
     if (!m || ui) return
     const mt: any = await import('maptalks-gl')
+    if (!mt.ui?.UIComponent) return
     // 自定义 UIComponent 子类（官网 13.2 核心）：buildOn 返回 DOM + getOffset 居中 + zoomend 闪烁
     class MyUI extends mt.ui.UIComponent {
       private _coordinate: unknown
