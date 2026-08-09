@@ -12,7 +12,7 @@
     <div class="grid grid-cols-2 gap-4">
       <UCard v-for="(p, index) in plugins" :key="p.name">
         <template #header><div class="flex items-center gap-2"><h2 class="font-semibold">{{ p.name }}</h2><UBadge :color="p.status==='ok'?'success':p.status==='loading'?'neutral':'error'" variant="subtle">{{ p.status === 'ok' ? '已加载' : p.status === 'loading' ? '加载中' : '不可用' }}</UBadge></div></template>
-        <div :ref="(el: unknown) => pluginEls[index].value = el as HTMLElement | null" class="relative rounded border border-default overflow-hidden" style="height:320px" />
+        <div :ref="(el: unknown) => setPluginEl(index, el)" class="relative rounded border border-default overflow-hidden" style="height:320px" />
         <template #footer><span class="text-sm text-muted">{{ p.note }}</span></template>
       </UCard>
     </div>
@@ -46,6 +46,11 @@ const plugins = ref([
 
 // 每张插件卡片预先创建 el ref → useMaptalks → template :ref 回调绑定
 const pluginEls = plugins.value.map(() => ref<HTMLElement | null>(null))
+/** 模板 :ref 回调：写入对应插件卡片的容器元素（索引访问可能越界，守卫兜底） */
+function setPluginEl(index: number, el: unknown) {
+  const target = pluginEls[index]
+  if (target) target.value = el as HTMLElement | null
+}
 const pluginMaps = pluginEls.map(el => {
   const { map } = useMaptalks(el, { center, zoom: 13, pitch: 60 })
   useMaptalksTileLayer(map, { source: 'osm' })
@@ -109,15 +114,19 @@ onMounted(async () => {
     try {
       const mod = await s.importFn()
       const Ctor = (mod as Record<string, unknown>)[s.exportName]
-      const m = toValue(pluginMaps[s.idx].map)
-      if (m && typeof Ctor === 'function') {
+      const m = toValue(pluginMaps[s.idx]?.map)
+      const p = plugins.value[s.idx]
+      if (m && typeof Ctor === 'function' && p) {
         s.fn(m, pts, Ctor)
-        plugins.value[s.idx].status = 'ok'
+        p.status = 'ok'
       }
     }
     catch {
-      plugins.value[s.idx].status = 'error'
-      plugins.value[s.idx].note = `${s.pkg} 不可用。`
+      const p = plugins.value[s.idx]
+      if (p) {
+        p.status = 'error'
+        p.note = `${s.pkg} 不可用。`
+      }
     }
   }
 })
