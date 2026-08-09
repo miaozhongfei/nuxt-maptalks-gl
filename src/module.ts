@@ -110,8 +110,9 @@ export default defineNuxtModule<ModuleOptions>().with({
     tuneOptimizeDeps(_nuxt);
     addVitePlugin(createValidateNestingPlugin());
 
-    // 自动导入 composables 与预设（按官网 API 分类组织：map/layer/geometry/geo/control/maptool/ui/basic-types）
-    // addImportsDir 仅扫描列出的叶子目录；types/ 一并扫描，类型全局可用（无需 public-types.ts 中转）
+    // 自动导入 composables 与预设（按官网 API 分类组织：map/layer/geometry/geo/control/maptool/ui/basic-types + types）
+    // addImportsDir 仅扫描列出的叶子目录；types/ 子目录仅含 public-types.ts 单一中转文件，
+    // 类型全局注入无重复来源（runtime/types 目录本身不扫描，避免 index barrel 与子文件双来源警告）
     addImportsDir([
       resolver.resolve('./runtime/composables/map'),
       resolver.resolve('./runtime/composables/layer'),
@@ -121,7 +122,7 @@ export default defineNuxtModule<ModuleOptions>().with({
       resolver.resolve('./runtime/composables/maptool'),
       resolver.resolve('./runtime/composables/ui'),
       resolver.resolve('./runtime/composables/basic-types'),
-      resolver.resolve('./runtime/types'),
+      resolver.resolve('./runtime/composables/types'),
     ]);
     // 自动导入声明式组件（MaptalksMap / MaptalksTileLayer 等；组件按官网 API 分类存子目录，
     // pathPrefix: false 保证组件名不受目录层级影响，仍是 MaptalksXxx）
