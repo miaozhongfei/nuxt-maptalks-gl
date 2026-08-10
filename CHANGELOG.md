@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.0.5
+
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.4...v0.0.5)
+
+### 🩹 Fixes
+
+- Release 脚本 gh pr create 改用 --fill-first（标题取首 commit，避免 branch 名回退） ([c593fd0](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/c593fd0))
+
+### 💅 Refactors
+
+- Release 脚本拆分为独立 Node.js 脚本——create-release-pr.mjs（gh 检查/已有 PR 检测/三级回退）与 release-publish.mjs（npm 认证/nuxtrc 冲突/PR 合并检测/shell 修复） ([43f56a7](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/43f56a7))
+
+### 📖 Documentation
+
+- README 去掉组件/composable/示例的数量标注，避免增量更新时数量失准 ([f8fce76](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/f8fce76))
+
+### 🏡 Chore
+
+- **release:** V0.0.4 ([9946798](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/9946798))
+- Oxlint 忽略 scripts/ 目录（Node.js 发布脚本，非 TS 模块代码） ([c7caf71](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/c7caf71))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
 ## v0.0.4
 
 [compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.4...v0.0.4)
