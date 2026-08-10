@@ -2,6 +2,18 @@
 
 ## v0.0.4
 
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.4...v0.0.4)
+
+### 🩹 Fixes
+
+- Release 脚本 gh pr create 改用 --fill-first（标题取首 commit，避免 branch 名回退） ([c593fd0](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/c593fd0))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
+## v0.0.4
+
 [compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.3...v0.0.4)
 
 ### 🩹 Fixes
