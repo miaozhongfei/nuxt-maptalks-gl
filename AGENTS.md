@@ -61,10 +61,13 @@
 
 ```
 lint → typecheck → prepack
-  → changelogen --release [--patch|--minor|--major] --no-github   # 升版本 + 写 CHANGELOG + commit + 打 tag（本地，flag 省略则按 commit 前缀推断）
-  → git push origin dev --follow-tags                          # 先把 tag 推到 dev
-  → pnpm publish                                               # 发布到 npm
+  → changelogen --release [--patch|--minor|--major] --no-github   # 在 dev 上升版本 + 写 CHANGELOG + commit + 打 tag（本地，flag 省略则按 commit 前缀推断）
+  → git push origin dev --follow-tags                          # 推 dev 含 tag
+  → git checkout main && git merge dev                         # 切换到 main 并合并 dev
+  → git push origin main --follow-tags                         # 推 main 含 tag（tag 落在 main 上）
+  → pnpm publish                                               # 在 main 上发布到 npm
   → changelogen gh release                                     # 基于已推送的 tag 创建 GitHub Release
+  → git checkout dev                                           # 切回 dev 继续开发
 ```
 
 > **顺序强制规则**：`git push --follow-tags` 必须在 `changelogen gh release` 之前。
@@ -145,7 +148,7 @@ chore: 更新 oxlint 到 1.71.0
 **工作流程：**
 
 1. **日常开发**：从 `dev` 拉出 `feat/*` / `fix/*` / `chore/*` / `docs/*` / `refactor/*` → 完成后以 PR 合回 `dev`
-2. **发布**：在 `dev` 分支上执行 `pnpm release`（changelogen 自动升版本号 + 更新 CHANGELOG，commit + tag 直接推到 `dev`）→ 创建 PR `dev` → `main` 并合并 → `git checkout dev && git merge main && git push origin dev`
+2. **发布**：在 `dev` 分支上执行 `pnpm release`（changelogen 在 dev 上升版本 → 推 dev → 自动 checkout main 合并 dev → 推 main → 在 main 上发布 npm → 创建 GitHub Release → 切回 dev）
 3. **紧急修复**：从 `main` 拉出 `hotfix/*` → 修复后合回 `main`（发布）→ 同步回 `dev`
 
 ## 编码约定
