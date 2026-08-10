@@ -40,20 +40,9 @@ if (status) {
 // 2. 检查 PR 是否已合并到 main
 log('检查 PR 是否已合并到 main...')
 run('git fetch origin main', true)
-// dev 的 commit 是否在 origin/main 的祖先链中
-const isAncestor = run('git merge-base --is-ancestor dev origin/main', true)
-if (isAncestor === null) {
-  fail('无法确认 dev 是否已合并到 origin/main')
-}
-// merge-base --is-ancestor 成功时不输出，失败时返回非零
-// 但我们在 silent 模式下捕获异常会返回 null
-// 改用另一种检测方式：dev 和 main 的 merge-base 是否等于 main 的 HEAD
-const devMergeBase = run('git merge-base dev origin/main', true)
-const mainHead = run('git rev-parse origin/main', true)
-if (!devMergeBase || !mainHead) {
-  fail('无法获取 git 引用')
-}
-if (devMergeBase !== mainHead) {
+try {
+  execSync('git merge-base --is-ancestor dev origin/main', { stdio: 'pipe', encoding: 'utf-8' })
+} catch {
   fail('PR 尚未合并到 main，请先在 GitHub 上合并 dev→main 的 PR')
 }
 
