@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.0.4
+
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.3...v0.0.4)
+
+### 🩹 Fixes
+
+- Release 脚本 gh pr create 移除无效 --no-verify，改用 --fill-verbose 自动填充 PR 标题与正文 ([e3f7163](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/e3f7163))
+
+### 📖 Documentation
+
+- README 补充 baseLayer 来源说明——nuxt.config sources 配置与内联传参两种方式，组件和 composable 双示例 ([e2b54d3](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/e2b54d3))
+
+### 🏡 Chore
+
+- .gitignore 忽略 .nuxtrc（自动生成的 stub 版本缓存，非源代码） ([5ae8eb6](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/5ae8eb6))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
 ## v0.0.3
 
 [compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.2...v0.0.3)

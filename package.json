@@ -1,6 +1,6 @@
 {
   "name": "@lacqjs/nuxt-maptalks-gl",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Nuxt 4 的 maptalks-gl 模块：SSR 守卫、动态加载、map/layer 生命周期、多地图命名实例与注册表、横切 composable 与类型化图层预设。",
   "keywords": [
     "@lacqjs/nuxt-maptalks-gl",
