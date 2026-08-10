@@ -12,7 +12,8 @@ const fail = (msg) => { console.error(`\x1b[31m[release-pr]\x1b[0m ${msg}`); pro
 
 function run(cmd, silent = false) {
   try {
-    return execSync(cmd, { stdio: silent ? 'pipe' : 'inherit', encoding: 'utf-8' }).trim()
+    const result = execSync(cmd, { stdio: silent ? 'pipe' : 'inherit', encoding: 'utf-8' })
+    return silent ? (result || '').trim() : true
   } catch {
     return null
   }

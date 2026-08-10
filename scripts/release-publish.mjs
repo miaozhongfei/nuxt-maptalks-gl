@@ -13,7 +13,8 @@ let panic = false
 
 function run(cmd, silent = false) {
   try {
-    return execSync(cmd, { stdio: silent ? 'pipe' : 'inherit', encoding: 'utf-8', shell: true }).trim()
+    const result = execSync(cmd, { stdio: silent ? 'pipe' : 'inherit', encoding: 'utf-8', shell: true })
+    return silent ? (result || '').trim() : true
   } catch (err) {
     if (silent) return null
     warn(`命令失败: ${cmd}`)
