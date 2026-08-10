@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.8
+
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.7...v0.0.8)
+
+### 🩹 Fixes
+
+- Release-publish.mjs 移除 npm whoami 预检——pnpm 认证机制不同导致误报，改由 pnpm publish 自身报错 ([6fcab68](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/6fcab68))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
 ## v0.0.7
 
 [compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.6...v0.0.7)
