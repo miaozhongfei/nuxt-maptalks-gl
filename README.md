@@ -38,17 +38,47 @@ pnpm add @lacqjs/nuxt-maptalks-gl maptalks-gl
 // nuxt.config.ts
 export default defineNuxtConfig({
   modules: ['@lacqjs/nuxt-maptalks-gl'],
+  maptalksGl: {
+    sources: {
+      // 命名数据源：此处配置后，代码中 base-layer="osm" 即可引用
+      osm: {
+        kind: 'public',
+        type: 'tile',
+        urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+        options: {
+          subdomains: ['b', 'c', 'd'],
+          attribution: '© OpenStreetMap contributors, © CARTO',
+        },
+      },
+    },
+  },
 })
 ```
+
+> `sources` 是可选的。不配置 `maptalksGl.sources` 也可以直接在 `baseLayer` 中内联传参（见下方示例）。
 
 ### 第一张地图（组件声明式）
 
 ```vue
 <template>
+  <!-- 方式一：base-layer 引用 nuxt.config.ts 中 maptalksGl.sources.osm -->
   <MaptalksMap
     :center="[121.5057, 31.2453]"
     :zoom="13"
     base-layer="osm"
+    class="relative rounded border border-default overflow-hidden"
+    style="height: 480px"
+  />
+
+  <!-- 方式二：内联传参，无需在 nuxt.config.ts 中配置 sources -->
+  <MaptalksMap
+    :center="[121.5057, 31.2453]"
+    :zoom="13"
+    :base-layer="{
+      urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+      subdomains: ['b', 'c', 'd'],
+      attribution: '© OpenStreetMap contributors, © CARTO',
+    }"
     class="relative rounded border border-default overflow-hidden"
     style="height: 480px"
   />
@@ -63,9 +93,25 @@ export default defineNuxtConfig({
 </template>
 
 <script setup lang="ts">
-// 命令式创建地图，自动加载 maptalks-gl 并做 SSR 守卫；baseLayer 指定 OSM 栅格底图
 const el = ref<HTMLElement | null>(null)
-const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
+
+// 方式一：baseLayer 引用 nuxt.config.ts 中 maptalksGl.sources.osm
+const { map, isReady } = useMaptalks(el, {
+  center: [121.5057, 31.2453],
+  zoom: 13,
+  baseLayer: 'osm',
+})
+
+// 方式二：内联传参，无需在 nuxt.config.ts 中配置 sources
+// const { map, isReady } = useMaptalks(el, {
+//   center: [121.5057, 31.2453],
+//   zoom: 13,
+//   baseLayer: {
+//     urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+//     subdomains: ['b', 'c', 'd'],
+//     attribution: '© OpenStreetMap contributors, © CARTO',
+//   },
+// })
 </script>
 ```
 
