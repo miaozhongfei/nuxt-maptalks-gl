@@ -5,16 +5,18 @@
       <button data-testid="move" @click="moveMarker">移动 Marker</button>
       <span data-testid="hit" style="margin-left: 12px; color: #1bbc9b">{{ hitText }}</span>
     </div>
-    <MaptalksMap :center="[121.4737, 31.2304]" :zoom="12" data-testid="map" class="map">
+    <MaptalksMap :center="[121.4737, 31.2304]" :zoom="12" data-testid="map" class="map" style="height: 440px">
       <MaptalksTileLayer source="osm" />
       <MaptalksVectorLayer>
         <MaptalksMarker
           :coordinates="markerPos"
-          :symbol="{
-            markerType: 'ellipse',
-            markerWidth: 20,
-            markerHeight: 20,
-            markerFill: '#de3333',
+          :options="{
+            symbol: {
+              markerType: 'ellipse',
+              markerWidth: 20,
+              markerHeight: 20,
+              markerFill: '#de3333',
+            },
           }"
           @click="onHit('marker')"
         />
@@ -23,7 +25,7 @@
             [121.46, 31.22],
             [121.49, 31.24],
           ]"
-          :symbol="{ lineColor: '#1bbc9b', lineWidth: 3 }"
+          :options="{ symbol: { lineColor: '#1bbc9b', lineWidth: 3 } }"
         />
         <MaptalksPolygon
           :coordinates="[
@@ -35,7 +37,7 @@
               [121.47, 31.23],
             ],
           ]"
-          :symbol="{ polygonFill: '#1bbc9b', polygonOpacity: 0.3, lineColor: '#1bbc9b' }"
+          :options="{ symbol: { polygonFill: '#1bbc9b', polygonOpacity: 0.3, lineColor: '#1bbc9b' } }"
         />
       </MaptalksVectorLayer>
     </MaptalksMap>

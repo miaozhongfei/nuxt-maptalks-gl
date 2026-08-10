@@ -1,9 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+﻿import { describe, expect, it, vi } from 'vitest';
 import { effectScope, nextTick, shallowRef } from 'vue';
 
-import { useMaptalksDrawTool } from '../src/runtime/composables/useMaptalksDrawTool';
-import type { UseMaptalksDrawToolOptions } from '../src/runtime/composables/useMaptalksDrawTool';
-import type { MaptalksMap } from '../src/runtime/types';
+import { useMaptalksDrawTool } from '../src/runtime/composables/maptool/useMaptalksDrawTool';
+import type { MaptalksMap, UseMaptalksDrawToolOpts } from '../src/runtime/types';
 
 // 假命名空间：DrawTool 构造器返回带各方法 spy 的实例
 const { mt } = vi.hoisted(() => ({
@@ -45,7 +44,7 @@ function flush(): Promise<void> {
 }
 
 /** 在 effectScope 里装配 useMaptalksDrawTool，等地图就绪创建完成 */
-async function mountDrawTool(options: UseMaptalksDrawToolOptions = {}) {
+async function mountDrawTool(options: UseMaptalksDrawToolOpts = {}) {
   const map = shallowRef<MaptalksMap | null>({} as unknown as MaptalksMap);
   const scope = effectScope();
   const handle = scope.run(() => useMaptalksDrawTool(map, options));

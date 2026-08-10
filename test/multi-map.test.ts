@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { shallowRef } from 'vue';
 
-import { useMaptalksInstance } from '../src/runtime/composables/useMaptalksInstance';
-import { useMaptalksRegistry } from '../src/runtime/composables/useMaptalksRegistry';
+import { useMaptalksInstance } from '../src/runtime/composables/map/useMaptalksInstance';
+import { useMaptalksRegistry } from '../src/runtime/composables/map/useMaptalksRegistry';
 import { mapRegistry } from '../src/runtime/core/registry';
 import type { MaptalksMap } from '../src/runtime/types';
 

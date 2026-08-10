@@ -4,10 +4,10 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import MaptalksGeoJSON from '../src/runtime/components/MaptalksGeoJSON.vue';
-import MaptalksMultiLineString from '../src/runtime/components/MaptalksMultiLineString.vue';
-import MaptalksMultiPoint from '../src/runtime/components/MaptalksMultiPoint.vue';
-import MaptalksMultiPolygon from '../src/runtime/components/MaptalksMultiPolygon.vue';
+import MaptalksGeoJSON from '../src/runtime/components/geo/MaptalksGeoJSON.vue';
+import MaptalksMultiLineString from '../src/runtime/components/geometry/MaptalksMultiLineString.vue';
+import MaptalksMultiPoint from '../src/runtime/components/geometry/MaptalksMultiPoint.vue';
+import MaptalksMultiPolygon from '../src/runtime/components/geometry/MaptalksMultiPolygon.vue';
 import { GEOMETRY_LAYER_KEY } from '../src/runtime/core/map-context';
 import type { MaptalksVectorLayer as MVL } from '../src/runtime/types';
 
@@ -18,16 +18,16 @@ const { mp, ml, mpoly, gj } = vi.hoisted(() => ({
   gj: vi.fn(),
 }));
 
-vi.mock('../src/runtime/composables/presets/useMaptalksMultiPoint', () => ({
+vi.mock('../src/runtime/composables/geometry/useMaptalksMultiPoint', () => ({
   useMaptalksMultiPoint: mp,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksMultiLineString', () => ({
+vi.mock('../src/runtime/composables/geometry/useMaptalksMultiLineString', () => ({
   useMaptalksMultiLineString: ml,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksMultiPolygon', () => ({
+vi.mock('../src/runtime/composables/geometry/useMaptalksMultiPolygon', () => ({
   useMaptalksMultiPolygon: mpoly,
 }));
-vi.mock('../src/runtime/composables/useMaptalksGeoJSON', () => ({ useMaptalksGeoJSON: gj }));
+vi.mock('../src/runtime/composables/geo/useMaptalksGeoJSON', () => ({ useMaptalksGeoJSON: gj }));
 
 const layerProvide = { [GEOMETRY_LAYER_KEY]: shallowRef<MVL | null>({} as MVL) };
 

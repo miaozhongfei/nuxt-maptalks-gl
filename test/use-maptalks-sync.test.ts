@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, nextTick, shallowRef } from 'vue';
 
-import { useMaptalksSync } from '../src/runtime/composables/useMaptalksSync';
+import { useMaptalksSync } from '../src/runtime/composables/map/useMaptalksSync';
 import { mapRegistry } from '../src/runtime/core/registry';
 import type { MaptalksMap } from '../src/runtime/types';
 
@@ -12,35 +12,25 @@ interface View {
   bearing: number;
 }
 
-/** 假地图：可读视图、可被 setter 写入、可捕获事件 handler 以手动触发 */
+/** 假地图：可读视图、可被 setView 写入、可捕获事件 handler 以手动触发 */
 function fakeMap(v: View) {
   const handlers: Array<() => void> = [];
-  const setters = {
-    setCenter: vi.fn((c) => {
-      v.center = c;
-    }),
-    setZoom: vi.fn((z) => {
-      v.zoom = z;
-    }),
-    setPitch: vi.fn((p) => {
-      v.pitch = p;
-    }),
-    setBearing: vi.fn((b) => {
-      v.bearing = b;
-    }),
-  };
+  const setView = vi.fn((view: Partial<View>) => {
+    Object.assign(v, view);
+  });
   const map = {
     getCenter: () => v.center,
     getZoom: () => v.zoom,
     getPitch: () => v.pitch,
     getBearing: () => v.bearing,
+    getView: () => ({ center: v.center, zoom: v.zoom, pitch: v.pitch, bearing: v.bearing }),
+    setView,
     on: vi.fn((_ev: string, h: () => void) => {
       handlers.push(h);
     }),
     off: vi.fn(),
-    ...setters,
   } as unknown as MaptalksMap;
-  return { map, handlers, ...setters };
+  return { map, handlers, setView, view: v };
 }
 
 const view = (): View => ({ center: { x: 0, y: 0 }, zoom: 10, pitch: 0, bearing: 0 });
@@ -57,7 +47,8 @@ describe('useMaptalksSync mutual', () => {
       ]),
     );
     a.handlers[0]!();
-    expect(b.setZoom).toHaveBeenCalledWith(12);
+    expect(b.setView).toHaveBeenCalled();
+    expect(b.view.zoom).toBe(12);
     scope.stop();
   });
 
@@ -73,7 +64,7 @@ describe('useMaptalksSync mutual', () => {
     );
     a.handlers[0]!();
     b.handlers[0]!();
-    expect(a.setZoom).not.toHaveBeenCalled();
+    expect(a.setView).not.toHaveBeenCalled();
     await nextTick();
     scope.stop();
   });
@@ -91,7 +82,7 @@ describe('useMaptalksSync master-slave', () => {
       ),
     );
     m.handlers[0]!();
-    expect(s.setZoom).toHaveBeenCalledWith(9);
+    expect(s.view.zoom).toBe(9);
     scope.stop();
   });
 
@@ -116,7 +107,7 @@ describe('useMaptalksSync 解析与生命周期', () => {
     const scope = effectScope();
     scope.run(() => useMaptalksSync(['sync-a', 'sync-b']));
     a.handlers[0]!();
-    expect(b.setZoom).toHaveBeenCalledWith(7);
+    expect(b.view.zoom).toBe(7);
     scope.stop();
     mapRegistry.unregister('sync-a');
     mapRegistry.unregister('sync-b');
@@ -128,5 +119,27 @@ describe('useMaptalksSync 解析与生命周期', () => {
     scope.run(() => useMaptalksSync([shallowRef<MaptalksMap | null>(a.map)]));
     scope.stop();
     expect(a.map.off).toHaveBeenCalled();
+  });
+});
+
+describe('useMaptalksSync 异步地图', () => {
+  it('地图异步就绪后自动（重）绑定（配合 useMaptalks 异步创建）', async () => {
+    const a = fakeMap({ ...view(), zoom: 8 });
+    const b = fakeMap(view());
+    // 初始为 null，模拟 useMaptalks 尚未创建完成
+    const refA = shallowRef<MaptalksMap | null>(null);
+    const refB = shallowRef<MaptalksMap | null>(null);
+    const scope = effectScope();
+    scope.run(() => useMaptalksSync([refA, refB]));
+    // 地图未就绪时不应绑定任何事件
+    expect(a.map.on).not.toHaveBeenCalled();
+    // 地图异步就绪
+    refA.value = a.map;
+    refB.value = b.map;
+    await nextTick();
+    // 此时应已自动绑定：触发 a 的事件应同步到 b
+    a.handlers[0]!();
+    expect(b.view.zoom).toBe(8);
+    scope.stop();
   });
 });

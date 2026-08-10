@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksGeoJSON } from '../src/runtime/composables/useMaptalksGeoJSON';
+import { useMaptalksGeoJSON } from '../src/runtime/composables/geo/useMaptalksGeoJSON';
 import type { MaptalksGeometry, MaptalksVectorLayer } from '../src/runtime/types';
 
 const { toGeometry } = vi.hoisted(() => ({ toGeometry: vi.fn() }));

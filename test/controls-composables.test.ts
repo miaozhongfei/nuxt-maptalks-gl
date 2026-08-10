@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksAttribution } from '../src/runtime/composables/useMaptalksAttribution';
-import { useMaptalksCompass } from '../src/runtime/composables/useMaptalksCompass';
-import { useMaptalksScale } from '../src/runtime/composables/useMaptalksScale';
-import { useMaptalksZoom } from '../src/runtime/composables/useMaptalksZoom';
+import { useMaptalksAttribution } from '../src/runtime/composables/control/useMaptalksAttribution';
+import { useMaptalksCompass } from '../src/runtime/composables/control/useMaptalksCompass';
+import { useMaptalksScale } from '../src/runtime/composables/control/useMaptalksScale';
+import { useMaptalksZoom } from '../src/runtime/composables/control/useMaptalksZoom';
 import type { MaptalksMap } from '../src/runtime/types';
 
 const { controls } = vi.hoisted(() => ({
@@ -48,7 +48,7 @@ describe('control composables', () => {
   it('Zoom 创建并 addTo', async () => {
     const m = fakeMap();
     const s = effectScope();
-    s.run(() => useMaptalksZoom(shallowRef(m), { position: 'tl' }));
+    s.run(() => useMaptalksZoom(shallowRef(m), { options: { position: 'tl' } }));
     await vi.waitFor(() => expect(controls.Zoom).toHaveBeenCalled());
     const ctrl = controls.Zoom.mock.results[0]?.value;
     expect(ctrl?.addTo).toHaveBeenCalledWith(m);

@@ -4,7 +4,7 @@ import { defineComponent, h } from 'vue';
 
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 
-import { useMaptalksSource } from '../src/runtime/composables/useMaptalksSource';
+import { useMaptalksSource } from '../src/runtime/composables/layer/useMaptalksSource';
 import { MaptalksError } from '../src/runtime/core/errors';
 import type { UseMaptalksSourceReturn } from '../src/runtime/types';
 

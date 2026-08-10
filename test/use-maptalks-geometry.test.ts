@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, shallowRef } from 'vue';
 
-import { useMaptalksGeometry } from '../src/runtime/composables/useMaptalksGeometry';
+import { useMaptalksGeometry } from '../src/runtime/composables/geometry/useMaptalksGeometry';
 import type { MaptalksGeometry, MaptalksVectorLayer } from '../src/runtime/types';
 
 vi.mock('../src/runtime/core/loader', () => ({

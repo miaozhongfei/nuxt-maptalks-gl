@@ -4,9 +4,9 @@ import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { describe, expect, it, vi } from 'vitest';
 import { defineComponent, h, shallowRef } from 'vue';
 
-import { useMaptalksMultiLineString } from '../src/runtime/composables/presets/useMaptalksMultiLineString';
-import { useMaptalksMultiPoint } from '../src/runtime/composables/presets/useMaptalksMultiPoint';
-import { useMaptalksMultiPolygon } from '../src/runtime/composables/presets/useMaptalksMultiPolygon';
+import { useMaptalksMultiLineString } from '../src/runtime/composables/geometry/useMaptalksMultiLineString';
+import { useMaptalksMultiPoint } from '../src/runtime/composables/geometry/useMaptalksMultiPoint';
+import { useMaptalksMultiPolygon } from '../src/runtime/composables/geometry/useMaptalksMultiPolygon';
 import type { MaptalksVectorLayer } from '../src/runtime/types';
 
 const { mt } = vi.hoisted(() => ({

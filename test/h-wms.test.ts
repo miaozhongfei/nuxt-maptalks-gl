@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineComponent, h, shallowRef } from 'vue';
 import type { ShallowRef } from 'vue';
 
-import { useMaptalksWMSLayer } from '../src/runtime/composables/presets/useMaptalksWMSLayer';
+import { useMaptalksWMSLayer } from '../src/runtime/composables/layer/useMaptalksWMSLayer';
 import type { MaptalksMap, MaptalksSource } from '../src/runtime/types';
 
 // 假的 maptalks-gl 命名空间：WMSLayer 构造器返回带 remove/config 的对象并记录构造参数

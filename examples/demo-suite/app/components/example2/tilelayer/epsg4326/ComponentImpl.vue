@@ -1,0 +1,29 @@
+<template>
+  <div>
+    <MaptalksMap
+      ref="mc"
+      :center="[121.5057, 31.2453]"
+      :zoom="5"
+      class="relative rounded border border-default overflow-hidden"
+      style="height: 480px"
+      :options="{ spatialReference: sr4326 }"
+    >
+      <MaptalksTileLayer :options="gibsOptions" />
+    </MaptalksMap>
+    <p class="text-xs text-muted mt-1">{{ status }}</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+const mc = ref<MaptalksMapExposed | null>(null)
+// EPSG:4326 经纬直投：地图与瓦片源都用 4326（NASA GIBS 500m 矩阵集，最大 8 级）
+const sr4326 = { projection: 'EPSG:4326' }
+const gibsOptions = {
+  urlTemplate:
+    'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/BlueMarble_ShadedRelief_Bathymetry/default/500m/{z}/{y}/{x}.jpeg',
+  maxAvailableZoom: 8,
+  attribution: '© NASA GIBS',
+}
+
+const status = computed(() => (toValue(mc.value?.map) ? '地图已创建（4326 投影底图）' : '加载中…'))
+</script>

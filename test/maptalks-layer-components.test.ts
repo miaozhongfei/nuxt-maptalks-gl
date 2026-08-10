@@ -4,10 +4,10 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import MaptalksGLTFLayer from '../src/runtime/components/MaptalksGLTFLayer.vue';
-import MaptalksGroupGLLayer from '../src/runtime/components/MaptalksGroupGLLayer.vue';
-import MaptalksTileLayer from '../src/runtime/components/MaptalksTileLayer.vue';
-import MaptalksVectorTileLayer from '../src/runtime/components/MaptalksVectorTileLayer.vue';
+import MaptalksGLTFLayer from '../src/runtime/components/layer/MaptalksGLTFLayer.vue';
+import MaptalksGroupGLLayer from '../src/runtime/components/layer/MaptalksGroupGLLayer.vue';
+import MaptalksTileLayer from '../src/runtime/components/layer/MaptalksTileLayer.vue';
+import MaptalksVectorTileLayer from '../src/runtime/components/layer/MaptalksVectorTileLayer.vue';
 import { MAP_KEY } from '../src/runtime/core/map-context';
 import type { MaptalksMap } from '../src/runtime/types';
 
@@ -19,16 +19,16 @@ const { gtlm, vtlm, grpm, gltf } = vi.hoisted(() => ({
   gltf: vi.fn(),
 }));
 
-vi.mock('../src/runtime/composables/presets/useMaptalksTileLayer', () => ({
+vi.mock('../src/runtime/composables/layer/useMaptalksTileLayer', () => ({
   useMaptalksTileLayer: gtlm,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksVectorTileLayer', () => ({
+vi.mock('../src/runtime/composables/layer/useMaptalksVectorTileLayer', () => ({
   useMaptalksVectorTileLayer: vtlm,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksGroupGLLayer', () => ({
+vi.mock('../src/runtime/composables/layer/useMaptalksGroupGLLayer', () => ({
   useMaptalksGroupGLLayer: grpm,
 }));
-vi.mock('../src/runtime/composables/presets/useMaptalksGLTFLayer', () => ({
+vi.mock('../src/runtime/composables/layer/useMaptalksGLTFLayer', () => ({
   useMaptalksGLTFLayer: gltf,
 }));
 

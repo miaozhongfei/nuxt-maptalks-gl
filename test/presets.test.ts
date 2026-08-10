@@ -5,10 +5,10 @@ import type { ShallowRef } from 'vue';
 
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 
-import { useMaptalksGLTFLayer } from '../src/runtime/composables/presets/useMaptalksGLTFLayer';
-import { useMaptalksGroupGLLayer } from '../src/runtime/composables/presets/useMaptalksGroupGLLayer';
-import { useMaptalksTileLayer } from '../src/runtime/composables/presets/useMaptalksTileLayer';
-import { useMaptalksVectorTileLayer } from '../src/runtime/composables/presets/useMaptalksVectorTileLayer';
+import { useMaptalksGLTFLayer } from '../src/runtime/composables/layer/useMaptalksGLTFLayer';
+import { useMaptalksGroupGLLayer } from '../src/runtime/composables/layer/useMaptalksGroupGLLayer';
+import { useMaptalksTileLayer } from '../src/runtime/composables/layer/useMaptalksTileLayer';
+import { useMaptalksVectorTileLayer } from '../src/runtime/composables/layer/useMaptalksVectorTileLayer';
 import { resolvePresetSource } from '../src/runtime/core/preset-source';
 import type { PresetSourceState } from '../src/runtime/core/preset-source';
 import type { MaptalksMap, MaptalksSource } from '../src/runtime/types';

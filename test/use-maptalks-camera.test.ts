@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { effectScope, nextTick, shallowRef } from 'vue';
 
-import { useMaptalksCamera } from '../src/runtime/composables/useMaptalksCamera';
+import { useMaptalksCamera } from '../src/runtime/composables/map/useMaptalksCamera';
 import type { MaptalksCoordinate, MaptalksMap } from '../src/runtime/types';
 
 interface CameraState {

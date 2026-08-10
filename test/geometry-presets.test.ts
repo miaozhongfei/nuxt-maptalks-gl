@@ -4,10 +4,10 @@ import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { describe, expect, it, vi } from 'vitest';
 import { defineComponent, h, shallowRef } from 'vue';
 
-import { useMaptalksLineString } from '../src/runtime/composables/presets/useMaptalksLineString';
-import { useMaptalksMarker } from '../src/runtime/composables/presets/useMaptalksMarker';
-import { useMaptalksPolygon } from '../src/runtime/composables/presets/useMaptalksPolygon';
-import { useMaptalksVectorLayer } from '../src/runtime/composables/presets/useMaptalksVectorLayer';
+import { useMaptalksLineString } from '../src/runtime/composables/geometry/useMaptalksLineString';
+import { useMaptalksMarker } from '../src/runtime/composables/geometry/useMaptalksMarker';
+import { useMaptalksPolygon } from '../src/runtime/composables/geometry/useMaptalksPolygon';
+import { useMaptalksVectorLayer } from '../src/runtime/composables/layer/useMaptalksVectorLayer';
 import type { MaptalksMap, MaptalksVectorLayer } from '../src/runtime/types';
 
 const { mt } = vi.hoisted(() => ({

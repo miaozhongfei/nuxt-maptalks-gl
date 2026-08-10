@@ -1,78 +1,119 @@
 <p align="center">
-  <h1 align="center">@lacqjs/nuxt-dict</h1>
+  <h1 align="center">@lacqjs/nuxt-maptalks-gl</h1>
 </p>
 
 <p align="center">
-  <a href="https://npmjs.com/package/@lacqjs/nuxt-dict"><img src="https://img.shields.io/npm/v/@lacqjs/nuxt-dict?style=flat-square&colorA=202128&colorB=36936A" alt="Version"></a>
-  <a href="https://npmjs.com/package/@lacqjs/nuxt-dict"><img src="https://img.shields.io/npm/dm/@lacqjs/nuxt-dict?style=flat-square&colorA=202128&colorB=36936A" alt="Downloads"></a>
-  <a href="https://github.com/miaozhongfei/nuxt-dict/blob/main/LICENSE"><img src="https://img.shields.io/github/license/miaozhongfei/nuxt-dict?style=flat-square&colorA=202128&colorB=36936A" alt="License"></a>
-  <a href="https://miaozhongfei.github.io/nuxt-dict/"><img src="https://img.shields.io/badge/Docs-202128?style=flat-square&logo=gitbook&logoColor=DDDDD4" alt="Docs"></a>
+  <a href="https://npmjs.com/package/@lacqjs/nuxt-maptalks-gl"><img src="https://img.shields.io/npm/v/@lacqjs/nuxt-maptalks-gl?style=flat-square&colorA=202128&colorB=36936A" alt="Version"></a>
+  <a href="https://npmjs.com/package/@lacqjs/nuxt-maptalks-gl"><img src="https://img.shields.io/npm/dm/@lacqjs/nuxt-maptalks-gl?style=flat-square&colorA=202128&colorB=36936A" alt="Downloads"></a>
+  <a href="https://github.com/miaozhongfei/nuxt-maptalks-gl/blob/main/LICENSE"><img src="https://img.shields.io/github/license/miaozhongfei/nuxt-maptalks-gl?style=flat-square&colorA=202128&colorB=36936A" alt="License"></a>
+  <a href="https://miaozhongfei.github.io/nuxt-maptalks-gl/"><img src="https://img.shields.io/badge/Docs-202128?style=flat-square&logo=gitbook&logoColor=DDDDD4" alt="Docs"></a>
 </p>
 
-> Nuxt 数据字典模块，提供扁平 / 树形字典翻译、多语言国际化、三级缓存与 SSR 预取。
+> Nuxt 4 的 maptalks-gl 模块：SSR 守卫、按需动态加载、map/layer 生命周期纳管、多地图命名实例与注册表、横切 composable 与类型化图层预设。
+
+## 特性
+
+- **SSR 安全** — 客户端渲染守卫，服务端不引入 maptalks-gl，避免水合报错
+- **按需动态加载** — 运行时才加载 `maptalks-gl`，不影响首屏体积
+- **声明式组件（26+）** — `MaptalksMap` + 图层/几何/控件/工具/信息框组件，模板嵌套即可建图
+- **类型化预设（31+ composable）** — `useMaptalksTileLayer` / `useMaptalksMarker` 等图层与几何预设，构造选项带中文注释与完整 IDE 补全
+- **响应式纳管** — 地图/图层/几何/控件生命周期自动创建与销毁，`options` 变化响应式重建或增量更新
+- **多地图注册表** — `MapRegistry` + `LayerRegistry`，命名实例经 `useMaptalksInstance` / `useMaptalksRegistry` 跨组件访问
+- **逃生舱** — `useMaptalksLayer` / `useMaptalksGeometry` 通用原语，任意原生 API 无缝接入
+- **三语文档** — 中文 / 英文 / 波斯语（RTL）文档站，零基础友好
 
 ## 快速开始
 
 ### 安装
 
 ```bash
-pnpm add @lacqjs/nuxt-dict
+pnpm add @lacqjs/nuxt-maptalks-gl maptalks-gl
 ```
+
+> `maptalks-gl` 是 peerDependency，由你的项目显式安装（模块不打包它，避免重复打包与版本漂移）。
 
 ### 注册模块
 
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@lacqjs/nuxt-dict'],
-});
+  modules: ['@lacqjs/nuxt-maptalks-gl'],
+})
 ```
+
+### 第一张地图（组件声明式）
 
 ```vue
 <template>
-  <el-select v-model="value" placeholder="请选择">
-    <el-option v-for="o in options" :key="o.value" :label="o.label" :value="o.value" />
-  </el-select>
+  <MaptalksMap
+    :center="[121.5057, 31.2453]"
+    :zoom="13"
+    base-layer="osm"
+    class="relative rounded border border-default overflow-hidden"
+    style="height: 480px"
+  />
+</template>
+```
+
+### 第一张地图（composable 命令式）
+
+```vue
+<template>
+  <div ref="el" class="relative rounded border border-default overflow-hidden" style="height: 480px" />
 </template>
 
 <script setup lang="ts">
-const { data: options } = useDict('gender');
-const value = ref('');
+// 命令式创建地图，自动加载 maptalks-gl 并做 SSR 守卫；baseLayer 指定 OSM 栅格底图
+const el = ref<HTMLElement | null>(null)
+const { map, isReady } = useMaptalks(el, { center: [121.5057, 31.2453], zoom: 13, baseLayer: 'osm' })
 </script>
 ```
 
-## 特性
+## 使用模式
 
-- **扁平字典** — `useDict(type)` 自动加载，返回 `[{ value, label }]`，直接绑定 UI 组件
-- **树形字典** — `useDictTree(type)` 支持任意深度树形结构 + `findPath()` 路径回溯
-- **多语言** — `useLocale()` 切换语言，所有活跃字典实例自动重新请求
-- **多仓库** — 通过 `stores` 配置从不同 API 端点加载，实现数据隔离
-- **三级缓存** — 内存 LRU → IndexedDB → 网络（版本校验），最大化减少请求
-- **SSR 预取** — `ssr.prefetch` 配置服务端预加载，加速首屏渲染
-- **自定义适配器** — 实现 `DictAdapter` 接口即可对接任意数据源
-- **同步翻译** — `$dict.translate()` / `$dict.translatePath()` / `$dict.translateData()` 全场景覆盖
+| 模式 | 写法 | 适用场景 |
+|------|------|---------|
+| 组件声明式 | `<MaptalksMap>` + `<MaptalksMarker>` 等 | 静态/模板化地图，零脚本逻辑 |
+| composable 命令式 | `useMaptalks` + `useMaptalksMarker` 等 | 动态数据、响应式联动 |
+| 混合 | `<MaptalksMap ref="mc">` + composable | 组件建图 + composable 扩展 |
+| 逃生舱 | `useMaptalksLayer` / `useMaptalksGeometry` / 原生 import | 模块未覆盖的原生能力 |
 
-完整用法与配置请查看 → [文档](https://miaozhongfei.github.io/nuxt-dict/)
+## 示例
+
+仓库内置完整示例应用（`examples/demo-suite`），覆盖两种组织方式：
+
+- **示例1** — 按模块能力组织：组件单独 / composable 单独 / 组合 / 进阶（29 页）
+- **示例2** — 按 maptalks 官网章节组织：地图 / 瓦片图层 / 图形 / 三维 / 样式 / 图层 / 工具 / 交互 / 动画 / UI 控件 / JSON 序列化 / 插件（14 组 97 示例，每组含组件 / Composable / 组合 / 逃生舱 4 种实现）
+
+```bash
+pnpm demo:demo-suite:dev   # 启动示例应用
+```
 
 ## 开发
 
 ```bash
-pnpm dev            # 启动开发服务器
+pnpm dev            # 启动开发服务器（先 dev:prepare 再起 playground）
+pnpm dev:prepare    # stub 模块 + 准备 playground
 pnpm prepack        # 构建产物
-pnpm lint           # 代码检查
-pnpm typecheck      # 类型检查
+pnpm lint           # 代码检查（oxlint）
+pnpm typecheck      # 类型检查（根 + playground）
+pnpm docs:dev       # 文档站开发
 pnpm e2e            # E2E 测试
 ```
 
-## 感谢 / 致谢
+## 文档
+
+完整用法与配置请查看 → [文档](https://miaozhongfei.github.io/nuxt-maptalks-gl/)
+
+## 致谢
 
 本项目受益于以下优秀开源项目：
 
 - [Nuxt](https://nuxt.com/) — Vue 全栈框架
+- [maptalks-gl](https://github.com/maptalks/maptalks.gl) — 二维/三维一体化 WebGL 地图引擎
 - [@nuxt/kit](https://github.com/nuxt/nuxt) — Nuxt 模块开发工具包
 - [defu](https://github.com/unjs/defu) — 深度合并配置
 - [consola](https://github.com/unjs/consola) — 日志工具
-- [compare-versions](https://github.com/omichelsen/compare-versions) — 版本比较
 
 ## 许可证
 

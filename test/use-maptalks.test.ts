@@ -1,12 +1,12 @@
-// @vitest-environment nuxt
+﻿// @vitest-environment nuxt
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineComponent, h, shallowRef } from 'vue';
 
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 
-import { useMaptalks } from '../src/runtime/composables/useMaptalks';
+import { useMaptalks } from '../src/runtime/composables/map/useMaptalks';
 import { mapRegistry } from '../src/runtime/core/registry';
-import type { UseMaptalksOptions, UseMaptalksReturn } from '../src/runtime/types';
+import type { UseMaptalksOpts, UseMaptalksReturn } from '../src/runtime/types';
 
 // 假命名空间：Map 构造器返回带 remove spy 的实例；WebGL 始终可用
 const { mt } = vi.hoisted(() => ({
@@ -30,7 +30,7 @@ function flush(): Promise<void> {
 }
 
 /** 在组件里装配 useMaptalks（target 用脱离文档的 div），返回句柄与 wrapper */
-async function mountMap(options: UseMaptalksOptions = {}) {
+async function mountMap(options: UseMaptalksOpts = {}) {
   const el = shallowRef<HTMLElement | null>(document.createElement('div'));
   let result: UseMaptalksReturn | undefined;
   const wrapper = await mountSuspended(

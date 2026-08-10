@@ -19,20 +19,9 @@ import { createLogger } from './runtime/utils/logger';
 import { createValidateNestingPlugin } from './vite-plugins/validate-component-nesting';
 
 export type { ModuleOptions };
-export type {
-  ResolvedModuleOptions,
-  MaptalksSource,
-  PublicSource,
-  SignedSource,
-  ResolvedSource,
-  MaptalksMap,
-  MaptalksLayer,
-  MaptalksGLNamespace,
-  MaptalksCoordinate,
-  MaptalksViewLike,
-  MaptalksDefaults,
-  MaptalksErrorCode,
-} from './runtime/types';
+// 一键转发 types/index.ts（barrel）全部类型导出：新增类型无需在模块入口手动维护；
+// 与上方具名导出重名的符号（ModuleOptions）按 TS 规则本地优先自动跳过
+export type * from './runtime/types';
 export { MaptalksError };
 
 /** maptalks-gl 自带样式表的产物路径（确切路径以安装版本 dist 为准，见 spec §14） */
@@ -121,13 +110,26 @@ export default defineNuxtModule<ModuleOptions>().with({
     tuneOptimizeDeps(_nuxt);
     addVitePlugin(createValidateNestingPlugin());
 
-    // 自动导入 composables 与预设（addImportsDir 仅扫描顶层目录，故显式传入 presets 子目录）
+    // 自动导入 composables 与预设（按官网 API 分类组织：map/layer/geometry/geo/control/maptool/ui/basic-types + types）
+    // addImportsDir 仅扫描列出的叶子目录；types/ 子目录仅含 public-types.ts 单一中转文件，
+    // 类型全局注入无重复来源（runtime/types 目录本身不扫描，避免 index barrel 与子文件双来源警告）
     addImportsDir([
-      resolver.resolve('./runtime/composables'),
-      resolver.resolve('./runtime/composables/presets'),
+      resolver.resolve('./runtime/composables/map'),
+      resolver.resolve('./runtime/composables/layer'),
+      resolver.resolve('./runtime/composables/geometry'),
+      resolver.resolve('./runtime/composables/geo'),
+      resolver.resolve('./runtime/composables/control'),
+      resolver.resolve('./runtime/composables/maptool'),
+      resolver.resolve('./runtime/composables/ui'),
+      resolver.resolve('./runtime/composables/basic-types'),
+      resolver.resolve('./runtime/composables/types'),
     ]);
-    // 自动导入声明式组件（MaptalksMap / MaptalksTileLayer 等）
-    addComponentsDir({ path: resolver.resolve('./runtime/components') });
+    // 自动导入声明式组件（MaptalksMap / MaptalksTileLayer 等；组件按官网 API 分类存子目录，
+    // pathPrefix: false 保证组件名不受目录层级影响，仍是 MaptalksXxx）
+    addComponentsDir({
+      path: resolver.resolve('./runtime/components'),
+      pathPrefix: false,
+    });
 
     // 自动导入服务端签名助手（用户在 server route 中无需手动 import）
     addServerImportsDir(resolver.resolve('./runtime/server/utils'));

@@ -1,4 +1,4 @@
-import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
+﻿import { onScopeDispose, shallowRef, toValue, watch } from 'vue';
 import type { MaybeRefOrGetter, ShallowRef, WatchStopHandle } from 'vue';
 
 import { MaptalksError, toMaptalksError } from '../core/errors';
@@ -7,7 +7,7 @@ import type {
   MaptalksEventHandler,
   MaptalksMap,
   MaptalksMapTool,
-  UseMaptalksToolOptions,
+  UseMaptalksToolOpts,
   UseMaptalksToolReturn,
 } from '../types';
 import { createLogger } from '../utils/logger';
@@ -51,7 +51,7 @@ function makeRemove(
  * 作用域 dispose 清理。供 useMaptalksDistanceTool / useMaptalksAreaTool 调用。
  * @param {string} toolName - 构造器名（`DistanceTool` / `AreaTool`）
  * @param {MaybeRefOrGetter<MaptalksMap | null>} map - 地图引用
- * @param {UseMaptalksToolOptions} toolOptions - 工具选项、事件绑定与自动销毁控制
+ * @param {UseMaptalksToolOpts} toolOptions - 工具选项、事件绑定与自动销毁控制
  * @returns {UseMaptalksToolReturn} `{ tool, remove }`
  *
  * @example
@@ -60,7 +60,7 @@ function makeRemove(
 export function createToolResult<TNative = Record<string, unknown>>(
   toolName: 'DistanceTool' | 'AreaTool',
   map: MaybeRefOrGetter<MaptalksMap | null>,
-  toolOptions: UseMaptalksToolOptions<TNative>,
+  toolOptions: UseMaptalksToolOpts<TNative>,
 ): UseMaptalksToolReturn {
   const tool = shallowRef<MaptalksMapTool | null>(null);
   let creating = false;

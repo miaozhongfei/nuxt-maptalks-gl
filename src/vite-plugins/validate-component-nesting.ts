@@ -48,6 +48,11 @@ const VECTOR_CHILDREN = new Set([
   'MaptalksGeoJSON',
 ])
 
+/** 必须在 MaptalksMarker 内使用的组件 */
+const MARKER_CHILDREN = new Set([
+  'MaptalksGeometryInfoWindow',
+])
+
 /** 透明的结构标签——不影响实际的父子层级 */
 const STRUCTURAL_TAGS = new Set([
   'template',
@@ -94,6 +99,8 @@ function walkAST(
       }
     } else if (VECTOR_CHILDREN.has(tag) && effectiveParent !== 'MaptalksVectorLayer') {
       errors.push({ tag, parent: 'MaptalksVectorLayer', loc: node.loc as Loc })
+    } else if (MARKER_CHILDREN.has(tag) && effectiveParent !== 'MaptalksMarker') {
+      errors.push({ tag, parent: 'MaptalksMarker', loc: node.loc as Loc })
     }
 
     // 结构标签不加入 parentStack（不影响实际层级）

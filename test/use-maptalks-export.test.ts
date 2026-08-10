@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { shallowRef } from 'vue';
 
-import { useMaptalksExport } from '../src/runtime/composables/useMaptalksExport';
+import { useMaptalksExport } from '../src/runtime/composables/map/useMaptalksExport';
 import type { MaptalksMap } from '../src/runtime/types';
 
 function fakeMap(dataUrl = 'data:image/png;base64,AAAA') {
