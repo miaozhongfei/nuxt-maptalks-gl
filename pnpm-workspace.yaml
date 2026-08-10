@@ -2,14 +2,21 @@ shellEmulator: true
 trustPolicy: off
 # trustPolicy: no-downgrade
 
+# 以下设置在 pnpm 11 中必须写在 pnpm-workspace.yaml，.npmrc 中已失效
+engineStrict: true
+shamefullyHoist: true
+strictPeerDependencies: true
+
 packages:
   - ./
   - ./docs
   - ./examples/*
   - ./playground
 
-onlyBuiltDependencies:
-  - better-sqlite3
-  - esbuild
-  - sharp
-  - unrs-resolver
+allowBuilds:
+  better-sqlite3: true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  '@parcel/watcher': true
+  vue-demi: true
