@@ -46,15 +46,7 @@ try {
   fail('PR 尚未合并到 main，请先在 GitHub 上合并 dev→main 的 PR')
 }
 
-// 3. 检查 npm 登录状态
-log('检查 npm 认证状态...')
-const npmUser = run('npm whoami --registry https://registry.npmjs.org/', true)
-if (!npmUser) {
-  fail('未登录 npm，请执行：npm login --registry https://registry.npmjs.org/')
-}
-log(`已登录 npm: ${npmUser}`)
-
-// 4. 切换到 main 分支
+// 3. 切换到 main 分支
 log('切换到 main 分支...')
 // -f 强制切换，忽略 untracked 文件冲突
 run('git checkout -f main')
@@ -62,11 +54,11 @@ run('git fetch origin main')
 run('git reset --hard origin/main')
 if (panic) fail('切换到 main 分支失败')
 
-// 5. 发布到 npm
+// 4. 发布到 npm
 log('发布到 npm...')
 mustRun('pnpm publish', 'npm 发布失败')
 
-// 6. 创建 GitHub Release
+// 5. 创建 GitHub Release
 log('创建 GitHub Release...')
 const releaseResult = run('pnpm exec changelogen gh release', true)
 if (panic || !releaseResult) {
@@ -74,7 +66,7 @@ if (panic || !releaseResult) {
   warn('请手动创建 Release: https://github.com/miaozhongfei/nuxt-maptalks-gl/releases')
 }
 
-// 7. 切回 dev
+// 6. 切回 dev
 log('切回 dev 分支...')
 run('git checkout dev')
 if (panic) {
