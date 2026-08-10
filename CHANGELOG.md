@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.6
+
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.5...v0.0.6)
+
+### 🩹 Fixes
+
+- 修复 release 脚本 run() 函数——stdio inherit 时 execSync 返回 undefined 导致 .trim() 报错被误判为失败 ([8e712ac](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/8e712ac))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
 ## v0.0.5
 
 [compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.4...v0.0.5)
