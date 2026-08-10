@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.3
+
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.2...v0.0.3)
+
+### 💅 Refactors
+
+- Release 拆分为两步——脚本仅创建 PR（走分支保护审核），PR 合并后手动执行 release:publish 发布 ([c4ff0aa](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/c4ff0aa))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
 ## v0.0.2
 
 
