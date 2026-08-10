@@ -15,8 +15,8 @@
 
 - **SSR 安全** — 客户端渲染守卫，服务端不引入 maptalks-gl，避免水合报错
 - **按需动态加载** — 运行时才加载 `maptalks-gl`，不影响首屏体积
-- **声明式组件（26+）** — `MaptalksMap` + 图层/几何/控件/工具/信息框组件，模板嵌套即可建图
-- **类型化预设（31+ composable）** — `useMaptalksTileLayer` / `useMaptalksMarker` 等图层与几何预设，构造选项带中文注释与完整 IDE 补全
+- **声明式组件** — `MaptalksMap` + 图层/几何/控件/工具/信息框组件，模板嵌套即可建图
+- **类型化预设** — `useMaptalksTileLayer` / `useMaptalksMarker` 等图层与几何预设，构造选项带中文注释与完整 IDE 补全
 - **响应式纳管** — 地图/图层/几何/控件生命周期自动创建与销毁，`options` 变化响应式重建或增量更新
 - **多地图注册表** — `MapRegistry` + `LayerRegistry`，命名实例经 `useMaptalksInstance` / `useMaptalksRegistry` 跨组件访问
 - **逃生舱** — `useMaptalksLayer` / `useMaptalksGeometry` 通用原语，任意原生 API 无缝接入
@@ -128,8 +128,8 @@ const { map, isReady } = useMaptalks(el, {
 
 仓库内置完整示例应用（`examples/demo-suite`），覆盖两种组织方式：
 
-- **示例1** — 按模块能力组织：组件单独 / composable 单独 / 组合 / 进阶（29 页）
-- **示例2** — 按 maptalks 官网章节组织：地图 / 瓦片图层 / 图形 / 三维 / 样式 / 图层 / 工具 / 交互 / 动画 / UI 控件 / JSON 序列化 / 插件（14 组 97 示例，每组含组件 / Composable / 组合 / 逃生舱 4 种实现）
+- **示例1** — 按模块能力组织：组件单独 / composable 单独 / 组合 / 进阶
+- **示例2** — 按 maptalks 官网章节组织：地图 / 瓦片图层 / 图形 / 三维 / 样式 / 图层 / 工具 / 交互 / 动画 / UI 控件 / JSON 序列化 / 插件（每组含组件 / Composable / 组合 / 逃生舱 4 种实现）
 
 ```bash
 pnpm demo:demo-suite:dev   # 启动示例应用
