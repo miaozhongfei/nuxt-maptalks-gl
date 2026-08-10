@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.0.7
+
+[compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.6...v0.0.7)
+
+### 🩹 Fixes
+
+- Release-publish.mjs PR 合并检测改用 --is-ancestor 直接判断退出码——修复 merge commit 场景下误报未合并的 bug ([7194bf5](https://github.com/miaozhongfei/nuxt-maptalks-gl/commit/7194bf5))
+
+### ❤️ Contributors
+
+- Miaozf <1103520414@qq.com>
+
 ## v0.0.6
 
 [compare changes](https://github.com/miaozhongfei/nuxt-maptalks-gl/compare/v0.0.5...v0.0.6)
